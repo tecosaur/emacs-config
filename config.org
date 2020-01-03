@@ -1,0 +1,482 @@
+#+TITLE: Doom Emacs Configuration
+#+AUTHOR: tecosaur
+#+PROPERTY: header-args :tangle yes :cache yes :results silent :padline no
+#+HTML_HEAD: <link rel='shortcut icon' type='image/png' href='https://www.gnu.org/software/emacs/favicon.png'>
+
+#+BEGIN_QUOTE
+Let us change our traditional attitude to the construction of programs:
+Instead of imagining that our main task is to instruct a computer what to do,
+let us concentrate rather on explaining to human beings what we want a
+computer to do. --- Donald Knuth
+#+END_QUOTE
+
+Make this file run (slightly) faster with lexical binding.
+#+BEGIN_SRC emacs-lisp
+;;; config.el -*- lexical-binding: t; -*-
+#+END_SRC
+
+* Rudimentary configuration
+** Personal Information
+It's useful to have some basic personal information
+#+BEGIN_SRC emacs-lisp
+(setq user-full-name "tecosaur"
+      user-mail-address "tecosaur@gmail.com")
+#+END_SRC
+Apparently this is used by ~GPG~, and all sorts of other things.
+** Better defaults
+*** Simple settings
+Browsing the web and seeing [[https://github.com/angrybacon/dotemacs/blob/master/dotemacs.org#use-better-defaults][angrybacon/dotemacs]] and comparing with the values
+shown by =SPC h v= and selecting what I thought looks good, I've ended up adding the following:
+#+BEGIN_SRC emacs-lisp
+(setq-default
+ delete-by-moving-to-trash t                      ; Delete files to trash
+ tab-width 4                                      ; Set width for tabs
+ uniquify-buffer-name-style 'forward              ; Uniquify buffer names
+ window-combination-resize t                      ; take new window space from all other windows (not just current)
+ x-stretch-cursor t)                              ; Stretch cursor to the glyph width
+
+(delete-selection-mode 1)                         ; Replace selection when inserting text
+(display-time-mode 1)                             ; Enable time in the mode-line
+(global-subword-mode 1)                           ; Iterate through CamelCase words
+#+END_SRC
+*** Fullscreen
+I also like the idea of fullscreen-ing when opened by ~emacs~ or the ~.desktop~ file.
+#+BEGIN_SRC emacs-lisp
+(if (eq initial-window-system 'x)                 ; if started by emacs command or desktop file
+    (toggle-frame-maximized)
+  (toggle-frame-fullscreen))
+#+END_SRC
+*** Auto-customisations
+By default changes made via a customisation interface are added to =init.el=.
+I prefer the idea of using a separate file for this. We just need to change a
+setting, and load it if it exists.
+#+BEGIN_SRC emacs-lisp
+(setq-default custom-file (expand-file-name ".custom.el" user-emacs-directory))
+(when (file-exists-p custom-file)
+  (load custom-file))
+#+END_SRC
+** Doom configuration
+*** Visual Settings
+**** Font Face
+'Fira Code' is nice, and 'Overpass' makes for a nice sans companion. We just need to
+fiddle with the font sizes a tad so that they visually match.
+#+BEGIN_SRC emacs-lisp
+(setq doom-font (font-spec :family "Fira Code" :size 18)
+      doom-variable-pitch-font (font-spec :family "Overpass" :size 20))
+#+END_SRC
+**** Theme
+~doom-one~ is nice and all, but I find the ~vibrant~ variant nicer.
+#+BEGIN_SRC emacs-lisp
+(setq doom-theme 'doom-vibrant)
+#+END_SRC
+However, by default ~red~ text is used in the ~modeline~, so let's make that orange
+so I don't feel like something's gone /wrong/ when editing files.
+#+BEGIN_SRC emacs-lisp
+(custom-set-faces!
+  '(doom-modeline-buffer-modified :foreground "orange"))
+#+END_SRC
+**** Miscellaneous
+Relative line numbers are fantastic for knowing how far away line numbers are,
+then =ESC 12 <UP>= gets you exactly where you think.
+#+BEGIN_SRC emacs-lisp
+(setq display-line-numbers-type 'relative)
+#+END_SRC
+*** Some helper macros
+There are a few handy macros added by doom, namely
+- ~load!~ for loading external ~.el~ files relative to this one
+- ~use-package~ for configuring packages
+- ~add-load-path!~ for adding directories to the ~load-path~ where ~emacs~ looks when
+  you load packages with ~require~ or ~use-package~
+- ~map~ for binding new keys
+To find more,
+** Other things
+*** Editor interaction
+**** Mouse buttons
+#+BEGIN_SRC emacs-lisp
+(defun add-mouse-back-button-to-Info-mode ()
+  "Add some browser styled nav keys for `Info-mode'."
+  (local-set-key (kbd "<mouse-8>") 'Info-history-back)
+  (local-set-key (kbd "<mouse-9>") 'Info-history-forward))
+
+(add-hook 'Info-mode-hook 'add-mouse-back-button-to-Info-mode)
+#+END_SRC
+* Package loading
+This file shouldn't be byte compiled.
+#+BEGIN_SRC emacs-lisp :tangle "packages.el"
+;; -*- no-byte-compile: t; -*-
+#+END_SRC
+** Loading instructions
+This is where you install packages, by declaring them with the ~package!~
+macro, then running ~doom refresh~ on the command line. You'll need to
+restart Emacs for your changes to take effect! Or at least, run =M-x doom/reload=.
+
+WARNING: Don't disable core packages listed in ~~/.emacs.d/core/packages.el~.
+Doom requires these, and disabling them may have terrible side effects.
+
+*** Packages in MELPA/ELPA/emacsmirror
+To install ~some-package~ from MELPA, ELPA or emacsmirror:
+#+BEGIN_SRC emacs-lisp :tangle no
+(package! some-package)
+#+END_SRC
+
+*** Packages from git repositories
+To install a package directly from a particular repo, you'll need to specify
+a ~:recipe~. You'll find documentation on what ~:recipe~ accepts [[https://github.com/raxod502/straight.el#the-recipe-format][here]]:
+#+BEGIN_SRC emacs-lisp :tangle no
+(package! another-package
+  :recipe (:host github :repo "username/repo"))
+#+END_SRC
+
+If the package you are trying to install does not contain a ~PACKAGENAME.el~
+file, or is located in a subdirectory of the repo, you'll need to specify
+~:files~ in the ~:recipe~:
+#+BEGIN_SRC emacs-lisp :tangle no
+(package! this-package
+  :recipe (:host github :repo "username/repo"
+           :files ("some-file.el" "src/lisp/*.el")))
+#+END_SRC
+
+*** Disabling built-in backages
+If you'd like to disable a package included with Doom, for whatever reason,
+you can do so here with the ~:disable~ property:
+#+BEGIN_SRC emacs-lisp :tangle no
+(package! builtin-package :disable t)
+#+END_SRC
+You can override the recipe of a built in package without having to specify
+all the properties for ~:recipe~. These will inherit the rest of its recipe
+from Doom or MELPA/ELPA/Emacsmirror:
+#+BEGIN_SRC emacs-lisp :tangle no
+(package! builtin-package :recipe (:nonrecursive t))
+(package! builtin-package-2 :recipe (:repo "myfork/package"))
+#+END_SRC
+
+Specify a ~:branch~ to install a package from a particular branch or tag.
+This is required for some packages whose default branch isn't 'master' (which
+our package manager can't deal with; see [[https://github.com/raxod502/straight.el/issues/279][raxod502/straight.el#279]])
+#+BEGIN_SRC emacs-lisp :tangle no
+(package! builtin-package :recipe (:branch "develop"))
+#+END_SRC
+** Packages
+*** Auto-complete
+#+BEGIN_SRC emacs-lisp :tangle "packages.el"
+(package! company-tabnine ; tab9 autocomplete
+  :recipe (:host github :repo "TommyX12/company-tabnine"
+           :files ("company-tabnine.el" "fetch-binaries.sh")))
+#+END_SRC
+*** Prettification
+~prettify-mode~ is nice and all, but adding substitutions is a little verbose.
+This helps with that.
+#+BEGIN_SRC emacs-lisp :tangle "packages.el"
+(package! prettify-utils ; simplify messing with prettify-mode
+  :recipe (:host github :repo "Ilazki/prettify-utils.el"))
+#+END_SRC
+*** Org Mode
+Org tables aren't the prettiest thing to look at. This package is supposed to
+redraw them in the buffer with box-drawing characters. Sounds like an
+improvement to me! Just need to get it working...
+#+BEGIN_SRC emacs-lisp :tangle "packages.el"
+(package! org-pretty-table-mode
+  :recipe (:host github :repo "Fuco1/org-pretty-table"))
+#+END_SRC
+Because of the /[[https://github.com/commonmark/commonmark-spec/wiki/markdown-flavors][lovely variety in markdown implementations]]/ there isn't actually
+such a thing a standard table spec ... or standard anything really. Because
+~org-md~ is a goody-two-shoes, it just uses HTML for all these non-standardised
+elements (a lot of them). So ~ox-gfm~ is handy for exporting markdown with all the
+features that GitHub has. Initialised in [[Exporting to GFM]].
+#+BEGIN_SRC emacs-lisp :tangle "packages.el"
+(package! ox-gfm)
+#+END_SRC
+Pandoc is also a very handy export tool. ~org-pandoc~ also exists, but this seems
+to be better maintained.
+#+BEGIN_SRC emacs-lisp :tangle "packages.el"
+(package! ox-pandoc)
+#+END_SRC
+* Package configuration
+** Centaur Tabs
+We want to make the tabs a nice, comfy size (~36~), with icons. The modifier
+marker is nice, but the particular default Unicode one causes a lag spike, so
+let's just switch to an ~o~, which still looks decent but doesn't cause any
+issues.
+A 'active-bar' is nice, so let's have one of those. If we have it ~under~ needs us to
+turn on ~x-underline-at-decent~ though. For some reason this didn't seem to work
+inside the ~(after! ... )~ block ¯\_(ツ)_/¯.
+Then let's change the font to a sans serif, but the default one doesn't fit too
+well somehow, so let's switch to 'P22 Underground Book'; it looks much nicer.
+#+BEGIN_SRC emacs-lisp
+(after! centaur-tabs
+  (setq centaur-tabs-height 36
+        centaur-tabs-set-icons t
+        centaur-tabs-modified-marker "o"
+        centaur-tabs-set-bar 'above)
+        centaur-tabs-gray-out-icons 'buffer
+  (centaur-tabs-change-fonts "P22 Underground Book" 160))
+;; (setq x-underline-at-descent-line t)
+#+END_SRC
+** Company
+It's nice to have completions almost all the time, in my opinion. Key strokes
+are just waiting to be saved!
+#+BEGIN_SRC emacs-lisp
+(after! company
+  (setq company-idle-delay 0.2
+        company-minimum-prefix-length 2)
+  (setq company-show-numbers t))
+#+END_SRC
+Now, the improvements from ~precident~ are mostly from remembering history, so
+let's improve that memory.
+#+BEGIN_SRC emacs-lisp
+(setq-default history-length 1000)
+(setq-default prescient-history-length 1000)
+#+END_SRC
+*** Plain Text
+~ispell~ is nice, let's have it in ~text~, ~markdown~, and ~GFM~.
+#+BEGIN_SRC emacs-lisp
+(set-company-backend! '(text-mode
+                        markdown-mode
+                        gfm-mode)
+  '(:seperate company-ispell
+              company-files
+              company-yasnippet))
+#+END_SRC
+The ~SCOWL~ word list I got for ~VSCode~ is better than the default (I think), so
+let's use that.
+#+BEGIN_SRC emacs-lisp
+(setq company-ispell-dictionary (file-truename "~/.config/Code/User/Custom cSpell Dictionaries/SCOWL-workdlist-au-uk-60.txt"))
+#+END_SRC
+Oh, and by the way, if ~company-ispell-dictionary~ is ~nil~, then
+~ispell-complete-word-dict~ is used instead.
+** [[https://github.com/zachcurry/emacs-anywhere][Emacs Anywhere]] configuration
+It's nice to recognise GitHub (so we can use ~GFM~)
+#+BEGIN_SRC emacs-lisp
+(defun github-conversation-p (window-title)
+(or (string-match-p "Pull Request" window-title)
+    (string-match-p "Issue" window-title)
+    ))
+#+END_SRC
+When the window opens, we generally want text so let's use a nice sans serif font,
+a position the window below and to the left. Oh, and don't forget about checking
+for ~GFM~, otherwise let's just use ~markdown~.
+#+BEGIN_SRC emacs-lisp
+(defun ea-popup-handler (app-name window-title x y w h)
+(set-frame-size (selected-frame) 80 12)
+; font
+(interactive)
+(setq buffer-face-mode-face '(:family "P22 Underground Book" :height 160))
+(buffer-face-mode)
+; position
+(let* ((mousepos (split-string (shell-command-to-string "xdotool getmouselocation | sed -E \"s/ screen:0 window:[^ ]*|x:|y://g\"")))
+        (mouse-x (- (string-to-number (nth 0 mousepos)) 100))
+        (mouse-y (- (string-to-number (nth 1 mousepos)) 50)))
+    (set-frame-position (selected-frame) mouse-x mouse-y))
+; set major mode
+(cond
+    ((github-conversation-p window-title) (gfm-mode))
+    (t (markdown-mode)) ; default major mode
+    )
+; start in insert
+(evil-insert-state)
+)
+(add-hook 'ea-popup-hook 'ea-popup-handler)
+#+END_SRC
+* Language configuration
+** Org Mode
+*** Basic config
+We want to set the org directory, I tend to keep everything in ~~/Desktop/TEC~
+anyway, so...
+#+BEGIN_SRC emacs-lisp
+(setq org-directory "~/Desktop/TEC/Other/org")
+#+END_SRC
+*** Visuals
+**** In editor
+Mixed pitch is great. As is ~+org-pretty-mode~, let's use them.
+#+BEGIN_SRC emacs-lisp
+(use-package mixed-pitch
+  :hook (org-mode . mixed-pitch-mode))
+(add-hook 'org-mode-hook '+org-pretty-mode)
+#+END_SRC
+**** Exporting to HTML
+There is a fantastic exporter config ([[https://github.com/fniessen/org-html-themes][fniessen/org-html-themes]]) which we can
+setup to be used with all our org files. Since most of the syntax highlighting
+colours from our [[Theme]] gets used, we benefit from customising the code block style.
+#+NAME: orgHtmlStyle
+#+BEGIN_SRC web :exports none :tangle no
+<link rel='stylesheet' type='text/css' href'https://fniessen.github.io/org-html-themes/styles/readtheorg/css/htmlize.css'/>
+<link rel='stylesheet' type='text/css' href='https://fniessen.github.io/org-html-themes/styles/readtheorg/css/readtheorg.css'/>
+
+<script src='https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
+<script src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js'></script>
+<script type='text/javascript' src='https://fniessen.github.io/org-html-themes/styles/lib/js/jquery.stickytableheaders.min.js'></script>
+<script type='text/javascript' src='https://fniessen.github.io/org-html-themes/styles/readtheorg/js/readtheorg.js'></script>
+
+<style>
+   pre.src {
+     background-color: var(--theme-bg);
+     color: var(--theme-fg);
+     scrollbar-color:#bbb6#9992;
+     scrollbar-width: thin;
+     margin: 0;
+     border: none;
+   }
+   div.org-src-container {
+     border-radius: 12px;
+     overflow: hidden;
+     margin-bottom: 24px;
+     margin-top: 1px;
+     border: 1px solid#e1e4e5;
+   }
+   pre.src::before {
+     background-color:#6666;
+     top: 8px;
+     border: none;
+     border-radius: 5px;
+     line-height: 1;
+     border: 2px solid var(--theme-bg);
+     opacity: 1;
+     transition: opacity 200ms;
+   }
+   pre.src:active::before { opacity: 0; }
+
+   code {
+     border-radius: 5px;
+     background:#e8e8e8;
+     font-size: 80%;
+   }
+
+   kbd {
+     display: inline-block;
+     padding: 3px 5px;
+     font: 80% SFMono-Regular,Consolas,Liberation Mono,Menlo,monospace;
+     line-height: normal;
+     line-height: 10px;
+     color:#444d56;
+     vertical-align: middle;
+     background-color:#fafbfc;
+     border: 1px solid#d1d5da;
+     border-radius: 3px;
+     box-shadow: inset 0 -1px 0#d1d5da;
+   }
+
+   table {
+     max-width: 100%;
+     overflow-x: auto;
+     display: block;
+     border-top: none;
+   }
+
+   \#table-of-contents { overflow-y: auto; }
+   blockquote p { margin: 8px 0px 16px 0px; }
+   \#postamble .date { color: var(--theme-green); }
+
+   ::-webkit-scrollbar { width: 10px; height: 8px; }
+   ::-webkit-scrollbar-track { background:#9992; }
+   ::-webkit-scrollbar-thumb { background:#ccc; border-radius: 10px; }
+   ::-webkit-scrollbar-thumb:hover { background:#888; }
+</style>
+#+END_SRC
+We also want to make the background and foreground colours of the ~<pre>~ blocks
+match out theme (they don't by default), so I scraped some code from ~emacs.stackexchange~.
+#+BEGIN_SRC emacs-lisp :noweb yes
+(defun my-org-inline-css-hook (exporter)
+  "Insert custom inline css to automatically set the
+   background of code to whatever theme I'm using's background"
+  (when (eq exporter 'html)
+      (setq
+       org-html-head-extra
+       (concat
+        org-html-head-extra
+        (format "
+<style type=\"text/css\">
+   :root {
+      --theme-bg: %s;
+      --theme-bg-alt: %s;
+      --theme-base0: %s;
+      --theme-base1: %s;
+      --theme-base2: %s;
+      --theme-base3: %s;
+      --theme-base4: %s;
+      --theme-base5: %s;
+      --theme-base6: %s;
+      --theme-base7: %s;
+      --theme-base8: %s;
+      --theme-fg: %s;
+      --theme-fg-alt: %s;
+      --theme-grey: %s;
+      --theme-red: %s;
+      --theme-orange: %s;
+      --theme-green: %s;
+      --theme-teal: %s;
+      --theme-yellow: %s;
+      --theme-blue: %s;
+      --theme-dark-blue: %s;
+      --theme-magenta: %s;
+      --theme-violet: %s;
+      --theme-cyan: %s;
+      --theme-dark-cyan: %s;
+   }
+</style>"
+       (doom-color 'bg)
+       (doom-color 'bg-alt)
+       (doom-color 'base0)
+       (doom-color 'base1)
+       (doom-color 'base2)
+       (doom-color 'base3)
+       (doom-color 'base4)
+       (doom-color 'base5)
+       (doom-color 'base6)
+       (doom-color 'base7)
+       (doom-color 'base8)
+       (doom-color 'fg)
+       (doom-color 'fg-alt)
+       (doom-color 'grey)
+       (doom-color 'red)
+       (doom-color 'orange)
+       (doom-color 'green)
+       (doom-color 'teal)
+       (doom-color 'yellow)
+       (doom-color 'blue)
+       (doom-color 'dark-blue)
+       (doom-color 'magenta)
+       (doom-color 'violet)
+       (doom-color 'cyan)
+       (doom-color 'dark-cyan))
+        "
+<<orgHtmlStyle>>
+"
+        ))))
+
+(add-hook 'org-export-before-processing-hook 'my-org-inline-css-hook)
+#+END_SRC
+Since we have =verbatim= and ~code~, let's use =verbatim= for key strokes.
+#+BEGIN_SRC emacs-lisp
+(setq org-html-text-markup-alist
+      '((bold . "<b>%s</b>")
+        (code . "<code>%s</code>")
+        (italic . "<i>%s</i>")
+        (strike-through . "<del>%s</del>")
+        (underline . "<span class=\"underline\">%s</span>")
+        (verbatim . "<kbd>%s</kbd>")))
+#+END_SRC
+**** Exporting to LaTeX
+#+BEGIN_SRC emacs-lisp
+(with-eval-after-load 'ox-latex
+  (add-to-list 'org-latex-classes
+               '("fancy-article"
+               "\\documentclass{scrartcl}\n\\usepackage[default,sfdefault]{lato}"
+               ("\\section{%s}" . "\\section*{%s}")
+               ("\\subsection{%s}" . "\\subsection*{%s}")
+               ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+               ("\\paragraph{%s}" . "\\paragraph*{%s}")
+               ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+  (setq org-latex-default-class "fancy-article")
+
+   (add-to-list 'org-latex-packages-alist '("" "minted"))
+   (setq org-latex-listings 'minted)
+   (setq org-latex-hyperref-template "\\hypersetup{\n pdfauthor={%a},\n pdftitle={%t},\n pdfkeywords={%k},\n pdfsubject={%d},\n pdfcreator={%c}, \n pdflang={%L}, colorlinks=true}\n\\urlstyle{same}\n")
+   (setq org-latex-pdf-process
+         '("latexmk -shell-escape -interaction=nonstopmode -f -pdf -output-directory=%o %f")))
+#+END_SRC
+**** Exporting to GFM
+We just need to load ~ox-gfm~ for org-mode documents
+#+BEGIN_SRC emacs-lisp
+(eval-after-load "org"
+  '(require 'ox-gfm nil t))
+#+END_SRC
