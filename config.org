@@ -294,6 +294,13 @@ for ~GFM~, otherwise let's just use ~markdown~.
 )
 (add-hook 'ea-popup-hook 'ea-popup-handler)
 #+END_SRC
+** Flyspell
+At one point, typing became noticably laggy, Profiling revealed
+~flyspell-post-command-hook~ was responsible for 47% of CPU cycles by itself!
+So I'm going to make use of ~flyspell-lazy~
+#+BEGIN_SRC emacs-lisp
+(after! flyspell (require 'flyspell-lazy) (flyspell-lazy-mode 1))
+#+END_SRC
 * Language configuration
 ** Org Mode
 *** Basic config
