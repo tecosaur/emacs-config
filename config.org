@@ -158,8 +158,11 @@ our package manager can't deal with; see [[https://github.com/raxod502/straight.
 (package! builtin-package :recipe (:branch "develop"))
 #+END_SRC
 ** Packages
+:PROPERTIES:
+:header-args: :tangle "packages.el"
+:END:
 *** Auto-complete
-#+BEGIN_SRC emacs-lisp :tangle "packages.el"
+#+BEGIN_SRC emacs-lisp
 (package! company-tabnine ; tab9 autocomplete
   :recipe (:host github :repo "TommyX12/company-tabnine"
            :files ("company-tabnine.el" "fetch-binaries.sh")))
@@ -167,7 +170,7 @@ our package manager can't deal with; see [[https://github.com/raxod502/straight.
 *** Prettification
 ~prettify-mode~ is nice and all, but adding substitutions is a little verbose.
 This helps with that.
-#+BEGIN_SRC emacs-lisp :tangle "packages.el"
+#+BEGIN_SRC emacs-lisp
 (package! prettify-utils ; simplify messing with prettify-mode
   :recipe (:host github :repo "Ilazki/prettify-utils.el"))
 #+END_SRC
@@ -175,7 +178,7 @@ This helps with that.
 Org tables aren't the prettiest thing to look at. This package is supposed to
 redraw them in the buffer with box-drawing characters. Sounds like an
 improvement to me! Just need to get it working...
-#+BEGIN_SRC emacs-lisp :tangle "packages.el"
+#+BEGIN_SRC emacs-lisp
 (package! org-pretty-table-mode
   :recipe (:host github :repo "Fuco1/org-pretty-table"))
 #+END_SRC
@@ -184,12 +187,12 @@ such a thing a standard table spec ... or standard anything really. Because
 ~org-md~ is a goody-two-shoes, it just uses HTML for all these non-standardised
 elements (a lot of them). So ~ox-gfm~ is handy for exporting markdown with all the
 features that GitHub has. Initialised in [[Exporting to GFM]].
-#+BEGIN_SRC emacs-lisp :tangle "packages.el"
+#+BEGIN_SRC emacs-lisp
 (package! ox-gfm)
 #+END_SRC
 Pandoc is also a very handy export tool. ~org-pandoc~ also exists, but this seems
 to be better maintained.
-#+BEGIN_SRC emacs-lisp :tangle "packages.el"
+#+BEGIN_SRC emacs-lisp
 (package! ox-pandoc)
 #+END_SRC
 * Package configuration
@@ -284,7 +287,11 @@ for ~GFM~, otherwise let's just use ~markdown~.
 We want to set the org directory, I tend to keep everything in ~~/Desktop/TEC~
 anyway, so...
 #+BEGIN_SRC emacs-lisp
-(setq org-directory "~/Desktop/TEC/Other/org")
+(setq org-directory "~/Desktop/TEC/Organisation")
+#+END_SRC
+It's also nice to have properties be inherited
+#+BEGIN_SRC emacs-lisp
+(setq org-use-property-inheritance t)
 #+END_SRC
 *** Visuals
 **** In editor
