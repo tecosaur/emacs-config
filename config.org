@@ -248,6 +248,11 @@ let's use that.
 #+END_SRC
 Oh, and by the way, if ~company-ispell-dictionary~ is ~nil~, then
 ~ispell-complete-word-dict~ is used instead.
+*** ESS
+~company-dabbrev-code~ is nice. Let's have it.
+#+BEGIN_SRC emacs-lisp
+(set-company-backend! 'ess-r-mode '(company-R-args company-R-objects company-dabbrev-code :separate))
+#+END_SRC
 ** [[https://github.com/zachcurry/emacs-anywhere][Emacs Anywhere]] configuration
 It's nice to recognise GitHub (so we can use ~GFM~)
 #+BEGIN_SRC emacs-lisp
