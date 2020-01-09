@@ -197,6 +197,11 @@ to be better maintained.
 #+BEGIN_SRC emacs-lisp
 (package! ox-pandoc)
 #+END_SRC
+To alleviate some [[Flyspell][issues with flyspell]]
+#+BEGIN_SRC emacs-lisp
+(package! flyspell-lazy)
+#+END_SRC
+
 * Package configuration
 ** Centaur Tabs
 We want to make the tabs a nice, comfy size (~36~), with icons. The modifier
