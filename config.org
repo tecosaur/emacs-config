@@ -218,6 +218,7 @@ well somehow, so let's switch to 'P22 Underground Book'; it looks much nicer.
   (setq centaur-tabs-height 36
         centaur-tabs-set-icons t
         centaur-tabs-modified-marker "o"
+        centaur-tabs-close-button "×"
         centaur-tabs-set-bar 'above)
         centaur-tabs-gray-out-icons 'buffer
   (centaur-tabs-change-fonts "P22 Underground Book" 160))
