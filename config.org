@@ -306,6 +306,51 @@ Mixed pitch is great. As is ~+org-pretty-mode~, let's use them.
   :hook (org-mode . mixed-pitch-mode))
 (add-hook 'org-mode-hook '+org-pretty-mode)
 #+END_SRC
+Earlier I loaded the ~org-pretty-table~ package, let's enable it everywhere!
+#+BEGIN_SRC emacs-lisp
+(setq global-org-pretty-table-mode t)
+#+END_SRC
+Unfortunately it doesn't seem to do anything ATM 😞.
+
+It's also nice to change the character used for collapsed items (by default ~…~),
+I think ~▾~ is better for indicating 'collapsed section'.
+and add an extra ~org-bullet~ to the default list of four.
+I've also added some fun alternatives, just commented out.
+#+BEGIN_SRC emacs-lisp
+(setq org-ellipsis " ▾ "
+      org-bullets-bullet-list '("◉" "○" "✸" "✿" "✤")
+      ;; org-bullets-bullet-list '("Ⅰ" "Ⅱ" "Ⅲ" "Ⅳ" "Ⅴ" "Ⅵ" "Ⅶ" "Ⅷ" "Ⅸ" "Ⅹ")
+      )
+#+END_SRC
+It's also nice to make use of the unicode characters for check boxes, and other commands.
+#+BEGIN_SRC emacs-lisp
+(after! org
+  (appendq! +pretty-code-symbols
+            '(:checkbox   "☐"
+              :pending    "◼"
+              :checkedbox "☑"
+              :results "🠶"
+              :property "☸"
+              :title "𝙏"
+              :author "𝘼"
+              :begin_quote "❮"
+              :end_quote "❯"
+              :em_dash "—"))
+  (set-pretty-symbols! 'org-mode
+    :merge t
+    :checkbox   "[ ]"
+    :pending    "[-]"
+    :checkedbox "[X]"
+    :results "#+RESULTS:"
+    :property "#+PROPERTY:"
+    :title "#+TITLE:"
+    :author "#+AUTHOR:"
+    :begin_quote "#+BEGIN_QUOTE"
+    :end_quote "#+END_QUOTE"
+    :em_dash "---")
+)
+(plist-put +pretty-code-symbols :name "⁍") ; or › could be good?
+#+END_SRC
 **** Exporting to HTML
 There is a fantastic exporter config ([[https://github.com/fniessen/org-html-themes][fniessen/org-html-themes]]) which we can
 setup to be used with all our org files. Since most of the syntax highlighting
