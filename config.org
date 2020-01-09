@@ -646,3 +646,43 @@ We don't want ~R~ evaluation to hang the editor, hence
 #+BEGIN_SRC emacs-lisp
 (setq ess-eval-visibly 'nowait)
 #+END_SRC
+Syntax highlighting is nice, so let's turn all of that on
+#+BEGIN_SRC emacs-lisp
+(setq ess-R-font-lock-keywords '((ess-R-fl-keyword:keywords . t)
+ (ess-R-fl-keyword:constants . t)
+ (ess-R-fl-keyword:modifiers . t)
+ (ess-R-fl-keyword:fun-defs . t)
+ (ess-R-fl-keyword:assign-ops . t)
+ (ess-R-fl-keyword:%op% . t)
+ (ess-fl-keyword:fun-calls . t)
+ (ess-fl-keyword:numbers . t)
+ (ess-fl-keyword:operators . t)
+ (ess-fl-keyword:delimiters . t)
+ (ess-fl-keyword:= . t)
+ (ess-R-fl-keyword:F&T . t)))
+#+END_SRC
+** R
+*** Editor Visuals
+#+BEGIN_SRC emacs-lisp
+(after! ess-r-mode
+  (appendq! +pretty-code-symbols
+            '(:assign "⟵"))
+  (set-pretty-symbols! 'ess-r-mode
+    ;; Functional
+    :def "function"
+    ;; Types
+    :null "NULL"
+    :true "TRUE"
+    :false "FALSE"
+    :int "int"
+    :floar "float"
+    :bool "bool"
+    ;; Flow
+    :not "!"
+    :and "&&" :or "||"
+    :for "for"
+    :in "%in%"
+    :return "return"
+    ;; Other
+    :assign "<-"))
+#+END_SRC
