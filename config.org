@@ -631,3 +631,13 @@ We just need to load ~ox-gfm~ for org-mode documents
 (eval-after-load "org"
   '(require 'ox-gfm nil t))
 #+END_SRC
+*** Babel
+Babel allows for in-buffer evaluation of ~emacs-lisp~. It's nice to allow a few
+more languages.
+#+BEGIN_SRC emacs-lisp
+(setq-default org-babel-load-languages '((emacs-lisp . t)
+                                         (shell . t)
+                                         (python . t)
+                                         (R . t)
+                                         (ledger . t)))
+#+END_SRC
