@@ -139,7 +139,7 @@ file, or is located in a subdirectory of the repo, you'll need to specify
            :files ("some-file.el" "src/lisp/*.el")))
 #+END_SRC
 
-*** Disabling built-in backages
+*** Disabling built-in packages
 If you'd like to disable a package included with Doom, for whatever reason,
 you can do so here with the ~:disable~ property:
 #+BEGIN_SRC emacs-lisp :tangle no
