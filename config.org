@@ -641,3 +641,8 @@ more languages.
                                          (R . t)
                                          (ledger . t)))
 #+END_SRC
+*** ESS
+We don't want ~R~ evaluation to hang the editor, hence
+#+BEGIN_SRC emacs-lisp
+(setq ess-eval-visibly 'nowait)
+#+END_SRC
