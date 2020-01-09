@@ -357,7 +357,7 @@ setup to be used with all our org files. Since most of the syntax highlighting
 colours from our [[Theme]] gets used, we benefit from customising the code block style.
 #+NAME: orgHtmlStyle
 #+BEGIN_SRC web :exports none :tangle no
-<link rel='stylesheet' type='text/css' href'https://fniessen.github.io/org-html-themes/styles/readtheorg/css/htmlize.css'/>
+<link rel='stylesheet' type='text/css' href='https://fniessen.github.io/org-html-themes/styles/readtheorg/css/htmlize.css'/>
 <link rel='stylesheet' type='text/css' href='https://fniessen.github.io/org-html-themes/styles/readtheorg/css/readtheorg.css'/>
 
 <script src='https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
@@ -393,6 +393,12 @@ colours from our [[Theme]] gets used, we benefit from customising the code block
    }
    pre.src:active::before { opacity: 0; }
 
+   pre.example {
+     border-radius: 12px;
+     background: var(--theme-bg-alt);
+     color: var(--theme-fg);
+   }
+
    code {
      border-radius: 5px;
      background:#e8e8e8;
@@ -420,6 +426,72 @@ colours from our [[Theme]] gets used, we benefit from customising the code block
      border-top: none;
    }
 
+   a {
+       text-decoration: none;
+       background-image: linear-gradient(#d8dce9, #d8dce9);
+       background-position: 0% 100%;
+       background-repeat: no-repeat;
+       background-size: 0% 2px;
+       transition: background-size .3s;
+   }
+   \#table-of-contents a {
+       background-image: none;
+   }
+   a:hover, a:focus {
+       background-size: 100% 2px;
+   }
+   a[href^='#'] { font-variant-numeric: oldstyle-nums; }
+   a[href^='#']:visited { color:#3091d1; }
+
+   li .checkbox {
+       display: inline-block;
+       width: 0.9em;
+       height: 0.9em;
+       border-radius: 3px;
+       margin: 3px;
+       top: 4px;
+       position: relative;
+   }
+   li.on .checkbox { background: var(--theme-green); box-shadow: 0 0 2px var(--theme-green); }
+   li.trans .checkbox { background: var(--theme-orange); box-shadow: 0 0 2px var(--theme-orange); }
+   li.off .checkbox { background: var(--theme-red); box-shadow: 0 0 2px var(--theme-red); }
+   li.on .checkbox::after {
+     content: '';
+     height: 0.45em;
+     width: 0.225em;
+     -webkit-transform-origin: left top;
+     transform-origin: left top;
+     transform: scaleX(-1) rotate(135deg);
+     border-right: 2.8px solid#fff;
+     border-top: 2.8px solid#fff;
+     opacity: 0.9;
+     left: 0.10em;
+     top: 0.45em;
+     position: absolute;
+   }
+   li.trans .checkbox::after {
+       content: '';
+       font-weight: bold;
+       font-size: 1.6em;
+       position: absolute;
+       top: 0.23em;
+       left: 0.09em;
+       width: 0.35em;
+       height: 0.12em;
+       background:#fff;
+       opacity: 0.9;
+       border-radius: 0.1em;
+   }
+   li.off .checkbox::after {
+    content: '✖';
+    color:#fff;
+    opacity: 0.9;
+    position: relative;
+    top: -0.40rem;
+    left: 0.17em;
+    font-size: 0.75em;
+  }
+
    \#table-of-contents { overflow-y: auto; }
    blockquote p { margin: 8px 0px 16px 0px; }
    \#postamble .date { color: var(--theme-green); }
@@ -430,6 +502,7 @@ colours from our [[Theme]] gets used, we benefit from customising the code block
    ::-webkit-scrollbar-thumb:hover { background:#888; }
 </style>
 #+END_SRC
+#+NAME: orgHtmlScript
 We also want to make the background and foreground colours of the ~<pre>~ blocks
 match out theme (they don't by default), so I scraped some code from ~emacs.stackexchange~.
 #+BEGIN_SRC emacs-lisp :noweb yes
@@ -513,6 +586,18 @@ Since we have =verbatim= and ~code~, let's use =verbatim= for key strokes.
         (underline . "<span class=\"underline\">%s</span>")
         (verbatim . "<kbd>%s</kbd>")))
 #+END_SRC
+We also want to use HTML checkboxes, however we want to get a bit fancier than default
+#+BEGIN_SRC emacs-lisp
+(after! org
+(appendq! org-html-checkbox-types '((html-span .
+	  ((on . "<span class='checkbox'></span>")
+	  (off . "<span class='checkbox'></span>")
+	  (trans . "<span class='checkbox'></span>")))))
+(setq org-html-checkbox-type 'html-span))
+#+END_SRC
+- [ ] I'm yet to do this
+- [-] Work in progress
+- [X] This is done
 **** Exporting to LaTeX
 #+BEGIN_SRC emacs-lisp
 (with-eval-after-load 'ox-latex
