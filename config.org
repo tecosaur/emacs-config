@@ -572,6 +572,13 @@ colours from our [[Theme]] gets used, we benefit from customising the code block
     font-size: 0.75em;
   }
 
+   span.timestamp {
+       color: #003280;
+       background: #647CFF44;
+       border-radius: 3px;
+       line-height: 1.25;
+   }
+
    \#table-of-contents { overflow-y: auto; }
    blockquote p { margin: 8px 0px 16px 0px; }
    \#postamble .date { color: var(--theme-green); }
