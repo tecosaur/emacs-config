@@ -720,6 +720,7 @@ Introduction, Overview... so let's set bump up the headline level that becomes a
 frame from ~1~ to ~2~.
 #+BEGIN_SRC emacs-lisp
 (setq org-beamer-frame-level 2)
+#+END_SRC
 **** Exporting to GFM
 We just need to load ~ox-gfm~ for org-mode documents
 #+BEGIN_SRC emacs-lisp
