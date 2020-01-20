@@ -736,6 +736,11 @@ more languages.
                                          (R . t)
                                          (ledger . t)))
 #+END_SRC
+We also need to tell it to use python3. Who uses python2 anymore anyway? And why
+doesn't ~python~ refer to the latest version!?
+#+BEGIN_SRC emacs-lisp
+(setq org-babel-python-command "python3")
+#+END_SRC
 *** ESS
 We don't want ~R~ evaluation to hang the editor, hence
 #+BEGIN_SRC emacs-lisp
