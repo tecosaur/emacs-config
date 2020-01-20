@@ -706,6 +706,20 @@ We also want to use HTML checkboxes, however we want to get a bit fancier than d
    (setq org-latex-pdf-process
          '("latexmk -shell-escape -interaction=nonstopmode -f -pdf -output-directory=%o %f")))
 #+END_SRC
+**** Exporting to Beamer
+It's nice to use a different theme
+#+BEGIN_SRC emacs-lisp
+(setq org-beamer-theme "[progressbar=foot]metropolis")
+#+END_SRC
+Then customise it a bit
+#+BEGIN_SRC emacs-lisp
+
+#+END_SRC
+And I think that it's natural to divide a presentation into sections, e.g.
+Introduction, Overview... so let's set bump up the headline level that becomes a
+frame from ~1~ to ~2~.
+#+BEGIN_SRC emacs-lisp
+(setq org-beamer-frame-level 2)
 **** Exporting to GFM
 We just need to load ~ox-gfm~ for org-mode documents
 #+BEGIN_SRC emacs-lisp
