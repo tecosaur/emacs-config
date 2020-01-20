@@ -532,10 +532,10 @@ colours from our [[Theme]] gets used, we benefit from customising the code block
        top: 4px;
        position: relative;
    }
-   li.on .checkbox { background: var(--theme-green); box-shadow: 0 0 2px var(--theme-green); }
-   li.trans .checkbox { background: var(--theme-orange); box-shadow: 0 0 2px var(--theme-orange); }
-   li.off .checkbox { background: var(--theme-red); box-shadow: 0 0 2px var(--theme-red); }
-   li.on .checkbox::after {
+   li.on > .checkbox { background: var(--theme-green); box-shadow: 0 0 2px var(--theme-green); }
+   li.trans > .checkbox { background: var(--theme-orange); box-shadow: 0 0 2px var(--theme-orange); }
+   li.off > .checkbox { background: var(--theme-red); box-shadow: 0 0 2px var(--theme-red); }
+   li.on > .checkbox::after {
      content: '';
      height: 0.45em;
      width: 0.225em;
@@ -549,7 +549,7 @@ colours from our [[Theme]] gets used, we benefit from customising the code block
      top: 0.45em;
      position: absolute;
    }
-   li.trans .checkbox::after {
+   li.trans > .checkbox::after {
        content: '';
        font-weight: bold;
        font-size: 1.6em;
@@ -562,7 +562,7 @@ colours from our [[Theme]] gets used, we benefit from customising the code block
        opacity: 0.9;
        border-radius: 0.1em;
    }
-   li.off .checkbox::after {
+   li.off > .checkbox::after {
     content: '✖';
     color:#fff;
     opacity: 0.9;
