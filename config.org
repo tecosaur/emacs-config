@@ -10,7 +10,8 @@ let us concentrate rather on explaining to human beings what we want a
 computer to do. --- Donald Knuth
 #+END_QUOTE
 
-Make this file run (slightly) faster with lexical binding.
+Make this file run (slightly) faster with lexical binding (see [[https://nullprogram.com/blog/2016/12/22/][this blog post]]
+for more info).
 #+BEGIN_SRC emacs-lisp
 ;;; config.el -*- lexical-binding: t; -*-
 #+END_SRC
