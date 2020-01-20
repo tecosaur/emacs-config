@@ -16,6 +16,24 @@ for more info).
 ;;; config.el -*- lexical-binding: t; -*-
 #+END_SRC
 
+* Intro
+Customising an editor can be very rewarding ... until you have to leave it.
+For years I have been looking for ways to avoid this pain.
+Then I discovered [[https://github.com/cknadler/vim-anywhere][vim-anywhere]], and found that it had an emacs companion,[[https:github.com/zachcurry/emacs-anywhere][
+emacs-anywhere]]. To me, this looked most attractive.
+
+Separately, online I have seen the following statement enough times I think it's a catchphrase
+#+BEGIN_QUOTE
+Redditor1: I just discovered this thing, isn't it cool.
+Redditor2: Oh, there's an emacs mode for that.
+#+END_QUOTE
+
+I tried out the =spacemacs= distribution a bit, but it wasn't quite to my liking.
+Then I heard about =doom emacs= and thought I may as well give that a try.
+TLDR; it's great.
+
+Now I've discovered the wonders of literate programming, and am becoming more
+settled by the day. This is my config.
 * Rudimentary configuration
 ** Personal Information
 It's useful to have some basic personal information
