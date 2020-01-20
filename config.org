@@ -60,6 +60,9 @@ shown by =SPC h v= and selecting what I thought looks good, I've ended up adding
 (display-time-mode 1)                             ; Enable time in the mode-line
 (display-battery-mode 1)                          ; On laptops it's nice to know how much power you have
 (global-subword-mode 1)                           ; Iterate through CamelCase words
+
+; This really simplifies prompt style issues with tramp
+(eval-after-load 'tramp '(setenv "SHELL" "/bin/bash"))
 #+END_SRC
 *** Fullscreen
 I also like the idea of fullscreen-ing when opened by ~emacs~ or the ~.desktop~ file.
