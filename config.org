@@ -378,6 +378,7 @@ It's also nice to have properties be inherited
 #+END_SRC
 *** Visuals
 **** In editor
+***** Font Display
 Mixed pitch is great. As is ~+org-pretty-mode~, let's use them.
 #+BEGIN_SRC emacs-lisp
 (use-package mixed-pitch
@@ -389,7 +390,7 @@ Earlier I loaded the ~org-pretty-table~ package, let's enable it everywhere!
 (setq global-org-pretty-table-mode t)
 #+END_SRC
 Unfortunately it doesn't seem to do anything ATM 😞.
-
+***** Symbols
 It's also nice to change the character used for collapsed items (by default ~…~),
 I think ~▾~ is better for indicating 'collapsed section'.
 and add an extra ~org-bullet~ to the default list of four.
@@ -430,6 +431,7 @@ It's also nice to make use of the unicode characters for check boxes, and other 
 (plist-put +pretty-code-symbols :name "⁍") ; or › could be good?
 #+END_SRC
 **** Exporting to HTML
+***** Custom CSS/JS
 There is a fantastic exporter config ([[https://github.com/fniessen/org-html-themes][fniessen/org-html-themes]]) which we can
 setup to be used with all our org files. Since most of the syntax highlighting
 colours from our [[Theme]] gets used, we benefit from customising the code block style.
@@ -654,6 +656,7 @@ match out theme (they don't by default), so I scraped some code from ~emacs.stac
 
 (add-hook 'org-export-before-processing-hook 'my-org-inline-css-hook)
 #+END_SRC
+***** Make verbatim different to code
 Since we have =verbatim= and ~code~, let's use =verbatim= for key strokes.
 #+BEGIN_SRC emacs-lisp
 (setq org-html-text-markup-alist
@@ -664,6 +667,7 @@ Since we have =verbatim= and ~code~, let's use =verbatim= for key strokes.
         (underline . "<span class=\"underline\">%s</span>")
         (verbatim . "<kbd>%s</kbd>")))
 #+END_SRC
+***** Change checkbox type
 We also want to use HTML checkboxes, however we want to get a bit fancier than default
 #+BEGIN_SRC emacs-lisp
 (after! org
