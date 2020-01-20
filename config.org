@@ -220,6 +220,46 @@ to be better maintained.
 #+BEGIN_SRC emacs-lisp
 (package! ox-pandoc)
 #+END_SRC
+/NB: I found that ~org +pandoc~ exists, however after enabling it I couldn't find//
+/any org-pandoc-y commands with =M-x=, so I'm using this/
+*** Window management
+#+BEGIN_SRC emacs-lisp
+(package! rotate)
+#+END_SRC
+*** Fun
+Sometimes one just wants a little fun.
+XKCD comics are fun.
+#+BEGIN_SRC emacs-lisp
+(package! xkcd)
+#+END_SRC
+
+Every so often, you want everyone else to /know/ that you're typing, or just to
+amuse oneself. Introducing: typewriter sounds!
+#+BEGIN_SRC emacs-lisp
+(package! selectric-mode)
+#+END_SRC
+
+Hey, let's get the weather in here while we're at it.
+#+BEGIN_SRC emacs-lisp
+(package! wttrin)
+#+END_SRC
+
+Why not flash words on the screen. Why not --- hey, it could be fun.
+#+BEGIN_SRC emacs-lisp
+(package! spray)
+#+END_SRC
+
+With all our fancy emacs themes, my terminal is missing out!
+#+BEGIN_SRC emacs-lisp
+(package! theme-magic)
+#+END_SRC
+*** Other
+**** Beancount
+The [[https://bitbucket.org/blais/beancount/src/tip/editors/emacs/beancount.el][beancount package]] online has been put into ~./lisp~.
+#+BEGIN_SRC emacs-lisp
+(use-package! beancount :load-path "~/.config/doom/lisp")
+#+END_SRC
+**** Flyspell-lazy
 To alleviate some [[Flyspell][issues with flyspell]]
 #+BEGIN_SRC emacs-lisp
 (package! flyspell-lazy)
