@@ -410,32 +410,32 @@ It's also nice to make use of the unicode characters for check boxes, and other 
 #+BEGIN_SRC emacs-lisp
 (after! org
   (appendq! +pretty-code-symbols
-            '(:checkbox   "☐"
-              :pending    "◼"
-              :checkedbox "☑"
-              :results "🠶"
-              :property "☸"
-              :option "⌥"
-              :title "𝙏"
-              :author "𝘼"
-              :date "𝘿"
+            '(:checkbox    "☐"
+              :pending     "◼"
+              :checkedbox  "☑"
+              :results     "🠶"
+              :property    "☸"
+              :option      "⌥"
+              :title       "𝙏"
+              :author      "𝘼"
+              :date        "𝘿"
               :begin_quote "❮"
-              :end_quote "❯"
-              :em_dash "—"))
+              :end_quote   "❯"
+              :em_dash     "—"))
   (set-pretty-symbols! 'org-mode
     :merge t
-    :checkbox   "[ ]"
-    :pending    "[-]"
-    :checkedbox "[X]"
-    :results "#+RESULTS:"
-    :property "#+PROPERTY:"
-    :option "#+OPTION:"
-    :title "#+TITLE:"
-    :author "#+AUTHOR:"
-    :date "#+DATE:"
+    :checkbox    "[ ]"
+    :pending     "[-]"
+    :checkedbox  "[X]"
+    :results     "#+RESULTS:"
+    :property    "#+PROPERTY:"
+    :option      "#+OPTION:"
+    :title       "#+TITLE:"
+    :author      "#+AUTHOR:"
+    :date        "#+DATE:"
     :begin_quote "#+BEGIN_QUOTE"
-    :end_quote "#+END_QUOTE"
-    :em_dash "---")
+    :end_quote   "#+END_QUOTE"
+    :em_dash     "---")
 )
 (plist-put +pretty-code-symbols :name "⁍") ; or › could be good?
 #+END_SRC
