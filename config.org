@@ -410,8 +410,10 @@ It's also nice to make use of the unicode characters for check boxes, and other 
               :checkedbox "☑"
               :results "🠶"
               :property "☸"
+              :option "⌥"
               :title "𝙏"
               :author "𝘼"
+              :date "𝘿"
               :begin_quote "❮"
               :end_quote "❯"
               :em_dash "—"))
@@ -422,8 +424,10 @@ It's also nice to make use of the unicode characters for check boxes, and other 
     :checkedbox "[X]"
     :results "#+RESULTS:"
     :property "#+PROPERTY:"
+    :option "#+OPTION:"
     :title "#+TITLE:"
     :author "#+AUTHOR:"
+    :date "#+DATE:"
     :begin_quote "#+BEGIN_QUOTE"
     :end_quote "#+END_QUOTE"
     :em_dash "---")
