@@ -86,9 +86,9 @@ setting, and load it if it exists.
 'Fira Code' is nice, and 'Overpass' makes for a nice sans companion. We just need to
 fiddle with the font sizes a tad so that they visually match.
 #+BEGIN_SRC emacs-lisp
-(setq doom-font (font-spec :family "Fira Code" :size 20)
+(setq doom-font (font-spec :family "Fira Code" :size 22)
       doom-big-font (font-spec :family "Fira Code" :size 36)
-      doom-variable-pitch-font (font-spec :family "Overpass" :size 22))
+      doom-variable-pitch-font (font-spec :family "Overpass" :size 24))
 #+END_SRC
 **** Theme
 ~doom-one~ is nice and all, but I find the ~vibrant~ variant nicer.
