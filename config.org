@@ -80,6 +80,20 @@ setting, and load it if it exists.
 (when (file-exists-p custom-file)
   (load custom-file))
 #+END_SRC
+*** Windows
+I find it rather handy to be asked which buffer I want to see after splitting
+the window. Let's make that happen.
+First, we'll enter the new window
+#+BEGIN_SRC emacs-lisp
+(setq evil-vsplit-window-right t
+      evil-split-window-below t)
+#+END_SRC
+Then, we'll pull up ~ivy~
+#+BEGIN_SRC emacs-lisp
+(defadvice! prompt-for-buffer (&rest _)
+  :after '(evil-window-split evil-window-vsplit)
+  (+ivy/switch-workspace-buffer))
+#+END_SRC
 *** Buffer defaults
 I'd much rather have my new buffers in ~org-mode~ than ~fundamental-mode~, hence
 #+BEGIN_SRC emacs-lisp
