@@ -10,12 +10,6 @@ let us concentrate rather on explaining to human beings what we want a
 computer to do. --- Donald Knuth
 #+END_QUOTE
 
-Make this file run (slightly) faster with lexical binding (see [[https://nullprogram.com/blog/2016/12/22/][this blog post]]
-for more info).
-#+BEGIN_SRC emacs-lisp
-;;; config.el -*- lexical-binding: t; -*-
-#+END_SRC
-
 * Intro
 Customising an editor can be very rewarding ... until you have to leave it.
 For years I have been looking for ways to avoid this pain.
@@ -35,6 +29,11 @@ TLDR; it's great.
 Now I've discovered the wonders of literate programming, and am becoming more
 settled by the day. This is my config.
 * Rudimentary configuration
+Make this file run (slightly) faster with lexical binding (see [[https://nullprogram.com/blog/2016/12/22/][this blog post]]
+for more info).
+#+BEGIN_SRC emacs-lisp
+;;; config.el -*- lexical-binding: t; -*-
+#+END_SRC
 ** Personal Information
 It's useful to have some basic personal information
 #+BEGIN_SRC emacs-lisp
