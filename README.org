@@ -3,3 +3,5 @@
 Here you may find my config. There are only two files which matter
  - [[file:config.org][config.org]], my configuration file
  - [[file:init.el][init.el]], the doom-modules file
+
+You may find the render of the HTML export of ~config.org~ [[https://tecosaur.github.io/emacs-config/config.html][here]].
