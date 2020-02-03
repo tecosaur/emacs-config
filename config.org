@@ -13,7 +13,7 @@ computer to do. --- Donald Knuth
 * Intro
 Customising an editor can be very rewarding ... until you have to leave it.
 For years I have been looking for ways to avoid this pain.
-Then I discovered [[https://github.com/cknadler/vim-anywhere][vim-anywhere]], and found that it had an emacs companion,[[https:github.com/zachcurry/emacs-anywhere][
+Then I discovered [[https://github.com/cknadler/vim-anywhere][vim-anywhere]], and found that it had an emacs companion,[[https://github.com/zachcurry/emacs-anywhere][
 emacs-anywhere]]. To me, this looked most attractive.
 
 Separately, online I have seen the following statement enough times I think it's a catchphrase
