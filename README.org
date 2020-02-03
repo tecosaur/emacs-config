@@ -1,0 +1,5 @@
+#+TITLE:  Doom Emacs Configuration
+
+Here you may find my config. There are only two files which matter
+ - [[file:config.org][config.org]], my configuration file
+ - [[file:init.el][init.el]], the doom-modules file
