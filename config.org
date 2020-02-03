@@ -521,9 +521,10 @@ colours from our [[Theme]] gets used, we benefit from customising the code block
      border-radius: 5px;
      line-height: 1;
      border: 2px solid var(--theme-bg);
-     opacity: 1;
+     opacity: 0;
      transition: opacity 200ms;
    }
+   pre.src:hover::before { opacity: 1; }
    pre.src:active::before { opacity: 0; }
 
    pre.example {
