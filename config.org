@@ -483,6 +483,54 @@ It's also nice to make use of the unicode characters for check boxes, and other 
 )
 (plist-put +pretty-code-symbols :name "⁍") ; or › could be good?
 #+END_SRC
+***** LaTeX Fragments
+It's nice to customise the look of LaTeX fragments so they fit better in the
+text. Let's start by adding a sans font. \(\sqrt{\beta^2+3}-\sum_{\phi=1}^\infty \frac{x^\phi-1}{\Gamma(a)}\)
+#+BEGIN_SRC emacs-lisp
+(setq org-format-latex-header "\\documentclass{article}
+\\usepackage[usenames]{color}
+[PACKAGES]
+[DEFAULT-PACKAGES]
+\\pagestyle{empty}             % do not remove
+% The settings below are copied from fullpage.sty
+\\setlength{\\textwidth}{\\paperwidth}
+\\addtolength{\\textwidth}{-3cm}
+\\setlength{\\oddsidemargin}{1.5cm}
+\\addtolength{\\oddsidemargin}{-2.54cm}
+\\setlength{\\evensidemargin}{\\oddsidemargin}
+\\setlength{\\textheight}{\\paperheight}
+\\addtolength{\\textheight}{-\\headheight}
+\\addtolength{\\textheight}{-\\headsep}
+\\addtolength{\\textheight}{-\\footskip}
+\\addtolength{\\textheight}{-3cm}
+\\setlength{\\topmargin}{1.5cm}
+\\addtolength{\\topmargin}{-2.54cm}
+% my custom stuff
+\\usepackage{arevmath}")
+#+END_SRC
+
+On the rendering side, there are two ~.dvi~-to-image convertors which I am
+interested in. ~dvipng~ and ~dvisvgm~. For inline preview we care about speed. Using
+the above latex expression and benchmarking lead to the following results:
+| ~dvipng~ time | ~dvisvgm~ time |
+|-------------+--------------|
+| 0.09±0.002s | 0.18±0.004s  |
+So, let's use ~dvipng~ for previewing LaTeX fragments in-emacs, but ~dvisvgm~ for [[
+Exporting to HTML][LaTeX Rendering]].
+/Unfortunately: it seems that svg sizing is annoying ATM, so let's not do this right now./
+
+As well as having a sans font, there are a few other tweaks which can make them
+look better. Namely making the background transparent, and increasing the
+resolution.
+#+BEGIN_SRC emacs-lisp
+(after! org
+;; make background of fragments transparent
+;; (let ((dvipng--plist (alist-get 'dvipng org-preview-latex-process-alist)))
+;;   (plist-put dvipng--plist :use-xcolor t)
+;;   (plist-put dvipng--plist :image-converter '("dvipng -D %D -bg 'transparent' -T tight -o %O %f")))
+(plist-put org-format-latex-options :background "Transparent")
+)
+#+END_SRC
 **** Exporting to HTML
 ***** Custom CSS/JS
 There is a fantastic exporter config ([[https://github.com/fniessen/org-html-themes][fniessen/org-html-themes]]) which we can
@@ -741,6 +789,12 @@ We also want to use HTML checkboxes, however we want to get a bit fancier than d
 - [ ] I'm yet to do this
 - [-] Work in progress
 - [X] This is done
+***** LaTeX Rendering
+On the maths side of things, I consider ~dvisvgm~ to be a rather compelling
+option. However this isn't sized very well at the moment.
+#+BEGIN_SRC emacs-lisp
+;; (setq-default org-html-with-latex `dvisvgm)
+#+END_SRC
 **** Exporting to LaTeX
 #+BEGIN_SRC emacs-lisp
 (with-eval-after-load 'ox-latex
@@ -758,7 +812,7 @@ We also want to use HTML checkboxes, however we want to get a bit fancier than d
    (setq org-latex-listings 'minted)
    (setq org-latex-hyperref-template "\\hypersetup{\n pdfauthor={%a},\n pdftitle={%t},\n pdfkeywords={%k},\n pdfsubject={%d},\n pdfcreator={%c},\n pdflang={%L},\n colorlinks=true,\nlinkcolor=}\n\\urlstyle{same}\n")
    (setq org-latex-pdf-process
-         '("latexmk -shell-escape -interaction=nonstopmode -f -pdf -output-directory=%o %f")))
+         '("latexmk -xelatex -shell-escape -interaction=nonstopmode -f -pdf -output-directory=%o %f")))
 #+END_SRC
 **** Exporting to Beamer
 It's nice to use a different theme
