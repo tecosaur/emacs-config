@@ -897,3 +897,28 @@ Syntax highlighting is nice, so let's turn all of that on
     :assign "<-"
     :multiply "%*%"))
 #+END_SRC
+** hledger
+~ledger-mode~ is great and all, but ~hledger~ seems to be more actively maintained.
+For example, from 2018--2020, the most prolific contributor to ~ledger~ produced
+31 commits. For ~hledger~ this statistic is 1800 commits. In addition, over the
+last decade, ~ledger~ seems to have lost steam, while ~hledger~ seems as actively
+developed as ever. From this basic comparison ~hledger~ looks to have a more
+promising outlook. It also has a few extra nicities that ~ledger~ doesn't, but is
+a little slower (~hascell~ vs. ~c++~).
+Since this uses the same format, and ~ledger-mode~ is well integrated into emacs,
+and produced by John Weigley --- author of ~ledger~ and current Emacs maintainer
+--- using this seems like a good idea. Thankfully we can, with a little modification.
+#+BEGIN_SRC emacs-lisp
+(setq ledger-mode-should-check-version nil
+      ledger-report-links-in-register nil
+      ledger-binary-path "hledger")
+#+END_SRC
+** Beancount
+We just need to enable it for ~.beancount~ files.
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'auto-mode-alist '("\\.beancount\\'" . beancount-mode))
+#+END_SRC
+
+# Local variables:
+# eval: (add-hook 'after-save-hook 'org-html-export-to-html t t)
+# end:
