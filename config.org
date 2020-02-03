@@ -280,7 +280,22 @@ To alleviate some [[Flyspell][issues with flyspell]]
 #+BEGIN_SRC emacs-lisp
 (package! flyspell-lazy)
 #+END_SRC
-
+**** CalcTeX
+This is a nice extension to ~calc~
+#+BEGIN_SRC emacs-lisp
+(package! calctex :recipe (:host github :repo "johnbcoughlin/calctex"
+                                 :files ("*.el")))
+#+END_SRC
+**** Systemd
+For editing systemd unit files
+#+BEGIN_SRC emacs-lisp
+(package! systemd)
+#+END_SRC
+**** ESS
+View dataframes better with
+#+BEGIN_SRC emacs-lisp
+(package! ess-view)
+#+END_SRC
 * Package configuration
 ** Centaur Tabs
 We want to make the tabs a nice, comfy size (~36~), with icons. The modifier
