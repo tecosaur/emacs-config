@@ -139,12 +139,8 @@ To find more,
 *** Editor interaction
 **** Mouse buttons
 #+BEGIN_SRC emacs-lisp
-(defun add-mouse-back-button-to-Info-mode ()
-  "Add some browser styled nav keys for `Info-mode'."
-  (local-set-key (kbd "<mouse-8>") 'Info-history-back)
-  (local-set-key (kbd "<mouse-9>") 'Info-history-forward))
-
-(add-hook 'Info-mode-hook 'add-mouse-back-button-to-Info-mode)
+(map! :n [mouse-8] #'better-jumper-jump-backward
+      :n [mouse-9] #'better-jumper-jump-forward)
 #+END_SRC
 * Package loading
 This file shouldn't be byte compiled.
