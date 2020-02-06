@@ -141,6 +141,17 @@ To find more,
 (map! :n [mouse-8] #'better-jumper-jump-backward
       :n [mouse-9] #'better-jumper-jump-forward)
 #+END_SRC
+*** Window title
+I'd like to have just the buffer name, then if applicable the project folder
+#+BEGIN_SRC emacs-lisp
+(setq frame-title-format
+    '(""
+      "%b"
+      (:eval
+       (let ((project-name (projectile-project-name)))
+         (unless (string= "-" project-name)
+           (format " ● %s" project-name))))))
+#+END_SRC
 * Package loading
 This file shouldn't be byte compiled.
 #+BEGIN_SRC emacs-lisp :tangle "packages.el"
