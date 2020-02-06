@@ -126,6 +126,11 @@ then =ESC 12 <UP>= gets you exactly where you think.
 #+BEGIN_SRC emacs-lisp
 (setq display-line-numbers-type 'relative)
 #+END_SRC
+I'd like some slightly nicer default buffer names
+#+BEGIN_SRC emacs-lisp
+(setq doom-fallback-buffer-name "► Doom"
+      +doom-dashboard-name "► Doom")
+#+END_SRC
 *** Some helper macros
 There are a few handy macros added by doom, namely
 - ~load!~ for loading external ~.el~ files relative to this one
