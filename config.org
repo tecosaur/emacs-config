@@ -412,6 +412,11 @@ Let's automaticly update terminals on theme change
 #+BEGIN_SRC emacs-lisp
 (add-hook 'doom-load-theme-hook 'theme-magic-from-emacs)
 #+END_SRC
+*** calc
+Radians are just better
+#+BEGIN_SRC emacs-lisp
+(setq calc-angle-mode 'rad)
+#+END_SRC
 * Language configuration
 ** Org Mode
 *** Basic config
