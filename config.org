@@ -384,24 +384,25 @@ a position the window below and to the left. Oh, and don't forget about checking
 for ~GFM~, otherwise let's just use ~markdown~.
 #+BEGIN_SRC emacs-lisp
 (defun ea-popup-handler (app-name window-title x y w h)
-(set-frame-size (selected-frame) 80 12)
-; font
-(interactive)
-(setq buffer-face-mode-face '(:family "P22 Underground Book" :height 160))
-(buffer-face-mode)
-; position
-(let* ((mousepos (split-string (shell-command-to-string "xdotool getmouselocation | sed -E \"s/ screen:0 window:[^ ]*|x:|y://g\"")))
-        (mouse-x (- (string-to-number (nth 0 mousepos)) 100))
-        (mouse-y (- (string-to-number (nth 1 mousepos)) 50)))
+  (set-frame-size (selected-frame) 80 12)
+                                        ; font
+  (interactive)
+  (setq buffer-face-mode-face '(:family "P22 Underground Book" :height 160))
+  (buffer-face-mode)
+                                        ; position
+  (let* ((mousepos (split-string (shell-command-to-string "xdotool getmouselocation | sed -E \"s/ screen:0 window:[^ ]*|x:|y://g\"")))
+         (mouse-x (- (string-to-number (nth 0 mousepos)) 100))
+         (mouse-y (- (string-to-number (nth 1 mousepos)) 50)))
     (set-frame-position (selected-frame) mouse-x mouse-y))
-; set major mode
-(cond
-    ((github-conversation-p window-title) (gfm-mode))
-    (t (markdown-mode)) ; default major mode
-    )
-; start in insert
-(evil-insert-state)
-)
+                                        ; set major mode
+  (cond
+   ((github-conversation-p window-title) (gfm-mode))
+   (t (org-mode)) ; default major mode
+   )
+
+  (evil-insert-state); start in insert
+  'centaur-tabs-local-mode ; disable tab
+  )
 (add-hook 'ea-popup-hook 'ea-popup-handler)
 #+END_SRC
 ** Flyspell
