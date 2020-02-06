@@ -371,6 +371,7 @@ Oh, and by the way, if ~company-ispell-dictionary~ is ~nil~, then
 (set-company-backend! 'ess-r-mode '(company-R-args company-R-objects company-dabbrev-code :separate))
 #+END_SRC
 ** [[https://github.com/zachcurry/emacs-anywhere][Emacs Anywhere]] configuration
+# NB: install with curl -fsSL https://raw.github.com/zachcurry/emacs-anywhere/master/install | bash
 It's nice to recognise GitHub (so we can use ~GFM~)
 #+BEGIN_SRC emacs-lisp
 (defun github-conversation-p (window-title)
