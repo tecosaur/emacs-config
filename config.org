@@ -253,6 +253,11 @@ to be better maintained.
 #+END_SRC
 /NB: I found that ~org +pandoc~ exists, however after enabling it I couldn't find//
 /any org-pandoc-y commands with =M-x=, so I'm using this/
+
+Came across this and ... it's cool
+#+BEGIN_SRC emacs-lisp
+(package! org-graph-view :recipe (:host github :repo "alphapapa/org-graph-view"))
+#+END_SRC
 *** Window management
 #+BEGIN_SRC emacs-lisp
 (package! rotate)
