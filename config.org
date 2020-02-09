@@ -866,16 +866,9 @@ We just need to load ~ox-gfm~ for org-mode documents
   '(require 'ox-gfm nil t))
 #+END_SRC
 *** Babel
-Babel allows for in-buffer evaluation of ~emacs-lisp~. It's nice to allow a few
-more languages.
-#+BEGIN_SRC emacs-lisp
-(setq-default org-babel-load-languages '((emacs-lisp . t)
-                                         (shell . t)
-                                         (python . t)
-                                         (R . t)
-                                         (ledger . t)))
-#+END_SRC
-We also need to tell it to use python3. Who uses python2 anymore anyway? And why
+Doom lazy-loads babel languages, with is lovely.
+
+We need to tell babel to use python3. Who uses python2 anymore anyway? And why
 doesn't ~python~ refer to the latest version!?
 #+BEGIN_SRC emacs-lisp
 (setq org-babel-python-command "python3")
