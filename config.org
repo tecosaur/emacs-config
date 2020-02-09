@@ -351,7 +351,7 @@ It's nice to have completions almost all the time, in my opinion. Key strokes
 are just waiting to be saved!
 #+BEGIN_SRC emacs-lisp
 (after! company
-  (setq company-idle-delay 0.2
+  (setq company-idle-delay 0.1
         company-minimum-prefix-length 2)
   (setq company-show-numbers t))
 #+END_SRC
@@ -535,6 +535,7 @@ text. Let's start by adding a sans font. \(\sqrt{\beta^2+3}-\sum_{\phi=1}^\infty
 \\setlength{\\topmargin}{1.5cm}
 \\addtolength{\\topmargin}{-2.54cm}
 % my custom stuff
+\usepackage{arev}
 \\usepackage{arevmath}")
 #+END_SRC
 
