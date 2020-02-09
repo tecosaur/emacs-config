@@ -92,7 +92,7 @@ Then, we'll pull up ~ivy~
 #+BEGIN_SRC emacs-lisp
 (defadvice! prompt-for-buffer (&rest _)
   :after '(evil-window-split evil-window-vsplit)
-  (+ivy/switch-workspace-buffer))
+  (+ivy/switch-buffer))
 #+END_SRC
 *** Buffer defaults
 I'd much rather have my new buffers in ~org-mode~ than ~fundamental-mode~, hence
