@@ -535,7 +535,7 @@ text. Let's start by adding a sans font. \(\sqrt{\beta^2+3}-\sum_{\phi=1}^\infty
 \\setlength{\\topmargin}{1.5cm}
 \\addtolength{\\topmargin}{-2.54cm}
 % my custom stuff
-\usepackage{arev}
+\\usepackage{arev}
 \\usepackage{arevmath}")
 #+END_SRC
 
