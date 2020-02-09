@@ -442,24 +442,18 @@ Radians are just better
 #+END_SRC
 * Language configuration
 ** Org Mode
-*** Basic config
-We want to set the org directory, I tend to keep everything in ~~/.org~
-anyway, so...
+*** Behaviour
 #+BEGIN_SRC emacs-lisp
-(setq org-directory "~/.org")
-#+END_SRC
-It's also nice to have properties be inherited
-#+BEGIN_SRC emacs-lisp
-(setq org-use-property-inheritance t)
+(setq org-directory "~/.org"                      ; let's put files here
+      org-use-property-inheritance t              ; it's convenient to have properties inherited
+      org-log-done 'time)                         ; having the time a item is done sounds convininet
 #+END_SRC
 *** Visuals
 **** In editor
 ***** Font Display
 Mixed pitch is great. As is ~+org-pretty-mode~, let's use them.
 #+BEGIN_SRC emacs-lisp
-(use-package mixed-pitch
-  :hook (org-mode . mixed-pitch-mode))
-(add-hook 'org-mode-hook '+org-pretty-mode)
+(add-hook! 'org-mode-hook #'+org-pretty-mode #'mixed-pitch-mode)
 #+END_SRC
 Earlier I loaded the ~org-pretty-table~ package, let's enable it everywhere!
 #+BEGIN_SRC emacs-lisp
