@@ -131,7 +131,7 @@ I'd like some slightly nicer default buffer names
 (setq doom-fallback-buffer-name "► Doom"
       +doom-dashboard-name "► Doom")
 #+END_SRC
-There's a bug with the modeline in insert mode for org documents, so
+There's a bug with the modeline in insert mode for org documents ([[https://github.com/seagle0128/doom-modeline/issues/300][issue]]), so
 #+BEGIN_SRC emacs-lisp
 ;; (custom-set-faces! '(doom-modeline-evil-insert-state :weight bold :foreground "#339CDB"))
 #+END_SRC
