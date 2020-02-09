@@ -135,10 +135,6 @@ There's a bug with the modeline in insert mode for org documents ([[https://gith
 #+BEGIN_SRC emacs-lisp
 ;; (custom-set-faces! '(doom-modeline-evil-insert-state :weight bold :foreground "#339CDB"))
 #+END_SRC
-In the hope of fixing occasional modeline flicker:
-#+BEGIN_SRC emacs-lisp
-(add-to-list 'default-frame-alist '(inhibit-double-buffering . t))
-#+END_SRC
 *** Some helper macros
 There are a few handy macros added by doom, namely
 - ~load!~ for loading external ~.el~ files relative to this one
