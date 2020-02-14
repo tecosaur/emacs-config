@@ -294,11 +294,6 @@ With all our fancy emacs themes, my terminal is missing out!
 (package! theme-magic)
 #+END_SRC
 *** Other
-**** Beancount
-The [[https://bitbucket.org/blais/beancount/src/tip/editors/emacs/beancount.el][beancount package]] online has been put into ~./lisp~.
-#+BEGIN_SRC emacs-lisp
-(use-package! beancount :load-path "~/.config/doom/lisp")
-#+END_SRC
 **** Flyspell-lazy
 To alleviate some [[Flyspell][issues with flyspell]]
 #+BEGIN_SRC emacs-lisp
@@ -948,9 +943,10 @@ and produced by John Weigley --- author of ~ledger~ and current Emacs maintainer
       ledger-binary-path "hledger")
 #+END_SRC
 ** Beancount
-We just need to enable it for ~.beancount~ files.
+The [[https://bitbucket.org/blais/beancount/src/tip/editors/emacs/beancount.el][beancount package]] online has been put into ~./lisp~, we just need to load and
+enable it for ~.beancount~ files.
 #+BEGIN_SRC emacs-lisp
-(add-to-list 'auto-mode-alist '("\\.beancount\\'" . beancount-mode))
+(use-package! beancount :load-path "~/.config/doom/lisp" :mode "\\.beancount\\'")
 #+END_SRC
 
 # Local variables:
