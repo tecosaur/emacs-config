@@ -445,7 +445,26 @@ Radians are just better
 #+BEGIN_SRC emacs-lisp
 (setq org-directory "~/.org"                      ; let's put files here
       org-use-property-inheritance t              ; it's convenient to have properties inherited
-      org-log-done 'time)                         ; having the time a item is done sounds convininet
+      org-log-done 'time                          ; having the time a item is done sounds convininet
+      org-list-allow-alphabetical t               ; have a. A. a) A) list bullets
+      org-export-in-background t)                 ; run export processes in external emacs process
+#+END_SRC
+Let's also make creating an org buffer just that little bit easier.
+#+BEGIN_SRC emacs-lisp
+(evil-define-command evil-buffer-org-new (count file)
+  "Creates a new ORG buffer replacing the current window, optionally
+   editing a certain FILE"
+  :repeat nil
+  (interactive "P<f>")
+  (if file
+      (evil-edit file)
+    (let ((buffer (generate-new-buffer "*new org*")))
+      (set-window-buffer nil buffer)
+      (with-current-buffer buffer
+        (org-mode)))))
+(map! :leader
+  (:prefix "b"
+    :desc "New empty ORG buffer" "o" #'evil-buffer-org-new))
 #+END_SRC
 *** Visuals
 **** In editor
