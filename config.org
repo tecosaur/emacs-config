@@ -986,7 +986,9 @@ and produced by John Weigley --- author of ~ledger~ and current Emacs maintainer
 The [[https://bitbucket.org/blais/beancount/src/tip/editors/emacs/beancount.el][beancount package]] online has been put into ~./lisp~, we just need to load and
 enable it for ~.beancount~ files.
 #+BEGIN_SRC emacs-lisp
-(use-package! beancount :load-path "~/.config/doom/lisp" :mode "\\.beancount\\'")
+(use-package! beancount
+   :load-path "~/.config/doom/lisp"
+   :mode ("\\.beancount\\'" . beancount-mode))
 #+END_SRC
 
 # Local variables:
