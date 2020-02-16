@@ -238,7 +238,7 @@ our package manager can't deal with; see [[https://github.com/raxod502/straight.
 #+BEGIN_SRC emacs-lisp :tangle no
 (package! builtin-package :recipe (:branch "develop"))
 #+END_SRC
-** Packages
+** General packages
 :PROPERTIES:
 :header-args: :tangle "packages.el"
 :END:
@@ -254,34 +254,6 @@ This helps with that.
 #+BEGIN_SRC emacs-lisp
 (package! prettify-utils ; simplify messing with prettify-mode
   :recipe (:host github :repo "Ilazki/prettify-utils.el"))
-#+END_SRC
-*** Org Mode
-Org tables aren't the prettiest thing to look at. This package is supposed to
-redraw them in the buffer with box-drawing characters. Sounds like an
-improvement to me! Just need to get it working...
-#+BEGIN_SRC emacs-lisp
-(package! org-pretty-table-mode
-  :recipe (:host github :repo "Fuco1/org-pretty-table"))
-#+END_SRC
-Because of the /[[https://github.com/commonmark/commonmark-spec/wiki/markdown-flavors][lovely variety in markdown implementations]]/ there isn't actually
-such a thing a standard table spec ... or standard anything really. Because
-~org-md~ is a goody-two-shoes, it just uses HTML for all these non-standardised
-elements (a lot of them). So ~ox-gfm~ is handy for exporting markdown with all the
-features that GitHub has. Initialised in [[Exporting to GFM]].
-#+BEGIN_SRC emacs-lisp
-(package! ox-gfm)
-#+END_SRC
-Pandoc is also a very handy export tool. ~org-pandoc~ also exists, but this seems
-to be better maintained.
-#+BEGIN_SRC emacs-lisp
-(package! ox-pandoc)
-#+END_SRC
-/NB: I found that ~org +pandoc~ exists, however after enabling it I couldn't find//
-/any org-pandoc-y commands with =M-x=, so I'm using this/
-
-Came across this and ... it's cool
-#+BEGIN_SRC emacs-lisp
-(package! org-graph-view :recipe (:host github :repo "alphapapa/org-graph-view"))
 #+END_SRC
 *** Window management
 #+BEGIN_SRC emacs-lisp
@@ -326,15 +298,44 @@ This is a nice extension to ~calc~
 (package! calctex :recipe (:host github :repo "johnbcoughlin/calctex"
                                  :files ("*.el")))
 #+END_SRC
-**** Systemd
-For editing systemd unit files
-#+BEGIN_SRC emacs-lisp
-(package! systemd)
-#+END_SRC
 **** ESS
 View dataframes better with
 #+BEGIN_SRC emacs-lisp
 (package! ess-view)
+#+END_SRC
+** Language packages
+*** Systemd
+For editing systemd unit files
+#+BEGIN_SRC emacs-lisp
+(package! systemd)
+#+END_SRC
+*** Org Mode
+Org tables aren't the prettiest thing to look at. This package is supposed to
+redraw them in the buffer with box-drawing characters. Sounds like an
+improvement to me! Just need to get it working...
+#+BEGIN_SRC emacs-lisp
+(package! org-pretty-table-mode
+  :recipe (:host github :repo "Fuco1/org-pretty-table"))
+#+END_SRC
+Because of the /[[https://github.com/commonmark/commonmark-spec/wiki/markdown-flavors][lovely variety in markdown implementations]]/ there isn't actually
+such a thing a standard table spec ... or standard anything really. Because
+~org-md~ is a goody-two-shoes, it just uses HTML for all these non-standardised
+elements (a lot of them). So ~ox-gfm~ is handy for exporting markdown with all the
+features that GitHub has. Initialised in [[Exporting to GFM]].
+#+BEGIN_SRC emacs-lisp
+(package! ox-gfm)
+#+END_SRC
+Pandoc is also a very handy export tool. ~org-pandoc~ also exists, but this seems
+to be better maintained.
+#+BEGIN_SRC emacs-lisp
+(package! ox-pandoc)
+#+END_SRC
+/NB: I found that ~org +pandoc~ exists, however after enabling it I couldn't find//
+/any org-pandoc-y commands with =M-x=, so I'm using this/
+
+Came across this and ... it's cool
+#+BEGIN_SRC emacs-lisp
+(package! org-graph-view :recipe (:host github :repo "alphapapa/org-graph-view"))
 #+END_SRC
 * Package configuration
 ** Centaur Tabs
