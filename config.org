@@ -161,6 +161,27 @@ I'd like to have just the buffer name, then if applicable the project folder
          (unless (string= "-" project-name)
            (format " ● %s" project-name))))))
 #+END_SRC
+*** Systemd daemon
+For running a systemd service for a emacs server I have the following
+#+BEGIN_SRC systemd :tangle ~/.config/systemd/user/emacs.service
+[Unit]
+Description=Emacs server daemon
+Documentation=info:emacs man:emacs(1) https://gnu.org/software/emacs/
+
+[Service]
+Type=forking
+ExecStart=/usr/bin/emacs --daemon
+ExecStop=/usr/bin/emacsclient --eval "(progn (setq kill-emacs-hook nil) (kill emacs))"
+Environment=SSH_AUTH_SOCK=%t/keyring/ssh
+Restart=on-failure
+
+[Install]
+WantedBy=default.target
+#+END_SRC
+which is then enabled by
+#+BEGIN_SRC sh :tangle no
+systemctl --user enable emacs.service
+#+END_SRC
 * Package loading
 This file shouldn't be byte compiled.
 #+BEGIN_SRC emacs-lisp :tangle "packages.el"
