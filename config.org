@@ -159,7 +159,7 @@ I'd like to have just the buffer name, then if applicable the project folder
       (:eval
        (let ((project-name (projectile-project-name)))
          (unless (string= "-" project-name)
-           (format " ● %s" project-name))))))
+           (format (if (buffer-modified-p)  " ◉ %s" "  ●  %s") project-name))))))
 #+END_SRC
 *** Systemd daemon
 For running a systemd service for a emacs server I have the following
