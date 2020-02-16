@@ -133,7 +133,7 @@ I'd like some slightly nicer default buffer names
 #+END_SRC
 There's a bug with the modeline in insert mode for org documents ([[https://github.com/seagle0128/doom-modeline/issues/300][issue]]), so
 #+BEGIN_SRC emacs-lisp
-;; (custom-set-faces! '(doom-modeline-evil-insert-state :weight bold :foreground "#339CDB"))
+(custom-set-faces! '(doom-modeline-evil-insert-state :weight bold :foreground "#339CDB"))
 #+END_SRC
 *** Some helper macros
 There are a few handy macros added by doom, namely
