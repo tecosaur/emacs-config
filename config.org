@@ -544,6 +544,10 @@ It's also nice to make use of the unicode characters for check boxes, and other 
 )
 (plist-put +pretty-code-symbols :name "⁍") ; or › could be good?
 #+END_SRC
+We also like ~org-fragtog~, and that wants a hook.
+#+BEGIN_SRC emacs-lisp
+(add-hook 'org-mode-hook 'org-fragtog-mode)
+#+END_SRC
 ***** LaTeX Fragments
 It's nice to customise the look of LaTeX fragments so they fit better in the
 text. Let's start by adding a sans font. \(\sqrt{\beta^2+3}-\sum_{\phi=1}^\infty \frac{x^\phi-1}{\Gamma(a)}\)
