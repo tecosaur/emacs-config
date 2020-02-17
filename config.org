@@ -1054,9 +1054,9 @@ For example, from 2018--2020, the most prolific contributor to ~ledger~ produced
 last decade, ~ledger~ seems to have lost steam, while ~hledger~ seems as actively
 developed as ever. From this basic comparison ~hledger~ looks to have a more
 promising outlook. It also has a few extra nicities that ~ledger~ doesn't, but is
-a little slower (~hascell~ vs. ~c++~).
+a little slower (~haskell~ vs. ~c++~).
 Since this uses the same format, and ~ledger-mode~ is well integrated into emacs,
-and produced by John Weigley --- author of ~ledger~ and current Emacs maintainer
+and produced by John Wiegley --- author of ~ledger~ and current Emacs maintainer
 --- using this seems like a good idea. Thankfully we can, with a little modification.
 #+BEGIN_SRC emacs-lisp
 (setq ledger-mode-should-check-version nil
