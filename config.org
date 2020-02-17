@@ -470,6 +470,12 @@ Radians are just better
 (setq calc-angle-mode 'rad)
 #+END_SRC
 * Language configuration
+*** File Templates
+For some file types, we overwrite defaults in the [[file:./snippets][snippets]] directory, others
+need to have a template assigned.
+#+BEGIN_SRC emacs-lisp
+(set-file-template! "\\.tex$" :trigger "__" :mode 'latex-mode)
+#+END_SRC
 ** Org Mode
 *** Behaviour
 #+BEGIN_SRC emacs-lisp
@@ -951,6 +957,49 @@ Syntax highlighting is nice, so let's turn all of that on
  (ess-fl-keyword:delimiters . t)
  (ess-fl-keyword:= . t)
  (ess-R-fl-keyword:F&T . t)))
+#+END_SRC
+** LaTeX
+*** Snippet value
+For use in the new-file template, let's set out a nice preamble we may want to use.
+#+NAME: latex-nice-preable
+#+BEGIN_SRC latex :tangle no
+\\usepackage[pdfa,unicode=true,hidelinks]{hyperref}
+
+\\usepackage[dvipsnames,svgnames,table,hyperref]{xcolor}
+\\renewcommand{\\UrlFont}{\\ttfamily\\small}
+
+\\usepackage[a-2b]{pdfx} % why not be archival
+
+\\usepackage[T1]{fontenc}
+\\usepackage[osf,helvratio=0.9]{newpxtext} % pallatino
+\\usepackage[scale=0.92]{sourcecodepro}
+
+\\usepackage[varbb]{newpxmath}
+\\usepackage{mathtools}
+\\usepackage{amssymb}
+
+\\usepackage[activate={true,nocompatibility},final,tracking=true,kerning=true,spacing=true,factor=2000]{microtype}
+% microtype makes text look nicer
+
+\\usepackage{graphicx} % include graphics
+\\usepackage{grffile} % fix allowed graphicx filenames
+
+\\usepackage{booktabs} % nice table rules
+#+END_SRC
+Then let's bind the content to a function, and define some nice helpers.
+#+BEGIN_SRC emacs-lisp :noweb yes
+(setq tec/yas-latex-template-preamble "
+<<latex-nice-preable>>
+")
+
+(defun tec/yas-latex-get-class-choice ()
+  "Prompt user for LaTeX class choice"
+  (setq tec/yas-latex-class-choice (ivy-read "Select document class: " '("article" "scrartcl" "bmc") :def "bmc")))
+
+(defun tec/yas-latex-preamble-if ()
+  "Based on class choice prompt for insertion of default preamble"
+    (if (equal tec/yas-latex-class-choice "bmc") 'nil
+             (eq (read-char-choice "Include default preamble? [Type y/n]" '(?y ?n)) ?y)))
 #+END_SRC
 ** R
 *** Editor Visuals

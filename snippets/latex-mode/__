@@ -1,0 +1,16 @@
+# -*- mode: snippet -*-
+# name: LaTeX template                                                                                         
+# --
+\documentclass${1:[${2:opt1,...}]}{`(tec/yas-latex-get-class-choice)`}
+
+\title{${3:`(s-titleized-words (file-name-base buffer-file-name))`}}
+\author{${4:`(user-full-name)`}}
+\date{${5:`(format-time-string "%Y-%m-%d")`}}
+`(if (tec/yas-latex-preamble-if) tec/yas-latex-template-preamble "")`
+\begin{document}
+
+\maketitle
+
+$0
+
+\end{document}
