@@ -97,8 +97,10 @@ Then, we'll pull up ~ivy~
 *** Buffer defaults
 I'd much rather have my new buffers in ~org-mode~ than ~fundamental-mode~, hence
 #+BEGIN_SRC emacs-lisp
-(setq-default major-mode 'org-mode)
+;; (setq-default major-mode 'org-mode)
 #+END_SRC
+For some reason this + the mixed pitch hook causes issues with hydra and so I'll
+just need to resort to =SPC b o= for now.
 ** Doom configuration
 *** Visual Settings
 **** Font Face
