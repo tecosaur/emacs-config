@@ -564,12 +564,15 @@ We also like ~org-fragtog~, and that wants a hook.
 #+END_SRC
 ***** LaTeX Fragments
 It's nice to customise the look of LaTeX fragments so they fit better in the
-text. Let's start by adding a sans font. \(\sqrt{\beta^2+3}-\sum_{\phi=1}^\infty \frac{x^\phi-1}{\Gamma(a)}\)
+text --- like this \(\sqrt{\beta^2+3}-\sum_{\phi=1}^\infty \frac{x^\phi-1}{\Gamma(a)}\). Let's start by adding a sans font.
 #+BEGIN_SRC emacs-lisp
 (setq org-format-latex-header "\\documentclass{article}
 \\usepackage[usenames]{color}
-[PACKAGES]
-[DEFAULT-PACKAGES]
+
+\\usepackage[T1]{fontenc}
+\\usepackage{mathtools}
+\\usepackage{textcomp,amssymb}
+
 \\pagestyle{empty}             % do not remove
 % The settings below are copied from fullpage.sty
 \\setlength{\\textwidth}{\\paperwidth}
@@ -589,19 +592,35 @@ text. Let's start by adding a sans font. \(\sqrt{\beta^2+3}-\sum_{\phi=1}^\infty
 \\usepackage{arevmath}")
 #+END_SRC
 
+We can either render from a ~dvi~ or ~pdf~ file, so let's benchmark ~latex~ and
+~pdflatex~.
+| ~latex~ time | ~pdflatex~ time |
+|------------+---------------|
+| 135±2 ms   | 215±3 ms      |
+
 On the rendering side, there are two ~.dvi~-to-image convertors which I am
-interested in. ~dvipng~ and ~dvisvgm~. For inline preview we care about speed. Using
-the above latex expression and benchmarking lead to the following results:
-| ~dvipng~ time | ~dvisvgm~ time |
-|-------------+--------------|
-| 0.09±0.002s | 0.18±0.004s  |
+interested in: ~dvipng~ and ~dvisvgm~. Then with the a ~.pdf~ we have ~pdf2svg~.
+For inline preview we care about speed, while for exporting we care about file
+size and preffer a vector graphic.
+
+Using the above latex expression and benchmarking lead to the following results:
+| ~dvipng~ time | ~dvisvgm~ time | ~pdf2svg~ time |
+|-------------+--------------+--------------|
+| 89±2 ms     | 178±2 ms     | 12±2 ms      |
+
+Now let's combine this to see what's best
+| Tool chain         | Total time | Resultant file size |
+|--------------------+------------+---------------------|
+| ~latex~ + ~dvipng~     | 226±2 ms   | 7 KiB               |
+| ~latex~ + ~dvisvgm~    | 392±4 ms   | 8 KiB               |
+| ~pdflatex~ + ~pdf2svg~ | 230±2 ms   | 16 KiB              |
+
 So, let's use ~dvipng~ for previewing LaTeX fragments in-emacs, but ~dvisvgm~ for [[
 Exporting to HTML][LaTeX Rendering]].
-/Unfortunately: it seems that svg sizing is annoying ATM, so let's not do this right now./
+/Unfortunately: it seems that svg sizing is annoying ATM, so let's actually not do this right now./
 
 As well as having a sans font, there are a few other tweaks which can make them
-look better. Namely making the background transparent, and increasing the
-resolution.
+look better. Namely making sure that the colours switch when the theme does.
 #+BEGIN_SRC emacs-lisp
 (after! org
 ;; make background of fragments transparent
