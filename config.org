@@ -338,6 +338,11 @@ to be better maintained.
 /NB: I found that ~org +pandoc~ exists, however after enabling it I couldn't find//
 /any org-pandoc-y commands with =M-x=, so I'm using this/
 
+Now and then citations need to happen
+#+BEGIN_SRC emacs-lisp
+(package! org-ref)
+#+END_SRC
+
 For automatically toggling LaTeX fragment previews there's this nice package
 #+BEGIN_SRC emacs-lisp
 (package! org-fragtog)
@@ -504,6 +509,13 @@ Let's also make creating an org buffer just that little bit easier.
   (:prefix "b"
     :desc "New empty ORG buffer" "o" #'evil-buffer-org-new))
 #+END_SRC
+Occasionally I want to cite something.
+#+BEGIN_SRC emacs-lisp
+(def-package! org-ref
+   :after org
+   :config
+    (setq org-ref-completion-library 'org-ref-ivy-cite))
+#+END_SRC
 *** Visuals
 **** In editor
 ***** Font Display
@@ -574,6 +586,7 @@ text --- like this \(\sqrt{\beta^2+3}-\sum_{\phi=1}^\infty \frac{x^\phi-1}{\Gamm
 \\usepackage[T1]{fontenc}
 \\usepackage{mathtools}
 \\usepackage{textcomp,amssymb}
+\\usepackage[makeroom]{cancel}
 
 \\pagestyle{empty}             % do not remove
 % The settings below are copied from fullpage.sty
@@ -913,13 +926,36 @@ option. However this isn't sized very well at the moment.
                ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
                ("\\paragraph{%s}" . "\\paragraph*{%s}")
                ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
-  (setq org-latex-default-class "fancy-article")
+ (add-to-list 'org-latex-classes
+               '("bmc-article"
+               "\\documentclass[article,code,maths]{bmc}
+               [NO-DEFAULT-PACKAGES]
+               [NO-PACKAGES]
+               [EXTRA]"
+               ("\\section{%s}" . "\\section*{%s}")
+               ("\\subsection{%s}" . "\\subsection*{%s}")
+               ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+               ("\\paragraph{%s}" . "\\paragraph*{%s}")
+               ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+ (add-to-list 'org-latex-classes
+               '("bmc"
+               "\\documentclass[code,maths]{bmc}
+               [NO-DEFAULT-PACKAGES]
+               [NO-PACKAGES]
+               [EXTRA]"
+               ("\\chapter{%s}" . "\\chapter*{%s}")
+               ("\\section{%s}" . "\\section*{%s}")
+               ("\\subsection{%s}" . "\\subsection*{%s}")
+               ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+               ("\\paragraph{%s}" . "\\paragraph*{%s}")
+               ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+  (setq org-latex-default-class "bmc-article")
 
    (add-to-list 'org-latex-packages-alist '("" "minted"))
    (setq org-latex-listings 'minted)
    (setq org-latex-hyperref-template "\\hypersetup{\n pdfauthor={%a},\n pdftitle={%t},\n pdfkeywords={%k},\n pdfsubject={%d},\n pdfcreator={%c},\n pdflang={%L},\n colorlinks=true,\nlinkcolor=}\n\\urlstyle{same}\n")
    (setq org-latex-pdf-process
-         '("latexmk -xelatex -shell-escape -interaction=nonstopmode -f -pdf -output-directory=%o %f")))
+         '("latexmk -shell-escape -interaction=nonstopmode -f -pdf -output-directory=%o %f")))
 #+END_SRC
 **** Exporting to Beamer
 It's nice to use a different theme
