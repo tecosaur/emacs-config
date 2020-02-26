@@ -381,7 +381,8 @@ are just waiting to be saved!
 (after! company
   (setq company-idle-delay 0.1
         company-minimum-prefix-length 2)
-  (setq company-show-numbers t))
+  (setq company-show-numbers t)
+(add-hook 'evil-normal-state-entry-hook #'company-abort)) ;; make aborting less annoying.
 #+END_SRC
 Now, the improvements from ~precident~ are mostly from remembering history, so
 let's improve that memory.
