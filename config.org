@@ -76,7 +76,7 @@ By default changes made via a customisation interface are added to =init.el=.
 I prefer the idea of using a separate file for this. We just need to change a
 setting, and load it if it exists.
 #+BEGIN_SRC emacs-lisp
-(setq-default custom-file (expand-file-name ".custom.el" default-directory))
+(setq-default custom-file (expand-file-name ".custom.el" doom-private-dir))
 (when (file-exists-p custom-file)
   (load custom-file))
 #+END_SRC
