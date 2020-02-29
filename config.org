@@ -454,7 +454,7 @@ So I'm going to make use of ~flyspell-lazy~
 #+BEGIN_SRC emacs-lisp
 (after! flyspell (require 'flyspell-lazy) (flyspell-lazy-mode 1))
 #+END_SRC
-** Miscallanious
+** Miscellaneous
 *** wttrin
 Set the default city. It's initially ~Taipei~ but I find the ip-locating that's
 done perfectly acceptable, so let's make that happen.
@@ -931,7 +931,7 @@ option. However this isn't sized very well at the moment.
                ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
                ("\\paragraph{%s}" . "\\paragraph*{%s}")
                ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
- (add-to-list 'org-latex-classes
+  (add-to-list 'org-latex-classes
                '("bmc-article"
                "\\documentclass[article,code,maths]{bmc}
                [NO-DEFAULT-PACKAGES]
@@ -942,7 +942,7 @@ option. However this isn't sized very well at the moment.
                ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
                ("\\paragraph{%s}" . "\\paragraph*{%s}")
                ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
- (add-to-list 'org-latex-classes
+  (add-to-list 'org-latex-classes
                '("bmc"
                "\\documentclass[code,maths]{bmc}
                [NO-DEFAULT-PACKAGES]
@@ -956,11 +956,11 @@ option. However this isn't sized very well at the moment.
                ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
   (setq org-latex-default-class "bmc-article")
 
-   (add-to-list 'org-latex-packages-alist '("" "minted"))
-   (setq org-latex-listings 'minted)
-   (setq org-latex-hyperref-template "\\hypersetup{\n pdfauthor={%a},\n pdftitle={%t},\n pdfkeywords={%k},\n pdfsubject={%d},\n pdfcreator={%c},\n pdflang={%L},\n colorlinks=true,\nlinkcolor=}\n\\urlstyle{same}\n")
-   (setq org-latex-pdf-process
-         '("latexmk -shell-escape -interaction=nonstopmode -f -pdf -output-directory=%o %f")))
+  (add-to-list 'org-latex-packages-alist '("" "minted"))
+  (setq org-latex-listings 'minted)
+  (setq org-latex-hyperref-template "\\hypersetup{\n pdfauthor={%a},\n pdftitle={%t},\n pdfkeywords={%k},\n pdfsubject={%d},\n pdfcreator={%c},\n pdflang={%L},\n colorlinks=true,\nlinkcolor=}\n\\urlstyle{same}\n")
+  (setq org-latex-pdf-process
+        '("latexmk -shell-escape -interaction=nonstopmode -f -pdf -output-directory=%o %f")))
 #+END_SRC
 **** Exporting to Beamer
 It's nice to use a different theme
