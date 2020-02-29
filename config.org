@@ -414,12 +414,14 @@ Oh, and by the way, if ~company-ispell-dictionary~ is ~nil~, then
 #+END_SRC
 ** [[https://github.com/zachcurry/emacs-anywhere][Emacs Anywhere]] configuration
 # NB: install with curl -fsSL https://raw.github.com/zachcurry/emacs-anywhere/master/install | bash
-It's nice to recognise GitHub (so we can use ~GFM~)
+It's nice to recognise GitHub (so we can use ~GFM~), and other apps which we know
+take markdown
 #+BEGIN_SRC emacs-lisp
-(defun github-conversation-p (window-title)
-(or (string-match-p "Pull Request" window-title)
-    (string-match-p "Issue" window-title)
-    ))
+(defun markdown-window-p (window-title)
+  "Judges from WINDOW-TITLE whether the current window likes markdown"
+  (or (string-match-p "Pull Request" window-title)
+      (string-match-p "Issue" window-title)
+      (string-match-p "Discord" window-title)))
 #+END_SRC
 When the window opens, we generally want text so let's use a nice sans serif font,
 a position the window below and to the left. Oh, and don't forget about checking
@@ -427,24 +429,30 @@ for ~GFM~, otherwise let's just use ~markdown~.
 #+BEGIN_SRC emacs-lisp
 (defun ea-popup-handler (app-name window-title x y w h)
   (set-frame-size (selected-frame) 80 12)
-                                        ; font
   (interactive)
-  (setq buffer-face-mode-face '(:family "P22 Underground Book" :height 160))
-  (buffer-face-mode)
-                                        ; position
+  ; position
   (let* ((mousepos (split-string (shell-command-to-string "xdotool getmouselocation | sed -E \"s/ screen:0 window:[^ ]*|x:|y://g\"")))
          (mouse-x (- (string-to-number (nth 0 mousepos)) 100))
          (mouse-y (- (string-to-number (nth 1 mousepos)) 50)))
     (set-frame-position (selected-frame) mouse-x mouse-y))
-                                        ; set major mode
+
+  (set-frame-name (concat "Quick Edit ∷ " ea-app-name " — "
+                          (truncate-string-to-width (string-trim  (string-trim-right window-title (format "-[A-Za-z0-9 ]*%s" ea-app-name)) "[\s-]+" "[\s-]+") 45 nil nil "…")))
+
+  ; set major mode
   (cond
-   ((github-conversation-p window-title) (gfm-mode))
+   ((markdown-window-p window-title) (gfm-mode))
    (t (org-mode)) ; default major mode
    )
 
-  (evil-insert-state); start in insert
-  'centaur-tabs-local-mode ; disable tab
-  )
+  (insert (gui-get-selection 'PRIMARY))
+
+  (evil-insert-state) ; start in insert
+  (when (centaur-tabs-mode) (centaur-tabs-local-mode t)) ; disable tabs
+
+  ; I'm used to C-c C-c for 'completed the thing' so add that
+  (local-set-key (kbd "C-c C-c") (lambda () (interactive) (local-unset-key (kbd "C-c C-c")) (delete-frame))))
+
 (add-hook 'ea-popup-hook 'ea-popup-handler)
 #+END_SRC
 ** Flyspell
