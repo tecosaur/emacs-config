@@ -510,6 +510,10 @@ Let's also make creating an org buffer just that little bit easier.
   (:prefix "b"
     :desc "New empty ORG buffer" "o" #'evil-buffer-org-new))
 #+END_SRC
+I think it makes sense to have list bullets change with depth
+#+BEGIN_SRC emacs-lisp
+(setq org-list-demote-modify-bullet '(("+" . "-") ("-" . "+") ("*" . "+")))
+#+END_SRC
 Occasionally I want to cite something.
 #+BEGIN_SRC emacs-lisp
 (def-package! org-ref
