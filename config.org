@@ -493,6 +493,29 @@ need to have a template assigned.
 (set-file-template! "\\.tex$" :trigger "__" :mode 'latex-mode)
 #+END_SRC
 ** Org Mode
+*** System config
+Org mode isn't recognised as it's own mime type by default, but that can easily
+be changed with the following file. For system-wide changes try
+~~/usr/share/mime/packages/org.xml~.
+#+BEGIN_SRC xml :tangle ~/.local/share/mime/packages/org.xml
+<?xml version="1.0" encoding="utf-8"?>
+<mime-info xmlns='http://www.freedesktop.org/standards/shared-mime-info'>
+  <mime-type type="text/org">
+    <comment>Emacs Org-mode File</comment>
+    <glob pattern="*.org"/>
+    <alias type="text/org"/>
+  </mime-type>
+</mime-info>
+#+END_SRC
+What's nice is that Papirus [[https://github.com/PapirusDevelopmentTeam/papirus-icon-theme/commit/a10fb7f2423d5e30b9c4477416ccdc93c4f3849d][now]] has an icon for =text/org=.
+One simply needs to refresh their mime database
+#+BEGIN_SRC shell :results silent :tangle no
+update-mime-database ~/.local/share/mime
+#+END_SRC
+Then set emacs as the default editor
+#+BEGIN_SRC shell :results silent :tangle no
+xdg-mime default emacs.desktop text/org
+#+END_SRC
 *** Behaviour
 #+BEGIN_SRC emacs-lisp
 (setq org-directory "~/.org"                      ; let's put files here
