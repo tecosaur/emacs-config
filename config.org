@@ -445,7 +445,7 @@ for ~GFM~, otherwise let's just use ~markdown~.
    (t (org-mode)) ; default major mode
    )
 
-  (insert (gui-get-selection 'PRIMARY))
+  (when (gui-get-selection 'PRIMARY) (insert (gui-get-selection 'PRIMARY)))
 
   (evil-insert-state) ; start in insert
   (when (centaur-tabs-mode) (centaur-tabs-local-mode t)) ; disable tabs
