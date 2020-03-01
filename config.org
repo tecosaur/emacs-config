@@ -1141,6 +1141,16 @@ and produced by John Wiegley --- author of ~ledger~ and current Emacs maintainer
       ledger-report-links-in-register nil
       ledger-binary-path "hledger")
 #+END_SRC
+** Markdown
+Let's use mixed pitch, because it's great
+#+BEGIN_SRC emacs-lisp
+(add-hook! (gfm-mode markdown-mode) #'mixed-pitch-mode)
+#+END_SRC
+Most of the time when I write markdown, it's going into some app/website which
+will do it's own line wrapping, hence we /only/ want to use visual line wrapping. No hard stuff.
+#+BEGIN_SRC emacs-lisp
+(add-hook! (gfm-mode markdown-mode) #'visual-line-mode #'turn-off-auto-fill)
+#+END_SRC
 ** Beancount
 The [[https://bitbucket.org/blais/beancount/src/tip/editors/emacs/beancount.el][beancount package]] online has been put into ~./lisp~, we just need to load and
 enable it for ~.beancount~ files.
