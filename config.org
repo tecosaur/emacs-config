@@ -993,6 +993,24 @@ option. However this isn't sized very well at the moment.
 
   (add-to-list 'org-latex-packages-alist '("" "minted"))
   (setq org-latex-listings 'minted)
+  (setq org-latex-minted-options
+        '(("frame" "lines")
+          ("fontsize" "\\scriptsize")
+          ("linenos" "")
+          ("breakanywhere" "true")
+          ("breakautoindent" "true")
+          ("breaklines" "true")
+          ("autogobble" "true")
+          ("obeytabs" "true")
+          ("python3" "true")
+          ("breakbefore" "\\\\\\.+")
+          ("breakafter" "\\,")
+          ("style" "autumn")
+          ("breaksymbol" "\\tiny\\ensuremath{\\hookrightarrow}")
+          ("breakanywheresymbolpre" "\\,\\footnotesize\\ensuremath{{}_{\\rfloor}}")
+          ("breakbeforesymbolpre" "\\,\\footnotesize\\ensuremath{{}_{\\rfloor}}")
+          ("breakaftersymbolpre" "\\,\\footnotesize\\ensuremath{{}_{\\rfloor}}")))
+
   (setq org-latex-hyperref-template "\\hypersetup{\n pdfauthor={%a},\n pdftitle={%t},\n pdfkeywords={%k},\n pdfsubject={%d},\n pdfcreator={%c},\n pdflang={%L},\n colorlinks=true,\nlinkcolor=}\n\\urlstyle{same}\n")
   (setq org-latex-pdf-process
         '("latexmk -shell-escape -interaction=nonstopmode -f -pdf -output-directory=%o %f")))
