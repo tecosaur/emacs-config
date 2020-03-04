@@ -984,7 +984,17 @@ option. However this isn't sized very well at the moment.
 (with-eval-after-load 'ox-latex
   (add-to-list 'org-latex-classes
                '("fancy-article"
-               "\\documentclass{scrartcl}\n\\usepackage[default,sfdefault]{lato}"
+               "\\documentclass{scrartcl}\n\\usepackage[T1]{fontenc}\\usepackage[osf,largesc,helvratio=0.9]{newpxtext}\\usepackage[scale=0.92]{sourcecodepro}\n\\usepackage[varbb]{newpxmath}\\usepackage[activate={true,nocompatibility},final,tracking=true,kerning=true,spacing=true,factor=2000]{microtype}"
+               ("\\section{%s}" . "\\section*{%s}")
+               ("\\subsection{%s}" . "\\subsection*{%s}")
+               ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+               ("\\paragraph{%s}" . "\\paragraph*{%s}")
+               ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+  (add-to-list 'org-latex-classes
+               '("blank"
+               "[NO-DEFAULT-PACKAGES]
+               [NO-PACKAGES]
+               [EXTRA]"
                ("\\section{%s}" . "\\section*{%s}")
                ("\\subsection{%s}" . "\\subsection*{%s}")
                ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
