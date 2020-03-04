@@ -1074,6 +1074,10 @@ Syntax highlighting is nice, so let's turn all of that on
  (ess-R-fl-keyword:F&T . t)))
 #+END_SRC
 ** LaTeX
+Once again, /all hail mixed pitch mode!/
+#+BEGIN_SRC emacs-lisp
+(add-hook 'LaTeX-mode-hook #'mixed-pitch-mode)
+#+END_SRC
 *** Snippet value
 For use in the new-file template, let's set out a nice preamble we may want to use.
 #+NAME: latex-nice-preable
