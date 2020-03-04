@@ -462,7 +462,7 @@ So I'm going to make use of ~flyspell-lazy~
 #+END_SRC
 ** Miscellaneous
 *** wttrin
-Set the default city. It's initially ~Taipei~ but I find the ip-locating that's
+Set the default city. It's initially ~Taipei~ but I find the IP-locating that's
 done perfectly acceptable, so let's make that happen.
 #+BEGIN_SRC emacs-lisp
 (setq wttrin-default-cities '(""))
@@ -619,7 +619,7 @@ It's also nice to make use of the unicode characters for check boxes, and other 
     :property    "#+PROPERTY:"
     :property    ":PROPERTIES:"
     :end         ":END:"
-    :option      "#+OPTIONS:"
+    :options     "#+OPTIONS:"
     :title       "#+TITLE:"
     :author      "#+AUTHOR:"
     :date        "#+DATE:"
