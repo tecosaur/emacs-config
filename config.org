@@ -60,9 +60,6 @@ shown by =SPC h v= and selecting what I thought looks good, I've ended up adding
 (display-time-mode 1)                             ; Enable time in the mode-line
 (display-battery-mode 1)                          ; On laptops it's nice to know how much power you have
 (global-subword-mode 1)                           ; Iterate through CamelCase words
-
-; This really simplifies prompt style issues with tramp
-(eval-after-load 'tramp '(setenv "SHELL" "/bin/bash"))
 #+END_SRC
 *** Fullscreen
 I also like the idea of fullscreen-ing when opened by ~emacs~ or the ~.desktop~ file.
@@ -484,6 +481,25 @@ Let's automaticly update terminals on theme change
 Radians are just better
 #+BEGIN_SRC emacs-lisp
 (setq calc-angle-mode 'rad)
+#+END_SRC
+*** Tramp
+Let's try to make tramp handle prompts better
+#+BEGIN_SRC emacs-lisp
+(after! tramp
+  (setenv "SHELL" "/bin/bash")
+  (setq tramp-shell-prompt-pattern "\\(?:^\\|\\)[^]#$%>\n]*#?[]#$%>] *\\(\\[[0-9;]*[a-zA-Z] *\\)*")) ;; defult + 
+#+END_SRC
+**** Troubleshooting
+In case the remote shell is misbehaving, here are some things to try
+***** Zsh
+There are some escape code you don't want, let's make it behave more considerately.
+#+BEGIN_SRC shell :eval no :tangle no
+if [[ "$TERM" == "dumb" ]]; then
+        unset zle_bracketed_paste
+        unset zle
+        PS1='$ '
+        return
+fi
 #+END_SRC
 * Language configuration
 *** File Templates
