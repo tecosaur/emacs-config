@@ -1116,6 +1116,40 @@ Then let's bind the content to a function, and define some nice helpers.
     (if (equal tec/yas-latex-class-choice "bmc") 'nil
              (eq (read-char-choice "Include default preamble? [Type y/n]" '(?y ?n)) ?y)))
 #+END_SRC
+*** cdlatex
+~cdlatex~ likes to use dollars (~$⋯$~) which are less desirable that the LaTeX
+constructs (~\(⋯\)~).
+#+BEGIN_SRC emacs-lisp
+(after! cdlatex
+  (defadvice! cdlatex-mathify (&optional arg)
+    "Insert a \\( \\) pair unless number of backslashes before point is odd.
+With arg, insert \\ [ \\ ] pair."
+    :override #'cdlatex-dollar
+    (interactive "P")
+    (if (cdlatex-number-of-backslashes-is-odd)
+        (insert "\\(")
+      (if (texmathp)
+          (if (and (stringp (car texmathp-why))
+                   (equal (substring (car texmathp-why) 0 1) "\$"))
+              (progn
+                (insert (car texmathp-why))
+                (save-excursion
+                  (goto-char (cdr texmathp-why))
+                  (if (pos-visible-in-window-p)
+                      (sit-for 1))))
+            (message "No dollars inside a math environment!")
+            (ding))
+        (if (and (stringp cdlatex-paired-parens)
+                 (string-match "\\$" cdlatex-paired-parens))
+            (if arg
+                (if (bolp)
+                    (progn (insert "\\[\n\t\n\\]\n") (backward-char 4))
+                  (insert "\\[  \\]") (backward-char 3))
+              (insert "\\(\\)") (backward-char 2))
+          (if arg
+              (if (bolp) (insert "\\(\\)\n") (insert "\\(\\)"))
+            (insert "\\(")))))))
+#+END_SRC
 ** R
 *** Editor Visuals
 #+BEGIN_SRC emacs-lisp
