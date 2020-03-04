@@ -715,6 +715,10 @@ look better. Namely making sure that the colours switch when the theme does.
                                   :background nil t))))
 )
 #+END_SRC
+**** Exporting (general)
+#+BEGIN_SRC emacs-lisp
+(after! org (setq org-export-headline-levels 5)) ; I like nesting
+#+END_SRC
 **** Exporting to HTML
 ***** Custom CSS/JS
 There is a fantastic exporter config ([[https://github.com/fniessen/org-html-themes][fniessen/org-html-themes]]) which we can
