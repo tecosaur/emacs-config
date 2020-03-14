@@ -328,13 +328,6 @@ features that GitHub has. Initialised in [[Exporting to GFM]].
 #+BEGIN_SRC emacs-lisp
 (package! ox-gfm)
 #+END_SRC
-Pandoc is also a very handy export tool. ~org-pandoc~ also exists, but this seems
-to be better maintained.
-#+BEGIN_SRC emacs-lisp
-(package! ox-pandoc)
-#+END_SRC
-/NB: I found that ~org +pandoc~ exists, however after enabling it I couldn't find//
-/any org-pandoc-y commands with =M-x=, so I'm using this/
 
 Now and then citations need to happen
 #+BEGIN_SRC emacs-lisp
