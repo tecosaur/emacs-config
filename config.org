@@ -1163,6 +1163,69 @@ Then let's bind the content to a function, and define some nice helpers.
     (if (equal tec/yas-latex-class-choice "bmc") 'nil
              (eq (read-char-choice "Include default preamble? [Type y/n]" '(?y ?n)) ?y)))
 #+END_SRC
+*** Editor visuals
+Let's enhance ~TeX-fold-math~ a bit
+#+BEGIN_SRC emacs-lisp
+(setq TeX-fold-math-spec-list
+      '(;; missing symbols
+        ("≤" ("le"))
+        ("≥" ("ge"))
+        ("≠" ("ne"))
+        ;; conviniance shorts
+        ("‹" ("left"))
+        ("›" ("right"))
+        ;; private macros
+        ("ℝ" ("RR"))
+        ("ℕ" ("NN"))
+        ("ℤ" ("ZZ"))
+        ("ℚ" ("QQ"))
+        ("ℂ" ("CC"))
+        ("ℙ" ("PP"))
+        ("ℍ" ("HH"))
+        ("𝔼" ("EE"))
+        ("𝑑" ("dd"))
+        ; known commands
+        ("" ("phantom"))
+        ("({1}⧸{2})" ("frac"))
+        ("‘{1}’" ("text"))
+        ; private commands
+        ("|{1}|" ("abs"))
+        ("‖{1}‖" ("norm"))
+        ("⌊{1}⌋" ("floor"))
+        ("⌈{1}⌉" ("ceil"))
+        ("⌊{1}⌉" ("round"))
+        ("𝑑{1}⧸𝑑{2}" ("dv"))
+        ("∂{1}⧸∂{2}" ("pdv"))
+        ))
+#+END_SRC
+
+Maths deliminators can be de-emphasised a bit
+#+BEGIN_SRC emacs-lisp
+;; Making \( \) less visible
+(defface unimportant-latex-face
+  '((t
+     :inherit font-lock-comment-face))
+  "Face used to make \\(\\), \\[\\] less visible."
+  :group 'LaTeX-math)
+
+(font-lock-add-keywords
+ 'latex-mode
+ `((,(rx (and "\\" (any "()[]"))) 0 'unimportant-latex-face prepend))
+ 'end)
+
+(font-lock-add-keywords
+ 'latex-mode
+ `((,"\\\\[[:word:]]+" 0 'font-lock-keyword-face prepend))
+ 'end)
+#+END_SRC
+
+And enable shell escape for the preview
+#+BEGIN_SRC emacs-lisp
+(setq preview-LaTeX-command '("%`%l \"\\nonstopmode\\nofiles\
+\\PassOptionsToPackage{" ("," . preview-required-option-list) "}{preview}\
+\\AtBeginDocument{\\ifx\\ifPreview\\undefined"
+preview-default-preamble "\\fi}\"%' \"\\detokenize{\" %t \"}\""))
+#+END_SRC
 ** R
 *** Editor Visuals
 #+BEGIN_SRC emacs-lisp
