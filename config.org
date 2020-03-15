@@ -501,6 +501,10 @@ if [[ "$TERM" == "dumb" ]]; then
         return
 fi
 #+END_SRC
+*** ispell
+#+BEGIN_SRC emacs-lisp
+(setq ispell-dictionary "en_GBs_au_SCOWL_80_0_k_hr")
+#+END_SRC
 * Language configuration
 *** File Templates
 For some file types, we overwrite defaults in the [[file:./snippets][snippets]] directory, others
