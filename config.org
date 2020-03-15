@@ -466,6 +466,11 @@ done perfectly acceptable, so let's make that happen.
 #+BEGIN_SRC emacs-lisp
 (setq wttrin-default-cities '(""))
 #+END_SRC
+*** electric pair mode
+We want this everywhere
+#+BEGIN_SRC emacs-lisp
+(electric-pair-mode t)
+#+END_SRC
 *** spray
 Let's make this suit me slightly better.
 #+BEGIN_SRC emacs-lisp
