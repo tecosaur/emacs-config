@@ -1023,6 +1023,32 @@ option. However this isn't sized very well at the moment.
 ;; (setq-default org-html-with-latex `dvisvgm)
 #+END_SRC
 **** Exporting to LaTeX
+I like automatically using spaced small caps for acronyms. For strings I want to
+be unaffected lest's use ~;~ as a prefix to prevent the transformation --- i.e.
+~;JFK~ (as one would want for two-letter geographic locations and names).
+#+BEGIN_SRC emacs-lisp
+;; TODO make this /only/ apply to text (i.e. not URL)
+(after! org
+  (defun tec/org-export-latex-filter-acronym (text backend info)
+    (when (org-export-derived-backend-p backend 'latex)
+      (let ((case-fold-search nil))
+        (replace-regexp-in-string
+         ";?\\b[A-Z][A-Z]+s?"
+         (lambda (all-caps-str)
+           ; only \acr if str doesn't start with ";"
+           (if (equal (aref all-caps-str 0) 59) (substring all-caps-str 1)
+             (if (equal (aref all-caps-str (- (length all-caps-str) 1)) ?s)
+                 (concat "\\textls*[70]{\\textsc{" (s-downcase (substring all-caps-str 0 -1)) "}\\protect\\scalebox{.91}[.84]{s}}")
+               (concat "\\textls*[70]{\\textsc{" (s-downcase all-caps-str) "}}"))))
+         text t t))))
+
+  (add-to-list 'org-export-filter-plain-text-functions
+               'tec/org-export-latex-filter-acronym)
+  (add-to-list 'org-export-filter-headline-functions
+               'tec/org-export-latex-filter-acronym))
+#+END_SRC
+
+Now for a few more adjustments.
 #+BEGIN_SRC emacs-lisp
 (with-eval-after-load 'ox-latex
   (add-to-list 'org-latex-classes
