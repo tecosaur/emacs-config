@@ -1199,12 +1199,49 @@ Let's enhance ~TeX-fold-math~ a bit
         ))
 #+END_SRC
 
+Let's just make the folding a little less manual
+#+BEGIN_SRC emacs-lisp
+(defvar +latex-use-TeX-fold t
+  "Use TeX fold in TeX-mode.
+When set to non-nil, this adds a few hooks/advices to fold stuff.")
+
+;; Fold after cdlatex and snippets.
+(defun +TeX-fold-line-ah (&rest _)
+  "Auto-fold LaTeX macros after functions that typically insert them."
+  (TeX-fold-region (line-beginning-position) (line-end-position)))
+
+(when +latex-use-TeX-fold
+  (advice-add #'cdlatex-math-symbol :after #'+TeX-fold-line-ah)
+  (advice-add #'cdlatex-math-modify :after #'+TeX-fold-line-ah)
+  ;; local after-snippet hook for folding
+  (add-hook! 'TeX-mode-hook
+    (add-hook 'yas-after-exit-snippet-hook #'+TeX-fold-line-ah nil t)))
+#+END_SRC
+
+Some local keybindings to make life a bit easier
+#+BEGIN_SRC emacs-lisp
+(after! tex
+  (map!
+   :map LaTeX-mode-map
+   :ei [C-return] #'LaTeX-insert-item
+
+   ;; normal stuff here
+   :localleader
+   :desc "View" "v" #'TeX-view
+   (:when +latex-use-TeX-fold
+     :desc "Fold paragraph"     "f"   #'TeX-fold-paragraph
+     :desc "Unfold paragraph"   "C-f" #'TeX-fold-clearout-paragraph
+     :desc "Fold buffer"        "F"   #'TeX-fold-buffer
+     :desc "Unfold buffer"      "C-F" #'TeX-fold-clearout-buffer))
+  (setq TeX-electric-math '("\\(" . "")))
+#+END_SRC
+
 Maths deliminators can be de-emphasised a bit
 #+BEGIN_SRC emacs-lisp
 ;; Making \( \) less visible
 (defface unimportant-latex-face
   '((t
-     :inherit font-lock-comment-face))
+     :inherit font-lock-comment-face :family "Overpass" :weight light))
   "Face used to make \\(\\), \\[\\] less visible."
   :group 'LaTeX-math)
 
@@ -1225,6 +1262,31 @@ And enable shell escape for the preview
 \\PassOptionsToPackage{" ("," . preview-required-option-list) "}{preview}\
 \\AtBeginDocument{\\ifx\\ifPreview\\undefined"
 preview-default-preamble "\\fi}\"%' \"\\detokenize{\" %t \"}\""))
+#+END_SRC
+*** CDLaTeX
+The symbols and modifies are very nice by default, but could do with a bit of
+fleshing out. Let's change the prefix to a key which is similarly rarely used,
+but more convinient, like =;=.
+#+BEGIN_SRC emacs-lisp
+(after! cdlatex
+  (setq ;; cdlatex-math-symbol-prefix ?\; ;; doesn't work at the moment :(
+        cdlatex-math-symbol-alist
+        '( ;; adding missing functions to 3rd level symbols
+          (?_    ("\\downarrow"  ""           "\\inf"))
+          (?^    ("\\uparrow"    ""           "\\sup"))
+          (?k    ("\\kappa"      ""           "\\ker"))
+          (?m    ("\\mu"         ""           "\\lim"))
+          (?c    (""             "\\circ"     "\\cos"))
+          (?d    ("\\delta"      "\\partial"  "\\dim"))
+          (?D    ("\\Delta"      "\\nabla"    "\\deg"))
+          ;; no idea why \Phi isnt on 'F' in first place, \phi is on 'f'.
+          (?F    ("\\Phi"))
+          ;; now just conveniance
+          (?.    ("\\cdot" "\\dots"))
+          (?:    ("\\vdots" "\\ddots"))))
+  cdlatex-math-modify-alist
+  '( ;; my own stuff
+    (?B    "\\mathbb"        nil          t    nil  nil)))
 #+END_SRC
 ** R
 *** Editor Visuals
