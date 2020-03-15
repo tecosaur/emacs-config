@@ -459,6 +459,25 @@ So I'm going to make use of ~flyspell-lazy~
 #+BEGIN_SRC emacs-lisp
 (after! flyspell (require 'flyspell-lazy) (flyspell-lazy-mode 1))
 #+END_SRC
+** Abbrev mode
+Thanks to [[https://emacs.stackexchange.com/questions/45462/use-a-single-abbrev-table-for-multiple-modes/45476#45476][use a single abbrev-table for multiple modes? - Emacs Stack Exchange]] I
+have the following.
+#+BEGIN_SRC emacs-lisp
+(use-package abbrev
+  :init
+  (setq-default abbrev-mode t)
+  ;; a hook funtion that sets the abbrev-table to org-mode-abbrev-table
+  ;; whenever the major mode is a text mode
+  (defun tec/set-text-mode-abbrev-table ()
+    (if (derived-mode-p 'text-mode)
+        (setq local-abbrev-table org-mode-abbrev-table)))
+  :commands abbrev-mode
+  :hook
+  (abbrev-mode . tec/set-text-mode-abbrev-table)
+  :config
+  (setq abbrev-file-name (expand-file-name "abbrev.el" doom-private-dir))
+  (setq save-abbrevs 'silently))
+#+END_SRC
 ** Miscellaneous
 *** wttrin
 Set the default city. It's initially ~Taipei~ but I find the IP-locating that's
