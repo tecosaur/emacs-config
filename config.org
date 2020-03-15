@@ -1529,7 +1529,10 @@ enable it for ~.beancount~ files.
 #+BEGIN_SRC emacs-lisp
 (use-package! beancount
    :load-path "~/.config/doom/lisp"
-   :mode ("\\.beancount\\'" . beancount-mode))
+   :mode ("\\.beancount\\'" . beancount-mode)
+   :config (setq beancount-electric-currency t)
+   ;; TODO make the following *work*
+   :bind (:map beancount-mode-map ("S-RET" . #'beancount-align-to-previous-number)))
 #+END_SRC
 
 # Local variables:
