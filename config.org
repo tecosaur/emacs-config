@@ -343,6 +343,12 @@ Came across this and ... it's cool
 #+BEGIN_SRC emacs-lisp
 (package! org-graph-view :recipe (:host github :repo "alphapapa/org-graph-view"))
 #+END_SRC
+
+I *need* this in my life. It take a URL to a recipe from a common site, and
+inserts an org-ified version at point. Isn't that just great.
+#+BEGIN_SRC emacs-lisp
+(package! org-chef)
+#+END_SRC
 * Package configuration
 ** Centaur Tabs
 We want to make the tabs a nice, comfy size (~36~), with icons. The modifier
