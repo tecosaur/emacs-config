@@ -1366,18 +1366,46 @@ Let's enhance ~TeX-fold-math~ a bit
         ("ℍ" ("HH"))
         ("𝔼" ("EE"))
         ("𝑑" ("dd"))
-        ; known commands
+        ;; known commands
         ("" ("phantom"))
         ("({1}⧸{2})" ("frac"))
         ("‘{1}’" ("text"))
-        ; private commands
+        ;; private commands
         ("|{1}|" ("abs"))
         ("‖{1}‖" ("norm"))
         ("⌊{1}⌋" ("floor"))
         ("⌈{1}⌉" ("ceil"))
         ("⌊{1}⌉" ("round"))
+        ("⭡{1}" ("vec"))
         ("𝑑{1}⧸𝑑{2}" ("dv"))
         ("∂{1}⧸∂{2}" ("pdv"))
+        )
+      TeX-fold-macro-spec-list
+      '(
+        ;; as the defaults
+        ("[f]" ("footnote" "marginpar"))
+        ("[c]" ("cite"))
+        ("[l]" ("label"))
+        ("[r]" ("ref" "pageref" "eqref"))
+        ("[i]" ("index" "glossary"))
+        ("..." ("dots"))
+        ("{1}" ("emph" "textit" "textsl" "textmd" "textrm" "textsf" "texttt"
+            "textbf" "textsc" "textup"))
+        ;; tweaked defaults
+        ("©" ("copyright"))
+        ("®" ("textregistered"))
+        ("™"  ("texttrademark"))
+        ("[1]:||►" ("item"))
+        ("❡❡ {1}" ("part" "part*"))
+        ("❡ {1}" ("chapter" "chapter*"))
+        ("§ {1}" ("section" "section*"))
+        ("§§ {1}" ("subsection" "subsection*"))
+        ("§§§ {1}" ("subsubsection" "subsubsection*"))
+        ("¶ {1}" ("paragraph" "paragraph*"))
+        ("¶¶ {1}" ("subparagraph" "subparagraph*"))
+        ;; extra
+        ("⬖ {1}" ("begin"))
+        ("⬗ {1}" ("end"))
         ))
 #+END_SRC
 
