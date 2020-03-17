@@ -1549,7 +1549,8 @@ but more convinient, like =;=.
           (?:    ("\\vdots" "\\ddots"))))
   cdlatex-math-modify-alist
   '( ;; my own stuff
-    (?B    "\\mathbb"        nil          t    nil  nil)))
+    (?B    "\\mathbb"        nil          t    nil  nil)
+    (?a    "\\abs"           nil          t    nil  nil)))
 #+END_SRC
 ** R
 *** Editor Visuals
