@@ -477,6 +477,51 @@ have the following.
   :config
   (setq abbrev-file-name (expand-file-name "abbrev.el" doom-private-dir))
   (setq save-abbrevs 'silently))
+** Treemacs
+Quite often there are superfluous files I'm not that interested in. There's no
+good reason for them to take up space.
+#+BEGIN_SRC emacs-lisp
+(setq treemacs-ignore-suffixes '(;; AucTeC
+                                   ".auctex-auto"
+                                   "_region_.log"
+                                   "_region_.tex"
+                                   ;; LaTeX
+                                   ".aux"
+                                   ".ptc"
+                                   ".fdb_latexmk"
+                                   ".fls"
+                                   ".synctex.gz"
+                                   ".toc"
+                                   ;; LaTeX - glossary
+                                   ".glg"
+                                   ".glo"
+                                   ".gls"
+                                   ".glsdefs"
+                                   ".ist"
+                                   ".acn"
+                                   ".acr"
+                                   ".alg"
+                                   ;; LaTeX - pgfplots
+                                   ".mw"
+                                   ;; LaTeX - pdfx
+                                   "pdfa.xmpi"
+                                   ))
+(setq treemacs-ignore-prefixes '(;; LaTeX
+                                 "_minted-"))
+
+#+END_SRC
+With those identified, we just need to provide a mechanism for them to be
+ignored. This ends up being nice and simple.
+#+BEGIN_SRC emacs-lisp
+(after! treemacs
+  (defun treemacs-ignore-filter (file _)
+    (let ((ignore-file nil))
+      (dolist (suffix treemacs-ignore-suffixes ignore-file)
+        (setq ignore-file (or ignore-file (s-suffix? suffix file))))
+      (dolist (prefix treemacs-ignore-prefixes ignore-file)
+        (setq ignore-file (or ignore-file (s-prefix? prefix file))))
+      ))
+  (push #'treemacs-ignore-filter treemacs-ignored-file-predicates))
 #+END_SRC
 ** Miscellaneous
 *** wttrin
