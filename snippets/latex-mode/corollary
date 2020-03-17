@@ -1,0 +1,9 @@
+# -*- mode: snippet -*-
+# name: corollary
+# uuid: corollary
+# key: cor
+# condition: t
+# --
+\begin{corollary}${1:[${2:name}]}
+  $0
+\end{corollary}

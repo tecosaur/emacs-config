@@ -1,0 +1,9 @@
+# -*- mode: snippet -*-
+# name: lemma
+# uuid: lemma
+# key: lem
+# condition: t
+# --
+\begin{lemma}${1:[${2:name}]}
+  $0
+\end{lemma}

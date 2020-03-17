@@ -1,0 +1,9 @@
+# -*- mode: snippet -*-
+# name: definition
+# uuid: definition
+# key: def
+# condition: t
+# --
+\begin{definition}${1:[${2:name}]}
+  $0
+\end{definition}
