@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: enumerate
+# key: en          
+# --
+\begin{enumerate}
+`(if % % "  \\item ")`$0
+\end{enumerate}
