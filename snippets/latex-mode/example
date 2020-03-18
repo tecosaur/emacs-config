@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: example
+# key: eg
+# group: theorems
+# --
+\begin{example}${1:[${2:name}]}
+  `%`$0
+\end{example}

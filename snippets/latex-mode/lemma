@@ -1,9 +1,8 @@
 # -*- mode: snippet -*-
 # name: lemma
-# uuid: lemma
-# key: lem
-# condition: t
+# key: lmm
+# group: theorems
 # --
 \begin{lemma}${1:[${2:name}]}
-  $0
+  `%`$0
 \end{lemma}
