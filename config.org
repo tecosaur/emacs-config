@@ -417,13 +417,7 @@ let's improve that memory.
               company-files
               company-yasnippet))
 #+END_SRC
-The ~SCOWL~ word list I got for ~VSCode~ is better than the default (I think), so
-let's use that.
-#+BEGIN_SRC emacs-lisp
-(setq company-ispell-dictionary (file-truename "~/.config/Code/User/Custom cSpell Dictionaries/SCOWL-workdlist-au-uk-60.txt"))
-#+END_SRC
-Oh, and by the way, if ~company-ispell-dictionary~ is ~nil~, then
-~ispell-complete-word-dict~ is used instead.
+We then configure the dictionary we're using in [[*ispell][ispell]].
 *** ESS
 ~company-dabbrev-code~ is nice. Let's have it.
 #+BEGIN_SRC emacs-lisp
@@ -563,8 +557,23 @@ We want this everywhere
 (electric-pair-mode t)
 #+END_SRC
 *** ispell
+Let's get a nice big dictionary from [[http://app.aspell.net/create][SCOWL Custom List/Dictionary Creator]] with
+the following configuration
+ - size :: 80 (huge)
+ - spellings :: British(-ise) and Australian
+ - spellling variants level :: 0
+ - diacritics :: keep
+ - extra lists :: hacker, roman numerals
 #+BEGIN_SRC emacs-lisp
 (setq ispell-dictionary "en_GBs_au_SCOWL_80_0_k_hr")
+(setq company-ispell-dictionary "en_GBs_au_SCOWL_80_0_k_hr")
+#+END_SRC
+Oh, and by the way, if ~company-ispell-dictionary~ is ~nil~, then
+~ispell-complete-word-dict~ is used instead.
+It seems reasonable to want to keep an eye on my personal dict, let's have it
+nearby (also means that if I change the 'main' dictionary I keep my addition).
+#+BEGIN_SRC emacs-lisp
+(setq ispell-personal-dictionary (expand-file-name ".hunspell_personal" doom-private-dir))
 #+END_SRC
 *** spray
 Let's make this suit me slightly better.
