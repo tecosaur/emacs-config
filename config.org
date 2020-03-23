@@ -1249,10 +1249,18 @@ be unaffected lest's use ~;~ as a prefix to prevent the transformation --- i.e.
 
 Now for a few more adjustments.
 #+BEGIN_SRC emacs-lisp
-(with-eval-after-load 'ox-latex
+(after! ox-latex
   (add-to-list 'org-latex-classes
                '("fancy-article"
-               "\\documentclass{scrartcl}\n\\usepackage[T1]{fontenc}\\usepackage[osf,largesc,helvratio=0.9]{newpxtext}\\usepackage[scale=0.92]{sourcecodepro}\n\\usepackage[varbb]{newpxmath}\\usepackage[activate={true,nocompatibility},final,tracking=true,kerning=true,spacing=true,factor=2000]{microtype}"
+               "\\documentclass{scrartcl}\n\
+\\usepackage[T1]{fontenc}\n\
+\\usepackage[osf,largesc,helvratio=0.9]{newpxtext}\n\
+\\usepackage[scale=0.92]{sourcecodepro}\n\
+\\usepackage[varbb]{newpxmath}\n\
+\\usepackage[activate={true,nocompatibility},final,tracking=true,kerning=true,spacing=true,factor=2000]{microtype}\n\
+\\usepackage{xcolor}\n\
+\\setlength{\\parskip}{\\baselineskip}\n\
+\\setlength{\\parindent}{0pt}"
                ("\\section{%s}" . "\\section*{%s}")
                ("\\subsection{%s}" . "\\subsection*{%s}")
                ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
@@ -1291,7 +1299,7 @@ Now for a few more adjustments.
                ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
                ("\\paragraph{%s}" . "\\paragraph*{%s}")
                ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
-  (setq org-latex-default-class "bmc-article")
+  (setq org-latex-default-class "fancy-article")
 
   (add-to-list 'org-latex-packages-alist '("" "minted"))
   (setq org-latex-listings 'minted)
@@ -1313,7 +1321,19 @@ Now for a few more adjustments.
           ("breakbeforesymbolpre" "\\,\\footnotesize\\ensuremath{{}_{\\rfloor}}")
           ("breakaftersymbolpre" "\\,\\footnotesize\\ensuremath{{}_{\\rfloor}}")))
 
-  (setq org-latex-hyperref-template "\\hypersetup{\n pdfauthor={%a},\n pdftitle={%t},\n pdfkeywords={%k},\n pdfsubject={%d},\n pdfcreator={%c},\n pdflang={%L},\n colorlinks=true,\nlinkcolor=}\n\\urlstyle{same}\n")
+  (setq org-latex-hyperref-template "\\hypersetup{
+  pdfauthor={%a},
+  pdftitle={%t},
+  pdfkeywords={%k},
+  pdfsubject={%d},
+  pdfcreator={%c},
+  pdflang={%L},
+  breaklinks=true,
+  colorlinks=true,
+  linkcolor=,
+  urlcolor=blue!70!green,
+  citecolor=green!60!blue\n}
+\\urlstyle{same}\n")
   (setq org-latex-pdf-process
         '("latexmk -shell-escape -interaction=nonstopmode -f -pdf -output-directory=%o %f")))
 #+END_SRC
