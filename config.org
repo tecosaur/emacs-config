@@ -1,6 +1,6 @@
 #+TITLE: Doom Emacs Configuration
 #+AUTHOR: tecosaur
-#+PROPERTY: header-args :tangle yes :cache yes :results silent :padline no
+#+PROPERTY: header-args:emacs-lisp :tangle yes :cache yes :results silent :padline no
 #+HTML_HEAD: <link rel='shortcut icon' type='image/png' href='https://www.gnu.org/software/emacs/favicon.png'>
 
 #+BEGIN_QUOTE
@@ -185,7 +185,7 @@ systemctl --user enable emacs.service
 #+END_SRC
 * Package loading
 :PROPERTIES:
-:header-args: :tangle "packages.el"
+:header-args:emacs-lisp: :tangle "packages.el"
 :END:
 This file shouldn't be byte compiled.
 #+BEGIN_SRC emacs-lisp :tangle "packages.el"
@@ -193,7 +193,7 @@ This file shouldn't be byte compiled.
 #+END_SRC
 ** Loading instructions
 :PROPERTIES:
-:header-args: :tangle no
+:header-args:emacs-lisp: :tangle no
 :END:
 This is where you install packages, by declaring them with the ~package!~
 macro, then running ~doom refresh~ on the command line. You'll need to
@@ -616,11 +616,11 @@ be changed with the following file. For system-wide changes try
 #+END_SRC
 What's nice is that Papirus [[https://github.com/PapirusDevelopmentTeam/papirus-icon-theme/commit/a10fb7f2423d5e30b9c4477416ccdc93c4f3849d][now]] has an icon for =text/org=.
 One simply needs to refresh their mime database
-#+BEGIN_SRC shell :results silent :tangle no
+#+BEGIN_SRC shell :results silent
 update-mime-database ~/.local/share/mime
 #+END_SRC
 Then set emacs as the default editor
-#+BEGIN_SRC shell :results silent :tangle no
+#+BEGIN_SRC shell :results silent
 xdg-mime default emacs.desktop text/org
 #+END_SRC
 *** Behaviour
