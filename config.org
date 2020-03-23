@@ -438,10 +438,21 @@ When the window opens, we generally want text so let's use a nice sans serif fon
 a position the window below and to the left. Oh, and don't forget about checking
 for ~GFM~, otherwise let's just use ~markdown~.
 #+BEGIN_SRC emacs-lisp
+(define-minor-mode emacs-anywhere-mode
+  "To tweak the current buffer for some emacs-anywhere considerations"
+  :init-value nil
+  ;; I'm used to C-c C-c for 'completed the thing' so add that
+  ;; :keymap '((kbd "C-c C-c") . (lambda () (interactive) (if (equal major-mode "org-mode") (if (org-in-src-block-p) (org-ctrl-c-ctrl-c) (delete-frame)) (delete-frame))))
+
+  (when emacs-anywhere-mode
+    ;; disable tabs
+    (when (centaur-tabs-mode) (centaur-tabs-local-mode t)))
+  )
+
 (defun ea-popup-handler (app-name window-title x y w h)
   (set-frame-size (selected-frame) 80 12)
   (interactive)
-  ; position
+  ;; position
   (let* ((mousepos (split-string (shell-command-to-string "xdotool getmouselocation | sed -E \"s/ screen:0 window:[^ ]*|x:|y://g\"")))
          (mouse-x (- (string-to-number (nth 0 mousepos)) 100))
          (mouse-y (- (string-to-number (nth 1 mousepos)) 50)))
@@ -450,7 +461,7 @@ for ~GFM~, otherwise let's just use ~markdown~.
   (set-frame-name (concat "Quick Edit ∷ " ea-app-name " — "
                           (truncate-string-to-width (string-trim  (string-trim-right window-title (format "-[A-Za-z0-9 ]*%s" ea-app-name)) "[\s-]+" "[\s-]+") 45 nil nil "…")))
 
-  ; set major mode
+  ;; set major mode
   (cond
    ((markdown-window-p window-title) (gfm-mode))
    (t (org-mode)) ; default major mode
@@ -459,10 +470,7 @@ for ~GFM~, otherwise let's just use ~markdown~.
   (when (gui-get-selection 'PRIMARY) (insert (gui-get-selection 'PRIMARY)))
 
   (evil-insert-state) ; start in insert
-  (when (centaur-tabs-mode) (centaur-tabs-local-mode t)) ; disable tabs
-
-  ; I'm used to C-c C-c for 'completed the thing' so add that
-  (local-set-key (kbd "C-c C-c") (lambda () (interactive) (local-unset-key (kbd "C-c C-c")) (delete-frame))))
+  (emacs-anywhere-mode 1))
 
 (add-hook 'ea-popup-hook 'ea-popup-handler)
 #+END_SRC
