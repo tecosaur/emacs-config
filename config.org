@@ -675,6 +675,11 @@ It's also nice to be able to use ~cdlatex~.
 #+END_SRC
 At some point in the future it could be good to investigate [[https://scripter.co/splitting-an-org-block-into-two/][splitting org blocks]].
 Likewise [[https://archive.casouri.cat/note/2020/insert-math-symbol-in-emacs/][this]] looks good for symbols.
+
+My spelling is atrocious, so let's get flycheck going.
+#+BEGIN_SRC emacs-lisp
+(after! org (add-hook 'org-mode-hook 'turn-on-flyspell))
+#+END_SRC
 *** Visuals
 **** In editor
 ***** Font Display
