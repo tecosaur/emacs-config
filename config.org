@@ -1,6 +1,6 @@
 #+TITLE: Doom Emacs Configuration
 #+AUTHOR: tecosaur
-#+PROPERTY: header-args:emacs-lisp :tangle yes :cache yes :results silent :padline no
+#+PROPERTY: header-args:emacs-lisp :tangle yes :cache yes :results silent
 #+HTML_HEAD: <link rel='shortcut icon' type='image/png' href='https://www.gnu.org/software/emacs/favicon.png'>
 
 #+BEGIN_QUOTE
@@ -633,6 +633,7 @@ Then set emacs as the default editor
 xdg-mime default emacs.desktop text/org
 #+END_SRC
 *** Behaviour
+**** Tweaking defaults
 #+BEGIN_SRC emacs-lisp
 (setq org-directory "~/.org"                      ; let's put files here
       org-use-property-inheritance t              ; it's convenient to have properties inherited
@@ -641,6 +642,18 @@ xdg-mime default emacs.desktop text/org
       org-export-in-background t                  ; run export processes in external emacs process
       org-catch-invisible-edits 'smart)           ; try not to accidently do weird stuff in invisible regions
 #+END_SRC
+I also like the ~:comments~ header-argument, so let's make that a default.
+#+BEGIN_SRC emacs-lisp
+(setq org-babel-default-header-args '((:session . "none")
+                                      (:results . "replace")
+                                      (:exports . "code")
+                                      (:cache . "no")
+                                      (:noweb . "no")
+                                      (:hlines . "no")
+                                      (:tangle . "no")
+                                      (:comments . "link")))
+#+END_SRC
+**** Extra functionality
 Let's also make creating an org buffer just that little bit easier.
 #+BEGIN_SRC emacs-lisp
 (evil-define-command evil-buffer-org-new (count file)
