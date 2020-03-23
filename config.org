@@ -1396,6 +1396,25 @@ Syntax highlighting is nice, so let's turn all of that on
  (ess-R-fl-keyword:F&T . t)))
 #+END_SRC
 ** LaTeX
+*** To-be-implemented ideas
+- Paste image from clipboard
+  + Determine first folder in ~graphicspath~ if applicable
+  + Ask for file name
+  + Use ~xclip~ to save file to graphics folder, or current directory (whichever applies)
+    #+BEGIN_SRC shell :eval no
+command -v xclip >/dev/null 2>&1 || { echo >&1 "no xclip"; exit 1; }
+
+if
+xclip -selection clipboard -target image/png -o >/dev/null 2>&1
+then
+xclip -selection clipboard -target image/png -o >$1 2>/dev/null
+echo $1
+else
+echo "no image"
+fi
+#+END_SRC
+  + Insert figure, with filled in details as a result (activate =yasnippet= with
+    filename as variable maybe?)
 *** Snippet value
 For use in the new-file template, let's set out a nice preamble we may want to use.
 #+NAME: latex-nice-preable
