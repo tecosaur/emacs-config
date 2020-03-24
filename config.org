@@ -1712,24 +1712,25 @@ but more convinient, like =;=.
 #+BEGIN_SRC emacs-lisp
 (after! cdlatex
   (setq ;; cdlatex-math-symbol-prefix ?\; ;; doesn't work at the moment :(
-        cdlatex-math-symbol-alist
-        '( ;; adding missing functions to 3rd level symbols
-          (?_    ("\\downarrow"  ""           "\\inf"))
-          (?^    ("\\uparrow"    ""           "\\sup"))
-          (?k    ("\\kappa"      ""           "\\ker"))
-          (?m    ("\\mu"         ""           "\\lim"))
-          (?c    (""             "\\circ"     "\\cos"))
-          (?d    ("\\delta"      "\\partial"  "\\dim"))
-          (?D    ("\\Delta"      "\\nabla"    "\\deg"))
-          ;; no idea why \Phi isnt on 'F' in first place, \phi is on 'f'.
-          (?F    ("\\Phi"))
-          ;; now just conveniance
-          (?.    ("\\cdot" "\\dots"))
-          (?:    ("\\vdots" "\\ddots"))))
-  cdlatex-math-modify-alist
-  '( ;; my own stuff
-    (?B    "\\mathbb"        nil          t    nil  nil)
-    (?a    "\\abs"           nil          t    nil  nil)))
+   cdlatex-math-symbol-alist
+   '( ;; adding missing functions to 3rd level symbols
+     (?_    ("\\downarrow"  ""           "\\inf"))
+     (?^    ("\\uparrow"    ""           "\\sup"))
+     (?k    ("\\kappa"      ""           "\\ker"))
+     (?m    ("\\mu"         ""           "\\lim"))
+     (?c    (""             "\\circ"     "\\cos"))
+     (?d    ("\\delta"      "\\partial"  "\\dim"))
+     (?D    ("\\Delta"      "\\nabla"    "\\deg"))
+     ;; no idea why \Phi isnt on 'F' in first place, \phi is on 'f'.
+     (?F    ("\\Phi"))
+     ;; now just conveniance
+     (?.    ("\\cdot" "\\dots"))
+     (?:    ("\\vdots" "\\ddots"))
+     (?*    ("\\times" "\\star" "\\ast")))
+   cdlatex-math-modify-alist
+   '( ;; my own stuff
+     (?B    "\\mathbb"        nil          t    nil  nil)
+     (?a    "\\abs"           nil          t    nil  nil))))
 #+END_SRC
 ** R
 *** Editor Visuals
