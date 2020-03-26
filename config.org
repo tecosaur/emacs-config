@@ -604,6 +604,13 @@ done perfectly acceptable, so let's make that happen.
 #+BEGIN_SRC emacs-lisp
 (setq wttrin-default-cities '(""))
 #+END_SRC
+*** LSP
+For some reason I'de been having an issue with loading ~lsp-ui~. I don't know why
+this is needed, but it seems to fix things.
+#+BEGIN_SRC emacs-lisp
+(defvar lsp-ui-doc-winum-ignore nil)
+#+END_SRC
+Without this I get ~File mode specification error: (void-variable lsp-ui-doc-winum-ignore)~.
 * Language configuration
 *** File Templates
 For some file types, we overwrite defaults in the [[file:./snippets][snippets]] directory, others
