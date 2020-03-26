@@ -430,9 +430,9 @@ take markdown
 #+BEGIN_SRC emacs-lisp
 (defun markdown-window-p (window-title)
   "Judges from WINDOW-TITLE whether the current window likes markdown"
-  (or (string-match-p "Pull Request" window-title)
-      (string-match-p "Issue" window-title)
-      (string-match-p "Discord" window-title)))
+  (string-match-p (rx (or "Stack Exchange" "Stack Overflow"
+                          "Pull Request" "Issue" "Discord"))
+                  window-title))
 #+END_SRC
 When the window opens, we generally want text so let's use a nice sans serif font,
 a position the window below and to the left. Oh, and don't forget about checking
@@ -441,28 +441,40 @@ for ~GFM~, otherwise let's just use ~markdown~.
 (define-minor-mode emacs-anywhere-mode
   "To tweak the current buffer for some emacs-anywhere considerations"
   :init-value nil
-  ;; I'm used to C-c C-c for 'completed the thing' so add that
-  ;; :keymap '((kbd "C-c C-c") . (lambda () (interactive) (if (equal major-mode "org-mode") (if (org-in-src-block-p) (org-ctrl-c-ctrl-c) (delete-frame)) (delete-frame))))
-
+  :keymap (list
+           ;; Finish edit, but be smart in org mode
+           (cons (kbd "C-c C-c") (lambda! (if (and (eq major-mode 'org-mode)
+                                                   (org-in-src-block-p))
+                                              (org-ctrl-c-ctrl-c)
+                                            (delete-frame))))
+           ;; Abort edit. emacs-anywhere saves the current edit for next time.
+           (cons (kbd "C-c C-k") (lambda! (setq ea-on nil)
+                                          (delete-frame))))
   (when emacs-anywhere-mode
     ;; line breaking
     (turn-off-auto-fill)
     (visual-line-mode t)
     ;; disable tabs
-    (when (centaur-tabs-mode) (centaur-tabs-local-mode t)))
-  )
+    (when (bound-and-true-p centaur-tabs-mode)
+      (centaur-tabs-local-mode t))))
 
 (defun ea-popup-handler (app-name window-title x y w h)
-  (set-frame-size (selected-frame) 80 12)
   (interactive)
-  ;; position
+  (set-frame-size (selected-frame) 80 12)
+  ;; position the frame near the mouse
   (let* ((mousepos (split-string (shell-command-to-string "xdotool getmouselocation | sed -E \"s/ screen:0 window:[^ ]*|x:|y://g\"")))
          (mouse-x (- (string-to-number (nth 0 mousepos)) 100))
          (mouse-y (- (string-to-number (nth 1 mousepos)) 50)))
     (set-frame-position (selected-frame) mouse-x mouse-y))
 
   (set-frame-name (concat "Quick Edit ∷ " ea-app-name " — "
-                          (truncate-string-to-width (string-trim  (string-trim-right window-title (format "-[A-Za-z0-9 ]*%s" ea-app-name)) "[\s-]+" "[\s-]+") 45 nil nil "…")))
+                          (truncate-string-to-width
+                           (string-trim
+                            (string-trim-right window-title
+                                               (format "-[A-Za-z0-9 ]*%s" ea-app-name))
+                            "[\s-]+" "[\s-]+")
+                           45 nil nil "…")))
+  (message "window-title: %s" window-title)
 
   ;; set major mode
   (cond
