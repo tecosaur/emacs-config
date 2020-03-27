@@ -1,6 +1,6 @@
 #+TITLE: Doom Emacs Configuration
 #+AUTHOR: tecosaur
-#+PROPERTY: header-args:emacs-lisp :tangle yes :cache yes :results silent
+#+PROPERTY: header-args:emacs-lisp :tangle yes :cache yes :results silent :comments link
 #+HTML_HEAD: <link rel='shortcut icon' type='image/png' href='https://www.gnu.org/software/emacs/favicon.png'>
 
 #+BEGIN_QUOTE
@@ -166,27 +166,94 @@ I'd like to have just the buffer name, then if applicable the project folder
 Emacs can render an image as the splash screen, and *@val0r* on the Discord came
 up with a cracker!
 [[file:misc/blackhole-lines.svg]]
+Let's make a few different sensible sizes for this, and auto-generate for every theme.
 #+BEGIN_SRC emacs-lisp
-(setq fancy-splash-image-big  (expand-file-name "misc/blackhole-lines.svg" doom-private-dir))
-(setq fancy-splash-image-small (expand-file-name "misc/blackhole-lines-small.svg" doom-private-dir))
-(setq fancy-splash-image-verysmall (expand-file-name "misc/transparent-pixel.png" doom-private-dir))
+(defvar fancy-splash-image-template
+  (expand-file-name "misc/blackhole-lines-template.svg" doom-private-dir)
+  "Default template svg used for the splash image, with substitutions from ")
+
+(setq fancy-splash-0-image (expand-file-name "misc/transparent-pixel.png" doom-private-dir))
+
+(defvar fancy-splash-sizes
+  `((:height 500 :minheight 50 :padding (0 . 2))
+    (:height 440 :minheight 42 :padding (1 . 4))
+    (:height 330 :minheight 36 :padding (1 . 3))
+    (:height 220 :minheight 30 :padding (1 . 2))
+    (:height 0 :minheight 0 :padding (0 . 0) :file ,fancy-splash-0-image))
+  "list of plists with the following properties
+  :height the height of the image
+  :minheight minimum `frame-height' for image
+  :padding `+doom-dashboard-banner-padding' to apply
+  :template non-default template file
+  :file file to use instead of template")
+
+(defvar fancy-splash-template-colours
+  '(("$colour1" . keywords) ("$colour2" . type) ("$colour3" . base5) ("$colour4" . base8))
+  "list of colour-replacement alists of the form (\"$placeholder\" . 'theme-colour) which applied the template")
+
+(unless (file-exists-p (expand-file-name "theme-splashes" doom-cache-dir))
+  (make-directory (expand-file-name "theme-splashes" doom-cache-dir) t))
+
+(defun fancy-splash-filename (theme-name height)
+  (expand-file-name (concat (file-name-as-directory "theme-splashes")
+                            (symbol-name doom-theme)
+                            "-" (number-to-string height) ".svg")
+                    doom-cache-dir))
+
+(defun fancy-splash-clear-cache ()
+  "Delete all cached fancy splash images"
+  (interactive)
+  (delete-directory (expand-file-name "theme-splashes" doom-cache-dir) t)
+  (message "Cache cleared!"))
+
+(defun fancy-splash-generate-image (template height)
+  "Read TEMPLATE and create an image if HEIGHT with colour substitutions as  ;described by `fancy-splash-template-colours' for the current theme"
+    (with-temp-buffer
+      (insert-file-contents template)
+      (re-search-forward "$height" nil t)
+      (replace-match (number-to-string height) nil nil)
+      (dolist (substitution fancy-splash-template-colours)
+        (beginning-of-buffer)
+        (while (re-search-forward (car substitution) nil t)
+          (replace-match (doom-color (cdr substitution)) nil nil)))
+      (write-region (point-min) (point-max)
+                    (fancy-splash-filename (symbol-name doom-theme) height))))
+
+(defun fancy-splash-generate-images ()
+  "Perform `fancy-splash-generate-image' in bulk"
+  (dolist (size fancy-splash-sizes)
+    (unless (plist-get size :file)
+      (fancy-splash-generate-image (cond ((plist-get size :file) (plist-get size :file))
+                                         ((plist-get size :template) (plist-get size :template))
+                                         (fancy-splash-image-template fancy-splash-image-template))
+                                   (plist-get size :height)))))
+
+(defun ensure-theme-splash-images-exist (&optional height)
+  (if (file-exists-p (fancy-splash-filename (symbol-name doom-theme) (cond (height height) (plist-get (car fancy-splash-sizes) :height))))
+      t (fancy-splash-generate-images)))
+
+(defun get-appropriate-splash ()
+  (let ((height (frame-height)))
+    (cl-some (lambda (size) (if (>= height (plist-get size :minheight)) size nil))
+             fancy-splash-sizes)))
+
+(setq fancy-splash-last-size nil)
+(setq fancy-splash-last-theme nil)
 (defun set-appropriate-splash (&optional frame)
-  (let ((appropriate-image (let ((height (frame-height)))
-                             (if (< height 40)
-                                 (if (< height 30) fancy-splash-image-verysmall fancy-splash-image-small)
-                               fancy-splash-image-big )))
-        (appropriate-padding (let ((height (frame-height)))
-                               (if (< height 40)
-                                   (if (< height 30) '(0 . 0) '(1 . 2))
-                                 '(1 . 4)))))
-    (let ((image-change (unless (equal appropriate-padding +doom-dashboard-banner-padding)
-                          (setq +doom-dashboard-banner-padding appropriate-padding)))
-          (padding-change (unless (equal appropriate-image fancy-splash-image)
-                            (setq fancy-splash-image appropriate-image))))
-      (if (or image-change padding-change)
-          (+doom-dashboard-reload)))))
-(set-appropriate-splash)
+  (let ((appropriate-image (get-appropriate-splash)))
+    (ensure-theme-splash-images-exist (plist-get appropriate-image :height))
+    (unless (and (equal appropriate-image fancy-splash-last-size)
+                 (equal doom-theme fancy-splash-last-theme))
+          (if (plist-get appropriate-image :file)
+              (setq fancy-splash-image (plist-get appropriate-image :file))
+            (setq fancy-splash-image (fancy-splash-filename (symbol-name doom-theme) (plist-get appropriate-image :height))))
+          (setq +doom-dashboard-banner-padding (plist-get appropriate-image :padding))
+          (setq fancy-splash-last-size appropriate-image)
+          (setq fancy-splash-last-theme doom-theme)
+          (+doom-dashboard-reload))))
+
 (add-hook 'window-size-change-functions #'set-appropriate-splash)
+(add-hook 'doom-load-theme-hook #'set-appropriate-splash)
 #+END_SRC
 *** Systemd daemon
 For running a systemd service for a emacs server I have the following
@@ -637,7 +704,7 @@ Let's make this suit me slightly better.
       spray-height 700)
 #+END_SRC
 *** theme magic
-Let's automaticly update terminals on theme change
+Let's automatically update terminals on theme change
 #+BEGIN_SRC emacs-lisp
 (add-hook 'doom-load-theme-hook 'theme-magic-from-emacs)
 #+END_SRC
