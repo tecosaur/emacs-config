@@ -692,10 +692,12 @@ the following configuration
  - extra lists :: hacker, roman numerals
 #+BEGIN_SRC emacs-lisp
 (setq ispell-dictionary "en_GBs_au_SCOWL_80_0_k_hr")
-(setq company-ispell-dictionary "en_GBs_au_SCOWL_80_0_k_hr")
 #+END_SRC
 Oh, and by the way, if ~company-ispell-dictionary~ is ~nil~, then
-~ispell-complete-word-dict~ is used instead.
+~ispell-complete-word-dict~ is used instead, which once again when ~nil~ is
+~ispell-alternate-dictionary~, which at the moment maps to a plaintext version of
+the above.
+
 It seems reasonable to want to keep an eye on my personal dict, let's have it
 nearby (also means that if I change the 'main' dictionary I keep my addition).
 #+BEGIN_SRC emacs-lisp
