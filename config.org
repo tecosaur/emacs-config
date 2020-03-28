@@ -232,8 +232,12 @@ Let's make a few different sensible sizes for this, and auto-generate for every 
                                    (plist-get size :height)))))
 
 (defun ensure-theme-splash-images-exist (&optional height)
-  (unless (file-exists-p (fancy-splash-filename (symbol-name doom-theme) (cond (height height) (plist-get (car fancy-splash-sizes) :height))))
-      (fancy-splash-generate-images)))
+  (unless (file-exists-p (fancy-splash-filename
+                          (symbol-name doom-theme)
+                          (cond (height height)
+                                ((plist-get (car fancy-splash-sizes) :height)
+                                 (plist-get (car fancy-splash-sizes) :height)))))
+    (fancy-splash-generate-images)))
 
 (defun get-appropriate-splash ()
   (let ((height (frame-height)))
@@ -244,17 +248,18 @@ Let's make a few different sensible sizes for this, and auto-generate for every 
 (setq fancy-splash-last-theme nil)
 (defun set-appropriate-splash (&optional frame)
   (let ((appropriate-image (get-appropriate-splash)))
-    (ensure-theme-splash-images-exist (plist-get appropriate-image :height))
     (unless (and (equal appropriate-image fancy-splash-last-size)
-                 (equal doom-theme fancy-splash-last-theme))
-      (setq fancy-splash-image
-            (if (plist-get appropriate-image :file)
-                (plist-get appropriate-image :file)
-              (fancy-splash-filename (symbol-name doom-theme) (plist-get appropriate-image :height))))
-      (setq +doom-dashboard-banner-padding (plist-get appropriate-image :padding))
-      (setq fancy-splash-last-size appropriate-image)
-      (setq fancy-splash-last-theme doom-theme)
-      (+doom-dashboard-reload))))
+                 (equal doom-theme fancy-splash-last-theme)))
+    (unless (plist-get appropriate-image :file)
+      (ensure-theme-splash-images-exist (plist-get appropriate-image :height)))
+    (setq fancy-splash-image
+          (if (plist-get appropriate-image :file)
+              (plist-get appropriate-image :file)
+            (fancy-splash-filename (symbol-name doom-theme) (plist-get appropriate-image :height))))
+    (setq +doom-dashboard-banner-padding (plist-get appropriate-image :padding))
+    (setq fancy-splash-last-size appropriate-image)
+    (setq fancy-splash-last-theme doom-theme)
+    (+doom-dashboard-reload)))
 
 (add-hook 'window-size-change-functions #'set-appropriate-splash)
 (add-hook 'doom-load-theme-hook #'set-appropriate-splash)
