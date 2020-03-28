@@ -219,8 +219,8 @@ Let's make a few different sensible sizes for this, and auto-generate for every 
         (beginning-of-buffer)
         (while (re-search-forward (car substitution) nil t)
           (replace-match (doom-color (cdr substitution)) nil nil)))
-      (write-region (point-min) (point-max)
-                    (fancy-splash-filename (symbol-name doom-theme) height))))
+      (write-region nil nil
+                    (fancy-splash-filename (symbol-name doom-theme) height) nil nil)))
 
 (defun fancy-splash-generate-images ()
   "Perform `fancy-splash-generate-image' in bulk"
