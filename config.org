@@ -356,6 +356,27 @@ our package manager can't deal with; see [[https://github.com/raxod502/straight.
 #+BEGIN_SRC emacs-lisp
 (package! builtin-package :recipe (:branch "develop"))
 #+END_SRC
+*** Updating all pins in file
+#+BEGIN_SRC emacs-lisp
+(defun +doom/update-all-pinned-package-form ()
+  "Call `doom/update-pinned-package-form' on every package! statement in the buffer"
+  (interactive)
+  (beginning-of-buffer)
+  (let ((progress 0) (total (how-many "package!")) (updated 0))
+    (while (search-forward "package!" nil t)
+      (setq progress (1+ progress))
+      (forward-char) ;; move cursor to package name "package! |name"
+      (message (format "Re-pinning package: %s/%s (%s)" progress total (current-word)))
+      (backward-char)
+      (evil-scroll-line-to-center (line-number-at-pos))
+      (redisplay)
+      (if (s-contains-p "Updated" (condition-case nil
+                                      (doom/update-pinned-package-form)
+                                    (user-error "")))
+        (setq updated (1+ updated)))
+      (search-forward "package!" nil t)) ;; because of cursor-moving done
+    (message (format "%s packages updated" updated))))
+#+END_SRC
 ** General packages
 *** Auto-complete
 #+BEGIN_SRC emacs-lisp
