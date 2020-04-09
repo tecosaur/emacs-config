@@ -1877,12 +1877,14 @@ Once again, /all hail mixed pitch mode!/
 
 Let's enhance ~TeX-fold-math~ a bit
 #+BEGIN_SRC emacs-lisp
+(after! latex
+  (setcar (assoc "⋆" LaTeX-fold-math-spec-list) "★")) ;; make \star bigger
+
 (setq TeX-fold-math-spec-list
       `(;; missing/better symbols
         ("≤" ("le"))
         ("≥" ("ge"))
         ("≠" ("ne"))
-        ("★" ("star"))
         ;; conviniance shorts
         ("‹" ("left"))
         ("›" ("right"))
