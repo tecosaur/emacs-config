@@ -532,6 +532,7 @@ Then let's change the font to a sans serif, but the default one doesn't fit too
 well somehow, so let's switch to 'P22 Underground Book'; it looks much nicer.
 #+BEGIN_SRC emacs-lisp
 (after! centaur-tabs
+  (centaur-tabs-mode -1)
   (setq centaur-tabs-height 36
         centaur-tabs-set-icons t
         centaur-tabs-modified-marker "o"
