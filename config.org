@@ -1819,6 +1819,14 @@ fi
 #+END_SRC
   + Insert figure, with filled in details as a result (activate =yasnippet= with
     filename as variable maybe?)
+*** Compilation
+#+BEGIN_SRC emacs-lisp
+(setq TeX-save-query nil
+      TeX-show-compilation t
+      TeX-command-extra-options "-shell-escape")
+(after! latex
+  (add-to-list 'TeX-command-list '("XeLaTeX" "%`xelatex%(mode)%' %t" TeX-run-TeX nil t)))
+#+END_SRC
 *** Snippet value
 For use in the new-file template, let's set out a nice preamble we may want to use.
 #+NAME: latex-nice-preable
@@ -1870,7 +1878,7 @@ Once again, /all hail mixed pitch mode!/
 Let's enhance ~TeX-fold-math~ a bit
 #+BEGIN_SRC emacs-lisp
 (setq TeX-fold-math-spec-list
-      '(;; missing/better symbols
+      `(;; missing/better symbols
         ("≤" ("le"))
         ("≥" ("ge"))
         ("≠" ("ne"))
@@ -1891,6 +1899,8 @@ Let's enhance ~TeX-fold-math~ a bit
         ;; known commands
         ("" ("phantom"))
         ("❪{1}／{2}❫" ("frac"))
+        (,(lambda (arg) (concat "√" (TeX-fold-parenthesize-as-neccesary arg))) ("sqrt"))
+        (,(lambda (arg) (concat "⭡" (TeX-fold-parenthesize-as-neccesary arg))) ("vec"))
         ("‘{1}’" ("text"))
         ;; private commands
         ("|{1}|" ("abs"))
@@ -1898,17 +1908,16 @@ Let's enhance ~TeX-fold-math~ a bit
         ("⌊{1}⌋" ("floor"))
         ("⌈{1}⌉" ("ceil"))
         ("⌊{1}⌉" ("round"))
-        ("⭡{1}" ("vec"))
         ("𝑑{1}/𝑑{2}" ("dv"))
         ("∂{1}/∂{2}" ("pdv"))
         ;; fancification
         ("{1}" ("mathrm"))
-        (TeX-fold-apply-mathbf ("mathbf"))
-        (TeX-fold-apply-mathcal ("mathcal"))
-        (TeX-fold-apply-mathfrak ("mathfrak"))
-        (TeX-fold-apply-mathbb ("mathbb"))
-        (TeX-fold-apply-mathsf ("mathsf"))
-        (TeX-fold-apply-mathtt ("mathtt"))
+        (,(lambda (word) (string-offset-roman-chars 119743 word)) ("mathbf"))
+        (,(lambda (word) (string-offset-roman-chars 119951 word)) ("mathcal"))
+        (,(lambda (word) (string-offset-roman-chars 120003 word)) ("mathfrak"))
+        (,(lambda (word) (string-offset-roman-chars 120055 word)) ("mathbb"))
+        (,(lambda (word) (string-offset-roman-chars 120159 word)) ("mathsf"))
+        (,(lambda (word) (string-offset-roman-chars 120367 word)) ("mathtt"))
         )
       TeX-fold-macro-spec-list
       '(
@@ -1938,28 +1947,17 @@ Let's enhance ~TeX-fold-math~ a bit
         ("⬗ {1}" ("end"))
         ))
 
-(defun TeX-fold-apply-mathbf (word)
-  (string-offset-roman-chars 119743 word))
-
-(defun TeX-fold-apply-mathcal (word)
-  (string-offset-roman-chars 119951 word))
-
-(defun TeX-fold-apply-mathfrak (word)
-  (string-offset-roman-chars 120003 word))
-
-(defun TeX-fold-apply-mathbb (word)
-  (string-offset-roman-chars 120055 word))
-
-(defun TeX-fold-apply-mathsf (word)
-  (string-offset-roman-chars 120159 word))
-
-(defun TeX-fold-apply-mathtt (word)
-  (string-offset-roman-chars 120367 word))
-
 (defun string-offset-roman-chars (offset word)
   "Shift the codepoint of each charachter in WORD by OFFSET with an extra -6 shift if the letter is lowercase"
     (apply 'string
        (mapcar (lambda (c) (+ (if (>= c 97) (- c 6) c) offset)) word)))
+
+(defun TeX-fold-parenthesize-as-neccesary (tokens &optional suppress-left suppress-right)
+  "Add ❪ ❫ parenthesis as if multiple LaTeX tokens appear to be present"
+  (if (string-match-p "^\\\\?\\w+$" tokens) tokens
+    (concat (if suppress-left "" "❪")
+            tokens
+            (if suppress-right "" "❫"))))
 #+END_SRC
 
 Let's just make the folding a little less manual
