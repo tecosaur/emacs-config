@@ -1960,33 +1960,6 @@ Let's enhance ~TeX-fold-math~ a bit
             (if suppress-right "" "❫"))))
 #+END_SRC
 
-Let's just make the folding a little less manual
-#+BEGIN_SRC emacs-lisp
-(defvar +latex-use-TeX-fold t
-  "Use TeX fold in TeX-mode.
-When set to non-nil, this adds a few hooks/advices to fold stuff.")
-
-;; Fold after cdlatex and snippets.
-(defun +TeX-fold-line-ah (&rest _)
-  "Auto-fold LaTeX macros after functions that typically insert them."
-  (TeX-fold-region (line-beginning-position) (line-end-position)))
-
-(when +latex-use-TeX-fold
-  (advice-add #'cdlatex-math-symbol :after #'+TeX-fold-line-ah)
-  (advice-add #'cdlatex-math-modify :after #'+TeX-fold-line-ah)
-  ;; local after-snippet hook for folding
-  (add-hook! 'TeX-mode-hook
-    (add-hook 'yas-after-exit-snippet-hook #'+TeX-fold-line-ah nil t))
-  ;; TeX-fold messes up the font face a bit too much, so
-  (add-hook! 'mixed-pitch-mode-hook
-    (when mixed-pitch-mode
-      (let ((var-pitch (face-attribute 'variable-pitch :family))
-            (var-height (face-attribute 'variable-pitch :height)))
-        (add-to-list 'mixed-pitch-fixed-cookie
-                     (face-remap-add-relative
-                      'TeX-fold-folded-face :family var-pitch :height var-height))))))
-#+END_SRC
-
 Some local keybindings to make life a bit easier
 #+BEGIN_SRC emacs-lisp
 (after! tex
@@ -1996,12 +1969,7 @@ Some local keybindings to make life a bit easier
 
    ;; normal stuff here
    :localleader
-   :desc "View" "v" #'TeX-view
-   (:when +latex-use-TeX-fold
-     :desc "Fold paragraph"     "f"   #'TeX-fold-paragraph
-     :desc "Unfold paragraph"   "C-f" #'TeX-fold-clearout-paragraph
-     :desc "Fold buffer"        "F"   #'TeX-fold-buffer
-     :desc "Unfold buffer"      "C-F" #'TeX-fold-clearout-buffer))
+   :desc "View" "v" #'TeX-view)
   (setq TeX-electric-math '("\\(" . "")))
 #+END_SRC
 
