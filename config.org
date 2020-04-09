@@ -461,6 +461,18 @@ inserts an org-ified version at point. Isn't that just great.
 #+BEGIN_SRC emacs-lisp
 (package! org-chef)
 #+END_SRC
+
+~org-superstar-mode~ seems better than ~org-bullets~, so let's switch to that
+instead. Since we're making stuff look nicer we may as well make priorities and
+tags prettier as well :)
+#+BEGIN_SRC emacs-lisp
+(package! org-bullets :disable t :pin "767f55feb5")
+(package! org-superstar
+  :recipe (:host github :repo "integral-dw/org-superstar-mode")
+  :pin "4659cfc120")
+(package! org-fancy-priorities :pin "819bb993b7")
+(package! org-pretty-tags :pin "40fd72f3e7")
+#+END_SRC
 * Package configuration
 ** Abbrev mode
 Thanks to [[https://emacs.stackexchange.com/questions/45462/use-a-single-abbrev-table-for-multiple-modes/45476#45476][use a single abbrev-table for multiple modes? - Emacs Stack Exchange]] I
@@ -1048,10 +1060,33 @@ I think ~▾~ is better for indicating 'collapsed section'.
 and add an extra ~org-bullet~ to the default list of four.
 I've also added some fun alternatives, just commented out.
 #+BEGIN_SRC emacs-lisp
-(setq org-ellipsis " ▾ "
-      org-bullets-bullet-list '("◉" "○" "✸" "✿" "✤")
-      ;; org-bullets-bullet-list '("Ⅰ" "Ⅱ" "Ⅲ" "Ⅳ" "Ⅴ" "Ⅵ" "Ⅶ" "Ⅷ" "Ⅸ" "Ⅹ")
-      )
+(use-package! org-superstar ; "prettier" bullets
+  :hook (org-mode . org-superstar-mode))
+
+(use-package org-fancy-priorities
+  :diminish
+  :defines org-fancy-priorities-list
+  :hook (org-mode . org-fancy-priorities-mode)
+  :config
+  (unless (char-displayable-p ?❗)
+    (setq org-fancy-priorities-list '("HIGH" "MID" "LOW" "OPTIONAL"))))
+
+(after! org
+  (use-package org-pretty-tags
+  :config
+   (setq org-pretty-tags-surrogate-strings
+          '(("uni" . "🎓")))
+   (org-pretty-tags-global-mode)))
+
+(after! org
+  (setq org-ellipsis " ▾ "
+        org-superstar-headline-bullets-list '("◉" "○" "✸" "✿" "✤" "✜" "◆" "▶")
+        org-fancy-priorities-list '((?A . "⚑") (?B . "⬆") (?C . "⬇") (?D . "❓"))
+        org-priority-faces '((?A . error) (?B . warning) (?C . success) (?D . all-the-icons-blue))
+        org-priority-highest ?A
+        org-priority-lowest ?D
+        ;; org-superstar-headline-bullets-list '("Ⅰ" "Ⅱ" "Ⅲ" "Ⅳ" "Ⅴ" "Ⅵ" "Ⅶ" "Ⅷ" "Ⅸ" "Ⅹ")
+        ))
 #+END_SRC
 It's also nice to make use of the unicode characters for check boxes, and other commands.
 #+BEGIN_SRC emacs-lisp
