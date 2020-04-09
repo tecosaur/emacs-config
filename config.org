@@ -2029,6 +2029,12 @@ but more convinient, like =;=.
      (?B    "\\mathbb"        nil          t    nil  nil)
      (?a    "\\abs"           nil          t    nil  nil))))
 #+END_SRC
+*** SyncTeX
+#+BEGIN_SRC emacs-lisp
+(after! tex
+  (add-to-list 'TeX-view-program-list '("Evince" "evince %o"))
+  (add-to-list 'TeX-view-program-selection '(output-pdf "Evince")))
+#+END_SRC
 ** R
 *** Editor Visuals
 #+BEGIN_SRC emacs-lisp
