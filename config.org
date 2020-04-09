@@ -401,6 +401,12 @@ With all our fancy emacs themes, my terminal is missing out!
 #+BEGIN_SRC emacs-lisp
 (package! theme-magic)
 #+END_SRC
+
+What's even the point of using Emacs unless you're constantly telling everyone
+about it?
+#+BEGIN_SRC emacs-lisp
+(package! elcord :pin "94b0afb9ba")
+#+END_SRC
 *** Other
 **** Flyspell-lazy
 To alleviate some [[Flyspell][issues with flyspell]]
@@ -745,6 +751,10 @@ Set the default city. It's initially ~Taipei~ but I find the IP-locating that's
 done perfectly acceptable, so let's make that happen.
 #+BEGIN_SRC emacs-lisp
 (setq wttrin-default-cities '(""))
+#+END_SRC
+*** elcord
+#+BEGIN_SRC emacs-lisp
+(setq elcord-use-major-mode-as-main-icon t)
 #+END_SRC
 * Language configuration
 *** File Templates
