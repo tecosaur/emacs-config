@@ -382,45 +382,45 @@ our package manager can't deal with; see [[https://github.com/raxod502/straight.
 #+BEGIN_SRC emacs-lisp
 (package! company-tabnine ; tab9 autocomplete
   :recipe (:host github :repo "TommyX12/company-tabnine"
-           :files ("company-tabnine.el" "fetch-binaries.sh")))
+           :files ("company-tabnine.el" "fetch-binaries.sh")) :pin "e986a4ad0d")
 #+END_SRC
 *** Prettification
 ~prettify-mode~ is nice and all, but adding substitutions is a little verbose.
 This helps with that.
 #+BEGIN_SRC emacs-lisp
 (package! prettify-utils ; simplify messing with prettify-mode
-  :recipe (:host github :repo "Ilazki/prettify-utils.el"))
+  :recipe (:host github :repo "Ilazki/prettify-utils.el") :pin "8b783d316c")
 #+END_SRC
 *** Window management
 #+BEGIN_SRC emacs-lisp
-(package! rotate)
+(package! rotate :pin "091b5ac4fc")
 #+END_SRC
 *** Fun
 Sometimes one just wants a little fun.
 XKCD comics are fun.
 #+BEGIN_SRC emacs-lisp
-(package! xkcd)
+(package! xkcd :pin "66e928706f")
 #+END_SRC
 
 Every so often, you want everyone else to /know/ that you're typing, or just to
 amuse oneself. Introducing: typewriter sounds!
 #+BEGIN_SRC emacs-lisp
-(package! selectric-mode)
+(package! selectric-mode :pin "bb9e66678f")
 #+END_SRC
 
 Hey, let's get the weather in here while we're at it.
 #+BEGIN_SRC emacs-lisp
-(package! wttrin)
+(package! wttrin :pin "df5427ce2a")
 #+END_SRC
 
 Why not flash words on the screen. Why not --- hey, it could be fun.
 #+BEGIN_SRC emacs-lisp
-(package! spray)
+(package! spray :pin "00638bc916")
 #+END_SRC
 
 With all our fancy emacs themes, my terminal is missing out!
 #+BEGIN_SRC emacs-lisp
-(package! theme-magic)
+(package! theme-magic :pin "844c4311bd")
 #+END_SRC
 
 What's even the point of using Emacs unless you're constantly telling everyone
@@ -438,18 +438,18 @@ To alleviate some [[Flyspell][issues with flyspell]]
 This is a nice extension to ~calc~
 #+BEGIN_SRC emacs-lisp
 (package! calctex :recipe (:host github :repo "johnbcoughlin/calctex"
-                                 :files ("*.el")))
+                                 :files ("*.el")) :pin "542b628eb4")
 #+END_SRC
 **** ESS
 View dataframes better with
 #+BEGIN_SRC emacs-lisp
-(package! ess-view)
+(package! ess-view :pin "d4e5a340b7")
 #+END_SRC
 ** Language packages
 *** Systemd
 For editing systemd unit files
 #+BEGIN_SRC emacs-lisp
-(package! systemd)
+(package! systemd :pin "51c148e09a")
 #+END_SRC
 *** Org Mode
 Org tables aren't the prettiest thing to look at. This package is supposed to
@@ -457,7 +457,7 @@ redraw them in the buffer with box-drawing characters. Sounds like an
 improvement to me! Just need to get it working...
 #+BEGIN_SRC emacs-lisp
 (package! org-pretty-table-mode
-  :recipe (:host github :repo "Fuco1/org-pretty-table"))
+  :recipe (:host github :repo "Fuco1/org-pretty-table") :pin "88380f865a")
 #+END_SRC
 Because of the /[[https://github.com/commonmark/commonmark-spec/wiki/markdown-flavors][lovely variety in markdown implementations]]/ there isn't actually
 such a thing a standard table spec ... or standard anything really. Because
@@ -465,28 +465,28 @@ such a thing a standard table spec ... or standard anything really. Because
 elements (a lot of them). So ~ox-gfm~ is handy for exporting markdown with all the
 features that GitHub has. Initialised in [[Exporting to GFM]].
 #+BEGIN_SRC emacs-lisp
-(package! ox-gfm)
+(package! ox-gfm :pin "99f93011b0")
 #+END_SRC
 
 Now and then citations need to happen
 #+BEGIN_SRC emacs-lisp
-(package! org-ref)
+(package! org-ref :pin "5bb9be2232")
 #+END_SRC
 
 For automatically toggling LaTeX fragment previews there's this nice package
 #+BEGIN_SRC emacs-lisp
-(package! org-fragtog)
+(package! org-fragtog :pin "8eca8084cc")
 #+END_SRC
 
 Came across this and ... it's cool
 #+BEGIN_SRC emacs-lisp
-(package! org-graph-view :recipe (:host github :repo "alphapapa/org-graph-view"))
+(package! org-graph-view :recipe (:host github :repo "alphapapa/org-graph-view") :pin "13314338d7")
 #+END_SRC
 
 I *need* this in my life. It take a URL to a recipe from a common site, and
 inserts an org-ified version at point. Isn't that just great.
 #+BEGIN_SRC emacs-lisp
-(package! org-chef)
+(package! org-chef :pin "67f50aa2a2")
 #+END_SRC
 
 ~org-superstar-mode~ seems better than ~org-bullets~, so let's switch to that
