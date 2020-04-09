@@ -853,7 +853,7 @@ I think it makes sense to have list bullets change with depth
 #+END_SRC
 Occasionally I want to cite something.
 #+BEGIN_SRC emacs-lisp
-(def-package! org-ref
+(use-package! org-ref
    :after org
    :config
     (setq org-ref-completion-library 'org-ref-ivy-cite))
