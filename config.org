@@ -296,7 +296,7 @@ systemctl --user enable emacs.service
 #+END_SRC
 * Package loading
 :PROPERTIES:
-:header-args:emacs-lisp: :tangle "packages.el"
+:header-args:emacs-lisp: :tangle "packages.el" :comments link
 :END:
 This file shouldn't be byte compiled.
 #+BEGIN_SRC emacs-lisp :tangle "packages.el"
@@ -357,7 +357,7 @@ our package manager can't deal with; see [[https://github.com/raxod502/straight.
 (package! builtin-package :recipe (:branch "develop"))
 #+END_SRC
 *** Updating all pins in file
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle yes
 (defun +doom/update-all-pinned-package-form ()
   "Call `doom/update-pinned-package-form' on every package! statement in the buffer"
   (interactive)
