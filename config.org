@@ -729,7 +729,13 @@ Now, we just identify the files in question.
 *** calc
 Radians are just better
 #+BEGIN_SRC emacs-lisp
-(setq calc-angle-mode 'rad)
+(setq calc-angle-mode 'rad  ;; radians are rad
+      calc-algebraic-mode t ;; allows '2*x instead of 'x<RET>2*
+      calc-symbolic-mode t) ;; keeps stuff like √2 irrational for as long as possible
+(after! calctex
+  (setq calctex-format-latex-header (concat calctex-format-latex-header
+                                            "\n\\usepackage{arevmath}")))
+(add-hook 'calc-mode-hook #'calctex-mode)
 #+END_SRC
 *** electric pair mode
 We want this everywhere
