@@ -1121,10 +1121,18 @@ I've also added some fun alternatives, just commented out.
 (after! org
   (setq org-ellipsis " ▾ "
         org-superstar-headline-bullets-list '("◉" "○" "✸" "✿" "✤" "✜" "◆" "▶")
-        org-fancy-priorities-list '((?A . "⚑") (?B . "⬆") (?C . "⬇") (?D . "❓"))
-        org-priority-faces '((?A . error) (?B . warning) (?C . success) (?D . all-the-icons-blue))
+        org-fancy-priorities-list '((?A . "⚑")  ;; ASAP
+                                    (?B . "⬆")  ;; High
+                                    (?C . "■")  ;; Medium
+                                    (?D . "⬇")  ;; Low
+                                    (?E . "❓")) ;; Optional
+        org-priority-faces '((?A . all-the-icons-red)
+                             (?B . all-the-icons-orange)
+                             (?C . all-the-icons-yellow)
+                             (?D . all-the-icons-green)
+                             (?E . all-the-icons-blue))
         org-priority-highest ?A
-        org-priority-lowest ?D
+        org-priority-lowest ?E
         ;; org-superstar-headline-bullets-list '("Ⅰ" "Ⅱ" "Ⅲ" "Ⅳ" "Ⅴ" "Ⅵ" "Ⅶ" "Ⅷ" "Ⅸ" "Ⅹ")
         ))
 #+END_SRC
