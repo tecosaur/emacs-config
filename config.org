@@ -1225,6 +1225,17 @@ is selected, only the bare key is returned."
   (when buffer (kill-buffer buffer))))))
 (advice-add 'org-mks :override #'org-mks-pretty)
 #+END_SRC
+The [[file:~/.emacs.d/bin/org-capture][org-capture bin]] is rather nice, but I'd be nicer with a smaller frame, and
+no modeline.
+#+BEGIN_SRC emacs-lisp
+(setf (alist-get 'height +org-capture-frame-parameters) 15)
+      ;; (alist-get 'name +org-capture-frame-parameters) "❖ Capture") ;; ATM hardcoded in other places, so changing breaks stuff
+(setq +org-capture-fn
+      (lambda ()
+        (interactive)
+        (set-window-parameter nil 'mode-line-format 'none)
+        (org-capture)))
+#+END_SRC
 **** Nicer headings
 Thanks to alphapapa's [[https://github.com/alphapapa/unpackaged.el#export-to-html-with-useful-anchors][unpackaged.el]].
 Unfortunately this currently seems to break some of the other modifications I've made.
