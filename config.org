@@ -1473,7 +1473,15 @@ I've also added some fun alternatives, just commented out.
   (use-package org-pretty-tags
   :config
    (setq org-pretty-tags-surrogate-strings
-          '(("uni" . "🎓")))
+         '(("uni" . "🎓")
+           ("assignment" . "📓")
+           ("email" . "🖂")
+           ("read" . "🕮")
+           ("article" . "🖹")
+           ("web" . "🌐")
+           ("info" . "🛈")
+           ("issue" . "🐛")
+           ("emacs" . "ɛ")))
    (org-pretty-tags-global-mode)))
 
 (after! org
