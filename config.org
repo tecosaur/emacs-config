@@ -452,6 +452,11 @@ For editing systemd unit files
 (package! systemd :pin "51c148e09a")
 #+END_SRC
 *** Org Mode
+**** Improve agenda/capture
+The agenda is nice, but a souped up version is nicer.
+#+BEGIN_SRC emacs-lisp
+(package! org-super-agenda :pin "dd0d104c26")
+#+END_SRC
 **** Visuals
 Org tables aren't the prettiest thing to look at. This package is supposed to
 redraw them in the buffer with box-drawing characters. Sounds like an
@@ -877,6 +882,76 @@ Likewise [[https://archive.casouri.cat/note/2020/insert-math-symbol-in-emacs/][t
 My spelling is atrocious, so let's get flycheck going.
 #+BEGIN_SRC emacs-lisp
 (after! org (add-hook 'org-mode-hook 'turn-on-flyspell))
+#+END_SRC
+**** Super agenda
+#+BEGIN_SRC emacs-lisp
+(use-package! org-super-agenda
+  :commands (org-super-agenda-mode))
+(after! org-agenda
+  (org-super-agenda-mode))
+
+(setq org-agenda-skip-scheduled-if-done t
+      org-agenda-skip-deadline-if-done t
+      org-agenda-include-deadlines t
+      org-agenda-block-separator nil
+      org-agenda-compact-blocks t)
+
+(setq org-agenda-custom-commands
+      '(("o" "Overview"
+         ((agenda "" ((org-agenda-span 'day)
+                      (org-super-agenda-groups
+                       '((:name "Today"
+                                :time-grid t
+                                :date today
+                                :todo "TODAY"
+                                :scheduled today
+                                :order 1)))))
+          (alltodo "" ((org-agenda-overriding-header "")
+                       (org-super-agenda-groups
+                        '((:name "Next to do"
+                                 :todo "NEXT"
+                                 :order 1)
+                          (:name "Important"
+                                 :tag "Important"
+                                 :priority "A"
+                                 :order 6)
+                          (:name "Due Today"
+                                 :deadline today
+                                 :order 2)
+                          (:name "Due Soon"
+                                 :deadline future
+                                 :order 8)
+                          (:name "Overdue"
+                                 :deadline past
+                                 :face error
+                                 :order 7)
+                          (:name "Assignments"
+                                 :tag "Assignment"
+                                 :order 10)
+                          (:name "Issues"
+                                 :tag "Issue"
+                                 :order 12)
+                          (:name "Projects"
+                                 :tag "Project"
+                                 :order 14)
+                          (:name "Emacs"
+                                 :tag "Emacs"
+                                 :order 13)
+                          (:name "Research"
+                                 :tag "Research"
+                                 :order 15)
+                          (:name "To read"
+                                 :tag "Read"
+                                 :order 30)
+                          (:name "Waiting"
+                                 :todo "WAITING"
+                                 :order 20)
+                          (:name "Trivial"
+                                 :priority<= "E"
+                                 :tag ("Trivial" "Unimportant")
+                                 :todo ("SOMEDAY" )
+                                 :order 90)
+                          (:discard (:tag ("Chore" "Routine" "Daily")))))))))))
 #+END_SRC
 **** Nicer headings
 Thanks to alphapapa's [[https://github.com/alphapapa/unpackaged.el#export-to-html-with-useful-anchors][unpackaged.el]].
