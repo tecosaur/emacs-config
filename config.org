@@ -969,6 +969,7 @@ Let's setup some org-capture templates
 
 (after! org-capture
   <<prettify-capture>>
+  (setq +org-capture-uni-units (split-string (f-read-text "~/.org/.uni-units")))
   (add-transient-hook! 'org-capture-select-template
     (setq org-capture-templates
           (doct `((,(format "%s\tPersonal todo" (all-the-icons-octicon "checklist" :face 'all-the-icons-green :v-adjust 0.01))
@@ -993,21 +994,26 @@ Let's setup some org-capture templates
                    :keys "u"
                    :file +org-capture-todo-file
                    :headline "University"
+                   :unit-prompt ,(format "%%^{Unit|%s}" (string-join +org-capture-uni-units "|"))
                    :prepend t
                    :type entry
                    :children ((,(format "%s\tTest" (all-the-icons-material "timer" :face 'all-the-icons-red :v-adjust 0.01))
                                :keys "t"
-                               :template ("* TODO [#C] %? :uni:tests:"
+                               :template ("* TODO [#C] %{unit-prompt} %? :uni:tests:"
                                           "SCHEDULED: %^{Test date:}T"
                                           "%i %a"))
                               (,(format "%s\tAssignment" (all-the-icons-material "library_books" :face 'all-the-icons-orange :v-adjust 0.01))
                                :keys "a"
-                               :template ("* TODO [#B] %? :uni:assignments:"
+                               :template ("* TODO [#B] %{unit-prompt} %? :uni:assignments:"
                                           "DEADLINE: %^{Due date:}T"
+                                          "%i %a"))
+                              (,(format "%s\tLecture" (all-the-icons-fileicon "keynote" :face 'all-the-icons-orange :v-adjust 0.01))
+                               :keys "l"
+                               :template ("* TODO [#C] %{unit-prompt} %? :uni:lecture:"
                                           "%i %a"))
                               (,(format "%s\tMiscellaneous task" (all-the-icons-faicon "list" :face 'all-the-icons-yellow :v-adjust 0.01))
                                :keys "u"
-                               :template ("* TODO [#C] %? :uni:"
+                               :template ("* TODO [#D] %{unit-prompt} %? :uni:"
                                           "%i %a"))))
                   (,(format "%s\tEmail" (all-the-icons-faicon "envelope" :face 'all-the-icons-blue :v-adjust 0.01))
                    :keys "e"
@@ -1090,7 +1096,7 @@ Let's setup some org-capture templates
                                :heading "Unreleased"
                                :file +org-capture-project-changelog-file))
                    )
-                  ("\tCenteralised project templates"
+                  ("\tCentralised project templates"
                    :keys "o"
                    :type entry
                    :prepend t
