@@ -452,6 +452,7 @@ For editing systemd unit files
 (package! systemd :pin "51c148e09a")
 #+END_SRC
 *** Org Mode
+**** Visuals
 Org tables aren't the prettiest thing to look at. This package is supposed to
 redraw them in the buffer with box-drawing characters. Sounds like an
 improvement to me! Just need to get it working...
@@ -459,6 +460,24 @@ improvement to me! Just need to get it working...
 (package! org-pretty-table-mode
   :recipe (:host github :repo "Fuco1/org-pretty-table") :pin "88380f865a")
 #+END_SRC
+
+For automatically toggling LaTeX fragment previews there's this nice package
+#+BEGIN_SRC emacs-lisp
+(package! org-fragtog :pin "8eca8084cc")
+#+END_SRC
+
+~org-superstar-mode~ seems better than ~org-bullets~, so let's switch to that
+instead. Since we're making stuff look nicer we may as well make priorities and
+tags prettier as well :)
+#+BEGIN_SRC emacs-lisp
+(package! org-bullets :disable t :pin "767f55feb5")
+(package! org-superstar
+  :recipe (:host github :repo "integral-dw/org-superstar-mode")
+  :pin "4659cfc120")
+(package! org-fancy-priorities :pin "819bb993b7")
+(package! org-pretty-tags :pin "40fd72f3e7")
+#+END_SRC
+**** Extra functionality
 Because of the /[[https://github.com/commonmark/commonmark-spec/wiki/markdown-flavors][lovely variety in markdown implementations]]/ there isn't actually
 such a thing a standard table spec ... or standard anything really. Because
 ~org-md~ is a goody-two-shoes, it just uses HTML for all these non-standardised
@@ -473,11 +492,6 @@ Now and then citations need to happen
 (package! org-ref :pin "5bb9be2232")
 #+END_SRC
 
-For automatically toggling LaTeX fragment previews there's this nice package
-#+BEGIN_SRC emacs-lisp
-(package! org-fragtog :pin "8eca8084cc")
-#+END_SRC
-
 Came across this and ... it's cool
 #+BEGIN_SRC emacs-lisp
 (package! org-graph-view :recipe (:host github :repo "alphapapa/org-graph-view") :pin "13314338d7")
@@ -487,18 +501,6 @@ I *need* this in my life. It take a URL to a recipe from a common site, and
 inserts an org-ified version at point. Isn't that just great.
 #+BEGIN_SRC emacs-lisp
 (package! org-chef :pin "67f50aa2a2")
-#+END_SRC
-
-~org-superstar-mode~ seems better than ~org-bullets~, so let's switch to that
-instead. Since we're making stuff look nicer we may as well make priorities and
-tags prettier as well :)
-#+BEGIN_SRC emacs-lisp
-(package! org-bullets :disable t :pin "767f55feb5")
-(package! org-superstar
-  :recipe (:host github :repo "integral-dw/org-superstar-mode")
-  :pin "4659cfc120")
-(package! org-fancy-priorities :pin "819bb993b7")
-(package! org-pretty-tags :pin "40fd72f3e7")
 #+END_SRC
 * Package configuration
 ** Abbrev mode
