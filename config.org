@@ -1023,8 +1023,10 @@ Let's setup some org-capture templates
                    :prepend t
                    :headline "Inbox"
                    :type entry
-                   :template ("* TODO %? :email:"
-                              "%i %a"))
+                   :template ("* TODO %^{type|reply to|contact} %\\3 %? :email:"
+                              "Send an email %^{urgancy|soon|ASAP|anon|at some point|eventually} to %^{recipiant}"
+                              "about %^{topic}"
+                              "%U %i %a"))
                   (,(format "%s\tInteresting" (all-the-icons-faicon "eye" :face 'all-the-icons-lcyan :v-adjust 0.01))
                    :keys "i"
                    :file +org-capture-todo-file
