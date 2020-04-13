@@ -755,10 +755,12 @@ Radians are just better
                                             "\n\\usepackage{arevmath}")))
 (add-hook 'calc-mode-hook #'calctex-mode)
 #+END_SRC
-*** electric pair mode
-We want this everywhere
+*** Smart Parentheses
 #+BEGIN_SRC emacs-lisp
-(electric-pair-mode t)
+(sp-local-pair
+     '(org-mode)
+     "<<" ">>"
+     :actions '(insert))
 #+END_SRC
 *** ispell
 Let's get a nice big dictionary from [[http://app.aspell.net/create][SCOWL Custom List/Dictionary Creator]] with
