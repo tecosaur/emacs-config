@@ -1249,7 +1249,7 @@ no modeline.
 **** Nicer headings
 Thanks to alphapapa's [[https://github.com/alphapapa/unpackaged.el#export-to-html-with-useful-anchors][unpackaged.el]].
 Unfortunately this currently seems to break some of the other modifications I've made.
-#+BEGIN_SRC emacs-lisp :tangle no
+#+BEGIN_SRC emacs-lisp
 (define-minor-mode unpackaged/org-export-html-with-useful-ids-mode
   "Attempt to export Org as HTML with useful link IDs.
 Instead of random IDs like \"#orga1b2c3\", use heading titles,
@@ -1321,7 +1321,8 @@ made unique when necessary."
                                                   0)))
                                   (setf ,place (format "%s--%s" s1 (cl-incf suffix)))))))
     (let* ((title (org-element-property :raw-value datum))
-           (ref (url-hexify-string (substring-no-properties title)))
+           ;; get ascii-only form of title without needing percent-encoding
+           (ref (replace-regexp-in-string "[^A-Za-z0-9\\-\\_\\.\\~]" "" (s-upper-camel-case (substring-no-properties title))))
            (parent (org-element-property :parent datum)))
       (while (--any (equal ref (car it))
                     cache)
@@ -1330,11 +1331,14 @@ made unique when necessary."
             ;; Append ancestor title.
             (setf title (concat (org-element-property :raw-value parent)
                                 "--" title)
-                  ref (url-hexify-string (substring-no-properties title))
+                  ;; get ascii-only form of title without needing percent-encoding
+                  ref (replace-regexp-in-string "[^A-Za-z0-9\\-\\_\\.\\~]" "" (s-upper-camel-case (substring-no-properties title)))
                   parent (org-element-property :parent parent))
           ;; No more ancestors: add and increment a number.
           (inc-suffixf ref)))
       ref)))
+
+(add-hook 'org-load-hook #'unpackaged/org-export-html-with-useful-ids-mode)
 #+END_SRC
 **** Nicer ~org-return~
 Once again, from [[https://github.com/alphapapa/unpackaged.el#org-return-dwim][unpackaged.el]]
