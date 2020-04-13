@@ -801,6 +801,12 @@ done perfectly acceptable, so let's make that happen.
 #+BEGIN_SRC emacs-lisp
 (setq elcord-use-major-mode-as-main-icon t)
 #+END_SRC
+*** eros-eval
+This makes the result of evals with =gr= and =gR= just slightly prettier. Every bit
+counts right?
+#+BEGIN_SRC emacs-lisp
+(setq eros-eval-result-prefix "⟹ ")
+#+END_SRC
 * Language configuration
 *** File Templates
 For some file types, we overwrite defaults in the [[file:./snippets][snippets]] directory, others
