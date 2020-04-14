@@ -13,7 +13,7 @@ computer to do. --- Donald Knuth
 * Intro
 Customising an editor can be very rewarding ... until you have to leave it.
 For years I have been looking for ways to avoid this pain.
-Then I discovered [[https://github.com/cknadler/vim-anywhere][vim-anywhere]], and found that it had an emacs companion,[[https://github.com/zachcurry/emacs-anywhere][
+Then I discovered [[https://github.com/cknadler/vim-anywhere][vim-anywhere]], and found that it had an Emacs companion,[[https://github.com/zachcurry/emacs-anywhere][
 emacs-anywhere]]. To me, this looked most attractive.
 
 Separately, online I have seen the following statement enough times I think it's a catchphrase
@@ -274,7 +274,7 @@ quite a nice resizing effect.
 (add-hook 'doom-load-theme-hook #'set-appropriate-splash)
 #+END_SRC
 *** Systemd daemon
-For running a systemd service for a emacs server I have the following
+For running a systemd service for a Emacs server I have the following
 #+BEGIN_SRC systemd :tangle ~/.config/systemd/user/emacs.service
 [Unit]
 Description=Emacs server daemon
@@ -419,7 +419,7 @@ Why not flash words on the screen. Why not --- hey, it could be fun.
 (package! spray :pin "00638bc916")
 #+END_SRC
 
-With all our fancy emacs themes, my terminal is missing out!
+With all our fancy Emacs themes, my terminal is missing out!
 #+BEGIN_SRC emacs-lisp
 (package! theme-magic :pin "844c4311bd")
 #+END_SRC
@@ -442,7 +442,7 @@ This is a nice extension to ~calc~
                                  :files ("*.el")) :pin "542b628eb4")
 #+END_SRC
 **** ESS
-View dataframes better with
+View data frames better with
 #+BEGIN_SRC emacs-lisp
 (package! ess-view :pin "d4e5a340b7")
 #+END_SRC
@@ -665,7 +665,7 @@ for ~GFM~, otherwise let's just use ~markdown~.
 (add-hook 'ea-popup-hook 'ea-popup-handler)
 #+END_SRC
 ** Flyspell
-At one point, typing became noticably laggy, Profiling revealed
+At one point, typing became noticeably laggy, Profiling revealed
 ~flyspell-post-command-hook~ was responsible for 47% of CPU cycles by itself!
 So I'm going to make use of ~flyspell-lazy~
 #+BEGIN_SRC emacs-lisp
@@ -768,7 +768,7 @@ Let's get a nice big dictionary from [[http://app.aspell.net/create][SCOWL Custo
 the following configuration
  - size :: 80 (huge)
  - spellings :: British(-ise) and Australian
- - spellling variants level :: 0
+ - spelling variants level :: 0
  - diacritics :: keep
  - extra lists :: hacker, roman numerals
 #+BEGIN_SRC emacs-lisp
@@ -838,7 +838,7 @@ One simply needs to refresh their mime database
 #+BEGIN_SRC shell :results silent
 update-mime-database ~/.local/share/mime
 #+END_SRC
-Then set emacs as the default editor
+Then set Emacs as the default editor
 #+BEGIN_SRC shell :results silent
 xdg-mime default emacs.desktop text/org
 #+END_SRC
@@ -1135,7 +1135,7 @@ Let's setup some org-capture templates
                                :file +org-capture-central-project-changelog-file))
                    ))))))
 #+END_SRC
-It would also be nice to improve how the capture dialouge looks
+It would also be nice to improve how the capture dialogue looks
 #+NAME: prettify-capture
 #+BEGIN_SRC emacs-lisp :tangle no
 (defun org-capture-select-template-prettier (&optional keys)
@@ -1526,7 +1526,7 @@ I've also added some fun alternatives, just commented out.
         ;; org-superstar-headline-bullets-list '("Ⅰ" "Ⅱ" "Ⅲ" "Ⅳ" "Ⅴ" "Ⅵ" "Ⅶ" "Ⅷ" "Ⅸ" "Ⅹ")
         ))
 #+END_SRC
-It's also nice to make use of the unicode characters for check boxes, and other commands.
+It's also nice to make use of the Unicode characters for check boxes, and other commands.
 #+BEGIN_SRC emacs-lisp
 (after! org
   (appendq! +pretty-code-symbols
@@ -1604,10 +1604,10 @@ We can either render from a ~dvi~ or ~pdf~ file, so let's benchmark ~latex~ and
 |------------+---------------|
 | 135±2 ms   | 215±3 ms      |
 
-On the rendering side, there are two ~.dvi~-to-image convertors which I am
+On the rendering side, there are two ~.dvi~-to-image converters which I am
 interested in: ~dvipng~ and ~dvisvgm~. Then with the a ~.pdf~ we have ~pdf2svg~.
 For inline preview we care about speed, while for exporting we care about file
-size and preffer a vector graphic.
+size and prefer a vector graphic.
 
 Using the above latex expression and benchmarking lead to the following results:
 | ~dvipng~ time | ~dvisvgm~ time | ~pdf2svg~ time |
@@ -1621,7 +1621,7 @@ Now let's combine this to see what's best
 | ~latex~ + ~dvisvgm~    | 392±4 ms   | 8 KiB               |
 | ~pdflatex~ + ~pdf2svg~ | 230±2 ms   | 16 KiB              |
 
-So, let's use ~dvipng~ for previewing LaTeX fragments in-emacs, but ~dvisvgm~ for [[
+So, let's use ~dvipng~ for previewing LaTeX fragments in-Emacs, but ~dvisvgm~ for [[
 Exporting to HTML][LaTeX Rendering]].
 /Unfortunately: it seems that svg sizing is annoying ATM, so let's actually not do this right now./
 
@@ -2177,7 +2177,7 @@ doesn't ~python~ refer to the latest version!?
 #+BEGIN_SRC emacs-lisp
 (setq org-babel-python-command "python3")
 #+END_SRC
-We also like autocompletion here
+We also like auto-completion here
 #+BEGIN_SRC emacs-lisp
 (defun tec-org-python ()
   (if (eq major-mode 'python-mode)
@@ -2412,7 +2412,7 @@ preview-default-preamble "\\fi}\"%' \"\\detokenize{\" %t \"}\""))
 *** CDLaTeX
 The symbols and modifies are very nice by default, but could do with a bit of
 fleshing out. Let's change the prefix to a key which is similarly rarely used,
-but more convinient, like =;=.
+but more convenient, like =;=.
 #+BEGIN_SRC emacs-lisp
 (after! cdlatex
   (setq ;; cdlatex-math-symbol-prefix ?\; ;; doesn't work at the moment :(
@@ -2475,7 +2475,7 @@ For example, from 2018--2020, the most prolific contributor to ~ledger~ produced
 31 commits. For ~hledger~ this statistic is 1800 commits. In addition, over the
 last decade, ~ledger~ seems to have lost steam, while ~hledger~ seems as actively
 developed as ever. From this basic comparison ~hledger~ looks to have a more
-promising outlook. It also has a few extra nicities that ~ledger~ doesn't, but is
+promising outlook. It also has a few extra niceties that ~ledger~ doesn't, but is
 a little slower (~haskell~ vs. ~c++~).
 Since this uses the same format, and ~ledger-mode~ is well integrated into emacs,
 and produced by John Wiegley --- author of ~ledger~ and current Emacs maintainer
