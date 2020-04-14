@@ -93,6 +93,10 @@ Then, we'll pull up ~ivy~
   :after '(evil-window-split evil-window-vsplit)
   (+ivy/switch-buffer))
 #+END_SRC
+Oh, and previews are nice
+#+BEGIN_SRC emacs-lisp
+(setq +ivy-buffer-preview t)
+#+END_SRC
 *** Buffer defaults
 I'd much rather have my new buffers in ~org-mode~ than ~fundamental-mode~, hence
 #+BEGIN_SRC emacs-lisp
@@ -811,12 +815,35 @@ counts right?
 #+BEGIN_SRC emacs-lisp
 (setq eros-eval-result-prefix "⟹ ")
 #+END_SRC
+*** which-key
+Let's make this popup a bit faster
+#+BEGIN_SRC emacs-lisp
+(setq which-key-idle-delay 0.5) ;; I need the help, I really do
+#+END_SRC
+*** projectile
+Looking at documentation via =SPC h f= and =SPC h v= and looking at the source can
+add package src directories to projectile. This isn't desirable in my opinion.
+#+BEGIN_SRC emacs-lisp
+(setq projectile-ignored-projects '("~/" "/tmp" "~/.emacs.d/.local/straight/repos/"))
+(defun projectile-ignored-project-function (filepath)
+  "Return t if FILEPATH is within any of `projectile-ignored-projects'"
+  (or (mapcar (lambda (p) (s-starts-with-p p filepath)) projectile-ignored-projects)))
+#+END_SRC
 * Language configuration
 *** File Templates
 For some file types, we overwrite defaults in the [[file:./snippets][snippets]] directory, others
 need to have a template assigned.
 #+BEGIN_SRC emacs-lisp
 (set-file-template! "\\.tex$" :trigger "__" :mode 'latex-mode)
+#+END_SRC
+** Plaintext
+It's nice to see ansi colour codes displayed
+#+BEGIN_SRC emacs-lisp
+(after! text-mode
+  (add-hook! 'text-mode-hook
+    ;; Apply ANSI color codes
+    (with-silent-modifications
+      (ansi-color-apply-on-region (point-min) (point-max)))))
 #+END_SRC
 ** Org Mode
 *** System config
