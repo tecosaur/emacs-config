@@ -464,7 +464,7 @@ set up org-capture.
 #+BEGIN_SRC emacs-lisp
 (package! doct
   :recipe (:host github :repo "progfolio/doct")
-  :pin "6cf1943ad7")
+  :pin "fb798eb3a2")
 #+END_SRC
 **** Visuals
 Org tables aren't the prettiest thing to look at. This package is supposed to
