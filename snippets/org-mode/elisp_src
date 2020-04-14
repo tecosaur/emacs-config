@@ -3,6 +3,7 @@
 # uuid: src_elisp
 # key: <el
 # condition: t
+# expand-env: ((yas-after-exit-snippet-hook #'org-edit-src-code))
 # --
 #+BEGIN_SRC emacs-lisp
 `%`$0
