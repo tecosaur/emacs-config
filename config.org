@@ -1527,11 +1527,13 @@ I've also added some fun alternatives, just commented out.
            ("emacs" . "ɛ")))
    (org-pretty-tags-global-mode)))
 
+(after! org-superstar
+  (setq org-superstar-headline-bullets-list '("◉" "○" "✸" "✿" "✤" "✜" "◆" "▶")
+        ;; org-superstar-headline-bullets-list '("Ⅰ" "Ⅱ" "Ⅲ" "Ⅳ" "Ⅴ" "Ⅵ" "Ⅶ" "Ⅷ" "Ⅸ" "Ⅹ")
+        org-superstar-prettify-item-bullets t ))
 (after! org
   (setq org-ellipsis " ▾ "
-        org-superstar-headline-bullets-list '("◉" "○" "✸" "✿" "✤" "✜" "◆" "▶")
-        ;; org-superstar-headline-bullets-list '("Ⅰ" "Ⅱ" "Ⅲ" "Ⅳ" "Ⅴ" "Ⅵ" "Ⅶ" "Ⅷ" "Ⅸ" "Ⅹ")
-        org-superstar-prettify-item-bullets t
+
         org-fancy-priorities-list '((?A . "⚑")  ;; ASAP
                                     (?B . "⬆")  ;; High
                                     (?C . "■")  ;; Medium
