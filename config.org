@@ -2084,13 +2084,17 @@ be unaffected lest's use ~;~ as a prefix to prevent the transformation --- i.e.
     (when (org-export-derived-backend-p backend 'latex)
       (let ((case-fold-search nil))
         (replace-regexp-in-string
-         ";?\\b[A-Z][A-Z]+s?"
+         "[;\\\\]?\\b[A-Z][A-Z]+s?"
          (lambda (all-caps-str)
-           ; only \acr if str doesn't start with ";"
-           (if (equal (aref all-caps-str 0) 59) (substring all-caps-str 1)
-             (if (equal (aref all-caps-str (- (length all-caps-str) 1)) ?s)
-                 (concat "\\textls*[70]{\\textsc{" (s-downcase (substring all-caps-str 0 -1)) "}\\protect\\scalebox{.91}[.84]{s}}")
-               (concat "\\textls*[70]{\\textsc{" (s-downcase all-caps-str) "}}"))))
+           ; only \acr if str doesn't start with ";" or "\" (for LaTeX commands)
+           (cond ((equal (aref all-caps-str 0) ?\;) (substring all-caps-str 1))
+                 ((equal (aref all-caps-str 0) ?\\) all-caps-str)
+                 ((equal (aref all-caps-str (- (length all-caps-str) 1)) ?s)
+                  (concat "\\textls*[70]{\\textsc{"
+                            (s-downcase (substring all-caps-str 0 -1))
+                            "}\\protect\\scalebox{.91}[.84]{s}}"))
+                 (t (concat "\\textls*[70]{\\textsc{"
+                              (s-downcase all-caps-str) "}}"))))
          text t t))))
 
   (add-to-list 'org-export-filter-plain-text-functions
