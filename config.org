@@ -1974,11 +1974,13 @@ match out theme (they don't by default), so I scraped some code from ~emacs.stac
   "Insert custom inline css to automatically set the
    background of code to whatever theme I'm using's background"
   (when (eq exporter 'html)
-      (setq
-       org-html-head-extra
-       (concat
-        org-html-head-extra
-        (format "
+    (setq
+     org-html-head-extra
+     (concat
+      (if (s-contains-p "<!––tec/custom-head-start-->")
+          (s-replace-regexp "<!––tec/custom-head-start-->.*<!––tec/custom-head-end-->" "" org-html-head-extra)
+        org-html-head-extra)
+      (format "<!––tec/custom-head-start-->
 <style type=\"text/css\">
    :root {
       --theme-bg: %s;
@@ -2008,35 +2010,36 @@ match out theme (they don't by default), so I scraped some code from ~emacs.stac
       --theme-dark-cyan: %s;
    }
 </style>"
-       (doom-color 'bg)
-       (doom-color 'bg-alt)
-       (doom-color 'base0)
-       (doom-color 'base1)
-       (doom-color 'base2)
-       (doom-color 'base3)
-       (doom-color 'base4)
-       (doom-color 'base5)
-       (doom-color 'base6)
-       (doom-color 'base7)
-       (doom-color 'base8)
-       (doom-color 'fg)
-       (doom-color 'fg-alt)
-       (doom-color 'grey)
-       (doom-color 'red)
-       (doom-color 'orange)
-       (doom-color 'green)
-       (doom-color 'teal)
-       (doom-color 'yellow)
-       (doom-color 'blue)
-       (doom-color 'dark-blue)
-       (doom-color 'magenta)
-       (doom-color 'violet)
-       (doom-color 'cyan)
-       (doom-color 'dark-cyan))
-        "
+              (doom-color 'bg)
+              (doom-color 'bg-alt)
+              (doom-color 'base0)
+              (doom-color 'base1)
+              (doom-color 'base2)
+              (doom-color 'base3)
+              (doom-color 'base4)
+              (doom-color 'base5)
+              (doom-color 'base6)
+              (doom-color 'base7)
+              (doom-color 'base8)
+              (doom-color 'fg)
+              (doom-color 'fg-alt)
+              (doom-color 'grey)
+              (doom-color 'red)
+              (doom-color 'orange)
+              (doom-color 'green)
+              (doom-color 'teal)
+              (doom-color 'yellow)
+              (doom-color 'blue)
+              (doom-color 'dark-blue)
+              (doom-color 'magenta)
+              (doom-color 'violet)
+              (doom-color 'cyan)
+              (doom-color 'dark-cyan))
+      "
 <<orgHtmlStyle>>
+<!––tec/custom-head-end-->
 "
-        ))))
+      ))))
 
 (add-hook 'org-export-before-processing-hook 'my-org-inline-css-hook)
 #+END_SRC
