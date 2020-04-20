@@ -2115,6 +2115,13 @@ Now for a few more adjustments.
 \\usepackage[varbb]{newpxmath}\n\
 \\usepackage[activate={true,nocompatibility},final,tracking=true,kerning=true,spacing=true,factor=2000]{microtype}\n\
 \\usepackage{xcolor}\n\
+\\usepackage{booktabs}
+\\usepackage{subcaption}
+\\usepackage[hypcap=true]{caption}
+\\setkomafont{caption}{\\sffamily\\small}
+\\setkomafont{captionlabel}{\\upshape\\bfseries}
+\\captionsetup{justification=raggedright,singlelinecheck=true}
+\\setcapindent{0pt}
 \\setlength{\\parskip}{\\baselineskip}\n\
 \\setlength{\\parindent}{0pt}"
                ("\\section{%s}" . "\\section*{%s}")
