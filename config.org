@@ -2194,6 +2194,7 @@ Now for a few more adjustments.
           ("breakanywheresymbolpre" "\\,\\footnotesize\\ensuremath{{}_{\\rfloor}}")
           ("breakbeforesymbolpre" "\\,\\footnotesize\\ensuremath{{}_{\\rfloor}}")
           ("breakaftersymbolpre" "\\,\\footnotesize\\ensuremath{{}_{\\rfloor}}")))
+  (setq org-latex-tables-booktabs t)
 
   (setq org-latex-hyperref-template "\\hypersetup{
   pdfauthor={%a},
