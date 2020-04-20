@@ -1,0 +1,10 @@
+# -*- mode: snippet -*-
+# key: int
+# name: int_^
+# --
+\int${1:$(when (> (length yas-text) 0) "_")
+}${1:$(when (> (length yas-text) 1) "{")
+}${1:left}${1:$(when (> (length yas-text) 1) "}")
+}${2:$(when (> (length yas-text) 0) "^")
+}${2:$(when (> (length yas-text) 1) "{")
+}${2:right}${2:$(when (> (length yas-text) 1) "}")} $0

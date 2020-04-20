@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# key: /
+# name: frac-short
+# group: math
+# condition: (texmathp)      
+# --
+\frac{${1:`(or % "")`}}{$2}$0

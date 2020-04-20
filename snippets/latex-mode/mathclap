@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# key: mc
+# name: mathclap
+# group: math
+# condition: (texmathp)
+# --
+\mathclap{`%`$1}$0
