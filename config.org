@@ -1806,6 +1806,16 @@ There's also this lovely equation numbering stuff I'll nick
 #+BEGIN_SRC emacs-lisp
 (after! org (setq org-export-headline-levels 5)) ; I like nesting
 #+END_SRC
+I'm also going to make use of an item in =ox-extra= so that I can add an =:ignore:=
+tag to headings for the content to be kept, but the heading itself ignored
+(unlike =:noexport:= which ignored both heading and content). This is useful when
+I want to use headings to provide a structure for writing that doesn't appear in
+the final documents.
+#+BEGIN_SRC emacs-lisp
+(after! org
+  (require 'ox-extra)
+  (ox-extras-activate '(ignore-headlines)))
+#+END_SRC
 **** Exporting to HTML
 ***** Custom CSS/JS
 There is a fantastic exporter config ([[https://github.com/fniessen/org-html-themes][fniessen/org-html-themes]]) which we can
