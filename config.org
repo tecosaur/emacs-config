@@ -380,7 +380,8 @@ our package manager can't deal with; see [[https://github.com/raxod502/straight.
                                     (user-error "")))
           (add-to-list 'updated package))
       (search-forward "package!" nil t)) ;; because of cursor-moving done
-    (message (format "%s packages updated (%s)" (length updated) (s-join ", " updated)))))
+    (message (format "%s packages updated (%s)" (length updated) (s-join ", " updated)))
+    updated))
 #+END_SRC
 ** General packages
 *** Auto-complete
@@ -468,7 +469,7 @@ set up org-capture.
 #+BEGIN_SRC emacs-lisp
 (package! doct
   :recipe (:host github :repo "progfolio/doct")
-  :pin "fb798eb3a2")
+  :pin "c237e72e0b")
 #+END_SRC
 **** Visuals
 Org tables aren't the prettiest thing to look at. This package is supposed to
@@ -1104,7 +1105,7 @@ Let's setup some org-capture templates
                    :headline "Tasks"
                    :type entry
                    :template ("* TODO %? %^G%{extra}"
-                              "%i")
+                              "%i %a")
                    :children ((,(format "%s\tGeneral Task" (all-the-icons-octicon "inbox" :face 'all-the-icons-yellow :v-adjust 0.01))
                                :keys "k"
                                :extra ""
@@ -2175,8 +2176,8 @@ Now for a few more adjustments.
   (setq org-latex-default-class "fancy-article")
 
   (add-to-list 'org-latex-packages-alist '("" "minted"))
-  (setq org-latex-listings 'minted)
-  (setq org-latex-minted-options
+  (setq org-latex-listings 'minted
+        org-latex-minted-options
         '(("frame" "lines")
           ("fontsize" "\\scriptsize")
           ("linenos" "")
