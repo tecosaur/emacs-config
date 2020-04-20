@@ -1,0 +1,10 @@
+# -*- mode: snippet -*-
+# name: python src
+# uuid: src_python
+# key: <py
+# condition: t
+# expand-env: ((yas-after-exit-snippet-hook #'org-edit-src-code))
+# --
+#+BEGIN_SRC python
+`%`$0
+#+END_SRC
