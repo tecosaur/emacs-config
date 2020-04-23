@@ -816,7 +816,7 @@ Let's make this popup a bit faster
 #+BEGIN_SRC emacs-lisp
 (setq which-key-idle-delay 0.5) ;; I need the help, I really do
 #+END_SRC
-I also thing that having =evil-= appear in so many popups is a bit too verbose, let's change that, and do a few other similar tweaks while we're at it.
+I also think that having =evil-= appear in so many popups is a bit too verbose, let's change that, and do a few other similar tweaks while we're at it.
 #+BEGIN_SRC emacs-lisp
 (setq which-key-allow-multiple-replacements t)
 (after! which-key
