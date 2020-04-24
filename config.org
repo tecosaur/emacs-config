@@ -2106,7 +2106,7 @@ match out theme (they don't by default), so I scraped some code from ~emacs.stac
      org-html-head-extra
      (concat
       (if (s-contains-p "<!––tec/custom-head-start-->" org-html-head-extra)
-          (s-replace-regexp "<!––tec/custom-head-start-->.*<!––tec/custom-head-end-->" "" org-html-head-extra)
+          (s-replace-regexp "<!––tec\\/custom-head-start-->[^🙜]*<!––tec\\/custom-head-end-->" "" org-html-head-extra)
         org-html-head-extra)
       (format "<!––tec/custom-head-start-->
 <style type=\"text/css\">
