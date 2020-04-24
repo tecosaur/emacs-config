@@ -28,6 +28,19 @@ TLDR; it's great.
 
 Now I've discovered the wonders of literate programming, and am becoming more
 settled by the day. This is my config.
+
+** Notes for the unwary adventurer
+If you are so bold as to wish to steal bits of my config (or if I upgrade and
+wonder why things aren't working), here's a list of sections which rely on
+externally setup (i.e. outside of this config).
+
++ libvterm :: I rely on my distro-provided =libvterm.so=, [[*vterm][vterm]] sets a compile flag.
+  If this causes issues, just delete the ~(setq term-module-cmake-args ...)~ bit.
++ dictionary :: I've downloaded a custom [[http://app.aspell.com/create][SCOWL]] dictionary, which I use in [[*ispell][ispell]].
+  If this causes issues, just delete the ~(setq ispell-dictionary ...)~ bit.
++ uni-units file :: I've got a file in =~/.org/.uni-units= which I use in ~org-capture~
+  If this causes issues, just remove the reference to that file in [[*Capture][Capture]] and
+  instances of ~unit-prompt~ used in  ~(doct ...)~
 * Rudimentary configuration
 Make this file run (slightly) faster with lexical binding (see [[https://nullprogram.com/blog/2016/12/22/][this blog post]]
 for more info).
