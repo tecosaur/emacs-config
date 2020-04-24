@@ -848,6 +848,20 @@ add package src directories to projectile. This isn't desirable in my opinion.
   "Return t if FILEPATH is within any of `projectile-ignored-projects'"
   (or (mapcar (lambda (p) (s-starts-with-p p filepath)) projectile-ignored-projects)))
 #+END_SRC
+*** vterm
+On my system, I want to use the ~vterm~ lib in =/usr/bin/libvterm.so=. This is not
+default behaviour. Without this I see the following error message.
+#+BEGIN_SRC
+make[2]: *** No rule to make target 'libvterm-prefix/src/libvterm/.libs/libvterm.a', needed by '../vterm-module.so'.  Stop.
+make[1]: *** [CMakeFiles/Makefile2:106: CMakeFiles/vterm-module.dir/all] Error 2
+make: *** [Makefile:84: all] Error 2
+#+END_SRC
+I asked about this in a [[https://github.com/akermu/emacs-libvterm/issues/238#issuecomment-586385773][GitHub Issue]], and the fix is to use the ~cmake~ flag
+~-DUSE_SYSTEM_LIBVTERM=yes~. This can be set for when Doom recomplies ~vterm~ on
+updating, which saves me manually compiling with the flag.
+#+BEGIN_SRC emacs-lisp
+(setq vterm-module-cmake-args "-DUSE_SYSTEM_LIBVTERM=yes")
+#+END_SRC
 * Language configuration
 *** File Templates
 For some file types, we overwrite defaults in the [[file:./snippets][snippets]] directory, others
