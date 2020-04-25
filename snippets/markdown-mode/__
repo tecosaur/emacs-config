@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: Org template
+# --
+# ${1:`(s-titleized-words (file-name-base buffer-file-name))`}
+
+$0
