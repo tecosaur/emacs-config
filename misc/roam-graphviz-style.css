@@ -1,0 +1,15 @@
+svg {
+  position: relative;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+a > polygon {
+  transition-duration: 200ms;
+  transition-property: fill;
+}
+
+a:hover > polygon {
+  fill: #d4d4d4;
+}

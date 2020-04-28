@@ -173,7 +173,10 @@ I'd like to have just the buffer name, then if applicable the project folder
 #+BEGIN_SRC emacs-lisp
 (setq frame-title-format
     '(""
-      "%b"
+      (:eval
+       (if (s-contains-p org-roam-directory buffer-file-name)
+           (replace-regexp-in-string ".*/[0-9]+-" "🢔 " buffer-file-name)
+         "%b"))
       (:eval
        (let ((project-name (projectile-project-name)))
          (unless (string= "-" project-name)
@@ -1352,6 +1355,61 @@ no modeline.
         (interactive)
         (set-window-parameter nil 'mode-line-format 'none)
         (org-capture)))
+#+END_SRC
+**** Roam
+***** Basic settings
+I'll just set this to be within =Organisation= folder for now, in the future it
+could be worth seeing if I could hook this up to a [[https://nextcloud.com/][Nextcloud]] instance.
+#+BEGIN_SRC emacs-lisp
+(setq org-roam-directory "~/Desktop/TEC/Organisation/Roam")
+#+END_SRC
+***** Registering roam protocol
+The recommended method of registering a protocal is by registering a desktop
+application, which seems reasonable.
+#+BEGIN_SRC conf :tangle ~/.local/share/applications/org-protocol.desktop
+[Desktop Entry]
+Name=Org-Protocol
+Exec=emacsclient %u
+Icon=emacs-icon
+Type=Application
+Terminal=false
+MimeType=x-scheme-handler/org-protocol
+#+END_SRC
+To associate ~org-protocol://~ links with the desktop file,
+#+BEGIN_SRC shell
+xdg-mime default org-protocol.desktop x-scheme-handler/org-protocol
+#+END_SRC
+***** Graph visuals
+By default roam uses an unstyled ~graphviz~ dot. This is both uncomplicated, and
+underwhelming. We can do substantially better.
+#+BEGIN_SRC emacs-lisp
+(setq org-roam-graph-node-extra-config '(("shape"      . "\"underline\"")
+                                         ("style"      . "\"rounded,filled\"")
+                                         ("fillcolor"  . "\"#EEEEEE\"")
+                                         ("color"      . "\"#C9C9C9\"")
+                                         ("fontcolor"  . "\"#111111\"")
+                                         ("fontname"   . "\"Overpass\""))
+      org-roam-graph-edge-extra-config '(("color"      . "\"#333333\""))
+      org-roam-graph-extra-config      `(("stylesheet" . ,(concat "\"" doom-private-dir
+                                                                  "misc/roam-graphviz-style.css\""))))
+#+END_SRC
+Now, let's go the next step and add that svg stylesheet.
+#+BEGIN_SRC css :tangle misc/roam-graphviz-style.css
+svg {
+  position: relative;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+a > polygon {
+  transition-duration: 200ms;
+  transition-property: fill;
+}
+
+a:hover > polygon {
+  fill: #d4d4d4;
+}
 #+END_SRC
 **** Nicer generated heading IDs
 Thanks to alphapapa's [[https://github.com/alphapapa/unpackaged.el#export-to-html-with-useful-anchors][unpackaged.el]].
