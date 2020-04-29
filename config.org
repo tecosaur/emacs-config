@@ -1,6 +1,7 @@
 #+TITLE: Doom Emacs Configuration
 #+AUTHOR: tecosaur
 #+PROPERTY: header-args:emacs-lisp :tangle yes :cache yes :results silent :comments link
+#+PROPERTY: header-args:shell :tangle no :results silent
 #+HTML_HEAD: <link rel='shortcut icon' type='image/png' href='https://www.gnu.org/software/emacs/favicon.png'>
 
 #+BEGIN_QUOTE
@@ -44,6 +45,10 @@ externally setup (i.e. outside of this config).
 *** Extra Requirements
 The lovely ~doom doctor~ is good at diagnosing most missing things, but here are a
 few extras.
++ The [[https://github.com/dandavison/delta/][Delta]] binary. It's packaged for some distributions but I installed it with
+  #+BEGIN_SRC shell :exec no
+cargo install git-delta
+  #+END_SRC
 + A [[https://www.tug.org/texlive/][LaTeX Compiler]] is required for the mathematics rendering performed in [[#org][Org]],
   and by [[*CalcTeX][CalcTeX]].
 + I use the [[https://overpassfont.org/][Overpass]] font as a go-to sans serif.
@@ -65,7 +70,7 @@ cargo install cargo-script
 * Rudimentary configuration
 Make this file run (slightly) faster with lexical binding (see [[https://nullprogram.com/blog/2016/12/22/][this blog post]]
 for more info).
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :comments no
 ;;; config.el -*- lexical-binding: t; -*-
 #+END_SRC
 ** Personal Information
@@ -196,7 +201,7 @@ I'd like to have just the buffer name, then if applicable the project folder
     '(""
       (:eval
        (if (s-contains-p org-roam-directory buffer-file-name)
-           (replace-regexp-in-string ".*/[0-9]+-" "🢔 " buffer-file-name)
+           (replace-regexp-in-string ".*/[0-9]+-" "🢔 " (or buffer-file-name ""))
          "%b"))
       (:eval
        (let ((project-name (projectile-project-name)))
@@ -333,7 +338,7 @@ Restart=on-failure
 WantedBy=default.target
 #+END_SRC
 which is then enabled by
-#+BEGIN_SRC sh :tangle no
+#+BEGIN_SRC shell :tangle no
 systemctl --user enable emacs.service
 #+END_SRC
 * Package loading
@@ -472,7 +477,7 @@ about it?
 #+BEGIN_SRC emacs-lisp
 (package! elcord :pin "94b0afb9ba")
 #+END_SRC
-*** Other
+*** Improving features
 **** Flyspell-lazy
 To alleviate some [[Flyspell][issues with flyspell]]
 #+BEGIN_SRC emacs-lisp
@@ -488,6 +493,12 @@ This is a nice extension to ~calc~
 View data frames better with
 #+BEGIN_SRC emacs-lisp
 (package! ess-view :pin "d4e5a340b7")
+#+END_SRC
+**** Magit Delta
+[[https://github.com/dandavison/delta/][Delta]] is a git diff syntax highlighter written in rust. The author also wrote a
+package to hook this into the magit diff view. This requires the ~delta~ binary.
+#+BEGIN_SRC emacs-lisp
+;; (package! magit-delta :recipe (:host github :repo "dandavison/magit-delta") :pin "2ceb6077fa")
 #+END_SRC
 ** Language packages
 *** Systemd
@@ -751,6 +762,16 @@ nearby (also means that if I change the 'main' dictionary I keep my addition).
 #+BEGIN_SRC emacs-lisp
 (setq ispell-personal-dictionary (expand-file-name ".hunspell_personal" doom-private-dir))
 #+END_SRC
+** Magit
+Magit is pretty nice by default. The diffs don't get any
+syntax-highlighting-love though which is a bit sad. Thankfully
+[[https://github.com/dandavison/magit-delta][dandavison/magit-delta]] exists, which we can put to use.
+#+BEGIN_SRC emacs-lisp
+;; (after! magit
+;;   (magit-delta-mode +1))
+#+END_SRC
+Unfortunately this seems to mess things up, which is something I'll want to look
+into later.
 ** Projectile
 Looking at documentation via =SPC h f= and =SPC h v= and looking at the source can
 add package src directories to projectile. This isn't desirable in my opinion.
@@ -2652,7 +2673,7 @@ Syntax highlighting is nice, so let's turn all of that on
   + Determine first folder in ~graphicspath~ if applicable
   + Ask for file name
   + Use ~xclip~ to save file to graphics folder, or current directory (whichever applies)
-    #+BEGIN_SRC shell :eval no
+    #+BEGIN_SRC shell :eval no :tangle no
 command -v xclip >/dev/null 2>&1 || { echo >&1 "no xclip"; exit 1; }
 
 if
