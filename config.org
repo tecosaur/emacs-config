@@ -346,7 +346,7 @@ systemctl --user enable emacs.service
 :header-args:emacs-lisp: :tangle "packages.el" :comments link
 :END:
 This file shouldn't be byte compiled.
-#+BEGIN_SRC emacs-lisp :tangle "packages.el"
+#+BEGIN_SRC emacs-lisp :tangle "packages.el" :comments no
 ;; -*- no-byte-compile: t; -*-
 #+END_SRC
 ** Loading instructions
@@ -408,7 +408,7 @@ our package manager can't deal with; see [[https://github.com/raxod502/straight.
 (defun +doom/update-all-pinned-package-form ()
   "Call `doom/update-pinned-package-form' on every package! statement in the buffer"
   (interactive)
-  (beginning-of-buffer)
+  ;; (beginning-of-buffer)
   (let ((progress 0) (package "") (total (how-many "package!")) (updated '()))
     (while (search-forward "package!" nil t)
       (setq progress (1+ progress))
@@ -518,7 +518,7 @@ set up org-capture.
 #+BEGIN_SRC emacs-lisp
 (package! doct
   :recipe (:host github :repo "progfolio/doct")
-  :pin "c237e72e0b")
+  :pin "4b4c6ff631")
 #+END_SRC
 **** Visuals
 Org tables aren't the prettiest thing to look at. This package is supposed to
@@ -552,7 +552,7 @@ features that GitHub has. Initialised in [[Exporting to GFM]].
 
 Now and then citations need to happen
 #+BEGIN_SRC emacs-lisp
-(package! org-ref :pin "5bb9be2232")
+(package! org-ref :pin "1eb4ddda00")
 #+END_SRC
 
 Came across this and ... it's cool
@@ -563,7 +563,7 @@ Came across this and ... it's cool
 I *need* this in my life. It take a URL to a recipe from a common site, and
 inserts an org-ified version at point. Isn't that just great.
 #+BEGIN_SRC emacs-lisp
-(package! org-chef :pin "67f50aa2a2")
+(package! org-chef :pin "e8b4ba8a10")
 #+END_SRC
 * Package configuration
 ** Abbrev mode
@@ -3012,3 +3012,4 @@ enable it for ~.beancount~ files.
 # Local variables:
 # eval: (add-hook 'after-save-hook 'org-html-export-to-html t t)
 # end:
+* *Window%20management
