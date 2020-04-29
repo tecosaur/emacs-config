@@ -34,9 +34,9 @@ If you are so bold as to wish to steal bits of my config (or if I upgrade and
 wonder why things aren't working), here's a list of sections which rely on
 externally setup (i.e. outside of this config).
 
-+ libvterm :: I rely on my distro-provided =libvterm.so=, [[*vterm][vterm]] sets a compile flag.
++ libvterm :: I rely on my distro-provided =libvterm.so=, [[*VTerm][vterm]] sets a compile flag.
   If this causes issues, just delete the ~(setq term-module-cmake-args ...)~ bit.
-+ dictionary :: I've downloaded a custom [[http://app.aspell.com/create][SCOWL]] dictionary, which I use in [[*ispell][ispell]].
++ dictionary :: I've downloaded a custom [[http://app.aspell.com/create][SCOWL]] dictionary, which I use in [[*Ispell][ispell]].
   If this causes issues, just delete the ~(setq ispell-dictionary ...)~ bit.
 + uni-units file :: I've got a file in =~/.org/.uni-units= which I use in ~org-capture~
   If this causes issues, just remove the reference to that file in [[*Capture][Capture]] and
@@ -553,6 +553,17 @@ have the following.
   (setq abbrev-file-name (expand-file-name "abbrev.el" doom-private-dir))
   (setq save-abbrevs 'silently))
 #+END_SRC
+** Calc
+Radians are just better
+#+BEGIN_SRC emacs-lisp
+(setq calc-angle-mode 'rad  ;; radians are rad
+      calc-algebraic-mode t ;; allows '2*x instead of 'x<RET>2*
+      calc-symbolic-mode t) ;; keeps stuff like √2 irrational for as long as possible
+(after! calctex
+  (setq calctex-format-latex-header (concat calctex-format-latex-header
+                                            "\n\\usepackage{arevmath}")))
+(add-hook 'calc-mode-hook #'calctex-mode)
+#+END_SRC
 ** Centaur Tabs
 We want to make the tabs a nice, comfy size (~36~), with icons. The modifier
 marker is nice, but the particular default Unicode one causes a lag spike, so
@@ -601,11 +612,15 @@ let's improve that memory.
               company-files
               company-yasnippet))
 #+END_SRC
-We then configure the dictionary we're using in [[*ispell][ispell]].
+We then configure the dictionary we're using in [[*Ispell][ispell]].
 *** ESS
 ~company-dabbrev-code~ is nice. Let's have it.
 #+BEGIN_SRC emacs-lisp
 (set-company-backend! 'ess-r-mode '(company-R-args company-R-objects company-dabbrev-code :separate))
+#+END_SRC
+** Elcord
+#+BEGIN_SRC emacs-lisp
+(setq elcord-use-major-mode-as-main-icon t)
 #+END_SRC
 ** [[https://github.com/zachcurry/emacs-anywhere][Emacs Anywhere]] configuration
 # NB: install with curl -fsSL https://raw.github.com/zachcurry/emacs-anywhere/master/install | bash
@@ -681,12 +696,66 @@ for ~GFM~, otherwise let's just use ~markdown~.
 
 (add-hook 'ea-popup-hook 'ea-popup-handler)
 #+END_SRC
+** Eros-eval
+This makes the result of evals with =gr= and =gR= just slightly prettier. Every bit
+counts right?
+#+BEGIN_SRC emacs-lisp
+(setq eros-eval-result-prefix "⟹ ")
+#+END_SRC
 ** Flyspell
 At one point, typing became noticeably laggy, Profiling revealed
 ~flyspell-post-command-hook~ was responsible for 47% of CPU cycles by itself!
 So I'm going to make use of ~flyspell-lazy~
 #+BEGIN_SRC emacs-lisp
 (after! flyspell (require 'flyspell-lazy) (flyspell-lazy-mode 1))
+#+END_SRC
+** Ispell
+Let's get a nice big dictionary from [[http://app.aspell.net/create][SCOWL Custom List/Dictionary Creator]] with
+the following configuration
+ - size :: 80 (huge)
+ - spellings :: British(-ise) and Australian
+ - spelling variants level :: 0
+ - diacritics :: keep
+ - extra lists :: hacker, roman numerals
+#+BEGIN_SRC emacs-lisp
+(setq ispell-dictionary "en_GBs_au_SCOWL_80_0_k_hr")
+#+END_SRC
+Oh, and by the way, if ~company-ispell-dictionary~ is ~nil~, then
+~ispell-complete-word-dict~ is used instead, which once again when ~nil~ is
+~ispell-alternate-dictionary~, which at the moment maps to a plaintext version of
+the above.
+
+It seems reasonable to want to keep an eye on my personal dict, let's have it
+nearby (also means that if I change the 'main' dictionary I keep my addition).
+#+BEGIN_SRC emacs-lisp
+(setq ispell-personal-dictionary (expand-file-name ".hunspell_personal" doom-private-dir))
+#+END_SRC
+** Projectile
+Looking at documentation via =SPC h f= and =SPC h v= and looking at the source can
+add package src directories to projectile. This isn't desirable in my opinion.
+#+BEGIN_SRC emacs-lisp
+(setq projectile-ignored-projects '("~/" "/tmp" "~/.emacs.d/.local/straight/repos/"))
+(defun projectile-ignored-project-function (filepath)
+  "Return t if FILEPATH is within any of `projectile-ignored-projects'"
+  (or (mapcar (lambda (p) (s-starts-with-p p filepath)) projectile-ignored-projects)))
+#+END_SRC
+** Smart Parentheses
+#+BEGIN_SRC emacs-lisp
+(sp-local-pair
+     '(org-mode)
+     "<<" ">>"
+     :actions '(insert))
+#+END_SRC
+** Spray
+Let's make this suit me slightly better.
+#+BEGIN_SRC emacs-lisp
+(setq spray-wpm 500
+      spray-height 700)
+#+END_SRC
+** Theme magic
+Let's automatically update terminals on theme change
+#+BEGIN_SRC emacs-lisp
+(add-hook 'doom-load-theme-hook 'theme-magic-from-emacs)
 #+END_SRC
 ** Tramp
 Let's try to make tramp handle prompts better
@@ -761,74 +830,21 @@ Now, we just identify the files in question.
                                    "*/_region_.log"
                                    "*/_region_.tex"))
 #+END_SRC
-** Miscellaneous
-*** calc
-Radians are just better
-#+BEGIN_SRC emacs-lisp
-(setq calc-angle-mode 'rad  ;; radians are rad
-      calc-algebraic-mode t ;; allows '2*x instead of 'x<RET>2*
-      calc-symbolic-mode t) ;; keeps stuff like √2 irrational for as long as possible
-(after! calctex
-  (setq calctex-format-latex-header (concat calctex-format-latex-header
-                                            "\n\\usepackage{arevmath}")))
-(add-hook 'calc-mode-hook #'calctex-mode)
+** VTerm
+On my system, I want to use the ~vterm~ lib in =/usr/bin/libvterm.so=. This is not
+default behaviour. Without this I see the following error message.
+#+BEGIN_SRC
+make[2]: *** No rule to make target 'libvterm-prefix/src/libvterm/.libs/libvterm.a', needed by '../vterm-module.so'.  Stop.
+make[1]: *** [CMakeFiles/Makefile2:106: CMakeFiles/vterm-module.dir/all] Error 2
+make: *** [Makefile:84: all] Error 2
 #+END_SRC
-*** Smart Parentheses
+I asked about this in a [[https://github.com/akermu/emacs-libvterm/issues/238#issuecomment-586385773][GitHub Issue]], and the fix is to use the ~cmake~ flag
+~-DUSE_SYSTEM_LIBVTERM=yes~. This can be set for when Doom recomplies ~vterm~ on
+updating, which saves me manually compiling with the flag.
 #+BEGIN_SRC emacs-lisp
-(sp-local-pair
-     '(org-mode)
-     "<<" ">>"
-     :actions '(insert))
+(setq vterm-module-cmake-args "-DUSE_SYSTEM_LIBVTERM=yes")
 #+END_SRC
-*** ispell
-Let's get a nice big dictionary from [[http://app.aspell.net/create][SCOWL Custom List/Dictionary Creator]] with
-the following configuration
- - size :: 80 (huge)
- - spellings :: British(-ise) and Australian
- - spelling variants level :: 0
- - diacritics :: keep
- - extra lists :: hacker, roman numerals
-#+BEGIN_SRC emacs-lisp
-(setq ispell-dictionary "en_GBs_au_SCOWL_80_0_k_hr")
-#+END_SRC
-Oh, and by the way, if ~company-ispell-dictionary~ is ~nil~, then
-~ispell-complete-word-dict~ is used instead, which once again when ~nil~ is
-~ispell-alternate-dictionary~, which at the moment maps to a plaintext version of
-the above.
-
-It seems reasonable to want to keep an eye on my personal dict, let's have it
-nearby (also means that if I change the 'main' dictionary I keep my addition).
-#+BEGIN_SRC emacs-lisp
-(setq ispell-personal-dictionary (expand-file-name ".hunspell_personal" doom-private-dir))
-#+END_SRC
-*** spray
-Let's make this suit me slightly better.
-#+BEGIN_SRC emacs-lisp
-(setq spray-wpm 500
-      spray-height 700)
-#+END_SRC
-*** theme magic
-Let's automatically update terminals on theme change
-#+BEGIN_SRC emacs-lisp
-(add-hook 'doom-load-theme-hook 'theme-magic-from-emacs)
-#+END_SRC
-*** wttrin
-Set the default city. It's initially ~Taipei~ but I find the IP-locating that's
-done perfectly acceptable, so let's make that happen.
-#+BEGIN_SRC emacs-lisp
-(setq wttrin-default-cities '(""))
-#+END_SRC
-*** elcord
-#+BEGIN_SRC emacs-lisp
-(setq elcord-use-major-mode-as-main-icon t)
-#+END_SRC
-*** eros-eval
-This makes the result of evals with =gr= and =gR= just slightly prettier. Every bit
-counts right?
-#+BEGIN_SRC emacs-lisp
-(setq eros-eval-result-prefix "⟹ ")
-#+END_SRC
-*** which-key
+** Which-key
 Let's make this popup a bit faster
 #+BEGIN_SRC emacs-lisp
 (setq which-key-idle-delay 0.5) ;; I need the help, I really do
@@ -843,28 +859,11 @@ I also think that having =evil-= appear in so many popups is a bit too verbose, 
    '(("\\`g s" . "\\`evilem--?motion-\\(.*\\)") . (nil . "◃\\1"))
    ))
 #+END_SRC
-*** projectile
-Looking at documentation via =SPC h f= and =SPC h v= and looking at the source can
-add package src directories to projectile. This isn't desirable in my opinion.
+** Wttrin
+Set the default city. It's initially ~Taipei~ but I find the IP-locating that's
+done perfectly acceptable, so let's make that happen.
 #+BEGIN_SRC emacs-lisp
-(setq projectile-ignored-projects '("~/" "/tmp" "~/.emacs.d/.local/straight/repos/"))
-(defun projectile-ignored-project-function (filepath)
-  "Return t if FILEPATH is within any of `projectile-ignored-projects'"
-  (or (mapcar (lambda (p) (s-starts-with-p p filepath)) projectile-ignored-projects)))
-#+END_SRC
-*** vterm
-On my system, I want to use the ~vterm~ lib in =/usr/bin/libvterm.so=. This is not
-default behaviour. Without this I see the following error message.
-#+BEGIN_SRC
-make[2]: *** No rule to make target 'libvterm-prefix/src/libvterm/.libs/libvterm.a', needed by '../vterm-module.so'.  Stop.
-make[1]: *** [CMakeFiles/Makefile2:106: CMakeFiles/vterm-module.dir/all] Error 2
-make: *** [Makefile:84: all] Error 2
-#+END_SRC
-I asked about this in a [[https://github.com/akermu/emacs-libvterm/issues/238#issuecomment-586385773][GitHub Issue]], and the fix is to use the ~cmake~ flag
-~-DUSE_SYSTEM_LIBVTERM=yes~. This can be set for when Doom recomplies ~vterm~ on
-updating, which saves me manually compiling with the flag.
-#+BEGIN_SRC emacs-lisp
-(setq vterm-module-cmake-args "-DUSE_SYSTEM_LIBVTERM=yes")
+(setq wttrin-default-cities '(""))
 #+END_SRC
 * Language configuration
 *** File Templates
