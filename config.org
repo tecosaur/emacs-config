@@ -408,7 +408,7 @@ our package manager can't deal with; see [[https://github.com/raxod502/straight.
 (defun +doom/update-all-pinned-package-form ()
   "Call `doom/update-pinned-package-form' on every package! statement in the buffer"
   (interactive)
-  ;; (beginning-of-buffer)
+  (beginning-of-buffer)
   (let ((progress 0) (package "") (total (how-many "package!")) (updated '()))
     (while (search-forward "package!" nil t)
       (setq progress (1+ progress))
@@ -3012,4 +3012,3 @@ enable it for ~.beancount~ files.
 # Local variables:
 # eval: (add-hook 'after-save-hook 'org-html-export-to-html t t)
 # end:
-* *Window%20management
