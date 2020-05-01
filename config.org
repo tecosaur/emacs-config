@@ -1427,15 +1427,8 @@ xdg-mime default org-protocol.desktop x-scheme-handler/org-protocol
 By default roam uses an unstyled ~graphviz~ dot. This is both uncomplicated, and
 underwhelming. We can do substantially better.
 #+BEGIN_SRC emacs-lisp
-(setq org-roam-graph-node-extra-config '(("shape"      . "\"underline\"")
-                                         ("style"      . "\"rounded,filled\"")
-                                         ("fillcolor"  . "\"#EEEEEE\"")
-                                         ("color"      . "\"#C9C9C9\"")
-                                         ("fontcolor"  . "\"#111111\"")
-                                         ("fontname"   . "\"Overpass\""))
-      org-roam-graph-edge-extra-config '(("color"      . "\"#333333\""))
-      org-roam-graph-extra-config      `(("stylesheet" . ,(concat "\"" doom-private-dir
-                                                                  "misc/roam-graphviz-style.css\""))))
+(setq org-roam-graph-extra-config `(("stylesheet" . ,(concat "\"" doom-private-dir
+                                                             "misc/roam-graphviz-style.css\""))))
 #+END_SRC
 Now, let's go the next step and add that svg stylesheet.
 #+BEGIN_SRC css :tangle misc/roam-graphviz-style.css
