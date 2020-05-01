@@ -1423,30 +1423,88 @@ To associate ~org-protocol://~ links with the desktop file,
 #+BEGIN_SRC shell
 xdg-mime default org-protocol.desktop x-scheme-handler/org-protocol
 #+END_SRC
-***** Graph visuals
-By default roam uses an unstyled ~graphviz~ dot. This is both uncomplicated, and
-underwhelming. We can do substantially better.
-#+BEGIN_SRC emacs-lisp
-(setq org-roam-graph-extra-config `(("stylesheet" . ,(concat "\"" doom-private-dir
-                                                             "misc/roam-graphviz-style.css\""))))
+***** Graph Behaviour
+By default, clicking on an ~org-protocal://~ link messes with the =svg= view. To fix
+this we can use an ~iframe~, however that requires shifting to an =html= file.
+Hence, we need to do a bit of overriding.
+#+BEGIN_SRC html :tangle misc/org-roam-template.html
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Roam Graph</title>
+        <meta name="viewport" content="width=device-width">
+        <style type="text/css">
+         svg {
+             position: relative;
+             top: 50vh;
+             left: 50vw;
+             transform: translate(-50%, -50%);
+         }
+
+         a > polygon {
+             transition-duration: 200ms;
+             transition-property: fill;
+         }
+
+         a > polyline {
+             transition-duration: 400ms;
+             transition-property: stroke;
+         }
+
+         a:hover > polygon {
+             fill: #d4d4d4;
+         }
+         a:hover > polyline {
+             stroke: #888;
+         }
+        </style>
+        <script type="text/javascript">
+         function create_iframe (url) {
+             i = document.createElement('iframe');
+             i.setAttribute('src', url);
+             i.style.setProperty('display', 'none');
+             document.body.append(i);
+         }
+         function listen_on_all_a () {
+             document.querySelectorAll("svg a").forEach(elem => {
+                 elem.addEventListener('click', (e) => {
+                     e.preventDefault();
+                     create_iframe(elem.href.baseVal);
+                 });
+             });
+         }
+        </script>
+    </head>
+    <body onload="listen_on_all_a()">
+%s
+    </body>
+</html>
 #+END_SRC
-Now, let's go the next step and add that svg stylesheet.
-#+BEGIN_SRC css :tangle misc/roam-graphviz-style.css
-svg {
-  position: relative;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
 
-a > polygon {
-  transition-duration: 200ms;
-  transition-property: fill;
-}
+#+BEGIN_SRC emacs-lisp
+(after! org-roam
+  (setq +org-roam-graph--html-template (replace-regexp-in-string "%\\([^s]\\)" "%%\\1" (f-read-text (concat doom-private-dir "misc/org-roam-template.html"))))
 
-a:hover > polygon {
-  fill: #d4d4d4;
-}
+  (defadvice! +org-roam-graph--build-html (&optional node-query)
+    "Generate a graph showing the relations between nodes in NODE-QUERY. HTML style."
+    :override #'org-roam-graph--build
+    (unless org-roam-graph-executable
+      (user-error "Can't find %s executable.  Please check if it is in your path"
+                  org-roam-graph-executable))
+    (let* ((node-query (or node-query
+                           `[:select [file titles]
+                                     :from titles
+                                     ,@(org-roam-graph--expand-matcher 'file t)]))
+           (graph      (org-roam-graph--dot node-query))
+           (temp-dot   (make-temp-file "graph." nil ".dot" graph))
+           (temp-graph (make-temp-file "graph." nil ".svg"))
+           (temp-html  (make-temp-file "graph." nil ".html")))
+      (call-process org-roam-graph-executable nil 0 nil
+                    temp-dot "-Tsvg" "-o" temp-graph)
+      (sleep-for 0.1)
+      (write-region (format +org-roam-graph--html-template (f-read-text temp-graph)) nil temp-html)
+      temp-html)))
 #+END_SRC
 **** Nicer generated heading IDs
 Thanks to alphapapa's [[https://github.com/alphapapa/unpackaged.el#export-to-html-with-useful-anchors][unpackaged.el]].
@@ -1740,25 +1798,25 @@ I've also added some fun alternatives, just commented out.
   (unless (char-displayable-p ?❗)
     (setq org-fancy-priorities-list '("HIGH" "MID" "LOW" "OPTIONAL"))))
 
-(after! org
-  (use-package org-pretty-tags
-  :config
-   (setq org-pretty-tags-surrogate-strings
-         `(("uni"        . ,(all-the-icons-faicon   "graduation-cap" :face 'all-the-icons-purple  :v-adjust 0.01))
-           ("ucc"        . ,(all-the-icons-material "computer"       :face 'all-the-icons-silver  :v-adjust 0.01))
-           ("assignment" . ,(all-the-icons-material "library_books"  :face 'all-the-icons-orange  :v-adjust 0.01))
-           ("test"       . ,(all-the-icons-material "timer"          :face 'all-the-icons-red     :v-adjust 0.01))
-           ("lecture"    . ,(all-the-icons-fileicon "keynote"        :face 'all-the-icons-orange  :v-adjust 0.01))
-           ("email"      . ,(all-the-icons-faicon   "envelope"       :face 'all-the-icons-blue    :v-adjust 0.01))
-           ("read"       . ,(all-the-icons-octicon  "book"           :face 'all-the-icons-lblue   :v-adjust 0.01))
-           ("article"    . ,(all-the-icons-octicon  "file-text"      :face 'all-the-icons-yellow  :v-adjust 0.01))
-           ("web"        . ,(all-the-icons-faicon   "globe"          :face 'all-the-icons-green   :v-adjust 0.01))
-           ("info"       . ,(all-the-icons-faicon   "info-circle"    :face 'all-the-icons-blue    :v-adjust 0.01))
-           ("issue"      . ,(all-the-icons-faicon   "bug"            :face 'all-the-icons-red     :v-adjust 0.01))
-           ("someday"    . ,(all-the-icons-faicon   "calendar-o"     :face 'all-the-icons-cyan    :v-adjust 0.01))
-           ("idea"       . ,(all-the-icons-octicon  "light-bulb"     :face 'all-the-icons-yellow  :v-adjust 0.01))
-           ("emacs"      . ,(all-the-icons-fileicon "emacs"          :face 'all-the-icons-lpurple :v-adjust 0.01))))
-   (org-pretty-tags-global-mode)))
+;; (after! org
+;;   (use-package org-pretty-tags
+;;   :config
+;;    (setq org-pretty-tags-surrogate-strings
+;;          `(("uni"        . ,(all-the-icons-faicon   "graduation-cap" :face 'all-the-icons-purple  :v-adjust 0.01))
+;;            ("ucc"        . ,(all-the-icons-material "computer"       :face 'all-the-icons-silver  :v-adjust 0.01))
+;;            ("assignment" . ,(all-the-icons-material "library_books"  :face 'all-the-icons-orange  :v-adjust 0.01))
+;;            ("test"       . ,(all-the-icons-material "timer"          :face 'all-the-icons-red     :v-adjust 0.01))
+;;            ("lecture"    . ,(all-the-icons-fileicon "keynote"        :face 'all-the-icons-orange  :v-adjust 0.01))
+;;            ("email"      . ,(all-the-icons-faicon   "envelope"       :face 'all-the-icons-blue    :v-adjust 0.01))
+;;            ("read"       . ,(all-the-icons-octicon  "book"           :face 'all-the-icons-lblue   :v-adjust 0.01))
+;;            ("article"    . ,(all-the-icons-octicon  "file-text"      :face 'all-the-icons-yellow  :v-adjust 0.01))
+;;            ("web"        . ,(all-the-icons-faicon   "globe"          :face 'all-the-icons-green   :v-adjust 0.01))
+;;            ("info"       . ,(all-the-icons-faicon   "info-circle"    :face 'all-the-icons-blue    :v-adjust 0.01))
+;;            ("issue"      . ,(all-the-icons-faicon   "bug"            :face 'all-the-icons-red     :v-adjust 0.01))
+;;            ("someday"    . ,(all-the-icons-faicon   "calendar-o"     :face 'all-the-icons-cyan    :v-adjust 0.01))
+;;            ("idea"       . ,(all-the-icons-octicon  "light-bulb"     :face 'all-the-icons-yellow  :v-adjust 0.01))
+;;            ("emacs"      . ,(all-the-icons-fileicon "emacs"          :face 'all-the-icons-lpurple :v-adjust 0.01))))
+;;    (org-pretty-tags-global-mode)))
 
 (after! org-superstar
   (setq org-superstar-headline-bullets-list '("◉" "○" "✸" "✿" "✤" "✜" "◆" "▶")
@@ -1834,8 +1892,7 @@ It's also nice to make use of the Unicode characters for check boxes, and other 
     :priority_c    "[#C]"
     :priority_d    "[#D]"
     :priority_e    "[#E]"
-    :em_dash       "---")
-)
+    :em_dash       "---"))
 (plist-put +pretty-code-symbols :name "⁍") ; or › could be good?
 #+END_SRC
 We also like ~org-fragtog~, and that wants a hook.

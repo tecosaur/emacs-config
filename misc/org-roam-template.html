@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Roam Graph</title>
+        <meta name="viewport" content="width=device-width">
+        <style type="text/css">
+         svg {
+             position: relative;
+             top: 50vh;
+             left: 50vw;
+             transform: translate(-50%, -50%);
+         }
+
+         a > polygon {
+             transition-duration: 200ms;
+             transition-property: fill;
+         }
+
+         a > polyline {
+             transition-duration: 400ms;
+             transition-property: stroke;
+         }
+
+         a:hover > polygon {
+             fill: #d4d4d4;
+         }
+         a:hover > polyline {
+             stroke: #888;
+         }
+        </style>
+        <script type="text/javascript">
+         function create_iframe (url) {
+             i = document.createElement('iframe');
+             i.setAttribute('src', url);
+             i.style.setProperty('display', 'none');
+             document.body.append(i);
+         }
+         function listen_on_all_a () {
+             document.querySelectorAll("svg a").forEach(elem => {
+                 elem.addEventListener('click', (e) => {
+                     e.preventDefault();
+                     create_iframe(elem.href.baseVal);
+                 });
+             });
+         }
+        </script>
+    </head>
+    <body onload="listen_on_all_a()">
+%s
+    </body>
+</html>
