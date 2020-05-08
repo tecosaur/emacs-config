@@ -764,6 +764,13 @@ syntax-highlighting-love though which is a bit sad. Thankfully
 #+END_SRC
 Unfortunately this seems to mess things up, which is something I'll want to look
 into later.
+** Org Chef
+Loading after org seems a bit premature. Let's just load it when we try to use
+it, either by command or in a capture template.
+#+BEGIN_SRC emacs-lisp
+(use-package! org-chef
+  :commands (org-chef-insert-recipe org-chef-get-recipe-from-url))
+#+END_SRC
 ** Projectile
 Looking at documentation via =SPC h f= and =SPC h v= and looking at the source can
 add package src directories to projectile. This isn't desirable in my opinion.
@@ -1118,6 +1125,7 @@ Let's setup some org-capture templates
 (after! org-capture
   <<prettify-capture>>
   (setq +org-capture-uni-units (split-string (f-read-text "~/.org/.uni-units")))
+  (setq +org-capture-recipies  "~/Desktop/TEC/Organisation/recipies.org")
   (add-transient-hook! 'org-capture-select-template
     (setq org-capture-templates
           (doct `((,(format "%s\tPersonal todo" (all-the-icons-octicon "checklist" :face 'all-the-icons-green :v-adjust 0.01))
@@ -1190,6 +1198,12 @@ Let's setup some org-capture templates
                                :keys "a"
                                :desc ""
                                :i-type "read:reaserch"
+                               )
+                              (,(format "%s\t\tRecipie" (all-the-icons-faicon "spoon" :face 'all-the-icons-dorange :v-adjust 0.01))
+                               :keys "r"
+                               :file +org-capture-recipies
+                               :headline "Unsorted"
+                               :template "%(org-chef-get-recipe-from-url)"
                                )
                               (,(format "%s\tInformation" (all-the-icons-faicon "info-circle" :face 'all-the-icons-blue :v-adjust 0.01))
                                :keys "i"
