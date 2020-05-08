@@ -1810,7 +1810,12 @@ I've also added some fun alternatives, just commented out.
   (setq org-ellipsis " ▾ "
         org-priority-highest ?A
         org-priority-lowest ?E
-        ))
+        org-priority-faces
+        '((?A . 'all-the-icons-red)
+          (?B . 'all-the-icons-orange)
+          (?C . 'all-the-icons-yellow)
+          (?D . 'all-the-icons-green)
+          (?E . 'all-the-icons-blue))))
 #+END_SRC
 It's also nice to make use of the Unicode characters for check boxes, and other commands.
 #+BEGIN_SRC emacs-lisp
