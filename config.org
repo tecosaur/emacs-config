@@ -1438,7 +1438,7 @@ To associate ~org-protocol://~ links with the desktop file,
 xdg-mime default org-protocol.desktop x-scheme-handler/org-protocol
 #+END_SRC
 ***** Graph Behaviour
-By default, clicking on an ~org-protocal://~ link messes with the =svg= view. To fix
+By default, clicking on an ~org-protocol://~ link messes with the =svg= view. To fix
 this we can use an ~iframe~, however that requires shifting to an =html= file.
 Hence, we need to do a bit of overriding.
 #+BEGIN_SRC html :tangle misc/org-roam-template.html
