@@ -2979,6 +2979,13 @@ provide this:
   (add-to-list 'TeX-view-program-list '("Evince" "evince %o"))
   (add-to-list 'TeX-view-program-selection '(output-pdf "Evince")))
 #+END_SRC
+** Python
+Since I'm using =mypyls=, as suggested in [[file:~/.emacs.d/modules/lang/python/README.org::*Language Server Protocol Support][:lang python LSP support]] I'll tweak the
+priority of =mypyls=
+#+BEGIN_SRC emacs-lisp
+(after! lsp-python-ms
+  (set-lsp-priority! 'mspyls 1))
+#+END_SRC
 ** R
 *** Editor Visuals
 #+BEGIN_SRC emacs-lisp
