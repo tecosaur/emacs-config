@@ -67,6 +67,21 @@ cargo install git-delta
   #+BEGIN_SRC shell
 cargo install cargo-script
   #+END_SRC
+** Current Issues
+*** Magit push in daemon
+Quite often trying to push to a remote in the emacs daemon produces as error like this:
+#+BEGIN_SRC fundamental
+128 git … push -v origin refs/heads/master\:refs/heads/master
+Pushing to git@github.com:tecosaur/emacs-config.git
+
+fatal: Could not read from remote repository.
+
+Please make sure you have the correct access rights
+and the repository exists.
+#+END_SRC
+*** CalcTeX brings up compilation buffer
+With my [[*Calc][Calc]] hook, the first call of =M-x calc= brings up a compilation buffer
+from CalcTeX. I'm guessing this is from the compilation of the preamble / ~.fmt~ file.
 * Rudimentary configuration
 Make this file run (slightly) faster with lexical binding (see [[https://nullprogram.com/blog/2016/12/22/][this blog post]]
 for more info).
