@@ -1,7 +1,7 @@
 #+TITLE: Doom Emacs Configuration
 #+AUTHOR: tecosaur
 #+PROPERTY: header-args:emacs-lisp :tangle yes :cache yes :results silent :comments link
-#+PROPERTY: header-args:shell :tangle no :results silent
+#+PROPERTY: header-args :tangle no :results silent
 #+HTML_HEAD: <link rel='shortcut icon' type='image/png' href='https://www.gnu.org/software/emacs/favicon.png'>
 
 #+BEGIN_QUOTE
