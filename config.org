@@ -970,6 +970,14 @@ I also like the ~:comments~ header-argument, so let's make that a default.
                                       (:tangle . "no")
                                       (:comments . "link")))
 #+END_SRC
+By default, ~visual-line-mode~ is turned =on=, and ~auto-fill-mode~ =off= by a hook.
+However this messes with tables in Org-mode, and other plaintext files (e.g.
+markdown, \LaTeX) so I'll turn it off for this, and manually enable it for more
+specific modes as desired.
+#+BEGIN_SRC emacs-lisp
+(remove-hook 'text-mode-hook #'visual-line-mode)
+(add-hook 'text-mode-hook #'auto-fill-mode)
+#+END_SRC
 **** Extra functionality
 Let's also make creating an org buffer just that little bit easier.
 #+BEGIN_SRC emacs-lisp
