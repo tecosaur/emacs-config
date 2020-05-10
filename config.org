@@ -216,7 +216,7 @@ I'd like to have just the buffer name, then if applicable the project folder
     '(""
       (:eval
        (if (s-contains-p org-roam-directory (or buffer-file-name ""))
-           (replace-regexp-in-string ".*/[0-9]+-" "🢔 " buffer-file-name "")
+           (replace-regexp-in-string ".*/[0-9]+-" "🢔 " buffer-file-name)
          "%b"))
       (:eval
        (let ((project-name (projectile-project-name)))
@@ -1534,6 +1534,21 @@ Hence, we need to do a bit of overriding.
       (sleep-for 0.1)
       (write-region (format +org-roam-graph--html-template (f-read-text temp-graph)) nil temp-html)
       temp-html)))
+#+END_SRC
+***** Modeline file name
+All those numbers! It's messy. Let's adjust this in a similar way that I have in
+the[[*Window title][Window title]].
+#+BEGIN_SRC emacs-lisp
+(defadvice! doom-modeline--reformat-roam (orig-fun)
+  :around #'doom-modeline-buffer-file-name
+  (message "Reformat?")
+  (message (buffer-file-name))
+  (if (s-contains-p org-roam-directory (or buffer-file-name ""))
+      (replace-regexp-in-string
+       "\\(?:^\\|.*/\\)\\([0-9]\\{4\\}\\)\\([0-9]\\{2\\}\\)\\([0-9]\\{2\\}\\)[0-9]*-"
+       "🢔(\\1-\\2-\\3) "
+       (funcall orig-fun))
+    (funcall orig-fun)))
 #+END_SRC
 **** Nicer generated heading IDs
 Thanks to alphapapa's [[https://github.com/alphapapa/unpackaged.el#export-to-html-with-useful-anchors][unpackaged.el]].
