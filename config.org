@@ -895,11 +895,14 @@ make[1]: *** [CMakeFiles/Makefile2:106: CMakeFiles/vterm-module.dir/all] Error 2
 make: *** [Makefile:84: all] Error 2
 #+END_SRC
 I asked about this in a [[https://github.com/akermu/emacs-libvterm/issues/238#issuecomment-586385773][GitHub Issue]], and the fix is to use the ~cmake~ flag
-~-DUSE_SYSTEM_LIBVTERM=yes~. This can be set for when Doom recomplies ~vterm~ on
+~-DUSE_SYSTEM_LIBVTERM=yes~. This can be set for when Doom recompiles ~vterm~ on
 updating, which saves me manually compiling with the flag.
 #+BEGIN_SRC emacs-lisp
 (setq vterm-module-cmake-args "-DUSE_SYSTEM_LIBVTERM=yes")
 #+END_SRC
+I also use a 'fancy powerline setup' with [[https://github.com/romkatv/powerlevel10k][Powerlevel10k]], so I need to use a
+patched font for my terminal. Unfortunately I haven't quite figured out how to
+do this yet.
 ** Which-key
 Let's make this popup a bit faster
 #+BEGIN_SRC emacs-lisp
