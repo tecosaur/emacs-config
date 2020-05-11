@@ -82,6 +82,15 @@ and the repository exists.
 *** CalcTeX brings up compilation buffer
 With my [[*Calc][Calc]] hook, the first call of =M-x calc= brings up a compilation buffer
 from CalcTeX. I'm guessing this is from the compilation of the preamble / ~.fmt~ file.
+*** I can't get low effort pretty gnuplots
+I'd like to have some pretty defaults, and some nice presets like ~:preset radar~.
+Perhaps an ~defadvice!~ is in ~org-plot/gnuplot~'s near future?
+
+**** Wish list
++ Nice default font, line thicknesses etc.
++ Colours based on current doom theme
++ a ~:preset~ key, which takes a string/variable/function.
+  A bit like ~TeX-fold-math-spec-alist~.
 * Rudimentary configuration
 Make this file run (slightly) faster with lexical binding (see [[https://nullprogram.com/blog/2016/12/22/][this blog post]]
 for more info).
