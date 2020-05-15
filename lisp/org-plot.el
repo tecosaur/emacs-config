@@ -28,6 +28,8 @@
 ;; Thanks to the Org mailing list for testing and implementation and
 ;; feature suggestions
 
+;; This has been modified by @tecosaur to extend the functionality of this package
+
 ;;; Code:
 
 (require 'cl-lib)
@@ -62,7 +64,15 @@ Returns the resulting property list."
                 ("labels"  . :labels)
                 ("map"     . :map)
                 ("timeind" . :timeind)
-                ("timefmt" . :timefmt)))
+                ("timefmt" . :timefmt)
+                ;; extra from me
+                ("min"       . :ymin)
+                ("max"       . :ymax)
+                ("ymin"      . :ymin)
+                ("ymax"      . :ymax)
+                ("ticks"     . :ticks)
+                ("t"         . :transpose)
+                ("transpose" . :transpose)))
           (multiples '("set" "line"))
           (regexp ":\\([\"][^\"]+?[\"]\\|[(][^)]+?[)]\\|[^ \t\n\r;,.]*\\)")
           (start 0))
@@ -179,7 +189,75 @@ and dependent variables."
           (setf back-edge "") (setf front-edge ""))))
     row-vals))
 
-(defun org-plot/gnuplot-script (data-file num-cols params &optional preface)
+(defun org--plot/gnuplot-script-preamble ()
+  "Generate a preamble to be prepended to the script run in `org-plot/gnuplot-script'"
+  (format "
+fgt = \"textcolor rgb '%s'\" # foreground text
+fgat = \"textcolor rgb '%s'\" # foreground alt text
+fgl = \"linecolor rgb '%s'\" # foreground line
+fgal = \"linecolor rgb '%s'\" # foreground alt line
+
+# foreground colors
+set linetype -1 lc rgb '%s'
+set border lc rgb '%s'
+# change text colors of  tics
+set xtics @fgt
+set ytics @fgt
+# change text colors of labels
+set title @fgt
+set xlabel @fgt
+set ylabel @fgt
+# change a text color of key
+set key @fgt
+
+# line styles
+set linetype 1 lw 2 lc rgb '%s' # red
+set linetype 2 lw 2 lc rgb '%s' # blue
+set linetype 3 lw 2 lc rgb '%s' # green
+set linetype 4 lw 2 lc rgb '%s' # magenta
+set linetype 5 lw 2 lc rgb '%s' # orange
+set linetype 6 lw 2 lc rgb '%s' # yellow
+set linetype 7 lw 2 lc rgb '%s' # teal
+set linetype 8 lw 2 lc rgb '%s' # violet
+
+# palette
+set palette maxcolors 8
+set palette defined ( 0 '%s',\
+1 '%s',\
+2 '%s',\
+3 '%s',\
+4 '%s',\
+5 '%s',\
+6 '%s',\
+7 '%s' )
+"
+          (doom-color 'fg)
+          (doom-color 'fg-alt)
+          (doom-color 'fg)
+          (doom-color 'fg-alt)
+          (doom-color 'fg)
+          (doom-color 'fg)
+          ;; colours
+          (doom-color 'red)
+          (doom-color 'blue)
+          (doom-color 'green)
+          (doom-color 'magenta)
+          (doom-color 'orange)
+          (doom-color 'yellow)
+          (doom-color 'teal)
+          (doom-color 'violet)
+          ;; duplicated
+          (doom-color 'red)
+          (doom-color 'blue)
+          (doom-color 'green)
+          (doom-color 'magenta)
+          (doom-color 'orange)
+          (doom-color 'yellow)
+          (doom-color 'teal)
+          (doom-color 'violet)
+          ))
+
+(defun org-plot/gnuplot-script (table data-file num-cols params &optional preface)
   "Write a gnuplot script to DATA-FILE respecting the options set in PARAMS.
 NUM-COLS controls the number of columns plotted in a 2-d plot.
 Optional argument PREFACE returns only option parameters in a
@@ -208,38 +286,46 @@ manner suitable for prepending to a user-specified script."
          ;; ats = add-to-script
          (ats (lambda (line) (setf script (concat script "\n" line))))
          plot-lines)
-    (when file				; output file
-      (funcall ats (format "set term %s" (file-name-extension file)))
-      (funcall ats (format "set output '%s'" file)))
-    (pcase type         ; type
+
+    ;; handle output file
+    (funcall ats (format "set term %s background rgb '%s' size 1050,650"
+                         (if file (file-name-extension file) "GNUTERM")
+                         (doom-color 'bg)))
+    (when file (funcall ats (format "set output '%s'" file)))
+
+    (funcall ats "# HELLO")
+
+    (funcall ats (org--plot/gnuplot-script-preamble))
+
+    (pcase type				; type
       (`2d ())
       (`3d (when map (funcall ats "set map")))
       (`grid (funcall ats (if map "set pm3d map" "set pm3d"))))
     (when title (funcall ats (format "set title '%s'" title))) ; title
-    (mapc ats lines)                 ; line
+    (mapc ats lines)					       ; line
     (dolist (el sets) (funcall ats (format "set %s" el)))      ; set
     ;; Unless specified otherwise, values are TAB separated.
     (unless (string-match-p "^set datafile separator" script)
       (funcall ats "set datafile separator \"\\t\""))
-    (when x-labels      ; x labels (xtics)
+    (when x-labels			; x labels (xtics)
       (funcall ats
                (format "set xtics (%s)"
                        (mapconcat (lambda (pair)
                                     (format "\"%s\" %d" (cdr pair) (car pair)))
                                   x-labels ", "))))
-    (when y-labels      ; y labels (ytics)
+    (when y-labels			; y labels (ytics)
       (funcall ats
                (format "set ytics (%s)"
                        (mapconcat (lambda (pair)
                                     (format "\"%s\" %d" (cdr pair) (car pair)))
                                   y-labels ", "))))
-    (when time-ind      ; timestamp index
+    (when time-ind			; timestamp index
       (funcall ats "set xdata time")
       (funcall ats (concat "set timefmt \""
-                           (or timefmt  ; timefmt passed to gnuplot
+                           (or timefmt	; timefmt passed to gnuplot
                                "%Y-%m-%d-%H:%M:%S") "\"")))
     (unless preface
-      (pcase type       ; plot command
+      (pcase type			; plot command
         (`2d (dotimes (col num-cols)
                (unless (and (eq type '2d)
                             (or (and ind (equal (1+ col) ind))
@@ -261,12 +347,236 @@ manner suitable for prepending to a user-specified script."
                                         data-file with))))
         (`grid
          (setq plot-lines (list (format "'%s' with %s title ''"
-                                        data-file with)))))
+                                        data-file with))))
+        (`radar
+         (setq plot-lines (list (org--plot/radar table params)))))
       (funcall ats
                (concat plot-cmd " " (mapconcat #'identity
                                                (reverse plot-lines)
                                                ",\\\n    "))))
     script))
+
+(defvar org--plot/radar-template
+  "### spider plot/chart with gnuplot
+# also known as: radar chart, web chart, star chart, cobweb chart,
+#                radar plot,  web plot,  star plot,  cobweb plot,  etc. ...
+set datafile separator ' '
+set size square
+unset tics
+set angles degree
+set key bmargin center horizontal
+unset border
+
+# Load data and settup
+load \"%s\"
+
+# General settings
+DataColCount = words($Data[1])-1
+AxesCount = |$Data|-HeaderLines
+AngleOffset = 90
+Max = 1
+d=0.1*Max
+Direction = -1   # counterclockwise=1, clockwise = -1
+
+# Tic settings
+TicCount = %s
+TicOffset = 0.1
+TicValue(axis,i) = real(i)*(word($Settings[axis],3)-word($Settings[axis],2)) \\
+          / word($Settings[axis],4)+word($Settings[axis],2)
+TicLabelPosX(axis,i) = PosX(axis,i/TicCount) + PosY(axis, TicOffset)
+TicLabelPosY(axis,i) = PosY(axis,i/TicCount) - PosX(axis, TicOffset)
+TicLen = 0.03
+TicdX(axis,i) = 0.5*TicLen*cos(alpha(axis)-90)
+TicdY(axis,i) = 0.5*TicLen*sin(alpha(axis)-90)
+
+# Label
+LabOffset = 0.10
+LabX(axis) = PosX(axis+1,Max+2*d) + PosY(axis, LabOffset)
+LabY(axis) = PosY($0+1,Max+2*d)
+
+# Functions
+alpha(axis) = (axis-1)*Direction*360.0/AxesCount+AngleOffset
+PosX(axis,R) = R*cos(alpha(axis))
+PosY(axis,R) = R*sin(alpha(axis))
+Scale(axis,value) = real(value-word($Settings[axis],2))/(word($Settings[axis],3)-word($Settings[axis],2))
+
+# Spider settings
+set style arrow 1 dt 1 lw 1.0 @fgal head filled size 0.06,25     # style for axes
+set style arrow 2 dt 2 lw 0.5 @fgal nohead   # style for weblines
+set style arrow 3 dt 1 lw 1 @fgal nohead     # style for axis tics
+set samples AxesCount
+set isosamples TicCount
+set urange[1:AxesCount]
+set vrange[1:TicCount]
+set style fill transparent solid 0.2
+
+set xrange[-Max-4*d:Max+4*d]
+set yrange[-Max-4*d:Max+4*d]
+plot \\
+    '+' u (0):(0):(PosX($0,Max+d)):(PosY($0,Max+d)) w vec as 1 not, \\
+    $Data u (LabX($0)): \\
+        (LabY($0)):1 every ::HeaderLines w labels center enhanced @fgt not, \\
+    for [i=1:DataColCount] $Data u (PosX($0+1,Scale($0+1,column(i+1)))): \\
+        (PosY($0+1,Scale($0+1,column(i+1)))) every ::HeaderLines w filledcurves lt i title word($Data[1],i+1), \\
+%s
+#    '++' u (PosX($1,$2/TicCount)-TicdX($1,$2/TicCount)): \\
+#        (PosY($1,$2/TicCount)-TicdY($1,$2/TicCount)): \\
+#        (2*TicdX($1,$2/TicCount)):(2*TicdY($1,$2/TicCount)) \\
+#        w vec as 3 not, \\
+### end of code
+")
+
+(defvar org--plot/radar-ticks
+  "    '++' u (PosX($1,$2/TicCount)):(PosY($1,$2/TicCount)): \\
+        (PosX($1+1,$2/TicCount)-PosX($1,$2/TicCount)):  \\
+        (PosY($1+1,$2/TicCount)-PosY($1,$2/TicCount)) w vec as 2 not, \\
+    '++' u (TicLabelPosX(%s,$2)):(TicLabelPosY(%s,$2)): \\
+        (sprintf('%%g',TicValue(%s,$2))) w labels font ',8' @fgat not")
+
+(defvar org--plot/radar-setup-template
+  "# Data
+$Data <<HEREHAVESOMEDATA
+%s
+HEREHAVESOMEDATA
+HeaderLines = 1
+
+# Settings for scale and offset adjustments
+# axis min max tics axisLabelXoff axisLabelYoff
+$Settings <<EOD
+%s
+EOD
+")
+
+(defun org--plot/radar (table params)
+  (let* ((data
+          (concat "\"" (s-join "\" \"" (plist-get params :labels)) "\""
+                  "\n"
+                  (s-join "\n"
+                          (mapcar (lambda (row)
+                                    (format
+                                     "\"%s\" %s"
+                                     (car row)
+                                     (s-join " " (cdr row))))
+                                  table))))
+         (ticks (or (plist-get params :ticks)
+                    (org--plot/sensible-tick-num table
+                                                 (plist-get params :ymin)
+                                                 (plist-get params :ymax))))
+         (settings
+          (s-join "\n"
+                  (mapcar (lambda (row)
+                            (let ((data (org--plot/values-stats
+                                         (mapcar #'string-to-number (cdr row)))))
+                              (format
+                               "\"%s\" %s %s %s"
+                               (car row)
+                               (or (plist-get params :ymin)
+                                   (plist-get data :nice-min))
+                               (or (plist-get params :ymax)
+                                   (plist-get data :nice-max))
+                               (if (eq ticks 0) 2 ticks)
+                               )))
+                          table)))
+         (setup-file (make-temp-file "org-plot-setup")))
+    (f-write-text (format org--plot/radar-setup-template data settings)
+                  'utf-8 setup-file)
+    (format org--plot/radar-template
+            setup-file
+            (if (eq ticks 0) 2 ticks)
+            (if (eq ticks 0) ""
+              (apply #'format org--plot/radar-ticks
+                     (make-list 3 (if (and (plist-get params :ymin)
+                                           (plist-get params :ymax))
+                                      ;; FIXME multi-drawing of tick labels with "1"
+                                      "1" "$1")))))))
+
+(defun org--plot/values-stats (nums &optional hard-min hard-max)
+  (let* ((minimum (or hard-min (apply #'min nums)))
+         (maximum (or hard-max (apply #'max nums)))
+         (range (- maximum minimum))
+         (rangeOrder (ceiling (- 1 (log10 range))))
+         (range-factor (expt 10 rangeOrder))
+         (nice-min (/ (float (floor (* minimum range-factor))) range-factor))
+         (nice-max (/ (float (ceiling (* maximum range-factor))) range-factor)))
+    `(:min ,minimum :max ,maximum :range ,range
+      :range-factor ,range-factor
+      :nice-min ,nice-min :nice-max ,nice-max :nice-range ,(- nice-max nice-min))))
+
+(defun org--plot/sensible-tick-num (table &optional hard-min hard-max)
+  (let* ((row-data
+          (mapcar (lambda (row) (org--plot/values-stats
+                                 (mapcar #'string-to-number (cdr row))
+                                 hard-min
+                                 hard-max)) table))
+         (row-normalised-ranges (mapcar (lambda (r-data)
+                                          (let ((val (round (*
+                                                             (plist-get r-data :range-factor)
+                                                             (plist-get r-data :nice-range)))))
+                                            (if (= (% val 10) 0) (/ val 10) val)))
+                                        row-data))
+         (range-prime-decomposition (mapcar #'org--plot/prime-factors row-normalised-ranges))
+         (weighted-factors (sort (apply #'org--plot/merge-alists #'+ 0
+                                        (mapcar (lambda (factors) (org--plot/item-frequencies factors t))
+                                                range-prime-decomposition))
+                                 (lambda (a b) (> (cdr a) (cdr b))))))
+    (apply #'* (org--plot/nice-frequency-pick weighted-factors))))
+
+(defun org--plot/nice-frequency-pick (frequencies)
+  (case (length frequencies)
+    (1 (list (car (nth 0 frequencies))))
+    (2 (if (<= 3 (/ (cdr (nth 0 frequencies))
+                    (cdr (nth 1 frequencies))))
+           (make-list 2
+                      (car (nth 0 frequencies)))
+         (list (car (nth 0 frequencies))
+               (car (nth 1 frequencies)))))
+    (t
+     (let* ((total-count (apply #'+ (mapcar #'cdr frequencies)))
+            (n-freq (mapcar (lambda (freq) `(,(car freq) . ,(/ (float (cdr freq)) total-count))) frequencies))
+            (f-pick (list (car (car n-freq))))
+            (1-2-ratio (/ (cdr (nth 0 n-freq))
+                          (cdr (nth 1 n-freq))))
+            (2-3-ratio (/ (cdr (nth 1 n-freq))
+                          (cdr (nth 2 n-freq))))
+            (1-3-ratio (* 1-2-ratio 2-3-ratio))
+            (1-val (car (nth 0 n-freq)))
+            (2-val (car (nth 1 n-freq)))
+            (3-val (car (nth 2 n-freq))))
+       (when (> 1-2-ratio 4) (push 1-val f-pick))
+       (when (and (< 1-2-ratio 2-val)
+                  (< (* (apply #'* f-pick) 2-val) 30))
+         (push 2-val f-pick))
+       (when (and (< 1-3-ratio 3-val)
+                  (< (* (apply #'* f-pick) 3-val) 30))
+         (push 3-val f-pick))
+       f-pick))))
+
+(defun org--plot/merge-alists (function default alist1 alist2 &rest alists)
+  (when (> (length alists) 0)
+    (setq alist2 (apply #'org--plot/merge-alists function default alist2 alists)))
+  (flet ((keys (alist) (mapcar #'car alist))
+         (lookup (key alist) (or (cdr (assoc key alist)) default)))
+    (loop with keys = (union (keys alist1) (keys alist2) :test 'equal)
+          for k in keys collect
+          (cons k (funcall function (lookup k alist1) (lookup k alist2))))))
+
+(defun org--plot/item-frequencies (values &optional normalise)
+  "Return an alist indicating the frequency of values in VALUES list."
+  (let ((normaliser (if normalise (float (length values)) 1)))
+    (cl-loop for (n . m) in (seq-group-by #'identity values)
+             collect (cons n (/ (length m) normaliser)))))
+
+(defun org--plot/prime-factors (value)
+  "Return the prime decomposition of VALUE, e.g. for 12, '(3 2 2)"
+  (let ((factors '(1)) (i 1))
+    (while (/= 1 value)
+      (setq i (1+ i))
+      (when (eq 0 (% value i))
+        (push i factors)
+        (setq value (/ value i))
+        (setq i (1- i))
+        ))
+    (subseq factors 0 -1)))
 
 ;;-----------------------------------------------------------------------------
 ;; facade functions
@@ -287,9 +597,21 @@ line directly before or after the table."
     (dolist (pair org-plot/gnuplot-default-options)
       (unless (plist-member params (car pair))
         (setf params (plist-put params (car pair) (cdr pair)))))
+    ;; Collect options.
+    (save-excursion (while (and (equal 0 (forward-line -1))
+                                (looking-at "[[:space:]]*#\\+"))
+                      (setf params (org-plot/collect-options params))))
     ;; collect table and table information
     (let* ((data-file (make-temp-file "org-plot"))
-           (table (org-table-to-lisp))
+           (table (let ((tbl (org-table-to-lisp)))
+                    (when (pcase (plist-get params :transpose)
+                            ('y   t)
+                            ('yes t)
+                            ('t   t))
+                      (setf tbl (apply #'cl-mapcar #'list
+                                       (remove 'hline tbl)))
+                      (push 'hline (cdr tbl)))
+                    tbl))
            (num-cols (length (if (eq (nth 0 table) 'hline) (nth 1 table)
                                (nth 0 table)))))
       (run-with-idle-timer 0.1 nil #'delete-file data-file)
@@ -298,10 +620,7 @@ line directly before or after the table."
         (setf params
               (plist-put params :labels (nth 0 table))) ; headers to labels
         (setf table (delq 'hline (cdr table)))) ; clean non-data from table
-      ;; Collect options.
-      (save-excursion (while (and (equal 0 (forward-line -1))
-                                  (looking-at "[[:space:]]*#\\+"))
-                        (setf params (org-plot/collect-options params))))
+      (pp params)
       ;; Dump table to datafile (very different for grid).
       (pcase (plist-get params :plot-type)
         (`2d   (org-plot/gnuplot-to-data table data-file params))
@@ -331,15 +650,15 @@ line directly before or after the table."
                 (plist-put params :textind t)))))
       ;; Write script.
       (with-temp-buffer
-        (if (plist-get params :script)  ; user script
+        (if (plist-get params :script)	; user script
             (progn (insert
-                    (org-plot/gnuplot-script data-file num-cols params t))
+                    (org-plot/gnuplot-script table data-file num-cols params t))
                    (insert "\n")
                    (insert-file-contents (plist-get params :script))
                    (goto-char (point-min))
                    (while (re-search-forward "\\$datafile" nil t)
                      (replace-match data-file nil nil)))
-          (insert (org-plot/gnuplot-script data-file num-cols params)))
+          (insert (org-plot/gnuplot-script table data-file num-cols params)))
         ;; Graph table.
         (gnuplot-mode)
         (gnuplot-send-buffer-to-gnuplot))

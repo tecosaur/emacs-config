@@ -82,15 +82,27 @@ and the repository exists.
 *** CalcTeX brings up compilation buffer
 With my [[*Calc][Calc]] hook, the first call of =M-x calc= brings up a compilation buffer
 from CalcTeX. I'm guessing this is from the compilation of the preamble / ~.fmt~ file.
-*** I can't get low effort pretty gnuplots
-I'd like to have some pretty defaults, and some nice presets like ~:preset radar~.
-Perhaps an ~defadvice!~ is in ~org-plot/gnuplot~'s near future?
+** Editor comparison
+Over the years I have tried out (spent at least a year using as my primary
+editor) the following applications
+- Python IDLE
+- Komodo Edit
+- Brackets
+- VSCode
+- and now, Emacs
 
-**** Wish list
-+ Nice default font, line thicknesses etc.
-+ Colours based on current doom theme
-+ a ~:preset~ key, which takes a string/variable/function.
-  A bit like ~TeX-fold-math-spec-alist~.
+[[xkcd:378]]
+
+#+PLOT: transpose:yes type:radar min:0 max:4 ticks:4 file:"misc/editor-comparison.png"
+| Editor      | Extensibility | Ecosystem | Ease of Use | Comfort | Completion | Performance |
+|-------------+---------------+-----------+-------------+---------+------------+-------------|
+| IDLE        |             1 |         1 |           3 |       1 |          1 |           2 |
+| Komodo Edit |             2 |         1 |           3 |       2 |          2 |           2 |
+| Brackets    |           2.5 |         2 |           3 |       3 |        2.5 |           2 |
+| VSCode      |             3 |         3 |           4 |     3.5 |          4 |           3 |
+| Emacs       |             4 |         4 |           2 |       4 |        3.5 |           3 |
+
+[[file:misc/editor-comparison.png]]
 * Rudimentary configuration
 Make this file run (slightly) faster with lexical binding (see [[https://nullprogram.com/blog/2016/12/22/][this blog post]]
 for more info).
@@ -581,6 +593,11 @@ inserts an org-ified version at point. Isn't that just great.
 #+BEGIN_SRC emacs-lisp
 (package! org-chef :pin "1dd73fd3db")
 #+END_SRC
+
+I have my own custom version of ~org-plot~, so let's replace that
+#+BEGIN_SRC emacs-lisp
+(package! org-plot :recipe (:local-repo "lisp" :no-byte-compile t))
+#+END_SRC
 * Package configuration
 ** Abbrev mode
 Thanks to [[https://emacs.stackexchange.com/questions/45462/use-a-single-abbrev-table-for-multiple-modes/45476#45476][use a single abbrev-table for multiple modes? - Emacs Stack Exchange]] I
@@ -960,6 +977,19 @@ It's nice to see ansi colour codes displayed
 :PROPERTIES:
 :CUSTOM_ID: org
 :END:
+I really like org mode, I've given some thought to why, and below is the result.
+
+#+PLOT: transpose:yes type:radar min:0 max:4 file:"misc/document-format-comparison.png"
+| Format            | Fine-grained-control | Initial Effort | Syntax simplicity | Editor Support | Integrations | Ease-of-referencing | Versatility |
+|-------------------+----------------------+----------------+-------------------+----------------+--------------+---------------------+-------------|
+| Word              |                    2 |              4 |                 4 |              2 |            3 |                   2 |           2 |
+| LaTeX             |                    4 |              1 |                 1 |              3 |            2 |                   4 |           3 |
+| Org Mode          |                    4 |              2 |               3.5 |              1 |            4 |                   4 |           4 |
+| Markdown          |                    1 |              3 |                 3 |              4 |            3 |                   3 |           1 |
+| Markdown + Pandoc |                  2.5 |            2.5 |               2.5 |              3 |            3 |                   3 |           2 |
+
+[[file:misc/document-format-comparison.png]]
+
 *** System config
 Org mode isn't recognised as it's own mime type by default, but that can easily
 be changed with the following file. For system-wide changes try
@@ -1846,6 +1876,35 @@ appropriate.  In tables, insert a new row or end the table."
         (org-return t)))))
   (advice-add #'org-return-indent :override #'unpackaged/org-return-dwim))
 #+END_SRC
+**** Org Plot
+There are two main bits of extra functionality I wan to add
++ the ability to transpose tables (internally)
++ a radar type
+
+To accomplish this, overriding the ~org-plot/gnuplot~ function seems to be the
+clear way. I tried this, and overrode so much that it seemed to make sense
+just to modify =org-plot.el= instead, as it was only ~350 lines and I functions
+that encompassed most of that line count.
+
+Given that my [[file:lisp/org-plot.el][org-plot.el]] is now ~700 lines, this seems to have been a good call.
+
+For transposition, I've added the following (equivalent) keys
++ ~[transpose|t]~
++ ~t~
+When set to ~yes~, ~y~, or ~t~ the table is internally transposed (i.e. the =elisp= data
+form of the table only).
+
+The radar chart is a lot more involved, and I've added the following keys
++ ~type:radar~
+  This uses the radar template, the result of which can be seen in <<...>>
++ ~[min|ymin]:0..n~
+  This sets the start value of /every/ axis.
++ ~[max|ymax]:0..n~
+  This sets the end value of /every/ axis.
+  If both ~ymin~ and ~ymax~ are set, only the first axis gets tick labels.
++ ~ticks:0..n~
+  This sets the number of ticks. Only works for \(n>2\), or \(n=0\) in which
+  case no ticks are shown.
 *** Visuals
 **** In editor
 ***** Font Display
