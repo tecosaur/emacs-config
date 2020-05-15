@@ -1168,10 +1168,38 @@ Let's setup some org-capture templates
   <<prettify-capture>>
   (setq +org-capture-uni-units (split-string (f-read-text "~/.org/.uni-units")))
   (setq +org-capture-recipies  "~/Desktop/TEC/Organisation/recipies.org")
+
+  (defun +doct-icon-declaration-to-icon (declaration)
+    "Convert :icon declaration to icon"
+    (let ((name (pop declaration))
+          (set  (intern (concat "all-the-icons-" (plist-get declaration :set))))
+          (face (intern (concat "all-the-icons-" (plist-get declaration :color))))
+          (v-adjust (or (plist-get declaration :v-adjust) 0.01)))
+      (apply set `(,name :face ,face :v-adjust ,v-adjust))))
+
+  (defun +doct-iconify-capture-templates (groups)
+    "Add declaration's :icon to each template group in GROUPS."
+    (let ((templates (doct-flatten-lists-in groups)))
+      (setq doct-templates (mapcar (lambda (template)
+                                     (message "-------")
+                                     (pp template)
+                                     (message "-- %d" (length template))
+                                     (when-let* ((props (nthcdr (if (= (length template) 4) 2 5) template))
+                                                 (spec (plist-get (plist-get props :doct) :icon)))
+                                       (message "--icon found")
+                                       (pp spec)
+                                       (setf (nth 1 template) (concat (+doct-icon-declaration-to-icon spec)
+                                                                      "\t"
+                                                                      (nth 1 template))))
+                                     template)
+                                   templates))))
+
+  (setq doct-after-conversion-functions '(+doct-iconify-capture-templates))
+
   (add-transient-hook! 'org-capture-select-template
     (setq org-capture-templates
-          (doct `((,(format "%s\tPersonal todo" (all-the-icons-octicon "checklist" :face 'all-the-icons-green :v-adjust 0.01))
-                   :keys "t"
+          (doct `(("Personal todo" :keys "t"
+                   :icon ("checklist" :set "octicon" :color "green")
                    :file +org-capture-todo-file
                    :prepend t
                    :headline "Inbox"
@@ -1179,8 +1207,8 @@ Let's setup some org-capture templates
                    :template ("* TODO %?"
                               "%i %a")
                    )
-                  (,(format "%s\tPersonal note" (all-the-icons-faicon "sticky-note-o" :face 'all-the-icons-green :v-adjust 0.01))
-                   :keys "n"
+                  ("Personal note" :keys "n"
+                   :icon ("sticky-note-o" :set "faicon" :color "green")
                    :file +org-capture-todo-file
                    :prepend t
                    :headline "Inbox"
@@ -1188,33 +1216,33 @@ Let's setup some org-capture templates
                    :template ("* %?"
                               "%i %a")
                    )
-                  (,(format "%s\tUniversity" (all-the-icons-faicon "graduation-cap" :face 'all-the-icons-purple :v-adjust 0.01))
-                   :keys "u"
+                  ("University" :keys "u"
+                   :icon ("graduation-cap" :set "faicon" :color "purple")
                    :file +org-capture-todo-file
                    :headline "University"
                    :unit-prompt ,(format "%%^{Unit|%s}" (string-join +org-capture-uni-units "|"))
                    :prepend t
                    :type entry
-                   :children ((,(format "%s\tTest" (all-the-icons-material "timer" :face 'all-the-icons-red :v-adjust 0.01))
-                               :keys "t"
+                   :children (("Test" :keys "t"
+                               :icon ("timer" :set "material" :color "red")
                                :template ("* TODO [#C] %{unit-prompt} %? :uni:tests:"
                                           "SCHEDULED: %^{Test date:}T"
                                           "%i %a"))
-                              (,(format "%s\tAssignment" (all-the-icons-material "library_books" :face 'all-the-icons-orange :v-adjust 0.01))
-                               :keys "a"
+                              ("Assignment" :keys "a"
+                               :icon ("library_books" :set "material" :color "orange")
                                :template ("* TODO [#B] %{unit-prompt} %? :uni:assignments:"
                                           "DEADLINE: %^{Due date:}T"
                                           "%i %a"))
-                              (,(format "%s\tLecture" (all-the-icons-fileicon "keynote" :face 'all-the-icons-orange :v-adjust 0.01))
-                               :keys "l"
+                              ("Lecture" :keys "l"
+                               :icon ("keynote" :set "fileicon" :color "orange")
                                :template ("* TODO [#C] %{unit-prompt} %? :uni:lecture:"
                                           "%i %a"))
-                              (,(format "%s\tMiscellaneous task" (all-the-icons-faicon "list" :face 'all-the-icons-yellow :v-adjust 0.01))
-                               :keys "u"
+                              ("Miscellaneous task" :keys "u"
+                               :icon ("list" :set "faicon" :color "yellow")
                                :template ("* TODO [#D] %{unit-prompt} %? :uni:"
                                           "%i %a"))))
-                  (,(format "%s\tEmail" (all-the-icons-faicon "envelope" :face 'all-the-icons-blue :v-adjust 0.01))
-                   :keys "e"
+                  ("Email" :keys "e"
+                   :icon ("envelope" :set "faicon" :color "blue")
                    :file +org-capture-todo-file
                    :prepend t
                    :headline "Inbox"
@@ -1223,63 +1251,63 @@ Let's setup some org-capture templates
                               "Send an email %^{urgancy|soon|ASAP|anon|at some point|eventually} to %^{recipiant}"
                               "about %^{topic}"
                               "%U %i %a"))
-                  (,(format "%s\tInteresting" (all-the-icons-faicon "eye" :face 'all-the-icons-lcyan :v-adjust 0.01))
-                   :keys "i"
+                  ("Interesting" :keys "i"
+                   :icon ("eye" :set "faicon" :color "lcyan")
                    :file +org-capture-todo-file
                    :prepend t
                    :headline "Interesting"
                    :type entry
                    :template ("* [ ] %{desc}%? :%{i-type}:"
                               "%i %a")
-                   :children ((,(format "%s\tWebpage" (all-the-icons-faicon "globe" :face 'all-the-icons-green :v-adjust 0.01))
-                               :keys "w"
+                   :children (("Webpage" :keys "w"
+                               :icon ("globe" :set "faicon" :color "green")
                                :desc "%(org-cliplink-capture) "
                                :i-type "read:web"
                                )
-                              (,(format "%s\tArticle" (all-the-icons-octicon "file-text" :face 'all-the-icons-yellow :v-adjust 0.01))
-                               :keys "a"
+                              ("Article" :keys "a"
+                               :icon ("file-text" :set "octicon" :color "yellow")
                                :desc ""
                                :i-type "read:reaserch"
                                )
-                              (,(format "%s\t\tRecipie" (all-the-icons-faicon "spoon" :face 'all-the-icons-dorange :v-adjust 0.01))
-                               :keys "r"
+                              ("\tRecipie" :keys "r"
+                               :icon ("spoon" :set "faicon" :color "dorange")
                                :file +org-capture-recipies
                                :headline "Unsorted"
                                :template "%(org-chef-get-recipe-from-url)"
                                )
-                              (,(format "%s\tInformation" (all-the-icons-faicon "info-circle" :face 'all-the-icons-blue :v-adjust 0.01))
-                               :keys "i"
+                              ("Information" :keys "i"
+                               :icon ("info-circle" :set "faicon" :color "blue")
                                :desc ""
                                :i-type "read:info"
                                )
-                              (,(format "%s\tIdea" (all-the-icons-material "bubble_chart" :face 'all-the-icons-silver :v-adjust 0.01))
-                               :keys "I"
+                              ("Idea" :keys "I"
+                               :icon ("bubble_chart" :set "material" :color "silver")
                                :desc ""
                                :i-type "idea"
                                )))
-                  (,(format "%s\tTasks" (all-the-icons-octicon "inbox" :face 'all-the-icons-yellow :v-adjust 0.01))
-                   :keys "k"
+                  ("Tasks" :keys "k"
+                   :icon ("inbox" :set "octicon" :color "yellow")
                    :file +org-capture-todo-file
                    :prepend t
                    :headline "Tasks"
                    :type entry
                    :template ("* TODO %? %^G%{extra}"
                               "%i %a")
-                   :children ((,(format "%s\tGeneral Task" (all-the-icons-octicon "inbox" :face 'all-the-icons-yellow :v-adjust 0.01))
-                               :keys "k"
+                   :children (("General Task" :keys "k"
+                               :icon ("inbox" :set "octicon" :color "yellow")
                                :extra ""
                                )
-                              (,(format "%s\tTask with deadline" (all-the-icons-material "timer" :face 'all-the-icons-orange :v-adjust -0.1))
-                               :keys "d"
+                              ("Task with deadline" :keys "d"
+                               :icon ("timer" :set "material" :color "orange" :v-adjust -0.1)
                                :extra "\nDEADLINE: %^{Deadline:}t"
                                )
-                              (,(format "%s\tScheduled Task" (all-the-icons-octicon "calendar" :face 'all-the-icons-orange :v-adjust 0.01))
-                               :keys "s"
+                              ("Scheduled Task" :keys "s"
+                               :icon ("calendar" :set "octicon" :color "orange")
                                :extra "\nSCHEDULED: %^{Start time:}t"
                                )
                               ))
-                  (,(format "%s\tProject" (all-the-icons-octicon "repo" :face 'all-the-icons-silver :v-adjust 0.01))
-                   :keys "p"
+                ("Project" :keys "p"
+                 :icon ("repo" :set "octicon" :color "silver")
                    :prepend t
                    :type entry
                    :headline "Inbox"
@@ -1288,16 +1316,16 @@ Let's setup some org-capture templates
                               "%a")
                    :file ""
                    :custom (:time-or-todo "")
-                   :children ((,(format "%s\tProject-local todo" (all-the-icons-octicon "checklist" :face 'all-the-icons-green :v-adjust 0.01))
-                               :keys "t"
+                   :children (("Project-local todo" :keys "t"
+                               :icon ("checklist" :set "octicon" :color "green")
                                :time-or-todo "TODO"
                                :file +org-capture-project-todo-file)
-                              (,(format "%s\tProject-local note" (all-the-icons-faicon "sticky-note" :face 'all-the-icons-yellow :v-adjust 0.01))
-                               :keys "n"
+                              ("Project-local note" :keys "n"
+                               :icon ("sticky-note" :set "faicon" :color "yellow")
                                :time-or-todo "%U"
                                :file +org-capture-project-notes-file)
-                              (,(format "%s\tProject-local changelog" (all-the-icons-faicon "list" :face 'all-the-icons-blue :v-adjust 0.01))
-                               :keys "c"
+                              ("Project-local changelog" :keys "c"
+                               :icon ("list" :set "faicon" :color "blue")
                                :time-or-todo "%U"
                                :heading "Unreleased"
                                :file +org-capture-project-changelog-file))
