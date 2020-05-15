@@ -28,7 +28,9 @@ Then I heard about =doom emacs= and thought I may as well give that a try.
 TLDR; it's great.
 
 Now I've discovered the wonders of literate programming, and am becoming more
-settled by the day. This is my config.
+settled by the day. This is my config, and also a cautionary tale.
+
+[[xkcd:456]]
 
 ** Notes for the unwary adventurer
 If you are so bold as to wish to steal bits of my config (or if I upgrade and
@@ -42,6 +44,11 @@ externally setup (i.e. outside of this config).
 + uni-units file :: I've got a file in =~/.org/.uni-units= which I use in ~org-capture~
   If this causes issues, just remove the reference to that file in [[*Capture][Capture]] and
   instances of ~unit-prompt~ used in  ~(doct ...)~
+
+Oh, did I mention that I started this config when I didn't know any =elisp=, and
+this whole thing is a hack job? If you can suggest any improvements, please do
+so, no matter how much critisism you include I'll appreciate it :)
+[[xkcd:1513]]
 *** Extra Requirements
 The lovely ~doom doctor~ is good at diagnosing most missing things, but here are a
 few extras.
@@ -1014,6 +1021,7 @@ Then set Emacs as the default editor
 xdg-mime default emacs.desktop text/org
 #+END_SRC
 *** Behaviour
+[[xkcd:1319]]
 **** Tweaking defaults
 #+BEGIN_SRC emacs-lisp
 (setq org-directory "~/.org"                      ; let's put files here
@@ -1905,7 +1913,60 @@ The radar chart is a lot more involved, and I've added the following keys
 + ~ticks:0..n~
   This sets the number of ticks. Only works for \(n>2\), or \(n=0\) in which
   case no ticks are shown.
+**** Extra links
+Let's start off with an xkcd link, why not.
+Nice youtube embed as well, for fun.
+#+BEGIN_SRC emacs-lisp
+(after! org
+  (org-link-set-parameters "xkcd"
+                           :image-data-fun #'+org-xkcd-image-fn
+                           :follow #'+org-xkcd-open-fn
+                           :export #'+org-xkcd-export)
+  (defun +org-xkcd-open-fn (link)
+    (+org-xkcd-image-fn nil link nil))
+  (defun +org-xkcd-fetch-info (num)
+    (require 'xkcd)
+    (let* ((url (format "http://xkcd.com/%d/info.0.json" num))
+           (out (xkcd-get-json url num))
+           (json-assoc (json-read-from-string out)))
+      json-assoc))
+  (defun +org-xkcd-image-fn (_protocol link _description)
+    (let* ((json-assoc (+org-xkcd-fetch-info (string-to-number link)))
+           (img (cdr (assoc 'img json-assoc)))
+           (alt (cdr (assoc 'alt json-assoc))))
+      (message alt)
+      (+org-http-image-data-fn "https" (substring img 6) nil)))
+  (defun +org-xkcd-export (path desc backend _com)
+    (let* ((json-assoc (+org-xkcd-fetch-info (string-to-number path)))
+                  (img (cdr (assoc 'img json-assoc)))
+                  (alt (cdr (assoc 'alt json-assoc)))
+                  (title (cdr (assoc 'title json-assoc))))
+      (cond ((org-export-derived-backend-p backend 'html)
+             (format "<img src='%s' title='%s' alt='%s'>" img alt title))
+            ((org-export-derived-backend-p backend 'latex)
+             (format "\\href{https://xkcd.com/%s}{%s}" path (or desc (concat "xkcd: " title))))
+            (t (format "https://xkcd.com/%s" path)))))
+
+  (org-link-set-parameters "yt" :export #'+org-export-yt)
+  (defun +org-export-yt (path desc backend _com)
+    (cond ((org-export-derived-backend-p backend 'html)
+           (format "<iframe width='440' \
+height='335' \
+src='https://www.youtube.com/embed/%s' \
+frameborder='0' \
+allowfullscreen>%s</iframe>" path (or "" desc)))
+          ((org-export-derived-backend-p backend 'latex)
+           (format "\\href{https://youtu.be/%s}{%s}" path (or desc "youtube")))
+          (t (format "https://youtu.be/%s" path)))))
+#+END_SRC
+
 *** Visuals
+
+Here I try to do two things: improve the styling of the various documents, via
+font changes etc, and also propagate colours from the current theme.
+
+[[xkcd:1882]]
+
 **** In editor
 ***** Font Display
 Mixed pitch is great. As is ~+org-pretty-mode~, let's use them.
@@ -2851,6 +2912,7 @@ Syntax highlighting is nice, so let's turn all of that on
  (ess-R-fl-keyword:F&T . t)))
 #+END_SRC
 ** LaTeX
+[[xkcd:1301]]
 *** To-be-implemented ideas
 - Paste image from clipboard
   + Determine first folder in ~graphicspath~ if applicable
