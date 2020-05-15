@@ -499,7 +499,7 @@ about it?
 **** Flyspell-lazy
 To alleviate some [[Flyspell][issues with flyspell]]
 #+BEGIN_SRC emacs-lisp
-(package! flyspell-lazy)
+(package! flyspell-lazy :pin "3ebf68cc9e")
 #+END_SRC
 **** CalcTeX
 This is a nice extension to ~calc~
@@ -516,7 +516,7 @@ View data frames better with
 [[https://github.com/dandavison/delta/][Delta]] is a git diff syntax highlighter written in rust. The author also wrote a
 package to hook this into the magit diff view. This requires the ~delta~ binary.
 #+BEGIN_SRC emacs-lisp
-;; (package! magit-delta :recipe (:host github :repo "dandavison/magit-delta") :pin "2ceb6077fa")
+;; (package! magit-delta :recipe (:host github :repo "dandavison/magit-delta") :pin "0c7d8b2359")
 #+END_SRC
 ** Language packages
 *** Systemd
@@ -536,7 +536,7 @@ set up org-capture.
 #+BEGIN_SRC emacs-lisp
 (package! doct
   :recipe (:host github :repo "progfolio/doct")
-  :pin "4b4c6ff631")
+  :pin "1bcec209e1")
 #+END_SRC
 **** Visuals
 Org tables aren't the prettiest thing to look at. This package is supposed to
@@ -568,7 +568,7 @@ features that GitHub has. Initialised in [[Exporting to GFM]].
 
 Now and then citations need to happen
 #+BEGIN_SRC emacs-lisp
-(package! org-ref :pin "1eb4ddda00")
+(package! org-ref :pin "4ce8064437")
 #+END_SRC
 
 Came across this and ... it's cool
@@ -579,7 +579,7 @@ Came across this and ... it's cool
 I *need* this in my life. It take a URL to a recipe from a common site, and
 inserts an org-ified version at point. Isn't that just great.
 #+BEGIN_SRC emacs-lisp
-(package! org-chef :pin "e8b4ba8a10")
+(package! org-chef :pin "1dd73fd3db")
 #+END_SRC
 * Package configuration
 ** Abbrev mode
