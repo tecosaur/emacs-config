@@ -1181,13 +1181,8 @@ Let's setup some org-capture templates
     "Add declaration's :icon to each template group in GROUPS."
     (let ((templates (doct-flatten-lists-in groups)))
       (setq doct-templates (mapcar (lambda (template)
-                                     (message "-------")
-                                     (pp template)
-                                     (message "-- %d" (length template))
                                      (when-let* ((props (nthcdr (if (= (length template) 4) 2 5) template))
                                                  (spec (plist-get (plist-get props :doct) :icon)))
-                                       (message "--icon found")
-                                       (pp spec)
                                        (setf (nth 1 template) (concat (+doct-icon-declaration-to-icon spec)
                                                                       "\t"
                                                                       (nth 1 template))))
