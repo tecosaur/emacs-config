@@ -198,7 +198,8 @@ fiddle with the font sizes a tad so that they visually match.
 #+BEGIN_SRC emacs-lisp
 (setq doom-font (font-spec :family "JetBrains Mono" :size 24)
       doom-big-font (font-spec :family "JetBrains Mono" :size 36)
-      doom-variable-pitch-font (font-spec :family "Overpass" :size 24))
+      doom-variable-pitch-font (font-spec :family "Overpass" :size 24)
+      doom-serif-font (font-spec :family "IBM Plex Mono" :weight 'light))
 #+END_SRC
 **** Theme
 ~doom-one~ is nice and all, but I find the ~vibrant~ variant nicer.
@@ -541,6 +542,12 @@ package to hook this into the magit diff view. This requires the ~delta~ binary.
 #+BEGIN_SRC emacs-lisp
 ;; (package! magit-delta :recipe (:host github :repo "dandavison/magit-delta") :pin "0c7d8b2359")
 #+END_SRC
+**** Info colours
+This makes manual pages nicer to look at :)
+Variable pitch fontification + colouring
+#+BEGIN_SRC emacs-lisp
+(package! info-colors :pin "47ee73cc19")
+#+END_SRC
 ** Language packages
 *** Systemd
 For editing systemd unit files
@@ -791,6 +798,15 @@ At one point, typing became noticeably laggy, Profiling revealed
 So I'm going to make use of ~flyspell-lazy~
 #+BEGIN_SRC emacs-lisp
 (after! flyspell (require 'flyspell-lazy) (flyspell-lazy-mode 1))
+#+END_SRC
+** Info colors
+#+BEGIN_SRC emacs-lisp
+(use-package! info-colors
+  :commands (info-colors-fontify-node))
+
+(add-hook 'Info-selection-hook 'info-colors-fontify-node)
+
+(add-hook 'Info-mode-hook #'mixed-pitch-mode)
 #+END_SRC
 ** Ispell
 Let's get a nice big dictionary from [[http://app.aspell.net/create][SCOWL Custom List/Dictionary Creator]] with
