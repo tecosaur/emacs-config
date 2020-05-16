@@ -192,8 +192,8 @@ just need to resort to =SPC b o= for now.
 'Fira Code' is nice, and 'Overpass' makes for a nice sans companion. We just need to
 fiddle with the font sizes a tad so that they visually match.
 #+BEGIN_SRC emacs-lisp
-(setq doom-font (font-spec :family "Fira Code" :size 22)
-      doom-big-font (font-spec :family "Fira Code" :size 36)
+(setq doom-font (font-spec :family "JetBrains Mono" :size 24)
+      doom-big-font (font-spec :family "JetBrains Mono" :size 36)
       doom-variable-pitch-font (font-spec :family "Overpass" :size 24))
 #+END_SRC
 **** Theme
