@@ -1957,24 +1957,9 @@ Saving seconds adds up after all! (but only so much)
   (defun +org-xkcd-open-fn (link)
     (+org-xkcd-image-fn nil link nil))
 
-  (defun +org-xkcd-fetch-info (num)
-    "Fetch the parsed json info for comic NUM"
-    (require 'xkcd)
-    (let ((res (+org-xkcd-db-read num)))
-      (unless res
-        (+org-xkcd-db-write
-         (let* ((url (format "http://xkcd.com/%d/info.0.json" num))
-                (json-assoc
-                 (if (assoc num +org-xkcd-stored-info)
-                     (assoc num +org-xkcd-stored-info)
-                   (json-read-from-string (xkcd-get-json url num)))))
-           json-assoc))
-        (setq res (+org-xkcd-db-read num)))
-      res))
-
   (defun +org-xkcd-image-fn (protocol link description)
     "Get image data for xkcd num LINK"
-    (let* ((xkcd-info (+org-xkcd-fetch-info (string-to-number link)))
+    (let* ((xkcd-info (+xkcd-fetch-info (string-to-number link)))
            (img (plist-get xkcd-info :img))
            (alt (plist-get xkcd-info :alt)))
       (message alt)
@@ -1982,7 +1967,7 @@ Saving seconds adds up after all! (but only so much)
 
   (defun +org-xkcd-export (path desc backend _com)
     "Convert xkcd to html/LaTeX form"
-    (let* ((xkcd-info (+org-xkcd-fetch-info (string-to-number path)))
+    (let* ((xkcd-info (+xkcd-fetch-info (string-to-number path)))
            (img (plist-get xkcd-info :img))
            (alt (plist-get xkcd-info :alt))
            (title (plist-get xkcd-info :title))
@@ -1998,19 +1983,20 @@ Saving seconds adds up after all! (but only so much)
                              (format "\\textbf{%s} %s" title alt))))
             (t (format "https://xkcd.com/%s" path)))))
 
-  (defvar xkcd-latest 0
-    "Latest xkcd number")
-
   (defun +org-xkcd-complete (&optional arg)
-    "Complete xkcd using `+org-xkcd-stored-info'"
-    (concat "xkcd:" (let ((num
-                           (ivy-read (format "xkcd (%s): " xkcd-latest)
-                                     (mapcar #'+org-xkcd-complete-format
-                                             +org-xkcd-stored-info))))
-                      (if (equal "" num) (number-to-string xkcd-latest)
-                        (replace-regexp-in-string "\\([0-9]+\\).*" "\\1" num)))))
+    "Complete xkcd using `+xkcd-stored-info'"
+    (concat "xkcd:" (+xkcd-select)))
 
-  (defun +org-xkcd-complete-format (xkcd-info)
+  (defun +xkcd-select ()
+    "Prompt the user for an xkcd using `ivy-read' and `+xkcd-select-format'. Return the xkcd number or nil"
+    (let ((num
+           (ivy-read (format "xkcd (%s): " xkcd-latest)
+                     (mapcar #'+xkcd-select-format
+                             +xkcd-stored-info))))
+      (if (equal "" num) (number-to-string xkcd-latest)
+        (replace-regexp-in-string "\\([0-9]+\\).*" "\\1" num))))
+
+  (defun +xkcd-select-format (xkcd-info)
     "Creates each ivy-read line from an xkcd info plist. Must start with the xkcd number"
     (format "%-4s  %-30s %s"
             (propertize (number-to-string (plist-get xkcd-info :num))
@@ -2019,22 +2005,45 @@ Saving seconds adds up after all! (but only so much)
             (propertize (plist-get xkcd-info :alt)
                         'face '(variable-pitch font-lock-comment-face))))
 
-  (defvar +org-xkcd-latest-max-age (* 60 60 12)
+  (defun +xkcd-fetch-info (num)
+    "Fetch the parsed json info for comic NUM"
+    (require 'xkcd)
+    (let ((res (+xkcd-db-read num)))
+      (unless res
+        (+xkcd-db-write
+         (let* ((url (format "http://xkcd.com/%d/info.0.json" num))
+                (json-assoc
+                 (if (assoc num +xkcd-stored-info)
+                     (assoc num +xkcd-stored-info)
+                   (json-read-from-string (xkcd-get-json url num)))))
+           json-assoc))
+        (setq res (+xkcd-db-read num)))
+      res))
+
+  ;; since we've done this, we may as well go one little step further
+  (defun +xkcd-find-and-copy ()
+    "Prompt the user for an xkcd using `+xkcd-select' and copy url to clipboard"
+    (interactive)
+    (let ((num (+xkcd-select)))
+      (gui-select-text (format "https://xkcd.com/%s" num))
+      (message "xkcd.com/%s copied to clipboard" num)))
+
+  (defvar +xkcd-latest-max-age (* 60 60 12)
     "Time after which xkcd-latest should be refreshed, in seconds")
 
-  ;; initialise `xkcd-latest' and `+org-xkcd-stored-info' with latest xkcd
-  (add-transient-hook! '+org-xkcd-complete
+  ;; initialise `xkcd-latest' and `+xkcd-stored-info' with latest xkcd
+  (add-transient-hook! '+xkcd-select
     (require 'xkcd)
     (xkcd-update-latest)
     (unless (and (file-exists-p xkcd-cache-latest)
                  (< (- (time-to-seconds (current-time))
                        (time-to-seconds (file-attribute-modification-time (file-attributes xkcd-cache-latest))))
-                    +org-xkcd-latest-max-age))
+                    +xkcd-latest-max-age))
       (let* ((out (xkcd-get-json "http://xkcd.com/info.0.json" 0))
              (json-assoc (json-read-from-string out))
              (latest (cdr (assoc 'num json-assoc))))
         (when (/= xkcd-latest latest)
-          (+org-xkcd-db-write json-assoc)
+          (+xkcd-db-write json-assoc)
           (with-current-buffer (find-file xkcd-cache-latest)
             (setq xkcd-latest latest)
             (erase-buffer)
@@ -2042,21 +2051,21 @@ Saving seconds adds up after all! (but only so much)
             (save-buffer)
             (kill-buffer (current-buffer))))))
 
-    (setq +org-xkcd-stored-info `(,(+org-xkcd-fetch-info xkcd-latest)))
-    (+org-xkcd-update-stored-info))
+    (setq +xkcd-stored-info `(,(+xkcd-fetch-info xkcd-latest)))
+    (+xkcd-update-stored-info))
 
-  (defvar +org-xkcd-stored-info nil
+  (defvar +xkcd-stored-info nil
     "Basic info on downloaded xkcds, in the form ((num . title) ...)")
 
-  (defun +org-xkcd-update-stored-info ()
-    "Compare the json files in `xkcd-cache-dir' to the info in `+org-xkcd-stored-info'
-and ensure that `+org-xkcd-stored-info' has info for every file"
+  (defun +xkcd-update-stored-info ()
+    "Compare the json files in `xkcd-cache-dir' to the info in `+xkcd-stored-info'
+and ensure that `+xkcd-stored-info' has info for every file"
     (let* ((file-nums (mapcar (lambda (f) (string-to-number (replace-regexp-in-string "\\.json" "" f)))
                               (directory-files xkcd-cache-dir nil "\\.json")))
-           (stored-nums (mapcar #'car +org-xkcd-stored-info))
+           (stored-nums (mapcar #'car +xkcd-stored-info))
            (new-nums (set-difference file-nums stored-nums)))
       (dolist (num new-nums)
-        (push (+org-xkcd-fetch-info num) +org-xkcd-stored-info))))
+        (push (+xkcd-fetch-info num) +xkcd-stored-info))))
 
   (defadvice! xkcd-get-json--and-cache (url &optional num)
     "Fetch the Json coming from URL.
@@ -2078,25 +2087,24 @@ The return value is a string."
         (xkcd-cache-json num out))
       out))
 
-  (defconst +org-xkcd-db--sqlite-available-p
+  (defconst +xkcd-db--sqlite-available-p
     (with-demoted-errors "+org-xkcd initialization: %S"
       (emacsql-sqlite-ensure-binary)
       t))
 
-  (defvar +org-xkcd-db--connection (make-hash-table :test #'equal)
+  (defvar +xkcd-db--connection (make-hash-table :test #'equal)
     "Database connection to +org-xkcd database.")
 
-  (defun +org-xkcd-db--get ()
+  (defun +xkcd-db--get ()
     "Return the sqlite db file."
-    (interactive "P")
     (expand-file-name "xkcd.db" xkcd-cache-dir))
 
-  (defun +org-xkcd-db--get-connection ()
+  (defun +xkcd-db--get-connection ()
     "Return the database connection, if any."
     (gethash (file-truename xkcd-cache-dir)
-             +org-xkcd-db--connection))
+             +xkcd-db--connection))
 
-  (defconst +org-xkcd-db--table-schema
+  (defconst +xkcd-db--table-schema
     '((xkcds
        [(num integer :unique :primary-key)
         (year        :not-null)
@@ -2109,46 +2117,46 @@ The return value is a string."
         (alt         :not-null)
         (img         :not-null)])))
 
-  (defun +org-xkcd-db--init (db)
+  (defun +xkcd-db--init (db)
     "Initialize database DB with the correct schema and user version."
     (emacsql-with-transaction db
-      (pcase-dolist (`(,table . ,schema) +org-xkcd-db--table-schema)
+      (pcase-dolist (`(,table . ,schema) +xkcd-db--table-schema)
         (emacsql db [:create-table $i1 $S2] table schema))))
 
-  (defun +org-xkcd-db ()
+  (defun +xkcd-db ()
     "Entrypoint to the +org-xkcd sqlite database.
 Initializes and stores the database, and the database connection.
 Performs a database upgrade when required."
-    (unless (and (+org-xkcd-db--get-connection)
-                 (emacsql-live-p (+org-xkcd-db--get-connection)))
-      (let* ((db-file (+org-xkcd-db--get))
+    (unless (and (+xkcd-db--get-connection)
+                 (emacsql-live-p (+xkcd-db--get-connection)))
+      (let* ((db-file (+xkcd-db--get))
              (init-db (not (file-exists-p db-file))))
         (make-directory (file-name-directory db-file) t)
         (let ((conn (emacsql-sqlite db-file)))
           (set-process-query-on-exit-flag (emacsql-process conn) nil)
           (puthash (file-truename xkcd-cache-dir)
                    conn
-                   +org-xkcd-db--connection)
+                   +xkcd-db--connection)
           (when init-db
-            (+org-xkcd-db--init conn)))))
-    (+org-xkcd-db--get-connection))
+            (+xkcd-db--init conn)))))
+    (+xkcd-db--get-connection))
 
-  (defun +org-xkcd-db-query (sql &rest args)
+  (defun +xkcd-db-query (sql &rest args)
     "Run SQL query on +org-xkcd database with ARGS.
 SQL can be either the emacsql vector representation, or a string."
     (if  (stringp sql)
-        (emacsql (+org-xkcd-db) (apply #'format sql args))
-      (apply #'emacsql (+org-xkcd-db) sql args)))
+        (emacsql (+xkcd-db) (apply #'format sql args))
+      (apply #'emacsql (+xkcd-db) sql args)))
 
-  (defun +org-xkcd-db-read (num)
+  (defun +xkcd-db-read (num)
     (when-let ((res
-                (car (+org-xkcd-db-query [:select * :from xkcds
-                                          :where (= num $s1)]
-                                         num
-                                         :limit 1))))
-      (+org-xkcd--list-to-plist res)))
+                (car (+xkcd-db-query [:select * :from xkcds
+                                      :where (= num $s1)]
+                                     num
+                                     :limit 1))))
+      (+xkcd-db-list-to-plist res)))
 
-  (defun +org-xkcd--list-to-plist (xkcd-datalist)
+  (defun +xkcd-db-list-to-plist (xkcd-datalist)
     `(:num ,(nth 0 xkcd-datalist)
       :year ,(nth 1 xkcd-datalist)
       :month ,(nth 2 xkcd-datalist)
@@ -2160,21 +2168,21 @@ SQL can be either the emacsql vector representation, or a string."
       :alt ,(nth 8 xkcd-datalist)
       :img ,(nth 9 xkcd-datalist)))
 
-  (defun +org-xkcd-db-write (data)
-    (+org-xkcd-db-query [:insert-into xkcds
-                         :values $v1]
-                        (list (vector
-                               (cdr (assoc 'num        data))
-                               (cdr (assoc 'year       data))
-                               (cdr (assoc 'month      data))
-                               (cdr (assoc 'link       data))
-                               (cdr (assoc 'news       data))
-                               (cdr (assoc 'safe_title data))
-                               (cdr (assoc 'title      data))
-                               (cdr (assoc 'transcript data))
-                               (cdr (assoc 'alt        data))
-                               (cdr (assoc 'img        data))
-                               )))))
+  (defun +xkcd-db-write (data)
+    (+xkcd-db-query [:insert-into xkcds
+                     :values $v1]
+                    (list (vector
+                           (cdr (assoc 'num        data))
+                           (cdr (assoc 'year       data))
+                           (cdr (assoc 'month      data))
+                           (cdr (assoc 'link       data))
+                           (cdr (assoc 'news       data))
+                           (cdr (assoc 'safe_title data))
+                           (cdr (assoc 'title      data))
+                           (cdr (assoc 'transcript data))
+                           (cdr (assoc 'alt        data))
+                           (cdr (assoc 'img        data))
+                           )))))
 #+END_SRC
 ***** YouTube
 The ~[[yt:...]]~ links preview nicely, but don't export nicely. Thankfully, we can
