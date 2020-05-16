@@ -198,7 +198,6 @@ fgl = \"linecolor rgb '%s'\" # foreground line
 fgal = \"linecolor rgb '%s'\" # foreground alt line
 
 # foreground colors
-set linetype -1 lc rgb '%s'
 set border lc rgb '%s'
 # change text colors of  tics
 set xtics @fgt
@@ -235,7 +234,6 @@ set palette defined ( 0 '%s',\
           (doom-color 'fg-alt)
           (doom-color 'fg)
           (doom-color 'fg-alt)
-          (doom-color 'fg)
           (doom-color 'fg)
           ;; colours
           (doom-color 'red)
