@@ -58,7 +58,9 @@
                                    "Surat"
                                    "Sydney"
                                    "Tokyo"
-                                   "Toronto")
+                                   "Toronto"
+                                   ;; and the fun one!
+                                   "Moon")
   "Specify default cities list for quick completion."
   :group 'wttrin
   :type 'list)
