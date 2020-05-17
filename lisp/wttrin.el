@@ -24,12 +24,41 @@
   :prefix "wttrin-"
   :group 'comm)
 
-(defcustom wttrin-api-version 1
+(defcustom wttrin-default-api-version 1
   "Specifies which version of the wttrin API to use."
   :group 'wttrn
   :type '(choice (const 1) (const 2)))
 
-(defcustom wttrin-default-cities '("Taipei" "Keelung" "Taichung" "Tainan")
+(defcustom wttrin-default-cities '("Baghdad"
+                                   "Beijing"
+                                   "Brussels"
+                                   "Buenos Aires"
+                                   "Cairo"
+                                   "Delhi"
+                                   "Gurnsey"
+                                   "Ho Chi Ming City"
+                                   "Hong Kong"
+                                   "Istanbul"
+                                   "Johannesburg"
+                                   "Kuala Lumpur"
+                                   "Leipzig"
+                                   "Lima"
+                                   "London"
+                                   "Madrid"
+                                   "Manila"
+                                   "Mexico City"
+                                   "Miami"
+                                   "Moscow"
+                                   "Mumbai"
+                                   "New York"
+                                   "Paris"
+                                   "Seoul"
+                                   "Shanghai"
+                                   "Singapore"
+                                   "Surat"
+                                   "Sydney"
+                                   "Tokyo"
+                                   "Toronto")
   "Specify default cities list for quick completion."
   :group 'wttrin
   :type 'list)
@@ -40,13 +69,14 @@
   :type '(list)
   )
 
-(defun wttrin-fetch-raw-string (query)
+(defun wttrin-fetch-raw-string (query &optional api-version)
   "Get the weather information based on your QUERY."
+  (unless api-version (setq api-version wttrin-default-api-version))
   (let ((url-user-agent "curl"))
     (add-to-list 'url-request-extra-headers wttrin-default-accept-language)
     (with-current-buffer
         (url-retrieve-synchronously
-         (concat "http://v" (number-to-string wttrin-api-version) ".wttr.in/" query)
+         (concat "http://v" (number-to-string api-version) ".wttr.in/" query)
          (lambda (status) (switch-to-buffer (current-buffer))))
       (decode-coding-string (buffer-string) 'utf-8))))
 
@@ -54,9 +84,9 @@
   (interactive)
   (quit-window t))
 
-(defun wttrin-query (city-name)
+(defun wttrin-query (city-name &optional api-version)
   "Query weather of CITY-NAME via wttrin, and display the result in new buffer."
-  (let ((raw-string (wttrin-fetch-raw-string city-name)))
+  (let ((raw-string (wttrin-fetch-raw-string city-name api-version)))
     (if (string-match "ERROR" raw-string)
         (message "Cannot get weather data. Maybe you inputed a wrong city name?")
       (let ((buffer (get-buffer-create (format "*wttr.in - %s*" city-name))))
@@ -77,14 +107,20 @@
         (setq buffer-read-only t)))))
 
 ;;;###autoload
-(defun wttrin (city)
+(defun wttrin (city &optional api-version)
   "Display weather information for CITY."
   (interactive
-   (list
-    (completing-read "City name: " wttrin-default-cities nil nil
-                     (when (= (length wttrin-default-cities) 1)
-                       (car wttrin-default-cities)))))
-  (wttrin-query city))
+   (cond ((equal current-prefix-arg nil)
+          (list "" nil))
+         ((equal current-prefix-arg 1)
+          (list "" 1))
+         ((equal current-prefix-arg 2)
+          (list "" 2))
+         (t (list
+             (completing-read "City name: " wttrin-default-cities nil nil
+                              (when (= (length wttrin-default-cities) 1)
+                                (car wttrin-default-cities)))))))
+  (wttrin-query city api-version))
 
 (provide 'wttrin)
 
