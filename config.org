@@ -500,8 +500,10 @@ amuse oneself. Introducing: typewriter sounds!
 #+END_SRC
 
 Hey, let's get the weather in here while we're at it.
+Unfortunately this seems slightly unmaintained ([[https://github.com/bcbcarl/emacs-wttrin/pulls][few open bugfix PRs]]) so let's
+roll our [[file:wttrin.el][own version]].
 #+BEGIN_SRC emacs-lisp
-(package! wttrin :pin "df5427ce2a")
+(package! wttrin :recipe (:local-repo "lisp" :no-byte-compile t))
 #+END_SRC
 
 Why not flash words on the screen. Why not --- hey, it could be fun.
@@ -612,7 +614,7 @@ inserts an org-ified version at point. Isn't that just great.
 (package! org-chef :pin "1dd73fd3db")
 #+END_SRC
 
-I have my own custom version of ~org-plot~, so let's replace that
+I have my own [[file:org-plot.el][modified version]] of ~org-plot~, so let's use that
 #+BEGIN_SRC emacs-lisp
 (package! org-plot :recipe (:local-repo "lisp" :no-byte-compile t))
 #+END_SRC
@@ -977,12 +979,6 @@ I also think that having =evil-= appear in so many popups is a bit too verbose, 
    '(("" . "\\`+?evil[-:]?\\(?:a-\\)?\\(.*\\)") . (nil . "◂\\1"))
    '(("\\`g s" . "\\`evilem--?motion-\\(.*\\)") . (nil . "◃\\1"))
    ))
-#+END_SRC
-** Wttrin
-Set the default city. It's initially ~Taipei~ but I find the IP-locating that's
-done perfectly acceptable, so let's make that happen.
-#+BEGIN_SRC emacs-lisp
-(setq wttrin-default-cities '(""))
 #+END_SRC
 ** xkcd
 We wan't to set this up so it loads nicely in [[*Extra links][Extra links]].
