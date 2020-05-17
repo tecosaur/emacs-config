@@ -24,6 +24,11 @@
   :prefix "wttrin-"
   :group 'comm)
 
+(defcustom wttrin-api-version 1
+  "Specifies which version of the wttrin API to use."
+  :group 'wttrn
+  :type '(choice (const 1) (const 2)))
+
 (defcustom wttrin-default-cities '("Taipei" "Keelung" "Taichung" "Tainan")
   "Specify default cities list for quick completion."
   :group 'wttrin
@@ -37,11 +42,11 @@
 
 (defun wttrin-fetch-raw-string (query)
   "Get the weather information based on your QUERY."
-  (let ((url-request-extra-headers '(("User-Agent" . "curl"))))
+  (let ((url-user-agent "curl"))
     (add-to-list 'url-request-extra-headers wttrin-default-accept-language)
     (with-current-buffer
         (url-retrieve-synchronously
-         (concat "http://wttr.in/" query)
+         (concat "http://v" (number-to-string wttrin-api-version) ".wttr.in/" query)
          (lambda (status) (switch-to-buffer (current-buffer))))
       (decode-coding-string (buffer-string) 'utf-8))))
 
@@ -60,8 +65,12 @@
         (erase-buffer)
         (insert (xterm-color-filter raw-string))
         (goto-char (point-min))
-        (re-search-forward "^$")
-        (delete-region (point-min) (1+ (point)))
+        (save-excursion
+          (re-search-forward "^$")
+          (delete-region (point-min) (1+ (point))))
+        (save-excursion
+          (while  (re-search-forward "(B" nil t)
+            (delete-region (match-beginning 0) (match-end 0))))
         (use-local-map (make-sparse-keymap))
         (local-set-key "q" 'wttrin-exit)
         (local-set-key "g" 'wttrin)
