@@ -3559,10 +3559,28 @@ Let's use mixed pitch, because it's great
 #+BEGIN_SRC emacs-lisp
 (add-hook! (gfm-mode markdown-mode) #'mixed-pitch-mode)
 #+END_SRC
+
 Most of the time when I write markdown, it's going into some app/website which
 will do it's own line wrapping, hence we /only/ want to use visual line wrapping. No hard stuff.
 #+BEGIN_SRC emacs-lisp
 (add-hook! (gfm-mode markdown-mode) #'visual-line-mode #'turn-off-auto-fill)
+#+END_SRC
+
+Since markdown is often seen as rendered HTML, let's try to somewhat mirror the
+style or markdown renderes.
+
+Most markdown renders seem to make the first three headings levels larger than
+normal text, the first two much so. Then the fourth level tends to be the same
+as body text, while the fifth and sixth are (increasingly) smaller, with the
+sixth greyed out. Since the sixth level is so small, I'll turn up the boldness a notch.
+#+BEGIN_SRC emacs-lisp
+(custom-set-faces!
+  '(markdown-header-face-1 :height 1.25 :weight extra-bold :inherit markdown-header-face)
+  '(markdown-header-face-2 :height 1.15 :weight bold       :inherit markdown-header-face)
+  '(markdown-header-face-3 :height 1.08 :weight bold       :inherit markdown-header-face)
+  '(markdown-header-face-4 :height 1.00 :weight bold       :inherit markdown-header-face)
+  '(markdown-header-face-5 :height 0.90 :weight bold       :inherit markdown-header-face)
+  '(markdown-header-face-6 :height 0.75 :weight extra-bold :inherit markdown-header-face))
 #+END_SRC
 ** Beancount
 The [[https://bitbucket.org/blais/beancount/src/tip/editors/emacs/beancount.el][beancount package]] online has been put into ~./lisp~, we just need to load and
