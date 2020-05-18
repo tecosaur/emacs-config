@@ -2415,6 +2415,11 @@ We also like ~org-fragtog~, and that wants a hook.
 (add-hook 'org-mode-hook 'org-fragtog-mode)
 #+END_SRC
 ***** LaTeX Fragments
+First off, we want those fragments to look good.
+#+BEGIN_SRC emacs-lisp
+(after! org
+  (setq org-highlight-latex-and-related '(native script entities)))
+#+END_SRC
 It's nice to customise the look of LaTeX fragments so they fit better in the
 text --- like this \(\sqrt{\beta^2+3}-\sum_{\phi=1}^\infty \frac{x^\phi-1}{\Gamma(a)}\). Let's start by adding a sans font.
 #+BEGIN_SRC emacs-lisp
