@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: deliminators
+# key: @
+# condition: (texmathp)
+# type: command                                                    
+# --
+(tec/get-open-delim-char)
+(yas-expand-snippet (yas-lookup-snippet "_deliminators" 'latex-mode))

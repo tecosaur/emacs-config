@@ -3269,7 +3269,8 @@ fi
 (after! latex
   (add-to-list 'TeX-command-list '("XeLaTeX" "%`xelatex%(mode)%' %t" TeX-run-TeX nil t)))
 #+END_SRC
-*** Snippet value
+*** Snippet helpers
+**** Template
 For use in the new-file template, let's set out a nice preamble we may want to use.
 #+NAME: latex-nice-preable
 #+BEGIN_SRC latex :tangle no
@@ -3310,6 +3311,66 @@ Then let's bind the content to a function, and define some nice helpers.
   "Based on class choice prompt for insertion of default preamble"
     (if (equal tec/yas-latex-class-choice "bmc") 'nil
              (eq (read-char-choice "Include default preamble? [Type y/n]" '(?y ?n)) ?y)))
+#+END_SRC
+**** Deliminators
+#+BEGIN_SRC emacs-lisp
+(after! tex
+  (defvar tec/tex-last-delim-char nil
+    "Last open delim expanded in a tex document")
+  (defvar tec/tex-delim-dot-second t
+    "When the `tec/tex-last-delim-char' is . a second charachter (this) is prompted for")
+  (defun tec/get-open-delim-char ()
+    "Exclusivly read next char to tec/tex-last-delim-char"
+    (setq tec/tex-delim-dot-second nil)
+    (setq tec/tex-last-delim-char (read-char-exclusive "Opening deliminator, recognises: 9 ( [ { < | ."))
+    (when (eql ?. tec/tex-last-delim-char)
+      (setq tec/tex-delim-dot-second (read-char-exclusive "Other deliminator, recognises: 0 9 (  ) [ ] { } < > |"))))
+  (defun tec/tex-open-delim-from-char (&optional open-char)
+    "Find the associated opening delim as string"
+    (unless open-char (setq open-char (if (eql ?. tec/tex-last-delim-char)
+                                          tec/tex-delim-dot-second
+                                        tec/tex-last-delim-char)))
+    (case open-char
+      (?\( "(")
+      (?9  "(")
+      (?\[ "[")
+      (?\{ "\\{")
+      (?<  "<")
+      (?|  (if tec/tex-delim-dot-second "." "|"))
+      (t   ".")))
+  (defun tec/tex-close-delim-from-char (&optional open-char)
+    "Find the associated closing delim as string"
+    (if tec/tex-delim-dot-second
+        (case tec/tex-delim-dot-second
+          (?\) ")")
+          (?0  ")")
+          (?\] "]")
+          (?\} "\\}")
+          (?\> ">")
+          (?|  "|")
+          (t   "."))
+      (case (or open-char tec/tex-last-delim-char)
+        (?\( ")")
+        (?9  ")")
+        (?\[ "]")
+        (?\{ "\\}")
+        (?<  ")")
+        (?\) ")")
+        (?0  ")")
+        (?\] "]")
+        (?\} "\\}")
+        (?\> ">")
+        (?|  "|")
+        (t   "."))))
+  (defun tec/tex-next-char-smart-close-delim (&optional open-char)
+    (and (bound-and-true-p smartparens-mode)
+         (eql (char-after) (case (or open-char tec/tex-last-delim-char)
+                             (?\( ?\))
+                             (?\[ ?\])
+                             (?{ ?})
+                             (?< ?>)))))
+  (defun tec/tex-delim-yas-expand (&optional open-char)
+    (yas-expand-snippet (yas-lookup-snippet "_deliminators" 'latex-mode) (point) (+ (point) (if (tec/tex-next-char-smart-close-delim open-char) 2 1)))))
 #+END_SRC
 *** Editor visuals
 Once again, /all hail mixed pitch mode!/

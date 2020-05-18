@@ -1,0 +1,3 @@
+# name: _deliminators                                                                 
+# --
+\left`(tec/tex-open-delim-from-char)` `%`$1 \right`(tec/tex-close-delim-from-char)` $0
