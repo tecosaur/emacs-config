@@ -551,10 +551,10 @@ Variable pitch fontification + colouring
 (package! info-colors :pin "47ee73cc19")
 #+END_SRC
 ** Language packages
-*** Systemd
-For editing systemd unit files
+*** LaTeX
 #+BEGIN_SRC emacs-lisp
-(package! systemd :pin "51c148e09a")
+(package! evil-tex :recipe (:host github :repo "itai33/evil-tex")
+                            :pin "14da2c4c1d")
 #+END_SRC
 *** Org Mode
 **** Improve agenda/capture
@@ -617,6 +617,11 @@ inserts an org-ified version at point. Isn't that just great.
 I have my own [[file:org-plot.el][modified version]] of ~org-plot~, so let's use that
 #+BEGIN_SRC emacs-lisp
 (package! org-plot :recipe (:local-repo "lisp" :no-byte-compile t))
+#+END_SRC
+*** Systemd
+For editing systemd unit files
+#+BEGIN_SRC emacs-lisp
+(package! systemd :pin "51c148e09a")
 #+END_SRC
 * Package configuration
 ** Abbrev mode
@@ -3505,6 +3510,12 @@ provide this:
 (after! tex
   (add-to-list 'TeX-view-program-list '("Evince" "evince %o"))
   (add-to-list 'TeX-view-program-selection '(output-pdf "Evince")))
+#+END_SRC
+*** Evilification
+Let's face it. Being evil is fun, let's take it as far as we can.
+#+BEGIN_SRC emacs-lisp
+(use-package! evil-tex
+  :hook (LaTeX-mode . evil-tex-mode))
 #+END_SRC
 ** Python
 Since I'm using =mypyls=, as suggested in [[file:~/.emacs.d/modules/lang/python/README.org::*Language Server Protocol Support][:lang python LSP support]] I'll tweak the
