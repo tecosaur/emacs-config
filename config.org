@@ -2421,6 +2421,8 @@ text --- like this \(\sqrt{\beta^2+3}-\sum_{\phi=1}^\infty \frac{x^\phi-1}{\Gamm
 \\usepackage{textcomp,amssymb}
 \\usepackage[makeroom]{cancel}
 
+\\usepackage{booktabs}
+
 \\pagestyle{empty}             % do not remove
 % The settings below are copied from fullpage.sty
 \\setlength{\\textwidth}{\\paperwidth}
