@@ -1430,6 +1430,35 @@ Now, by default, LSPs don't really function at all in ~src~ blocks.
   (dolist (lang org-babel-lang-list)
     (eval `(lsp-org-babel-enable ,lang)))
 #+END_SRC
+***** View exported file
+='localeader v= has no pre-existing binding, so I may as well use it with the same
+functionality as in LaTeX. Let's try viewing possible output files with this.
+#+BEGIN_SRC emacs-lisp
+(after! org
+  (map! :map org-mode-map
+        :localleader
+        :desc "View exported file" "v" #'org-view-output-file)
+
+  (defun org-view-output-file (&optional org-file-path)
+    (interactive)
+    "Visit buffer open on the first output file (if any) found, using `org-view-output-file-extensions'"
+    (let* ((org-file-path (or org-file-path (buffer-file-name) ""))
+           (dir (file-name-directory org-file-path))
+           (basename (file-name-base org-file-path))
+           (output-file nil))
+      (dolist (ext org-view-output-file-extensions)
+        (unless output-file
+          (when (file-exists-p
+                 (concat dir basename "." ext))
+                 (setq output-file (concat dir basename "." ext)))))
+      (if output-file
+        (pop-to-buffer (or (find-buffer-visiting output-file)
+                           (find-file-noselect output-file)))
+        (message "No exported file found")))))
+
+(defvar org-view-output-file-extensions '("pdf" "md" "rst" "txt" "tex")
+  "Search for output files with these extensions, in order, viewing the first that matches")
+#+END_SRC
 **** Super agenda
 #+BEGIN_SRC emacs-lisp
 (use-package! org-super-agenda
