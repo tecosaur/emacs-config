@@ -1355,6 +1355,7 @@ specific modes as desired.
 (add-hook 'text-mode-hook #'auto-fill-mode)
 #+END_SRC
 **** Extra functionality
+***** Org buffer creation
 Let's also make creating an org buffer just that little bit easier.
 #+BEGIN_SRC emacs-lisp
 (evil-define-command evil-buffer-org-new (count file)
@@ -1372,10 +1373,12 @@ Let's also make creating an org buffer just that little bit easier.
   (:prefix "b"
     :desc "New empty ORG buffer" "o" #'evil-buffer-org-new))
 #+END_SRC
+***** List bullet sequence
 I think it makes sense to have list bullets change with depth
 #+BEGIN_SRC emacs-lisp
 (setq org-list-demote-modify-bullet '(("+" . "-") ("-" . "+") ("*" . "+")))
 #+END_SRC
+***** Citation
 Occasionally I want to cite something.
 #+BEGIN_SRC emacs-lisp
 (use-package! org-ref
@@ -1383,18 +1386,19 @@ Occasionally I want to cite something.
    :config
     (setq org-ref-completion-library 'org-ref-ivy-cite))
 #+END_SRC
+***** cdlatex
 It's also nice to be able to use ~cdlatex~.
 #+BEGIN_SRC emacs-lisp
 (after! org (add-hook 'org-mode-hook 'turn-on-org-cdlatex))
 #+END_SRC
 At some point in the future it could be good to investigate [[https://scripter.co/splitting-an-org-block-into-two/][splitting org blocks]].
 Likewise [[https://archive.casouri.cat/note/2020/insert-math-symbol-in-emacs/][this]] looks good for symbols.
-
+***** Spellcheck
 My spelling is atrocious, so let's get flycheck going.
 #+BEGIN_SRC emacs-lisp
 (after! org (add-hook 'org-mode-hook 'turn-on-flyspell))
 #+END_SRC
-
+***** LSP support in ~src~ blocks
 Now, by default, LSPs don't really function at all in ~src~ blocks.
 #+BEGIN_SRC emacs-lisp
 (cl-defmacro lsp-org-babel-enable (lang)
