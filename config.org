@@ -1368,6 +1368,16 @@ It's also nice to be able to use ~cdlatex~.
 #+BEGIN_SRC emacs-lisp
 (after! org (add-hook 'org-mode-hook 'turn-on-org-cdlatex))
 #+END_SRC
+
+It's handy to be able to quickly insert environments with =C-c }=. I almost always
+want to edit them afterwards though, so let's make that happen by default.
+#+BEGIN_SRC emacs-lisp
+(after! org
+  (defadvice! org-edit-latex-emv-after-insert ()
+    :after #'org-cdlatex-environment-indent
+    (org-edit-latex-environment)))
+#+END_SRC
+
 At some point in the future it could be good to investigate [[https://scripter.co/splitting-an-org-block-into-two/][splitting org blocks]].
 Likewise [[https://archive.casouri.cat/note/2020/insert-math-symbol-in-emacs/][this]] looks good for symbols.
 ***** Spellcheck
