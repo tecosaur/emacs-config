@@ -108,10 +108,10 @@ I have attempted to quantify aspects of my impressions of them below.
 | Editor      | Extensibility | Ecosystem | Ease of Use | Comfort | Completion | Performance |
 |-------------+---------------+-----------+-------------+---------+------------+-------------|
 | IDLE        |             1 |         1 |           3 |       1 |          1 |           2 |
-| Komodo Edit |             2 |         1 |           3 |       2 |          2 |           2 |
-| Brackets    |           2.5 |         2 |           3 |       3 |        2.5 |           2 |
 | VSCode      |             3 |         3 |           4 |     3.5 |          4 |           3 |
+| Brackets    |           2.5 |         2 |           3 |       3 |        2.5 |           2 |
 | Emacs       |             4 |         4 |           2 |       4 |        3.5 |           3 |
+| Komodo Edit |             2 |         1 |           3 |       2 |          2 |           2 |
 
 [[https://media.githubusercontent.com/media/tecosaur/emacs-config/master/misc/editor-comparison.png]]
 * Rudimentary configuration
