@@ -123,10 +123,20 @@ for more info).
 ** Personal Information
 It's useful to have some basic personal information
 #+BEGIN_SRC emacs-lisp
-(setq user-full-name "tecosaur"
-      user-mail-address "tecosaur@gmail.com")
+(setq user-full-name "TEC"
+      user-mail-address "tec@tecosaur.com")
 #+END_SRC
 Apparently this is used by ~GPG~, and all sorts of other things.
+
+Speaking of ~GPG~, I want to use =~/.authsource.gpg= instead of the default in
+=~/.emacs.d=. Why? Because my home directory is already cluttered, so this won't
+make a difference, and I don't want to accidently purge this file (I have done
+~rm -rf~/.emac.d~ before). I also want to cache as much as possible, as my home
+machine is pretty safe, and my laptop is shutdown a lot.
+#+BEGIN_SRC emacs-lisp
+(setq auth-sources '("~/.authinfo.gpg")
+      auth-source-cache-expiry nil) ; default is 7200 (2h)
+#+END_SRC
 ** Better defaults
 *** Simple settings
 Browsing the web and seeing [[https://github.com/angrybacon/dotemacs/blob/master/dotemacs.org#use-better-defaults][angrybacon/dotemacs]] and comparing with the values
