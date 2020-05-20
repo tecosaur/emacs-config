@@ -457,23 +457,23 @@ our package manager can't deal with; see [[https://github.com/raxod502/straight.
 This helps with that.
 #+BEGIN_SRC emacs-lisp
 (package! prettify-utils ; simplify messing with prettify-mode
-  :recipe (:host github :repo "Ilazki/prettify-utils.el") :pin "8b783d316c")
+  :recipe (:host github :repo "Ilazki/prettify-utils.el") :pin "8b783d316c23bffdf2b9e6f52635482c4812ee43")
 #+END_SRC
 *** Window management
 #+BEGIN_SRC emacs-lisp
-(package! rotate :pin "091b5ac4fc")
+(package! rotate :pin "091b5ac4fc310773253efb317e3dbe8e46959ba6")
 #+END_SRC
 *** Fun
 Sometimes one just wants a little fun.
 XKCD comics are fun.
 #+BEGIN_SRC emacs-lisp
-(package! xkcd :pin "66e928706f")
+(package! xkcd :pin "66e928706fd660cfdab204c98a347b49c4267bdf")
 #+END_SRC
 
 Every so often, you want everyone else to /know/ that you're typing, or just to
 amuse oneself. Introducing: typewriter sounds!
 #+BEGIN_SRC emacs-lisp
-(package! selectric-mode :pin "bb9e66678f")
+(package! selectric-mode :pin "bb9e66678f34e9bc23624ff6292cf5e7857e8e5f")
 #+END_SRC
 
 Hey, let's get the weather in here while we're at it.
@@ -485,35 +485,35 @@ roll our [[file:wttrin.el][own version]].
 
 Why not flash words on the screen. Why not --- hey, it could be fun.
 #+BEGIN_SRC emacs-lisp
-(package! spray :pin "00638bc916")
+(package! spray :pin "00638bc916227f2f961013543d10e85a43a32e29")
 #+END_SRC
 
 With all our fancy Emacs themes, my terminal is missing out!
 #+BEGIN_SRC emacs-lisp
-(package! theme-magic :pin "844c4311bd")
+(package! theme-magic :pin "844c4311bd26ebafd4b6a1d72ddcc65d87f074e3")
 #+END_SRC
 
 What's even the point of using Emacs unless you're constantly telling everyone
 about it?
 #+BEGIN_SRC emacs-lisp
-(package! elcord :pin "94b0afb9ba")
+(package! elcord :pin "94b0afb9bac32fa72354517347646166d6bec986")
 #+END_SRC
 *** Improving features
 **** Flyspell-lazy
 To alleviate some [[Flyspell][issues with flyspell]]
 #+BEGIN_SRC emacs-lisp
-(package! flyspell-lazy :pin "3ebf68cc9e")
+(package! flyspell-lazy :pin "3ebf68cc9eb10c972a2de8d7861cbabbbce69570")
 #+END_SRC
 **** CalcTeX
 This is a nice extension to ~calc~
 #+BEGIN_SRC emacs-lisp
 (package! calctex :recipe (:host github :repo "johnbcoughlin/calctex"
-                                 :files ("*.el")) :pin "542b628eb4")
+                                 :files ("*.el")) :pin "542b628eb4a5d1e74476e0ce29ce7db8f5d9ab4f")
 #+END_SRC
 **** ESS
 View data frames better with
 #+BEGIN_SRC emacs-lisp
-(package! ess-view :pin "d4e5a340b7")
+(package! ess-view :pin "d4e5a340b7bcc58c434867b97923094bd0680283")
 #+END_SRC
 **** Magit Delta
 [[https://github.com/dandavison/delta/][Delta]] is a git diff syntax highlighter written in rust. The author also wrote a
@@ -525,19 +525,19 @@ package to hook this into the magit diff view. This requires the ~delta~ binary.
 This makes manual pages nicer to look at :)
 Variable pitch fontification + colouring
 #+BEGIN_SRC emacs-lisp
-(package! info-colors :pin "47ee73cc19")
+(package! info-colors :pin "47ee73cc19b1049eef32c9f3e264ea7ef2aaf8a5")
 #+END_SRC
 ** Language packages
 *** LaTeX
 #+BEGIN_SRC emacs-lisp
 (package! evil-tex :recipe (:host github :repo "itai33/evil-tex")
-                            :pin "14da2c4c1d")
+                            :pin "14da2c4c1dc7468c74fdf80f446c723b94f8aad5")
 #+END_SRC
 *** Org Mode
 **** Improve agenda/capture
 The agenda is nice, but a souped up version is nicer.
 #+BEGIN_SRC emacs-lisp
-(package! org-super-agenda :pin "dd0d104c26")
+(package! org-super-agenda :pin "dd0d104c269fab9ebe5af7009bc1dd2a3a8f3c12")
 #+END_SRC
 
 Similarly ~doct~ (Declarative Org Capture Templates) seems to be a nicer way to
@@ -545,7 +545,7 @@ set up org-capture.
 #+BEGIN_SRC emacs-lisp
 (package! doct
   :recipe (:host github :repo "progfolio/doct")
-  :pin "1bcec209e1")
+  :pin "1bcec209e12200c9b93b0d95f61b964b5de4439c")
 #+END_SRC
 **** Visuals
 Org tables aren't the prettiest thing to look at. This package is supposed to
@@ -553,17 +553,17 @@ redraw them in the buffer with box-drawing characters. Sounds like an
 improvement to me! Just need to get it working...
 #+BEGIN_SRC emacs-lisp
 (package! org-pretty-table-mode
-  :recipe (:host github :repo "Fuco1/org-pretty-table") :pin "88380f865a")
+  :recipe (:host github :repo "Fuco1/org-pretty-table") :pin "88380f865a79bba49e4f501b7fe73a7bfb03bd1a")
 #+END_SRC
 
 For automatically toggling LaTeX fragment previews there's this nice package
 #+BEGIN_SRC emacs-lisp
-(package! org-fragtog :pin "8eca8084cc")
+(package! org-fragtog :pin "8eca8084cc025c43ce2677b38ed4919218dd9ad9")
 #+END_SRC
 
 ~org-superstar-mode~ is great. While we're at it we may as well make tags prettier as well :)
 #+BEGIN_SRC emacs-lisp
-(package! org-pretty-tags :pin "40fd72f3e7")
+(package! org-pretty-tags :pin "40fd72f3e701e31813f383fb429d30bb88cee769")
 #+END_SRC
 **** Extra functionality
 Because of the /[[https://github.com/commonmark/commonmark-spec/wiki/markdown-flavors][lovely variety in markdown implementations]]/ there isn't actually
@@ -572,23 +572,23 @@ such a thing a standard table spec ... or standard anything really. Because
 elements (a lot of them). So ~ox-gfm~ is handy for exporting markdown with all the
 features that GitHub has. Initialised in [[Exporting to GFM]].
 #+BEGIN_SRC emacs-lisp
-(package! ox-gfm :pin "99f93011b0")
+(package! ox-gfm :pin "99f93011b069e02b37c9660b8fcb45dab086a07f")
 #+END_SRC
 
 Now and then citations need to happen
 #+BEGIN_SRC emacs-lisp
-(package! org-ref :pin "4ce8064437")
+(package! org-ref :pin "4ce80644377f2369efb475bd58a57cf6950d8c41")
 #+END_SRC
 
 Came across this and ... it's cool
 #+BEGIN_SRC emacs-lisp
-(package! org-graph-view :recipe (:host github :repo "alphapapa/org-graph-view") :pin "13314338d7")
+(package! org-graph-view :recipe (:host github :repo "alphapapa/org-graph-view") :pin "13314338d70d2c19511efccc491bed3ca0758170")
 #+END_SRC
 
 I *need* this in my life. It take a URL to a recipe from a common site, and
 inserts an org-ified version at point. Isn't that just great.
 #+BEGIN_SRC emacs-lisp
-(package! org-chef :pin "1dd73fd3db")
+(package! org-chef :pin "1dd73fd3db0e9382fa34d3b48c8ec608e65f3bdc")
 #+END_SRC
 
 I have my own [[file:org-plot.el][modified version]] of ~org-plot~, so let's use that
@@ -598,7 +598,7 @@ I have my own [[file:org-plot.el][modified version]] of ~org-plot~, so let's use
 *** Systemd
 For editing systemd unit files
 #+BEGIN_SRC emacs-lisp
-(package! systemd :pin "51c148e09a")
+(package! systemd :pin "51c148e09a129ddf33d95276aa0e89d4ef6f8dd2")
 #+END_SRC
 * Package configuration
 ** Abbrev mode
