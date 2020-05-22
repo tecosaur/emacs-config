@@ -33,6 +33,13 @@ settled by the day. This is my config, and also a cautionary tale.
 [[xkcd:456]]
 
 ** Notes for the unwary adventurer
+If you like the look of this, that's marvellous, and I'm really happy that I've
+made something which you may find interesting, however:
+#+begin_warning
+This config is /insidious/. Copying the whole thing blindly can easily lead to
+undesired effects. I recommend copying chunks instead.
+#+end_warning
+
 If you are so bold as to wish to steal bits of my config (or if I upgrade and
 wonder why things aren't working), here's a list of sections which rely on
 externally setup (i.e. outside of this config).
