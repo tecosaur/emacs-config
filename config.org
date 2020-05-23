@@ -1492,27 +1492,6 @@ As I installed mu4e from source, I need to add the =/usr/local/= loadpath so Mu4
 (add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu4e")
 #+END_SRC
 
-We can register Emacs as a potential email client with the following desktop
-file, thanks to Etienne Deparis's [[https://etienne.depar.is/emacs.d/mu4e.html][Mu4e customization]].
-#+BEGIN_SRC conf :tangle ~/.local/share/applications/emacsmail.desktop
-[Desktop Entry]
-Name=Compose message in Emacs
-GenericName=Compose a new message with Mu4e in Emacs
-Comment=Open mu4e compose window
-MimeType=x-scheme-handler/mailto;
-Exec=emacsclient -create-frame --alternate-editor="" --no-wait --eval '(mu4e-compose-from-mailto \"%u\")'
-Icon=emacs
-Type=Application
-Terminal=false
-Categories=Network;Email;
-StartupWMClass=Emacs
-#+END_SRC
-
-To register this, just call
-#+BEGIN_SRC shell
-update-desktop-database ~/.local/share/applications
-#+END_SRC
-
 **** Viewing Mail
 There are some all-the-icons font related issues, so we need to redefine the
 fancy chars, and make sure they get the correct width.
@@ -1634,6 +1613,27 @@ Let's send emails too.
         message-sendmail-f-is-evil t
         message-sendmail-extra-arguments '("--read-envelope-from"); , "--read-recipients")
         message-send-mail-function 'message-send-mail-with-sendmail))
+#+END_SRC
+
+We can register Emacs as a potential email client with the following desktop
+file, thanks to Etienne Deparis's [[https://etienne.depar.is/emacs.d/mu4e.html][Mu4e customization]].
+#+BEGIN_SRC conf :tangle ~/.local/share/applications/emacsmail.desktop
+[Desktop Entry]
+Name=Compose message in Emacs
+GenericName=Compose a new message with Mu4e in Emacs
+Comment=Open mu4e compose window
+MimeType=x-scheme-handler/mailto;
+Exec=emacsclient -create-frame --alternate-editor="" --no-wait --eval '(mu4e-compose-from-mailto \"%u\")'
+Icon=emacs
+Type=Application
+Terminal=false
+Categories=Network;Email;
+StartupWMClass=Emacs
+#+END_SRC
+
+To register this, just call
+#+BEGIN_SRC shell
+update-desktop-database ~/.local/share/applications
 #+END_SRC
 
 We also want to define ~mu4e-compose-from-mailto~.
