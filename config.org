@@ -61,7 +61,7 @@ so, no matter how much critisism you include I'll appreciate it :)
 The lovely ~doom doctor~ is good at diagnosing most missing things, but here are a
 few extras.
 + The [[https://github.com/dandavison/delta/][Delta]] binary. It's packaged for some distributions but I installed it with
-  #+BEGIN_SRC shell :exec no
+  #+BEGIN_SRC shell :eval no
 cargo install git-delta
   #+END_SRC
 + A [[https://www.tug.org/texlive/][LaTeX Compiler]] is required for the mathematics rendering performed in [[#org][Org]],
@@ -79,7 +79,7 @@ cargo install git-delta
 + The =cargo-script= rust crate is required for evaluation of rust blocks by babel.
   As described in the README for [[https://github.com/micanzhang/ob-rust][ob-rust]]. Like ~delta~, this can just be installed
   using cargo.
-  #+BEGIN_SRC shell
+  #+BEGIN_SRC shell :eval no
 cargo install cargo-script
   #+END_SRC
 ** Current Issues
@@ -544,6 +544,10 @@ Variable pitch fontification + colouring
 #+BEGIN_SRC emacs-lisp
 (package! info-colors :pin "47ee73cc19b1049eef32c9f3e264ea7ef2aaf8a5")
 #+END_SRC
+*** Email
+#+BEGIN_SRC emacs-lisp
+(package! org-msg)
+#+END_SRC
 ** Language packages
 *** LaTeX
 #+BEGIN_SRC emacs-lisp
@@ -840,6 +844,813 @@ syntax-highlighting-love though which is a bit sad. Thankfully
 #+END_SRC
 Unfortunately this seems to mess things up, which is something I'll want to look
 into later.
+** Mail
+[[xkcd:1467]]
+
+*** Fetching
+The contenders for this seem to be:
+ + [[https://www.offlineimap.org/][OfflineIMAP]] ([[https://wiki.archlinux.org/index.php/OfflineIMAP][ArchWiki page]])
+ + [[http://isync.sourceforge.net/mbsync.html][isync/mbsync]] ([[https://wiki.archlinux.org/index.php/isync][ArchWiki page]])
+
+From perusing r/emacs the prevailing opinion seems to be that
+ + isync is faster
+ + isync works more reliably
+So let's use that.
+
+The config was straightforward, and is located at [[file:~/.mbsyncrc][~/.mbsyncrc]].
+I'm currently successfully connecting to: Gmail, office365mail, and dovecot.
+I'm also shoving passwords in my [[file:~/.authinfo.gpg][authinfo.gpg]] and fetching them using ~PassCmd~:
+#+BEGIN_SRC shell :tangle no :eval no
+gpg2 -q --for-your-eyes-only --no-tty -d ~/.authinfo.gpg | awk '/machine IMAP_SERCER login EMAIL_ADDR/ {print $NF}'
+#+END_SRC
+
+We can run ~mbsync -a~ in a systemd service file or something, but we can do
+better than that. [[https://github.com/vsemyonoff/easymail#usage][vsemyonoff/easymail]] seems like the sort of thing we want, but
+is written for =notmuch= unfortunately. We can still use it for inspiration though.
+Using [[https://gitlab.com/shackra/goimapnotify][goimapnotify]] we should be able to sync just after new
+mail. Unfortunately this means /yet another/ config file :(
+
+We install with
+#+BEGIN_SRC shell :eval no
+go get -u gitlab.com/shackra/goimapnotify
+ln -s ~/go/bin/goimapnotify ~/.local/bin/
+#+END_SRC
+
+Here's the general plan:
+ 1. Use ~goimapnotify~ to monitor mailboxes
+    This needs it's own set of configs, and =systemd= services, which is a pain. We
+    remove this pain by writing a python script (found below) to setup these
+    config files, and systemd services by parsing the  [[file:~/.mbsyncrc][~/.mbsyncrc]] file.
+ 2. On new mail, call ~mbsync --pull --new ACCOUNT:BOX~
+    We try to be as specific as possible, so ~mbsync~ returns as soon as possible,
+    and we can /get those emails as soon as possible/.
+ 3. Try to call ~mu index --lazy-fetch~.
+    This fails if mu4e is already open (due to a write lock on the database), so
+    in that case we just ~touch~ a tmp file (=/tmp/mu_reindex_now=).
+ 4. Separately, we set up Emacs to check for the existance of
+    =/tmp/mu_reindex_now= once a second while mu4e is
+    running, and (after deleting the file) call ~mu4e-update-index~.
+
+Let's start off by handling the elisp side of things
+
+**** Rebuild mail index while using mu4e
+#+BEGIN_SRC emacs-lisp
+(after! mu4e
+  (defvar mu4e-reindex-request-file "/tmp/mu_reindex_now"
+    "Location of the reindex request, signaled by existance")
+  (defvar mu4e-reindex-request-min-seperation 2.0
+    "Don't refresh again until this many second have elapsed.
+Prevents a series of redisplays from being called (when set to an appropriate value)")
+
+  (defvar mu4e-reindex-request--file-watcher nil)
+  (defvar mu4e-reindex-request--file-just-deleted nil)
+  (defvar mu4e-reindex-request--last-time 0)
+
+  (defun mu4e-reindex-request--add-watcher ()
+    (setq mu4e-reindex-request--file-just-deleted nil)
+    (setq mu4e-reindex-request--file-watcher
+          (file-notify-add-watch mu4e-reindex-request-file
+                                 '(change)
+                                 #'mu4e-file-reindex-request)))
+
+  (defadvice! mu4e-stop-watching-for-reindex-request ()
+    :after #'mu4e~proc-kill
+    (if mu4e-reindex-request--file-watcher
+        (file-notify-rm-watch mu4e-reindex-request--file-watcher)))
+
+  (defadvice! mu4e-watch-for-reindex-request ()
+    :after #'mu4e~proc-start
+    (mu4e-stop-watching-for-reindex-request)
+    (when (file-exists-p mu4e-reindex-request-file)
+      (delete-file mu4e-reindex-request-file))
+    (mu4e-reindex-request--add-watcher))
+
+    (defun mu4e-file-reindex-request (event)
+      "Act based on the existance of `mu4e-reindex-request-file'"
+      (if mu4e-reindex-request--file-just-deleted
+          (mu4e-reindex-request--add-watcher)
+        (when (equal (nth 1 event) 'created)
+          (delete-file mu4e-reindex-request-file)
+          (setq mu4e-reindex-request--file-just-deleted t)
+          (mu4e-reindex-maybe t))))
+
+    (defun mu4e-reindex-maybe (&optional new-request)
+      "Run `mu4e~proc-index' if it's been more than `mu4e-reindex-request-min-seperation' seconds since the last request,"
+      (let ((time-since-last-request (- (float-time) mu4e-reindex-request--last-time)))
+        (when new-request
+          (setq mu4e-reindex-request--last-time (float-time)))
+        (if (> time-since-last-request mu4e-reindex-request-min-seperation)
+            (mu4e~proc-index nil t)
+          (when new-request
+            (run-at-time (* 1.1 mu4e-reindex-request-min-seperation) nil
+                         #'mu4e-reindex-maybe))))))
+#+END_SRC
+
+**** Config transcoding & service management
+As long as the =mbsyncrc= file exists, this is as easy as running
+#+BEGIN_SRC shell
+~/.config/doom/misc/mbsync-imapnotify.py
+#+END_SRC
+
+When run without flags this will perform the following actions
+ + Read, and parse [[file:~/.mbsyncrc][~/.mbsyncrc]], specifically recognising the following properties
+   - ~IMAPAccount~
+   - ~Host~
+   - ~Port~
+   - ~User~
+   - ~Password~
+   - ~PassCmd~
+   - ~Patterns~
+ + Call ~mbsync --list ACCOUNT~, and filter results according to ~Patterns~
+ + Construct a imapnotify config for each account, with the following hooks
+   - onNewMail :: ~mbsync --pull ACCOUNT:MAILBOX~
+   - onNewMailPost :: ~if mu index --lazy-check; then test -f /tmp/mu_reindex_now && rm /tmp/mu_reindex_now; else touch /tmp/mu_reindex_now; fi~
+ + Compare accounts list to previous accounts, enable/disable the relevant
+   systemd services, called with the ~--now~ flag (start/stop services as well)
+
+This script also supports the following flags
+ + ~--status~ to get the status of the relevant systemd services supports =active=,
+   =failing=, and =disabled=
+ + ~--enable~ to enable all relevant systemd services
+ + ~--disable~ to disable all relevant systemd services
+#+BEGIN_SRC python :tangle misc/mbsync-imapnotify.py :shebang "#!/usr/bin/env python3"
+from pathlib import Path
+import json
+import re
+import shutil
+import subprocess
+import sys
+import fnmatch
+
+mbsyncFile = Path("~/.mbsyncrc").expanduser()
+
+imapnotifyConfigFolder = Path("~/.imapnotify/").expanduser()
+imapnotifyConfigFolder.mkdir(exist_ok=True)
+imapnotifyConfigFilename = "notify.conf"
+
+imapnotifyDefault = {
+    "host": "",
+    "port": 993,
+    "tls": True,
+    "tlsOptions": {"rejectUnauthorized": True},
+    "onNewMail": "",
+    "onNewMailPost": "if mu index --lazy-check; then test -f /tmp/mu_reindex_now && rm /tmp/mu_reindex_now; else touch /tmp/mu_reindex_now; fi",
+}
+
+
+def stripQuotes(string):
+    if string[0] == '"' and string[-1] == '"':
+        return string[1:-1].replace('\\"', '"')
+
+
+mbsyncInotifyMapping = {
+    "Host": (str, "host"),
+    "Port": (int, "port"),
+    "User": (str, "username"),
+    "Password": (str, "password"),
+    "PassCmd": (stripQuotes, "passwordCmd"),
+    "Patterns": (str, "_patterns"),
+}
+
+oldAccounts = [d.name for d in imapnotifyConfigFolder.iterdir() if d.is_dir()]
+
+currentAccount = ""
+currentAccountData = {}
+
+successfulAdditions = []
+
+
+def processLine(line):
+    newAcc = re.match(r"^IMAPAccount ([^#]+)", line)
+
+    linecontent = re.sub(r"(^|[^\\])#.*", "", line).split(" ", 1)
+    if len(linecontent) != 2:
+        return
+
+    parameter, value = linecontent
+
+    if parameter == "IMAPAccount":
+        if currentAccountNumber > 0:
+            finaliseAccount()
+        newAccount(value)
+    elif parameter in mbsyncInotifyMapping.keys():
+        parser, key = mbsyncInotifyMapping[parameter]
+        currentAccountData[key] = parser(value)
+    elif parameter == "Channel":
+        currentAccountData["onNewMail"] = f"mbsync --pull --new {value}:'%s'"
+
+
+def newAccount(name):
+    global currentAccountNumber
+    global currentAccount
+    global currentAccountData
+    currentAccountNumber += 1
+    currentAccount = name
+    currentAccountData = {}
+    print(f"\n\033[1;32m{currentAccountNumber}\033[0;32m - {name}\033[0;37m")
+
+
+def accountToFoldername(name):
+    return re.sub(r"[^A-Za-z0-9]", "", name)
+
+
+def finaliseAccount():
+    if currentAccountNumber == 0:
+        return
+
+    global currentAccountData
+    try:
+        currentAccountData["boxes"] = getMailBoxes(currentAccount)
+    except subprocess.CalledProcessError as e:
+        print(
+            f"\033[1;31mError:\033[0;31m failed to fetch mailboxes (skipping): "
+            + f"`{' '.join(e.cmd)}' returned code {e.returncode}\033[0;37m"
+        )
+        return
+    except subprocess.TimeoutExpired as e:
+        print(
+            f"\033[1;31mError:\033[0;31m failed to fetch mailboxes (skipping): "
+            + f"`{' '.join(e.cmd)}' timed out after {e.timeout} seconds\033[0;37m"
+        )
+        return
+
+    if "_patterns" in currentAccountData:
+        currentAccountData["boxes"] = applyPatternFilter(
+            currentAccountData["_patterns"], currentAccountData["boxes"]
+        )
+
+    # strip not-to-be-exported data
+    currentAccountData = {
+        k: currentAccountData[k] for k in currentAccountData if k[0] != "_"
+    }
+
+    parametersSet = currentAccountData.keys()
+    currentAccountData = {**imapnotifyDefault, **currentAccountData}
+    for key, val in currentAccountData.items():
+        valColor = "\033[0;33m" if key in parametersSet else "\033[0;37m"
+        print(f"  \033[1;37m{key:<13} {valColor}{val}\033[0;37m")
+
+    if (
+        len(currentAccountData["boxes"]) > 15
+        and "@gmail.com" in currentAccountData["username"]
+    ):
+        print(
+            "  \033[1;31mWarning:\033[0;31m Gmail raises an error when more than"
+            + "\033[1;31m15\033[0;31m simultanious connections are attempted."
+            + "\n           You are attempting to monitor "
+            + f"\033[1;31m{len(currentAccountData['boxes'])}\033[0;31m mailboxes.\033[0;37m"
+        )
+
+    configFile = (
+        imapnotifyConfigFolder
+        / accountToFoldername(currentAccount)
+        / imapnotifyConfigFilename
+    )
+    configFile.parent.mkdir(exist_ok=True)
+
+    json.dump(currentAccountData, open(configFile, "w"), indent=2)
+    print(f" \033[0;35mConfig generated and saved to {configFile}\033[0;37m")
+
+    global successfulAdditions
+    successfulAdditions.append(accountToFoldername(currentAccount))
+
+
+def getMailBoxes(account):
+    boxes = subprocess.run(
+        ["mbsync", "--list", account], check=True, stdout=subprocess.PIPE, timeout=10.0
+    )
+    return boxes.stdout.decode("utf-8").strip().split("\n")
+
+
+def applyPatternFilter(pattern, mailboxes):
+    patternRegexs = getPatternRegexes(pattern)
+    return [m for m in mailboxes if testPatternRegexs(patternRegexs, m)]
+
+
+def getPatternRegexes(pattern):
+    def addGlob(b):
+        blobs.append(b.replace('\\"', '"'))
+        return ""
+
+    blobs = []
+    pattern = re.sub(r' ?"([^"]+)"', lambda m: addGlob(m.groups()[0]), pattern)
+    blobs.extend(pattern.split(" "))
+    blobs = [
+        (-1, fnmatch.translate(b[1::])) if b[0] == "!" else (1, fnmatch.translate(b))
+        for b in blobs
+    ]
+    return blobs
+
+
+def testPatternRegexs(regexCond, case):
+    for factor, regex in regexCond:
+        if factor * bool(re.match(regex, case)) < 0:
+            return False
+    return True
+
+
+def processSystemdServices():
+    keptAccounts = [acc for acc in successfulAdditions if acc in oldAccounts]
+    freshAccounts = [acc for acc in successfulAdditions if acc not in oldAccounts]
+    staleAccounts = [acc for acc in oldAccounts if acc not in successfulAdditions]
+
+    if keptAccounts:
+        print(f"\033[1;34m{len(keptAccounts)}\033[0;34m kept accounts:\033[0;37m")
+        restartAccountSystemdServices(keptAccounts)
+
+    if freshAccounts:
+        print(f"\033[1;32m{len(freshAccounts)}\033[0;32m new accounts:\033[0;37m")
+        enableAccountSystemdServices(freshAccounts)
+    else:
+        print(f"\033[0;32mNo new accounts.\033[0;37m")
+
+    notActuallyEnabledAccounts = [
+        acc for acc in successfulAdditions if not getAccountServiceState(acc)["enabled"]
+    ]
+    if notActuallyEnabledAccounts:
+        print(
+            f"\033[1;32m{len(notActuallyEnabledAccounts)}\033[0;32m accounts need re-enabling:\033[0;37m"
+        )
+        enableAccountSystemdServices(notActuallyEnabledAccounts)
+
+    if staleAccounts:
+        print(f"\033[1;33m{len(staleAccounts)}\033[0;33m removed accounts:\033[0;37m")
+        disableAccountSystemdServices(staleAccounts)
+    else:
+        print(f"\033[0;33mNo removed accounts.\033[0;37m")
+
+
+def enableAccountSystemdServices(accounts):
+    for account in accounts:
+        print(f" \033[0;32m - \033[1;37m{account:<18}", end="\033[0;37m", flush=True)
+        if setSystemdServiceState(
+            "enable", f"goimapnotify@{accountToFoldername(account)}.service"
+        ):
+            print("\033[1;32m enabled")
+
+
+def disableAccountSystemdServices(accounts):
+    for account in accounts:
+        print(f" \033[0;33m - \033[1;37m{account:<18}", end="\033[0;37m", flush=True)
+        if setSystemdServiceState(
+            "disable", f"goimapnotify@{accountToFoldername(account)}.service"
+        ):
+            print("\033[1;33m disabled")
+
+
+def restartAccountSystemdServices(accounts):
+    for account in accounts:
+        print(f" \033[0;34m - \033[1;37m{account:<18}", end="\033[0;37m", flush=True)
+        if setSystemdServiceState(
+            "restart", f"goimapnotify@{accountToFoldername(account)}.service"
+        ):
+            print("\033[1;34m restarted")
+
+
+def setSystemdServiceState(state, service):
+    try:
+        enabler = subprocess.run(
+            ["systemctl", "--user", state, service, "--now"],
+            check=True,
+            stderr=subprocess.DEVNULL,
+            timeout=2.0,
+        )
+        return True
+    except subprocess.CalledProcessError as e:
+        print(
+            f" \033[1;31mfailed\033[0;31m to {state}, `{' '.join(e.cmd)}'"
+            + f"returned code {e.returncode}\033[0;37m"
+        )
+    except subprocess.TimeoutExpired as e:
+        print(f" \033[1;31mtimed out after {e.timeout} seconds\033[0;37m")
+        return False
+
+
+def getAccountServiceState(account):
+    return {
+        state: bool(
+            1
+            - subprocess.run(
+                [
+                    "systemctl",
+                    "--user",
+                    f"is-{state}",
+                    "--quiet",
+                    f"goimapnotify@{accountToFoldername(account)}.service",
+                ],
+                stderr=subprocess.DEVNULL,
+            ).returncode
+        )
+        for state in ("enabled", "active", "failing")
+    }
+
+
+def getAccountServiceStates(accounts):
+    for account in accounts:
+        enabled, active, failing = getAccountServiceState(account).values()
+        print(f"  - \033[1;37m{account:<18}\033[0;37m ", end="", flush=True)
+        if not enabled:
+            print("\033[1;33mdisabled\033[0;37m")
+        elif active:
+            print("\033[1;32mactive\033[0;37m")
+        elif failing:
+            print("\033[1;31mfailing\033[0;37m")
+        else:
+            print("\033[1;35min an unrecognised state\033[0;37m")
+
+
+if len(sys.argv) > 1:
+    if sys.argv[1] == "--enable":
+        enableAccountSystemdServices(oldAccounts)
+        exit()
+    elif sys.argv[1] == "--disable":
+        disableAccountSystemdServices(oldAccounts)
+        exit()
+    elif sys.argv[1] == "--status":
+        getAccountServiceStates(oldAccounts)
+        exit()
+    else:
+        print(f"\033[0;31mFlag {sys.argv[1]} not recognised\033[0;37m")
+        exit()
+
+
+mbsyncData = open(mbsyncFile, "r").read()
+
+currentAccountNumber = 0
+
+totalAccounts = len(re.findall(r"^IMAPAccount", mbsyncData, re.M))
+
+
+def main():
+    print("\033[1;34m:: MbSync to Go IMAP notify config file creator ::\033[0;37m")
+
+    shutil.rmtree(imapnotifyConfigFolder)
+    imapnotifyConfigFolder.mkdir(exist_ok=False)
+    print("\033[1;30mImap Notify config dir purged\033[0;37m")
+
+    print(f"Identified \033[1;32m{totalAccounts}\033[0;32m accounts.\033[0;37m")
+
+    for line in mbsyncData.split("\n"):
+        processLine(line)
+
+    finaliseAccount()
+
+    print(
+        f"\nConfig files generated for \033[1;36m{len(successfulAdditions)}\033[0;36m"
+        + f" out of \033[1;36m{totalAccounts}\033[0;37m accounts.\n"
+    )
+
+    processSystemdServices()
+
+
+if __name__ == "__main__":
+    main()
+#+END_SRC
+
+**** Systemd
+We then have a service file to run ~goimapnotify~ on all of these generated config files.
+We'll use a template service file so we can enable a unit per-account.
+#+BEGIN_SRC systemd :tangle ~/.config/systemd/user/goimapnotify@.service
+[Unit]
+Description=IMAP notifier using IDLE, golang version.
+ConditionPathExists=%h/.imapnotify/%I/notify.conf
+After=network.target
+
+[Service]
+ExecStart=%h/go/bin/goimapnotify -conf %h/.imapnotify/%I/notify.conf
+Restart=always
+RestartSec=30
+
+[Install]
+WantedBy=default.target
+#+END_SRC
+
+Enabling the service is actually taken care of by that python script.
+
+From one or two small tests, this can bring the delay down to as low as five
+seconds, which I'm quite happy with.
+
+This works well for fetching new mail, but we also want to propagate other
+changes (e.g. marking mail as read), and make sure we're up to date at the
+start, so for that I'll do the 'normal' thing and run ~mbsync -all~ every so often
+--- let's say five minutes.
+
+We can accomplish this via a systemd timer, and service file.
+#+BEGIN_SRC systemd :tangle ~/.config/systemd/user/mbsync.timer
+[Unit]
+Description=call mbsync on all accounts every 5 minutes
+ConditionPathExists=%h/.mbsyncrc
+
+[Timer]
+OnBootSec=5m
+OnUnitInactiveSec=5m
+
+[Install]
+WantedBy=default.target
+#+END_SRC
+
+#+BEGIN_SRC systemd :tangle ~/.config/systemd/user/mbsync.service
+[Unit]
+Description=mbsync service, sync all mail
+Documentation=man:mbsync(1)
+ConditionPathExists=%h/.mbsyncrc
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/mbsync --all
+
+[Install]
+WantedBy=mail.target
+#+END_SRC
+
+Enabling (and starting) this is as simple as
+#+BEGIN_SRC shell
+systemctl --user enable mbsync.timer --now
+#+END_SRC
+*** Indexing/Searching
+This is performed by [[https://www.djcbsoftware.nl/code/mu/][Mu]]. This is a tool for finding emails stored in the [[http://en.wikipedia.org/wiki/Maildir][Maildir]] format.
+According to the homepage, it's main features are
+ + Fast indexing
+ + Good searching
+ + Support for encrypted and signed messages
+ + Rich CLI tooling
+ + accent/case normalisation
+ + strong integration with email clients
+
+Unfortunately ~mu~ is not currently packaged from me. Oh well, I guess I'm
+building it from source then. I needed to install these packages
+ + =gmime-devel=
+ + =xapian-core-devel=
+
+#+NAME: install mu from source (solus)
+#+BEGIN_SRC shell :eval no
+cd ~/.local/lib/
+git clone https://github.com/djcb/mu.git
+cd ./mu
+./autogen.sh
+make
+sudo make install
+#+END_SRC
+
+To check how my version compares to the latest published:
+
+#+BEGIN_SRC shell
+curl --silent "https://api.github.com/repos/djcb/mu/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/'
+mu --version | head -n 1 | sed 's/.* version//'
+#+END_SRC
+
+#+RESULTS:
+| 1.4.6 |
+| 1.4.6 |
+*** User Interface/client
+Webmail clients are nice and all, but I still don't believe that SPAs in my
+browser can replaced desktop apps ... sorry Gmail. I'm also liking google less
+and less.
+
+Mailspring is a decent desktop client, quite lightweight for electron
+(apparently the backend is in =C=, which probably helps), however I miss Emacs
+stuff.
+
+While =Notmuch= seems very promising, and I've heard good things about it, it
+doesn't seem to make any changes to the emails themselves. All data is stored in
+Notmuch's database. While this is a very interesting model, occasionally I need
+to pull up an email on say my phone, and so not I want the tagging/folders etc.
+to be applied to the mail itself --- not stored in a database.
+
+On the other hand =Mu4e= is also talked about a lot in positive terms, and seems
+to possess a similarly strong feature set --- and modifies the mail itself (I.e.
+information is accessible without the database). =Mu4e= also seems to have a large
+user base, which tends to correlate with better support and attention.
+
+There are a few write-ups I could find useful on this
+ + [[https://zmalltalker.com/linux/mu.html][Zmalltalker : Email done right]]
+ + [[https://www.baty.net/2016/better-mu4e-message-rendering/][Better Mu4e Message Rendering - Jack Baty's weblog]]
+*** Sending
+[[https://www.nongnu.org/smtpmail/][SmtpMail]] seems to be the 'default' starting point, but that's not packaged for
+me. [[https://marlam.de/msmtp/][msmtp]] is however, so I'll give that a shot. Reading around a bit (googling
+"msmtp vs sendmail" for example) almost every comparison mentioned seems to
+suggest msmtp to be a better choice. I have seen the following points raised
+ + ~sendmail~ has several vulnerabilities
+ + ~sendmail~ is tedious to configure
+ + ~ssmtp~ is no longer maintained
+ + ~msmtp~ is a maintained alternative to ~ssmtp~
+ + ~msmtp~ is easier to configure
+
+The config file is [[file:~/.msmtprc][~/.msmtprc]]
+
+**** System hackery
+Unfortunately, I seem to have run into a [[https://bugs.archlinux.org/task/44994][bug]] present in my packaged version, so
+we'll just install the latest from source.
+
+For full use of the ~auth~ options, I need =GNU SASL=, which isn't packaged for me.
+I don't think I want it, but in case I do, I'll need to do this.
+#+BEGIN_SRC shell :eval no :tangle no
+export GSASL_VERSION=1.8.1
+cd ~/.local/lib/
+curl "ftp://ftp.gnu.org/gnu/gsasl/libgsasl-$GSASL_VERSION.tar.gz" | tar xz
+curl "ftp://ftp.gnu.org/gnu/gsasl/gsasl-$GSASL_VERSION.tar.gz" | tar xz
+cd "./libgsasl-$GSASL_VERSION"
+./configure
+make
+sudo make install
+cd ..
+cd "./gsasl-$VERSION"
+./configure
+make
+sudo make install
+cd ..
+#+END_SRC
+
+Now actually compile ~msmtp~.
+#+BEGIN_SRC shell :eval no
+cd ~/.local/lib/
+git clone https://github.com/marlam/msmtp-mirror.git ./msmtp
+cd ./msmtp
+libtoolize --force
+aclocal
+autoheader
+automake --force-missing --add-missing
+autoconf
+# if using GSASL
+# PKG_CONFIG_PATH=/usr/local/lib/pkgconfig ./configure --with-libgsasl
+./configure
+make
+sudo make install
+#+END_SRC
+
+If using =GSASL= (from earlier) we need to make ensure that the dynamic library in
+in the library path. We can do by adding an executable with the same name
+earlier on in my ~$PATH~.
+#+BEGIN_SRC sh :tangle no :shebang "#!/bin/sh"
+LD_LIBRARY_PATH=/usr/local/lib exec /usr/local/bin/msmtp "$@"
+#+END_SRC
+
+*** Mu4e
+As I installed mu4e from source, I need to add the =/usr/local/= loadpath so Mu4e has a chance of loading
+#+BEGIN_SRC emacs-lisp
+(add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu4e")
+#+END_SRC
+
+We can register Emacs as a potential email client with the following desktop
+file, thanks to Etienne Deparis's [[https://etienne.depar.is/emacs.d/mu4e.html][Mu4e customization]].
+#+BEGIN_SRC conf :tangle ~/.local/share/applications/emacsmail.desktop
+[Desktop Entry]
+Name=Compose message in Emacs
+GenericName=Compose a new message with Mu4e in Emacs
+Comment=Open mu4e compose window
+MimeType=x-scheme-handler/mailto;
+Exec=emacsclient -create-frame --alternate-editor="" --no-wait --eval '(mu4e-compose-from-mailto \"%u\")'
+Icon=emacs
+Type=Application
+Terminal=false
+Categories=Network;Email;
+StartupWMClass=Emacs
+#+END_SRC
+
+To register this, just call
+#+BEGIN_SRC shell
+update-desktop-database ~/.local/share/applications
+#+END_SRC
+
+**** Viewing Mail
+There are some all-the-icons font related issues, so we need to redefine the
+fancy chars, and make sure they get the correct width.
+#+BEGIN_SRC emacs-lisp
+(after! mu4e
+  (defun my-string-width (str)
+    "Return the width in pixels of a string in the current
+window's default font. If the font is mono-spaced, this
+will also be the width of all other printable characters."
+    (let ((window (selected-window))
+          (remapping face-remapping-alist))
+      (with-temp-buffer
+        (make-local-variable 'face-remapping-alist)
+        (setq face-remapping-alist remapping)
+        (set-window-buffer window (current-buffer))
+        (insert str)
+        (car (window-text-pixel-size)))))
+
+
+  (cl-defun mu4e~normalised-icon (name &key set colour height v-adjust)
+    "Convert :icon declaration to icon"
+    (let* ((icon-set (intern (concat "all-the-icons-" (or set "faicon"))))
+           (v-adjust (or v-adjust 0.02))
+           (height (or height 0.8))
+           (icon (if colour
+                     (apply icon-set `(,name :face ,(intern (concat "all-the-icons-" colour)) :height ,height :v-adjust ,v-adjust))
+                   (apply icon-set `(,name  :height ,height :v-adjust ,v-adjust))))
+           (icon-width (my-string-width icon))
+           (space-width (my-string-width " "))
+           (space-factor (- 2 (/ (float icon-width) space-width))))
+      (concat (propertize " " 'display `(space . (:width ,space-factor))) icon)
+      ))
+
+  (setq mu4e-use-fancy-chars t
+        mu4e~mark-fringe "   "
+        mu4e~mark-fringe-len 3
+        mu4e~mark-fringe-format "%-3s"
+        mu4e-headers-draft-mark      (cons "D" (mu4e~normalised-icon "pencil"))
+        mu4e-headers-flagged-mark    (cons "F" (mu4e~normalised-icon "flag"))
+        mu4e-headers-new-mark        (cons "N" (mu4e~normalised-icon "sync" :set "material" :height 0.8 :v-adjust -0.10))
+        mu4e-headers-passed-mark     (cons "P" (mu4e~normalised-icon "arrow-right"))
+        mu4e-headers-replied-mark    (cons "R" (mu4e~normalised-icon "arrow-right"))
+        mu4e-headers-seen-mark       (cons "S" "") ;(mu4e~normalised-icon "eye" :height 0.6 :v-adjust 0.07 :colour "dsilver"))
+        mu4e-headers-trashed-mark    (cons "T" (mu4e~normalised-icon "trash"))
+        mu4e-headers-attach-mark     (cons "a" (mu4e~normalised-icon "file-text-o" :colour "silver"))
+        mu4e-headers-encrypted-mark  (cons "x" (mu4e~normalised-icon "lock"))
+        mu4e-headers-signed-mark     (cons "s" (mu4e~normalised-icon "certificate" :height 0.7 :colour "dpurple"))
+        mu4e-headers-unread-mark     (cons "u" (mu4e~normalised-icon "eye-slash" :v-adjust 0.05))))
+#+END_SRC
+Since each flag now takes two charachters of space, we want to tweak the header
+specification.
+#+BEGIN_SRC emacs-lisp
+(after! mu4e
+  (setq mu4e-headers-fields
+        '((:account . 16)
+          (:human-date . 8)
+          (:flags . 6)
+          (:from . 25)
+          (:subject)))
+  (plist-put (cdr (assoc :flags mu4e-header-info)) :shortname " Flags") ; default=Flgs
+)
+#+END_SRC
+
+The main mu4e window is ... alright. I'm not afraid of unicode though, so I'll
+define a fancier version. Look, it's the asterisks. We can do better than
+asterisks. The keybindings can also be made nicer, why have ~[x]~ when we can just
+have a bold, coloured ~x~. Does the same job, while looking much less garish.
+We don't put this in an ~(after! ...)~ block as =evil-collection-mu4e= calls
+~mu4e~main-action-str~ in Doom's mu4e ~(usepackage! ...)~.
+#+BEGIN_SRC emacs-lisp
+(defadvice! mu4e~main-action-prettier-str (str &optional func-or-shortcut)
+  "Highlight the first occurrence of [.] in STR.
+If FUNC-OR-SHORTCUT is non-nil and if it is a function, call it
+when STR is clicked (using RET or mouse-2); if FUNC-OR-SHORTCUT is
+a string, execute the corresponding keyboard action when it is
+clicked."
+  :override #'mu4e~main-action-str
+  (let ((newstr
+         (replace-regexp-in-string
+          "\\[\\(..?\\)\\]"
+          (lambda(m)
+            (format "%s"
+                    (propertize (match-string 1 m) 'face '(mode-line-emphasis bold))))
+          (replace-regexp-in-string "\t\\*" "\t⚫" str)))
+        (map (make-sparse-keymap))
+        (func (if (functionp func-or-shortcut)
+                  func-or-shortcut
+                (if (stringp func-or-shortcut)
+                    (lambda()(interactive)
+                      (execute-kbd-macro func-or-shortcut))))))
+    (define-key map [mouse-2] func)
+    (define-key map (kbd "RET") func)
+    (put-text-property 0 (length newstr) 'keymap map newstr)
+    (put-text-property (string-match "[A-Za-z].+$" newstr)
+                       (- (length newstr) 1) 'mouse-face 'highlight newstr)
+    newstr))
+
+(setq evil-collection-mu4e-end-region-misc "quit")
+#+END_SRC
+
+**** Sending Mail
+Let's send emails too.
+#+BEGIN_SRC emacs-lisp
+(after! mu4e
+  (setq sendmail-program "/usr/local/bin/msmtp"
+        send-mail-function 'smtpmail-send-it
+        message-sendmail-f-is-evil t
+        message-sendmail-extra-arguments '("--read-envelope-from"); , "--read-recipients")
+        message-send-mail-function 'message-send-mail-with-sendmail))
+#+END_SRC
+
+We also want to define ~mu4e-compose-from-mailto~.
+#+BEGIN_SRC emacs-lisp
+(defun mu4e-compose-from-mailto (mailto-string)
+  (require 'mu4e)
+  (unless mu4e~server-props (mu4e t) (sleep-for 0.1))
+  (let* ((mailto (rfc2368-parse-mailto-url mailto-string))
+         (to (cdr (assoc "To" mailto)))
+         (subject (or (cdr (assoc "Subject" mailto)) ""))
+         (body (cdr (assoc "Body" mailto)))
+         (org-msg-greeting-fmt (if (assoc "Body" mailto)
+                                   (replace-regexp-in-string "%" "%%"
+                                                             (cdr (assoc "Body" mailto)))
+                                 org-msg-greeting-fmt))
+         (headers (-filter (lambda (spec) (not (-contains-p '("To" "Subject" "Body") (car spec)))) mailto)))
+    (mu4e~compose-mail to subject headers)))
+#+END_SRC
+This may not quite function as intended for now due to [[github:jeremy-compostella/org-msg/issues/52][jeremy-compostella/org-msg#52]].
+*** Org Msg
+#+BEGIN_SRC emacs-lisp
+(use-package! org-msg
+  :after mu4e
+  :config
+  (setq org-msg-options "html-postamble:nil H:5 num:nil ^:{} toc:nil author:nil email:nil \\n:t tex:dvipng"
+        org-msg-startup "hidestars indent inlineimages"
+        org-msg-greeting-fmt "\nHi %s,\n\n"
+        org-msg-greeting-name-limit 3
+        org-msg-text-plain-alternative t))
+#+END_SRC
 ** Org Chef
 Loading after org seems a bit premature. Let's just load it when we try to use
 it, either by command or in a capture template.
@@ -2995,11 +3806,81 @@ I want to add github-style links on hover for headings.
                'tec/org-export-html-headline-anchor))
 #+END_SRC
 ***** LaTeX Rendering
+When displaying images, we want to resize by the reciprocal of ~preview-scale~.
+Unfortunately that doesn't happen by default, but not to worry! Advice exists.
+
+#+BEGIN_SRC emacs-lisp
+(after! org
+(defadvice! org-html-latex-fragment-scaled (latex-fragment _contents info)
+  "Transcode a LATEX-FRAGMENT object from Org to HTML.
+CONTENTS is nil.  INFO is a plist holding contextual information."
+  :override #'org-html-latex-fragment
+  (let ((latex-frag (org-element-property :value latex-fragment))
+        (processing-type (plist-get info :with-latex))
+        (attrs '(:class "latex-fragment")))
+    (when (eq processing-type 'dvipng)
+      (plist-put attrs :style (format "transform: scale(%.3f)" (/ 1.0 preview-scale))))
+    (cond
+     ((memq processing-type '(t mathjax))
+      (org-html-format-latex latex-frag 'mathjax info))
+     ((memq processing-type '(t html))
+      (org-html-format-latex latex-frag 'html info))
+     ((assq processing-type org-preview-latex-process-alist)
+      (let ((formula-link
+             (org-html-format-latex latex-frag processing-type info)))
+        (when (and formula-link (string-match "file:\\([^]]*\\)" formula-link))
+          (let ((source (org-export-file-uri (match-string 1 formula-link))))
+            (org-html--format-image source attrs info)))))
+     (t latex-frag))))
+
+(defadvice! org-html-latex-environment-scaled (latex-environment _contents info)
+  "Transcode a LATEX-ENVIRONMENT element from Org to HTML.
+CONTENTS is nil.  INFO is a plist holding contextual information."
+  :override #'org-html-latex-environment
+  (let ((processing-type (plist-get info :with-latex))
+        (latex-frag (org-remove-indentation
+                     (org-element-property :value latex-environment)))
+        (attributes (org-export-read-attribute :attr_html latex-environment))
+        (label (and (org-element-property :name latex-environment)
+                    (org-export-get-reference latex-environment info)))
+        (caption (and (org-html--latex-environment-numbered-p latex-environment)
+                      (number-to-string
+                       (org-export-get-ordinal
+                        latex-environment info nil
+                        (lambda (l _)
+                          (and (org-html--math-environment-p l)
+                               (org-html--latex-environment-numbered-p l))))))))
+    (plist-put attributes :class "latex-environment")
+    (when (eq processing-type 'dvipng)
+      (plist-put attributes :style (format "transform: scale(%.3f)" (/ 1.0 preview-scale))))
+    (cond
+     ((memq processing-type '(t mathjax))
+      (org-html-format-latex
+       (if (org-string-nw-p label)
+	   (replace-regexp-in-string "\\`.*"
+				     (format "\\&\n\\\\label{%s}" label)
+				     latex-frag)
+	 latex-frag)
+       'mathjax info))
+     ((assq processing-type org-preview-latex-process-alist)
+      (let ((formula-link
+             (org-html-format-latex
+              (org-html--unlabel-latex-environment latex-frag)
+              processing-type info)))
+        (when (and formula-link (string-match "file:\\([^]]*\\)" formula-link))
+          (let ((source (org-export-file-uri (match-string 1 formula-link))))
+	    (org-html--wrap-latex-environment
+	     (org-html--format-image source attributes info)
+	     info caption label)))))
+     (t (org-html--wrap-latex-environment latex-frag info caption label))))))
+#+END_SRC
+
 On the maths side of things, I consider ~dvisvgm~ to be a rather compelling
 option. However this isn't sized very well at the moment.
 #+BEGIN_SRC emacs-lisp
 ;; (setq-default org-html-with-latex `dvisvgm)
 #+END_SRC
+
 **** Exporting to LaTeX
 I like automatically using spaced small caps for acronyms. For strings I want to
 be unaffected lest's use ~;~ as a prefix to prevent the transformation --- i.e.
