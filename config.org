@@ -1538,18 +1538,39 @@ will also be the width of all other printable characters."
         mu4e-headers-signed-mark     (cons "s" (mu4e~normalised-icon "certificate" :height 0.7 :colour "dpurple"))
         mu4e-headers-unread-mark     (cons "u" (mu4e~normalised-icon "eye-slash" :v-adjust 0.05))))
 #+END_SRC
-Since each flag now takes two charachters of space, we want to tweak the header
-specification.
+
+To account for the increase width of each flag charachter, and make perform a
+few more visual tweaks, we'll tweak the headers a bit.
 #+BEGIN_SRC emacs-lisp
 (after! mu4e
   (setq mu4e-headers-fields
-        '((:account . 16)
+        '((:account . 12)
           (:human-date . 8)
           (:flags . 6)
           (:from . 25)
+          (:recipnum . 2)
           (:subject)))
   (plist-put (cdr (assoc :flags mu4e-header-info)) :shortname " Flags") ; default=Flgs
-)
+  (setq mu4e-header-info-custom
+        '((:account .
+           (:name "Account" :shortname "Account" :help "Which account this email belongs to" :function
+            (lambda (msg)
+              (let ((maildir
+                     (mu4e-message-field msg :maildir)))
+                (replace-regexp-in-string "^gmail" (propertize "g" 'face 'bold-italic)
+                                          (format "%s"
+                                                  (substring maildir 1
+                                                             (string-match-p "/" maildir 1))))))))
+          (:recipnum .
+           (:name "Number of recipients"
+            :shortname " ⭷"
+            :help "Number of recipients for this message"
+            :function
+            (lambda (msg)
+              (propertize (format "%2d"
+                                  (+ (length (mu4e-message-field msg :to))
+                                     (length (mu4e-message-field msg :cc))))
+                          'face 'mu4e-footer-face)))))))
 #+END_SRC
 
 Due to evil, none of the marking commands work when making a visual selection in
