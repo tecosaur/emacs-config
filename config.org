@@ -899,7 +899,7 @@ Let's start off by handling the elisp side of things
 (after! mu4e
   (defvar mu4e-reindex-request-file "/tmp/mu_reindex_now"
     "Location of the reindex request, signaled by existance")
-  (defvar mu4e-reindex-request-min-seperation 2.0
+  (defvar mu4e-reindex-request-min-seperation 5.0
     "Don't refresh again until this many second have elapsed.
 Prevents a series of redisplays from being called (when set to an appropriate value)")
 
