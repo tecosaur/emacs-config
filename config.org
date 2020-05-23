@@ -1403,29 +1403,6 @@ mu --version | head -n 1 | sed 's/.* version//'
 #+RESULTS:
 | 1.4.6 |
 | 1.4.6 |
-*** User Interface/client
-Webmail clients are nice and all, but I still don't believe that SPAs in my
-browser can replaced desktop apps ... sorry Gmail. I'm also liking google less
-and less.
-
-Mailspring is a decent desktop client, quite lightweight for electron
-(apparently the backend is in =C=, which probably helps), however I miss Emacs
-stuff.
-
-While =Notmuch= seems very promising, and I've heard good things about it, it
-doesn't seem to make any changes to the emails themselves. All data is stored in
-Notmuch's database. While this is a very interesting model, occasionally I need
-to pull up an email on say my phone, and so not I want the tagging/folders etc.
-to be applied to the mail itself --- not stored in a database.
-
-On the other hand =Mu4e= is also talked about a lot in positive terms, and seems
-to possess a similarly strong feature set --- and modifies the mail itself (I.e.
-information is accessible without the database). =Mu4e= also seems to have a large
-user base, which tends to correlate with better support and attention.
-
-There are a few write-ups I could find useful on this
- + [[https://zmalltalker.com/linux/mu.html][Zmalltalker : Email done right]]
- + [[https://www.baty.net/2016/better-mu4e-message-rendering/][Better Mu4e Message Rendering - Jack Baty's weblog]]
 *** Sending
 [[https://www.nongnu.org/smtpmail/][SmtpMail]] seems to be the 'default' starting point, but that's not packaged for
 me. [[https://marlam.de/msmtp/][msmtp]] is however, so I'll give that a shot. Reading around a bit (googling
@@ -1487,6 +1464,25 @@ LD_LIBRARY_PATH=/usr/local/lib exec /usr/local/bin/msmtp "$@"
 #+END_SRC
 
 *** Mu4e
+Webmail clients are nice and all, but I still don't believe that SPAs in my
+browser can replaced desktop apps ... sorry Gmail. I'm also liking google less
+and less.
+
+Mailspring is a decent desktop client, quite lightweight for electron
+(apparently the backend is in =C=, which probably helps), however I miss Emacs
+stuff.
+
+While =Notmuch= seems very promising, and I've heard good things about it, it
+doesn't seem to make any changes to the emails themselves. All data is stored in
+Notmuch's database. While this is a very interesting model, occasionally I need
+to pull up an email on say my phone, and so not I want the tagging/folders etc.
+to be applied to the mail itself --- not stored in a database.
+
+On the other hand =Mu4e= is also talked about a lot in positive terms, and seems
+to possess a similarly strong feature set --- and modifies the mail itself (I.e.
+information is accessible without the database). =Mu4e= also seems to have a large
+user base, which tends to correlate with better support and attention.
+
 As I installed mu4e from source, I need to add the =/usr/local/= loadpath so Mu4e has a chance of loading
 #+BEGIN_SRC emacs-lisp
 (add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu4e")
@@ -1658,7 +1654,7 @@ Name=Compose message in Emacs
 GenericName=Compose a new message with Mu4e in Emacs
 Comment=Open mu4e compose window
 MimeType=x-scheme-handler/mailto;
-Exec=emacsclient -create-frame --alternate-editor="" --no-wait --eval '(mu4e-compose-from-mailto \"%u\")'
+Exec=emacsclient -create-frame --alternate-editor="" --no-wait --eval '(progn (mu4e-compose-from-mailto "%u") (x-focus-frame nil))'
 Icon=emacs
 Type=Application
 Terminal=false
