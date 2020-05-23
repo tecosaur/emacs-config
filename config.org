@@ -1526,9 +1526,6 @@ will also be the width of all other printable characters."
       ))
 
   (setq mu4e-use-fancy-chars t
-        mu4e~mark-fringe "   "
-        mu4e~mark-fringe-len 3
-        mu4e~mark-fringe-format "%-3s"
         mu4e-headers-draft-mark      (cons "D" (mu4e~normalised-icon "pencil"))
         mu4e-headers-flagged-mark    (cons "F" (mu4e~normalised-icon "flag"))
         mu4e-headers-new-mark        (cons "N" (mu4e~normalised-icon "sync" :set "material" :height 0.8 :v-adjust -0.10))
