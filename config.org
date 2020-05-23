@@ -1636,12 +1636,12 @@ prompt otherwise also seems sensible.
 (after! mu4e
   (defun my-mu4e-set-account ()
     "Set the account for composing a message."
-    (when (and mu4e-compose-parent-message
+    (unless (and mu4e-compose-parent-message
                (let ((mail (cdr (car (mu4e-message-field mu4e-compose-parent-message :to)))))
                  (if (member mail (plist-get mu4e~server-props :personal-addresses))
                      (setq user-mail-address mail)
-                   nil))
-      (ivy-read "Account: " (plist-get mu4e~server-props :personal-addresses) :action (lambda (candidate) (setq user-mail-address candidate))))))
+                   nil)))
+      (ivy-read "Account: " (plist-get mu4e~server-props :personal-addresses) :action (lambda (candidate) (setq user-mail-address candidate)))))
 
   (add-hook 'mu4e-compose-pre-hook 'my-mu4e-set-account))
 #+END_SRC
