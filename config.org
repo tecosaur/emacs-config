@@ -1576,6 +1576,18 @@ specification.
 )
 #+END_SRC
 
+Due to evil, none of the marking commands work when making a visual selection in
+the headers view of mu4e. Without overriding any evil commands we may actually
+want to use in and evil selection, this can be easily fixed.
+#+BEGIN_SRC emacs-lisp
+(map! :map mu4e-headers-mode-map
+    :after mu4e
+    :v "*" #'mu4e-headers-mark-for-something
+    :v "!" #'mu4e-headers-mark-for-read
+    :v "?" #'mu4e-headers-mark-for-unread
+    :v "u" #'mu4e-headers-mark-for-unmark)
+#+END_SRC
+
 The main mu4e window is ... alright. I'm not afraid of unicode though, so I'll
 define a fancier version. Look, it's the asterisks. We can do better than
 asterisks. The keybindings can also be made nicer, why have ~[x]~ when we can just
