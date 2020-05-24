@@ -3746,7 +3746,7 @@ colours from our [[Theme]] gets used, we benefit from customising the code block
      border-top: none;
  }
 
- a[aria-hidden!='true'] {
+ a:not([aria-hidden='true']) {
      text-decoration: none;
      background-image: linear-gradient(#d8dce9, #d8dce9);
      background-position: 0% 100%;
@@ -3757,8 +3757,8 @@ colours from our [[Theme]] gets used, we benefit from customising the code block
  \#table-of-contents a {
      background-image: none;
  }
- a:hover[aria-hidden!='true'],
- a:focus[aria-hidden!='true'] {
+ a:hover:not([aria-hidden='true']),
+ a:focus:not([aria-hidden='true']) {
      background-size: 100% 2px;
  }
  a[href^='#'] { font-variant-numeric: oldstyle-nums; }
