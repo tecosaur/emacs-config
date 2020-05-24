@@ -546,8 +546,16 @@ Variable pitch fontification + colouring
 (package! info-colors :pin "47ee73cc19b1049eef32c9f3e264ea7ef2aaf8a5")
 #+END_SRC
 *** Email
+It's nice to send out fancy HTML emails. The =org-msg= package allows to write
+emails in org mode, and send as an HTML multipart email. We can setup some CSS
+to be inlined, render LaTeX fragments, and all those goodies!
 #+BEGIN_SRC emacs-lisp
 (package! org-msg)
+#+END_SRC
+
+To actually get notifications, we can use =mu4e-alert=.
+#+BEGIN_SRC emacs-lisp
+(package! mu4e-alert)
 #+END_SRC
 ** Language packages
 *** LaTeX
@@ -613,7 +621,7 @@ inserts an org-ified version at point. Isn't that just great.
 (package! org-chef :pin "1dd73fd3db0e9382fa34d3b48c8ec608e65f3bdc")
 #+END_SRC
 
-I have my own [[file:org-plot.el][modified version]] of ~org-plot~, so let's use that
+I have my own [[file:lisp/org-plot.el][modified version]] of ~org-plot~, so let's use that
 #+BEGIN_SRC emacs-lisp
 (package! org-plot :recipe (:local-repo "lisp" :no-byte-compile t))
 #+END_SRC
@@ -1684,6 +1692,17 @@ We also want to define ~mu4e-compose-from-mailto~.
     (mu4e~compose-mail to subject headers)))
 #+END_SRC
 This may not quite function as intended for now due to [[github:jeremy-compostella/org-msg/issues/52][jeremy-compostella/org-msg#52]].
+**** Getting notified
+For this we can use =mu4e-alert=.
+#+BEGIN_SRC emacs-lisp
+(use-package! mu4e-alert
+  :after mu4e
+  :config
+  (mu4e-alert-set-default-style 'libnotify)
+  (mu4e-alert-enable-mode-line-display)
+  (mu4e-alert-enable-notifications)
+  (setq mu4e-alert-icon "/usr/share/icons/Papirus/64x64/apps/evolution.svg"))
+#+END_SRC
 *** Org Msg
 #+BEGIN_SRC emacs-lisp :noweb yes
 (defvar org-msg-currently-exporting nil
