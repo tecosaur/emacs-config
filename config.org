@@ -1638,6 +1638,15 @@ clicked."
 (setq evil-collection-mu4e-end-region-misc "quit")
 #+END_SRC
 
+I'd also quite like an easy way to be able to move away from the created mu4e
+workspace without closing the process (which rules "quit" out). The obvious
+analogous idea is "hide", and it turns out that the =h= key is conveniently
+unbound in the main mu4e view.
+#+BEGIN_SRC emacs-lisp
+(map! :map mu4e-main-mode-map
+      :after mu4e
+      :nive "h" #'+workspace/other)
+#+END_SRC
 **** Sending Mail
 Let's send emails too.
 #+BEGIN_SRC emacs-lisp
