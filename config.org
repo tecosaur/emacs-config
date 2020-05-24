@@ -98,6 +98,14 @@ and the repository exists.
 *** CalcTeX brings up compilation buffer
 With my [[*Calc][Calc]] hook, the first call of =M-x calc= brings up a compilation buffer
 from CalcTeX. I'm guessing this is from the compilation of the preamble / ~.fmt~ file.
+*** Unread emails doesn't work across Emacs instances
+It would be nice if it did, so that I could have the Emacs-daemon hold the
+active mu4e session, but still get that information. In this case I'd want to
+change the action to open the Emacs daemon, but it should be possible.
+
+This would probably involve hooking into the daemon's modeline update function
+to write to a temporary file, and having a file watcher started in other Emacs
+instances, in a similar manner to [[*Rebuild mail index while using mu4e][Rebuild mail index while using mu4e]].
 ** Editor comparison
 
 [[xkcd:378]]
@@ -1576,6 +1584,10 @@ few more visual tweaks, we'll tweak the headers a bit.
                                      (length (mu4e-message-field msg :cc))))
                           'face 'mu4e-footer-face)))))))
 #+END_SRC
+
+Mu4e's implementation of string truncation uses three full stops ~...~ instead of
+ellipses ~…~. This wastes two charachters, which we can easily address with a bit of advice.
+Unfortunately, I have yet to work out how to do this (see [[github:djcb/mu/issues/1707][djcb/mu#1707]]).
 
 Due to evil, none of the marking commands work when making a visual selection in
 the headers view of mu4e. Without overriding any evil commands we may actually
