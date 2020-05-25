@@ -1736,44 +1736,40 @@ We also want to define ~mu4e-compose-from-mailto~.
 #+END_SRC
 This may not quite function as intended for now due to [[github:jeremy-compostella/org-msg/issues/52][jeremy-compostella/org-msg#52]].
 **** Getting notified
-For this we can use =mu4e-alert=.
+For this we can use =mu4e-alert=. We can also perform a few tweaks to make it a
+bit more visually appealing.
 #+BEGIN_SRC emacs-lisp :noweb yes
 (use-package! mu4e-alert
   :after mu4e
   :config
-  <<mu4e-alert-prettifications>>
   (mu4e-alert-enable-mode-line-display)
-  (setq mu4e-alert-email-notification-types '(subject))
+  (mu4e-alert-enable-notifications)
+  (setq mu4e-alert-email-notification-types '(subject count))
   (mu4e-alert-set-default-style 'libnotify)
-  (mu4e-alert-enable-notifications))
-#+END_SRC
-With a few tweaks, we can get this to look a bit nicer, namely the alert and
-modeline icon.
-#+NAME: mu4e-alert-prettifications
-#+BEGIN_SRC emacs-lisp :tangle no
-(setq mu4e-alert-icon "/usr/share/icons/Papirus/64x64/apps/evolution.svg")
-(defun mu4e-alert-iconised-modeline-formatter (mail-count)
-  "Formatter used to get the string to be displayed in the mode-line, using all-the-icons.
+  (setq mu4e-alert-icon "/usr/share/icons/Papirus/64x64/apps/evolution.svg")
+  (defun mu4e-alert-iconised-modeline-formatter (mail-count)
+    "Formatter used to get the string to be displayed in the mode-line, using all-the-icons.
 MAIL-COUNT is the count of mails for which the string is to displayed"
-  (when (not (zerop mail-count))
-    (concat " "
-            (propertize
-             (concat
-              (all-the-icons-material "mail_outline")
-              (if (zerop mail-count)
-                  ""
-                (format " %d" mail-count)))
-             'help-echo (concat (if (= mail-count 1)
-                                    "You have an unread email"
-                                  (format "You have %s unread emails" mail-count))
-                                "\nClick here to view "
-                                (if (= mail-count 1) "it" "them"))
-             'mouse-face 'mode-line-highlight
-             'keymap '(mode-line keymap
-                                 (mouse-1 . mu4e-alert-view-unread-mails)
-                                 (mouse-2 . mu4e-alert-view-unread-mails)
-                                 (mouse-3 . mu4e-alert-view-unread-mails))))))
-(setq mu4e-alert-modeline-formatter #'mu4e-alert-iconised-modeline-formatter)
+    (when (not (zerop mail-count))
+      (concat " "
+              (propertize
+               (concat
+                (all-the-icons-material "mail_outline")
+                (if (zerop mail-count)
+                    ""
+                  (format " %d" mail-count)))
+               'help-echo (concat (if (= mail-count 1)
+                                      "You have an unread email"
+                                    (format "You have %s unread emails" mail-count))
+                                  "\nClick here to view "
+                                  (if (= mail-count 1) "it" "them"))
+               'mouse-face 'mode-line-highlight
+               'keymap '(mode-line keymap
+                                   (mouse-1 . mu4e-alert-view-unread-mails)
+                                   (mouse-2 . mu4e-alert-view-unread-mails)
+                                   (mouse-3 . mu4e-alert-view-unread-mails))))))
+  (setq mu4e-alert-modeline-formatter #'mu4e-alert-iconised-modeline-formatter))
+#+END_SRC
 #+END_SRC
 *** Org Msg
 #+BEGIN_SRC emacs-lisp :noweb yes
