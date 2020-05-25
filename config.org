@@ -168,7 +168,8 @@ shown by =SPC h v= and selecting what I thought looks good, I've ended up adding
 (setq undo-limit 80000000                         ; Raise undo-limit to 80Mb
       evil-want-fine-undo t                       ; By default while in insert all changes are one big blob. Be more granular
       auto-save-default t                         ; Nobody likes to loose work, I certainly don't
-      inhibit-compacting-font-caches t)           ; When there are lots of glyphs, keep them in memory
+      inhibit-compacting-font-caches t            ; When there are lots of glyphs, keep them in memory
+      truncate-string-ellipsis "…")               ; Unicode ellispis are nicer than "...", and also save /precious/ space
 
 (delete-selection-mode 1)                         ; Replace selection when inserting text
 (display-time-mode 1)                             ; Enable time in the mode-line
@@ -1624,10 +1625,6 @@ few more visual tweaks, we'll tweak the headers a bit.
                                      (length (mu4e-message-field msg :cc))))
                           'face 'mu4e-footer-face)))))))
 #+END_SRC
-
-Mu4e's implementation of string truncation uses three full stops ~...~ instead of
-ellipses ~…~. This wastes two charachters, which we can easily address with a bit of advice.
-Unfortunately, I have yet to work out how to do this (see [[github:djcb/mu/issues/1707][djcb/mu#1707]]).
 
 Due to evil, none of the marking commands work when making a visual selection in
 the headers view of mu4e. Without overriding any evil commands we may actually
