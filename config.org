@@ -415,6 +415,24 @@ which is then enabled by
 #+BEGIN_SRC shell :tangle no
 systemctl --user enable emacs.service
 #+END_SRC
+
+When the daemon is running, I almost always want to do a few particular things
+with it, so I may as well eat the load time at startup. We also want to keep =mu4e= running.
+
+#+BEGIN_SRC emacs-lisp
+(defun greedily-do-daemon-setup ()
+  (when (daemonp)
+    (require 'org)
+    (require 'mu4e)
+    (setq mu4e-confirm-quit t)
+    (setq mu4e-lock-greedy t)
+    (setq mu4e-lock-relaxed t)
+    (mu4e-lock-add-watcher)
+    (when (mu4e-lock-avalible t)
+      (mu4e~start))))
+
+(add-hook 'emacs-startup-hook #'greedily-do-daemon-setup)
+#+END_SRC
 * Package loading
 :PROPERTIES:
 :header-args:emacs-lisp: :tangle "packages.el" :comments link
