@@ -1454,7 +1454,7 @@ To check how my version compares to the latest published:
 
 #+BEGIN_SRC shell
 curl --silent "https://api.github.com/repos/djcb/mu/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/'
-mu --version | head -n 1 | sed 's/.* version//'
+mu --version | head -n 1 | sed 's/.* version //'
 #+END_SRC
 
 #+RESULTS:
@@ -1546,6 +1546,13 @@ As I installed mu4e from source, I need to add the =/usr/local/= loadpath so Mu4
 #+END_SRC
 
 **** Viewing Mail
+There seem to be some advantages with using Gnus' article view (such as inline
+images), and judging from [[https://github.com/djcb/mu/pull/1442#issuecomment-591695814][djcb/mu!1442 (comment)]] this seems to be the 'way of
+the future' for mu4e.
+#+BEGIN_SRC emacs-lisp
+(setq mu4e-view-use-gnus t)
+#+END_SRC
+
 There are some all-the-icons font related issues, so we need to redefine the
 fancy chars, and make sure they get the correct width.
 #+BEGIN_SRC emacs-lisp
