@@ -3088,7 +3088,7 @@ no modeline.
 I'll just set this to be within =Organisation= folder for now, in the future it
 could be worth seeing if I could hook this up to a [[https://nextcloud.com/][Nextcloud]] instance.
 #+BEGIN_SRC emacs-lisp
-(setq org-roam-directory "~/Desktop/TEC/Organisation/Roam")
+(setq org-roam-directory "~/Desktop/TEC/Organisation/Roam/")
 #+END_SRC
 ***** Registering roam protocol
 The recommended method of registering a protocal is by registering a desktop
