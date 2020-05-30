@@ -20,8 +20,8 @@ emacs-anywhere]]. To me, this looked most attractive.
 
 Separately, online I have seen the following statement enough times I think it's a catchphrase
 #+BEGIN_QUOTE
-Redditor1: I just discovered this thing, isn't it cool.
-Redditor2: Oh, there's an emacs mode for that.
+Redditor1: I just discovered this thing, isn't it cool. \\
+Redditor2: Oh, there's an Emacs mode for that.
 #+END_QUOTE
 
 I tried out the =spacemacs= distribution a bit, but it wasn't quite to my liking.
@@ -29,7 +29,8 @@ Then I heard about =doom emacs= and thought I may as well give that a try.
 TLDR; it's great.
 
 Now I've discovered the wonders of literate programming, and am becoming more
-settled by the day. This is my config, and also a cautionary tale.
+settled by the day. This is my config, and also a cautionary tale (just replace
+"Linux" with "Emacs" in the comic below).
 
 [[xkcd:456]]
 
