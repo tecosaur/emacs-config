@@ -211,6 +211,14 @@ Oh, and previews are nice
 #+BEGIN_SRC emacs-lisp
 (setq +ivy-buffer-preview t)
 #+END_SRC
+
+Window rotation is nice, and can be found under =SPC w r= and =SPC w R=.
+/Layout/ rotation is also nice though. Let's stash this under =SPC w SPC=, inspired
+by Tmux's use of =C-b SPC= to rotate windows.
+#+BEGIN_SRC emacs-lisp
+(map! :map evil-window-map
+      "SPC" #'rotate-layout)
+#+END_SRC
 *** Buffer defaults
 I'd much rather have my new buffers in ~org-mode~ than ~fundamental-mode~, hence
 #+BEGIN_SRC emacs-lisp
