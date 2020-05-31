@@ -240,6 +240,17 @@ so I don't feel like something's gone /wrong/ when editing files.
 (custom-set-faces!
   '(doom-modeline-buffer-modified :foreground "orange"))
 #+END_SRC
+While we're modifying the modeline, =LF UTF-8= is the default file encoding, and
+thus not worth noting in the modeline. So, let's conditionally hide it.
+#+BEGIN_SRC emacs-lisp
+(defun doom-modeline-conditional-buffer-encoding ()
+  "We expect the encoding to be LF UTF-8, so only show the modeline when this is not the case"
+  (setq-local doom-modeline-buffer-encoding
+              (unless (or (eq buffer-file-coding-system 'utf-8-unix)
+                          (eq buffer-file-coding-system 'utf-8)))))
+
+(add-hook 'after-change-major-mode-hook #'doom-modeline-conditional-buffer-encoding)
+#+END_SRC
 **** Miscellaneous
 Relative line numbers are fantastic for knowing how far away line numbers are,
 then =ESC 12 <UP>= gets you exactly where you think.
@@ -3906,7 +3917,7 @@ the final documents.
 ***** Custom CSS/JS
 There is a fantastic exporter config ([[https://github.com/fniessen/org-html-themes][fniessen/org-html-themes]]) which we can
 setup to be used with all our org files. Since most of the syntax highlighting
-colours from our [[Theme]] gets used, we benefit from customising the code block style.
+colours from our [[*Theme and modeline][Theme]] gets used, we benefit from customising the code block style.
 #+NAME: orgHtmlStyle
 #+BEGIN_SRC web :exports none :tangle no
 <link rel='stylesheet' type='text/css' href='https://fniessen.github.io/org-html-themes/styles/readtheorg/css/htmlize.css'/>
