@@ -237,7 +237,7 @@ fiddle with the font sizes a tad so that they visually match.
       doom-variable-pitch-font (font-spec :family "Overpass" :size 24)
       doom-serif-font (font-spec :family "IBM Plex Mono" :weight 'light))
 #+END_SRC
-**** Theme
+**** Theme and modeline
 ~doom-one~ is nice and all, but I find the ~vibrant~ variant nicer.
 #+BEGIN_SRC emacs-lisp
 (setq doom-theme 'doom-vibrant)
@@ -2131,7 +2131,7 @@ Let's try to make tramp handle prompts better
 #+BEGIN_SRC emacs-lisp
 (after! tramp
   (setenv "SHELL" "/bin/bash")
-  (setq tramp-shell-prompt-pattern "\\(?:^\\|\\)[^]#$%>\n]*#?[]#$%>] *\\(\\[[0-9;]*[a-zA-Z] *\\)*")) ;; defult + 
+  (setq tramp-shell-prompt-pattern "\\(?:^\\|\\)[^]#$%>\n]*#?[]#$%>] *\\(\\[[0-9;]*[a-zA-Z] *\\)*")) ;; default + 
 #+END_SRC
 **** Troubleshooting
 In case the remote shell is misbehaving, here are some things to try
@@ -3110,7 +3110,7 @@ could be worth seeing if I could hook this up to a [[https://nextcloud.com/][Nex
 (setq org-roam-directory "~/Desktop/TEC/Organisation/Roam/")
 #+END_SRC
 ***** Registering roam protocol
-The recommended method of registering a protocal is by registering a desktop
+The recommended method of registering a protocol is by registering a desktop
 application, which seems reasonable.
 #+BEGIN_SRC conf :tangle ~/.local/share/applications/org-protocol.desktop
 [Desktop Entry]
