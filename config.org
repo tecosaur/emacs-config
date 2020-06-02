@@ -543,7 +543,7 @@ amuse oneself. Introducing: typewriter sounds!
 
 Hey, let's get the weather in here while we're at it.
 Unfortunately this seems slightly unmaintained ([[https://github.com/bcbcarl/emacs-wttrin/pulls][few open bugfix PRs]]) so let's
-roll our [[file:wttrin.el][own version]].
+roll our [[file:lisp/wttrin.el][own version]].
 #+BEGIN_SRC emacs-lisp
 (package! wttrin :recipe (:local-repo "lisp" :no-byte-compile t))
 #+END_SRC
@@ -562,6 +562,34 @@ What's even the point of using Emacs unless you're constantly telling everyone
 about it?
 #+BEGIN_SRC emacs-lisp
 (package! elcord :pin "94b0afb9bac32fa72354517347646166d6bec986")
+#+END_SRC
+
+For some reason, I find myself demoing Emacs every now and then. Showing what
+keyboard stuff I'm doing on-screen seems helpful. While [[https://gitlab.com/screenkey/screenkey][screenkey]] does exist,
+having something that doesn't cover up screen content is nice.
+#+BEGIN_SRC emacs-lisp
+(package! keycast :pin "a912c4db1b88390f76b14e3b47ded314fdc8f48c")
+#+END_SRC
+let's just make sure this is lazy-loaded appropriately.
+#+BEGIN_SRC emacs-lisp :tangle yes
+(use-package! keycast
+  :commands keycast-mode
+  :config
+  (define-minor-mode keycast-mode
+    "Show current command and its key binding in the mode line."
+    :global t
+    (if keycast-mode
+        (progn
+          (add-hook 'pre-command-hook 'keycast-mode-line-update t)
+          (add-to-list 'global-mode-string '("" mode-line-keycast " ")))
+      (remove-hook 'pre-command-hook 'keycast-mode-line-update)
+      (setq global-mode-string (remove '("" mode-line-keycast " ") global-mode-string))))
+  (custom-set-faces!
+    '(keycast-command :inherit doom-modeline-debug
+                      :height 0.9)
+    '(keycast-key :inherit custom-modified
+                  :height 1.1
+                  :weight bold)))
 #+END_SRC
 *** Improving features
 **** Flyspell-lazy
