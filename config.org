@@ -4748,6 +4748,13 @@ fi
 (after! latex
   (add-to-list 'TeX-command-list '("XeLaTeX" "%`xelatex%(mode)%' %t" TeX-run-TeX nil t)))
 #+END_SRC
+
+For viewing the PDF, I rather like the pdf-tools viewer. While auctex is trying
+to be nice in recognising that I have some PDF viewing apps installed, I'd
+rather not have it default to using them, so let's re-order the preferences.
+#+BEGIN_SRC emacs-lisp
+(setq +latex-viewers '(pdf-tools evince zathura okular skim sumatrapdf))
+#+END_SRC
 *** Snippet helpers
 **** Template
 For use in the new-file template, let's set out a nice preamble we may want to use.
