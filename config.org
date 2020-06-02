@@ -238,9 +238,11 @@ fiddle with the font sizes a tad so that they visually match.
       doom-serif-font (font-spec :family "IBM Plex Mono" :weight 'light))
 #+END_SRC
 **** Theme and modeline
-~doom-one~ is nice and all, but I find the ~vibrant~ variant nicer.
+~doom-one~ is nice and all, but I find the ~vibrant~ variant nicer. Oh, and with the
+nice selection doom provides there's no reason for me to want the defaults.
 #+BEGIN_SRC emacs-lisp
 (setq doom-theme 'doom-vibrant)
+(delq! t custom-theme-load-path)
 #+END_SRC
 However, by default ~red~ text is used in the ~modeline~, so let's make that orange
 so I don't feel like something's gone /wrong/ when editing files.
