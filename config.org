@@ -1735,6 +1735,18 @@ unbound in the main mu4e view.
       :after mu4e
       :nive "h" #'+workspace/other)
 #+END_SRC
+
+I often find myself viewing new mails using the Emacs client. When opening a new
+window and switching to view the mu4e workspace, and empty workspace is left. We
+can try to avoid this workspace polution by deleting the current workspace
+before switching if it is empty.
+#+BEGIN_SRC emacs-lisp
+(defadvice! delete-current-worspace-if-empty ()
+  "Close the current workspace if it is empty."
+  :before #'=mu4e
+  (unless (+workspace-buffer-list)
+    (+workspace-delete (+workspace-current-name))))
+#+END_SRC
 **** Sending Mail
 Let's send emails too.
 #+BEGIN_SRC emacs-lisp
