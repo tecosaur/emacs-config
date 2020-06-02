@@ -912,6 +912,20 @@ nearby (also means that if I change the 'main' dictionary I keep my addition).
 #+BEGIN_SRC emacs-lisp
 (setq ispell-personal-dictionary (expand-file-name ".hunspell_personal" doom-private-dir))
 #+END_SRC
+** Ivy
+While in an ivy mini-buffer =C-o= shows a list of all possible actions one may take.
+By default this is ~#'ivy-read-action-by-key~ however a better interface to this
+is using Hydra.
+#+BEGIN_SRC emacs-lisp
+(setq ivy-read-action-function #'ivy-hydra-read-action)
+#+END_SRC
+
+I currently have ~40k functions. This seems like sufficient motivation to
+increase the maximum number of items ivy will sort to 40k + a bit, this way
+=SPC h f= et al. will continue to function as expected.
+#+BEGIN_SRC emacs-lisp
+(setq ivy-sort-max-size 50000)
+#+END_SRC
 ** Magit
 Magit is pretty nice by default. The diffs don't get any
 syntax-highlighting-love though which is a bit sad. Thankfully
