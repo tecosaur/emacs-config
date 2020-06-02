@@ -1774,7 +1774,7 @@ Name=Compose message in Emacs
 GenericName=Compose a new message with Mu4e in Emacs
 Comment=Open mu4e compose window
 MimeType=x-scheme-handler/mailto;
-Exec=emacsclient -create-frame --alternate-editor="" --no-wait --eval '(progn (mu4e-compose-from-mailto "%u") (x-focus-frame nil))'
+Exec=emacsclient -create-frame --alternate-editor="" --no-wait --eval '(progn (x-focus-frame nil) (mu4e-compose-from-mailto "%u"))'
 Icon=emacs
 Type=Application
 Terminal=false
