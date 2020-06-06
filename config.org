@@ -3554,8 +3554,12 @@ appropriate.  In tables, insert a new row or end the table."
                (org-return t))))
        (t
         ;; All other cases: call `org-return-indent'.
-        (org-return t)))))
-  (advice-add #'org-return-indent :override #'unpackaged/org-return-dwim))
+        (org-return t))))))
+
+(map!
+ :after evil-org
+ :map evil-org-mode-map
+ :i [return] #'unpackaged/org-return-dwim)
 #+END_SRC
 **** Org Plot
 There are two main bits of extra functionality I wan to add
