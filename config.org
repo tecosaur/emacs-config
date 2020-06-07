@@ -15,8 +15,8 @@ computer to do. --- Donald Knuth
 * Intro
 Customising an editor can be very rewarding ... until you have to leave it.
 For years I have been looking for ways to avoid this pain.
-Then I discovered [[https://github.com/cknadler/vim-anywhere][vim-anywhere]], and found that it had an Emacs companion,[[https://github.com/zachcurry/emacs-anywhere][
-emacs-anywhere]]. To me, this looked most attractive.
+Then I discovered [[https://github.com/cknadler/vim-anywhere][vim-anywhere]], and found that it had an Emacs companion,
+[[https://github.com/zachcurry/emacs-anywhere][emacs-anywhere]]. To me, this looked most attractive.
 
 Separately, online I have seen the following statement enough times I think it's a catchphrase
 #+BEGIN_QUOTE
@@ -279,11 +279,10 @@ There's a bug with the modeline in insert mode for org documents ([[https://gith
 *** Some helper macros
 There are a few handy macros added by doom, namely
 - ~load!~ for loading external ~.el~ files relative to this one
-- ~use-package~ for configuring packages
+- ~use-package!~ for configuring packages
 - ~add-load-path!~ for adding directories to the ~load-path~ where ~emacs~ looks when
   you load packages with ~require~ or ~use-package~
-- ~map~ for binding new keys
-To find more,
+- ~map!~ for binding new keys
 ** Other things
 *** Editor interaction
 **** Mouse buttons
