@@ -3648,44 +3648,54 @@ First, we set up all the necessarily 'utility' functions.
   (defvar org-music-track-search-method 'beets
     "Method to find the track file from the link.")
   (defvar org-music-beets-db "~/Music/library.db"
-    "Location of the beets DB, when using beets as the `org-music-track-search-method'")
+    "Location of the beets DB, for when using beets as the `org-music-track-search-method'")
+  (defvar org-music-folder "~/Music/"
+    "Location of your music folder, for when using file as the `org-music-track-search-method'")
+  (defvar org-music-recognised-extensions '("flac" "mp4" "m4a" "aiff" "wav" "ogg" "aiff")
+    "When searching for files in `org-music-track-search-method', recognise these extensions as audio files.")
 
   (defun org-music-get-link (full &optional include-time)
     "Generate link string for currently playing track, optionally including a time-stamp"
-    (let* ((track-metadata
-            (dbus-get-property :session "org.gnome.Lollypop" "/org/mpris/MediaPlayer2"
-                               "org.mpris.MediaPlayer2.Player" "Metadata"))
-           (artist (caar (cadr (assoc "xesam:artist" track-metadata))))
-           (album (car (cadr (assoc "xesam:album" track-metadata))))
-           (track (car (cadr (assoc "xesam:title" track-metadata))))
-           (seconds (when include-time
-                      (/ (dbus-get-property :session "org.gnome.Lollypop" "/org/mpris/MediaPlayer2"
-                                            "org.mpris.MediaPlayer2.Player" "Position") 1000000))))
-      (if full
-          (format "[[music:%s][%s by %s]]" (org-music-format-link artist album track seconds) track artist)
-        (org-music-format-link artist album track seconds))))
+    (case org-music-player ;; NOTE this could do with better generalisation
+      ('mpris (let* ((track-metadata
+                      (org-music-mpris-get-property "Metadata"))
+                     (artist (caar (cadr (assoc "xesam:artist" track-metadata))))
+                     (track (car (cadr (assoc "xesam:title" track-metadata))))
+                     (start-time (when include-time
+                                   (/ (org-music-mpris-get-property "Position") 1000000))))
+                (if full
+                    (format "[[music:%s][%s by %s]]" (org-music-format-link artist track start-time) track artist)
+                  (org-music-format-link artist track start-time))))
+        (t (user-error! "The specified music player: %s is not supported" org-music-player))))
 
-  (defun org-music-format-link (artist album track &optional seconds)
+  (defun org-music-format-link (artist track &optional start-time end-time)
     (let ((artist (replace-regexp-in-string ":" "\\:" artist))
-          (album (replace-regexp-in-string ":" "\\:" album))
           (track (replace-regexp-in-string ":" "\\:" track)))
-      (if seconds
-          (format "%s:%s::%s" artist track (org-music-seconds-to-time seconds))
-        (format "%s:%s" artist track))))
+      (concat artist ":" track
+              (cons ((and start-time end-time)
+                     (format "::%s-%s"
+                             (org-music-seconds-to-time start-time)
+                             (org-music-seconds-to-time end-time)))
+                    (start-time
+                     (format "::%s"
+                             (org-music-seconds-to-time start-time)))))))
 
   (defun org-music-parse-link (link)
     (let* ((link-dc (->> link
                          (replace-regexp-in-string "\\([^\\\\]\\)\\\\:" "\\1#COLON#")
-                         (replace-regexp-in-string "\\`music:" "")
                          (replace-regexp-in-string "\\(::[a-z0-9]*[0-9]\\)\\'" "\\1s")))
            (link-components (mapcar (lambda (lc) (replace-regexp-in-string "#COLON#" ":" lc))
                                     (s-split ":" link-dc)))
            (artist (nth 0 link-components))
            (track (nth 1 link-components))
-           (seconds (when (and (> (length link-components) 3)
-                               (equal (nth 2 link-components) ""))
-                      (org-music-time-to-seconds (nth 3 link-components)))))
-      (list artist track seconds)))
+           (durations (when (and (> (length link-components) 3)
+                                  (equal (nth 2 link-components) ""))
+                         (s-split "-" (nth 3 link-components))))
+           (start-time (when durations
+                         (org-music-time-to-seconds (car durations))))
+           (end-time (when (cdr durations)
+                       (org-music-time-to-seconds (cadr durations)))))
+      (list artist track start-time end-time)))
 
   (defun org-music-seconds-to-time (seconds)
     "Convert a number of seconds to a nice human duration, e.g. 5m21s.
@@ -3706,34 +3716,69 @@ This action is reversed by `org-music-time-to-seconds'."
                     (string-to-number (nth 3 time-components)))))
       (+ (* 3600 (or hours 0)) (* 60 (or minutes 0)) seconds)))
 
-  (defun org-music-play-track (artist title &optional seconds)
-    "Play the track specified by ARTIST and TITLE, optionally skipping to SECONDS in."
-    (case org-music-player
-      ('mpris (org-music-mpris-play
-               (org-music-find-track-file artist title)
-               seconds))
-      (t (user-error! "The specified music player: %s is not supported" org-music-player))))
+  (defun org-music-play-track (artist title &optional start-time end-time)
+    "Play the track specified by ARTIST and TITLE, optionally skipping to START-TIME in, stopping at END-TIME."
+    (if-let ((file (org-music-find-track-file artist title)))
+      (case org-music-player
+        ('mpris (org-music-mpris-play file start-time end-time))
+        (t (user-error! "The specified music player: %s is not supported" org-music-player)))
+      (user-error! "Could not find the track '%s' by '%s'" title artist)))
 
-  (defun org-music-mpris-play (file &optional seconds)
-    (let ((player (concat "org.gnome." org-music-mpris-player)))
-      (dbus-call-method :session player
-                        "/org/mpris/MediaPlayer2" "org.mpris.MediaPlayer2.Player"
-                        "OpenUri" (replace-regexp-in-string " " "%20" (rng-file-name-uri file)))
-      (when seconds
-        (let ((track-id (caadr (assoc "mpris:trackid"
-                                      (dbus-get-property :session
-                                                         player
-                                                         "/org/mpris/MediaPlayer2"
-                                                         "org.mpris.MediaPlayer2.Player"
-                                                         "Metadata")))))
-          (dbus-call-method :session player
-                            "/org/mpris/MediaPlayer2" "org.mpris.MediaPlayer2.Player"
-                            "SetPosition"
-                            :object-path track-id
-                            :int64 (round (* seconds 1000000)))))))
+  (defun org-music-mpris-play (file &optional start-time end-time)
+    (let ((uri (replace-regexp-in-string " " "%20" (rng-file-name-uri file))))
+      (pp uri)
+      (org-music-mpris-call-method "OpenUri" uri)
+      (let ((track-id (caadr (assoc "mpris:trackid"
+                                    (org-music-mpris-get-property "Metadata")))))
+        (when start-time
+          (org-music-mpris-call-method "SetPosition" :object-path track-id
+                                       :int64 (round (* start-time 1000000))))
+        (when end-time
+          (org-music-mpris-stop-at-time uri end-time)))))
+
+  (defun orgb3-music-mpris-stop-at-time (url end-time)
+    "Check that url is playing, and if it is stop it at END-TIME."
+    (when (equal url (caadr (assoc "xesam:url" (org-music-mpris-get-property "Metadata"))))
+      (let* ((time-current (/ (/ (org-music-mpris-get-property "Position") 10000) 100.0))
+             (time-delta (- end-time time-current)))
+        (message "%s" time-delta)
+        (if (< time-delta 0)
+            (org-music-mpris-call-method "Pause")
+          (if (< time-delta 6)
+              (run-at-time (max 0.001 (* 0.9 time-delta)) nil #'org-music-mpris-stop-at-time url end-time)
+              (run-at-time 5 nil #'org-music-mpris-stop-at-time url end-time))))))
+
+  (defun org-music-mpris-get-property (property)
+    "Return the value of org.mpris.MediaPlayer2.Player.PROPERTY."
+    (dbus-get-property :session (concat "org.gnome." org-music-mpris-player)
+                       "/org/mpris/MediaPlayer2" "org.mpris.MediaPlayer2.Player"
+                       property))
+
+  (defun org-music-mpris-call-method (property &rest args)
+    "Call org.mpris.MediaPlayer2.Player.PROPERTY with ARGS, returning the result."
+    (apply #'dbus-call-method :session (concat "org.gnome." org-music-mpris-player)
+                      "/org/mpris/MediaPlayer2" "org.mpris.MediaPlayer2.Player"
+                      property args))
+
+  (defun org-music-guess-mpris-player ()
+    (when-let ((players
+                (-filter (lambda (interface)
+                           (s-contains-p "org.mpris.MediaPlayer2" interface))
+                         (dbus-call-method :session
+                                           dbus-service-dbus
+                                           dbus-path-dbus
+                                           dbus-interface-dbus
+                                           "ListNames"))))
+      (replace-regexp-in-string "org\\.mpris\\.MediaPlayer2\\." "" (car players))))
+
+  (when (eq org-music-player 'mpris)
+    (unless org-music-mpris-player
+      (setq org-music-mpris-player (org-music-guess-mpris-player))))
 
   (defun org-music-find-track-file (artist title)
+    "Try to find the file for TRACK by ARTIST, using `org-music-track-search-method', returning nil if nothing could be found."
     (case org-music-track-search-method
+      ('file (org-music-find-file artist title))
       ('beets (org-music-beets-find-file artist title))
       (t (user-error! "The specified music search method: %s is not supported" org-music-track-search-method))))
 
@@ -3744,11 +3789,34 @@ This action is reversed by `org-music-time-to-seconds'."
            (file
             (shell-command-to-string
              (format
-              "sqlite3 '%s' \"SELECT path FROM items WHERE artist IS '%s' AND title IS '%s' COLLATE NOCASE\""
+              "sqlite3 '%s' \"SELECT path FROM items WHERE artist IS '%s' AND title IS '%s' LIMIT 1 COLLATE NOCASE\""
               (expand-file-name org-music-beets-db) artist-escaped title-escaped))))
       (if (> (length file) 0)
           (substring file 0 -1)
-        (user-error! "Could not find '%s' by '%s' in your beets database" title artist)))))
+        )))
+
+  (defun org-music-find-file (artist title)
+    "Try to find a file in `org-music-folder' which contains TITLE, looking first in ./ARTIST if possible."
+    (when-let* ((music-folder (expand-file-name org-music-folder))
+              (search-folders (or
+                               (mapcar (lambda (f) (f-join music-folder f))
+                                       (-filter ; look for folders which contain ARTIST
+                                        (lambda (content-name)
+                                          (and
+                                           (s-contains-p artist content-name t)
+                                           (eq (file-name-extension content-name) nil)))
+                                        (directory-files music-folder)))
+                               (list music-folder)))
+              (extension-regex (format "\\.\\(?:%s\\)\\'" (s-join "\\|" org-music-recognised-extensions)))
+              (tracks (-filter
+                       (lambda (file)
+                         (s-contains-p title (file-name-base file) t))
+                       (-flatten (mapcar (lambda (dir)
+                                           (directory-files-recursively dir extension-regex))
+                                         search-folders)))))
+        (when (> (length tracks) 1)
+          (message "Warning: multiple matches for %s by %s found" title artist))
+      (car tracks))))
 #+END_SRC
 
 Then we integrate this nicely with org-mode
@@ -3772,19 +3840,21 @@ Then we integrate this nicely with org-mode
     (let* ((track-info (org-music-parse-link path))
            (artist (nth 0 track-info))
            (track (nth 1 track-info))
-           (seconds (nth 2 track-info))
-           (description ))
-      (cond ((org-export-derived-backend-p backend 'html)
-             (if seconds
-                 (format "%s seconds into <span style=\"font-style: italic\">%s</span> by %s" seconds track artist)
-               (format "%s by %s" track artist)))
-            ((org-export-derived-backend-p backend 'latex)
-             (if seconds
-                 (format "%s seconds into \\emph{%s} by %s" seconds track artist)
-               (format "\\emph{%s} by %s" track artist)))
-            (t (if seconds
-                   (format "%s seconds into %s by %s" seconds track artist)
-                 (format "%s by %s" track artist)))))))
+           (start-time (nth 2 track-info))
+           (end-time (nth 2 track-info))
+           (emphase (cond ((org-export-derived-backend-p backend 'html)
+                           (lambda (s) (format "<span style=\"font-style: italic\">%s</span>" s))
+                           ((org-export-derived-backend-p backend 'latex)
+                            (lambda (s) (format "\\emph{%s}" s)))
+                           (t (lambda (s) s))))))
+      (concat
+       (cond ((and start-time end-time)
+              (format "%s to %s seconds of " start-time end-time)
+              (start-time
+               (format "%s seconds into " start-time))))
+       (emphase track)
+       " by "
+       artist))))
 #+END_SRC
 ***** YouTube
 The ~[[yt:...]]~ links preview nicely, but don't export nicely. Thankfully, we can
