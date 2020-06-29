@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# [[file:~/.config/doom/config.org::*Config transcoding & service management][Config transcoding & service management:2]]
+# [[file:../config.org::*Config transcoding & service management][Config transcoding & service management:2]]
 from pathlib import Path
 import json
 import re
@@ -96,7 +96,7 @@ def finaliseAccount():
     except subprocess.TimeoutExpired as e:
         print(
             f"\033[1;31mError:\033[0;31m failed to fetch mailboxes (skipping): "
-            + f"`{' '.join(e.cmd)}' timed out after {e.timeout} seconds\033[0;37m"
+            + f"`{' '.join(e.cmd)}' timed out after {e.timeout.2f} seconds\033[0;37m"
         )
         return
 
@@ -239,7 +239,7 @@ def setSystemdServiceState(state, service):
             ["systemctl", "--user", state, service, "--now"],
             check=True,
             stderr=subprocess.DEVNULL,
-            timeout=2.0,
+            timeout=5.0,
         )
         return True
     except subprocess.CalledProcessError as e:
@@ -248,7 +248,7 @@ def setSystemdServiceState(state, service):
             + f"returned code {e.returncode}\033[0;37m"
         )
     except subprocess.TimeoutExpired as e:
-        print(f" \033[1;31mtimed out after {e.timeout} seconds\033[0;37m")
+        print(f" \033[1;31mtimed out after {e.timeout.2f} seconds\033[0;37m")
         return False
 
 
