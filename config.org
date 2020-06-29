@@ -2762,6 +2762,16 @@ specific modes as desired.
 (remove-hook 'text-mode-hook #'visual-line-mode)
 (add-hook 'text-mode-hook #'auto-fill-mode)
 #+END_SRC
+
+There also seem to be a few keybindings which use =hjkl=, but miss arrow key equivalents.
+#+BEGIN_SRC emacs-lisp
+(map! :map evil-org-mode-map
+      :after evil-org
+      :n "g <up>" #'org-backward-heading-same-level
+      :n "g <down>" #'org-forward-heading-same-level
+      :n "g <left>" #'org-up-element
+      :n "g <right>" #'org-down-element)
+#+END_SRC
 **** Extra functionality
 ***** Org buffer creation
 Let's also make creating an org buffer just that little bit easier.
