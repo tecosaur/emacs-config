@@ -5512,3 +5512,35 @@ enable it for ~.beancount~ files.
 # Local variables:
 # eval: (add-hook 'after-save-hook 'org-html-export-to-html t t)
 # end:
+** Authinfo
+I just like syntax highlighting. So, let's define a mode with some simple font
+locking.
+#+BEGIN_SRC emacs-lisp :tangle lisp/authinfo-mode.el
+(setq authinfo-keywords
+      '(("^#.*" . font-lock-comment-face)
+        ("^\\(machine\\) \\([^ \t\n]+\\)"
+         (1 font-lock-variable-name-face)
+         (2 font-lock-builtin-face))
+        ("\\(login\\) \\([^ \t\n]+\\)"
+         (1 font-lock-keyword-face)
+         (2 font-lock-string-face))
+        ("\\(password\\) \\([^ \t\n]+\\)"
+         (1 font-lock-constant-face)
+         (2 font-lock-doc-face))
+        ("\\(port\\) \\([^ \t\n]+\\)"
+         (1 font-lock-type-face)
+         (2 font-lock-type-face))))
+
+(define-derived-mode authinfo-mode fundamental-mode "authinfo"
+  "Major mode for editing the authinfo file."
+  (font-lock-add-keywords nil authinfo-keywords)
+  (setq-local comment-start "#")
+  (setq-local comment-end ""))
+
+(provide 'authinfo-mode)
+#+END_SRC
+Now we just need to load it appropriately.
+#+BEGIN_SRC emacs-lisp
+(use-package! authinfo-mode
+  :mode ("authinfo\\.gpg\\'" . authinfo-mode))
+#+END_SRC
