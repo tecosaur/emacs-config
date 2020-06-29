@@ -584,14 +584,14 @@ With all our fancy Emacs themes, my terminal is missing out!
 What's even the point of using Emacs unless you're constantly telling everyone
 about it?
 #+BEGIN_SRC emacs-lisp
-(package! elcord :pin "94b0afb9bac32fa72354517347646166d6bec986")
+(package! elcord :pin "01b26d1af2f33a7c7c5a1c24d8bfb6d40115a7b0")
 #+END_SRC
 
 For some reason, I find myself demoing Emacs every now and then. Showing what
 keyboard stuff I'm doing on-screen seems helpful. While [[https://gitlab.com/screenkey/screenkey][screenkey]] does exist,
 having something that doesn't cover up screen content is nice.
 #+BEGIN_SRC emacs-lisp
-(package! keycast :pin "a912c4db1b88390f76b14e3b47ded314fdc8f48c")
+(package! keycast :pin "038475c178e90c7bad64d113db26d42cad60e149")
 #+END_SRC
 let's just make sure this is lazy-loaded appropriately.
 #+BEGIN_SRC emacs-lisp :tangle yes
@@ -624,7 +624,7 @@ To alleviate some [[Flyspell][issues with flyspell]]
 This is a nice extension to ~calc~
 #+BEGIN_SRC emacs-lisp
 (package! calctex :recipe (:host github :repo "johnbcoughlin/calctex"
-                                 :files ("*.el")) :pin "08273d4216ac6cfa6030dfc0ea4bdeed0429e653")
+                                 :files ("*.el")) :pin "1d2c3df2e9230ecbe370cb2da82482cfb83b7a34")
 #+END_SRC
 **** ESS
 View data frames better with
@@ -659,7 +659,7 @@ To actually get notifications, we can use =mu4e-alert=.
 *** LaTeX
 #+BEGIN_SRC emacs-lisp
 (package! evil-tex :recipe (:host github :repo "itai33/evil-tex")
-                            :pin "9365aa33a0e73d8015cd93f039d2ba91dbe52cad")
+                            :pin "4826bffa28fde3ace3ec0bd66b2838d44539d016")
 #+END_SRC
 For mathematical convenience, WIP
 #+BEGIN_SRC emacs-lisp
@@ -689,7 +689,7 @@ set up org-capture.
 #+BEGIN_SRC emacs-lisp
 (package! doct
   :recipe (:host github :repo "progfolio/doct")
-  :pin "1bcec209e12200c9b93b0d95f61b964b5de4439c")
+  :pin "9be788f9e3db45610a9e3489d4bba70b3b5de1f0")
 #+END_SRC
 **** Visuals
 Org tables aren't the prettiest thing to look at. This package is supposed to
@@ -702,7 +702,7 @@ improvement to me! Just need to get it working...
 
 For automatically toggling LaTeX fragment previews there's this nice package
 #+BEGIN_SRC emacs-lisp
-(package! org-fragtog :pin "8eca8084cc025c43ce2677b38ed4919218dd9ad9")
+(package! org-fragtog :pin "3eea7f17087a0165280e9c7b7a39a4b8d91c684d")
 #+END_SRC
 
 ~org-superstar-mode~ is great. While we're at it we may as well make tags prettier as well :)
@@ -721,7 +721,7 @@ features that GitHub has. Initialised in [[Exporting to GFM]].
 
 Now and then citations need to happen
 #+BEGIN_SRC emacs-lisp
-(package! org-ref :pin "4ce80644377f2369efb475bd58a57cf6950d8c41")
+(package! org-ref :pin "b05d6b443494cc251d2f11a882a8b27fb8f7baf6")
 #+END_SRC
 
 Came across this and ... it's cool
@@ -743,7 +743,7 @@ I have my own [[file:lisp/org-plot.el][modified version]] of ~org-plot~, so let'
 Org-roam is nice by itself, but there are so /extra/ nice packages which integrate
 with it.
 #+BEGIN_SRC emacs-lisp
-(package! org-roam-server :pin "3ecc8d599dbc2b67ba6b30277f0b65f7f3578fa6")
+(package! org-roam-server :pin "7617ac01a1b7bad61407916ef03eda95c17da7c9")
 #+END_SRC
 #+BEGIN_SRC emacs-lisp :tangle yes
 (use-package org-roam-server
