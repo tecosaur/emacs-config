@@ -442,6 +442,24 @@ which is then enabled by
 systemctl --user enable emacs.service
 #+END_SRC
 
+It can now be nice to use this as a 'default app' for opening files
+
+#+BEGIN_SRC conf :tangle ~/.local/share/applications/emacs-client.desktop :mkdirp yes
+[Desktop Entry]
+Name=Emacs client
+GenericName=Text Editor
+Comment=A flexible platform for end-user applications
+MimeType=text/english;text/plain;text/x-makefile;text/x-c++hdr;text/x-c++src;text/x-chdr;text/x-csrc;text/x-java;text/x-moc;text/x-pascal;text/x-tcl;text/x-tex;application/x-shellscript;text/x-c;text/x-c++;
+Exec=emacsclient -create-frame --alternate-editor="" %F
+Icon=emacs
+Type=Application
+Terminal=false
+Categories=TextEditor;Utility;
+StartupWMClass=Emacs
+Keywords=Text;Editor;
+X-KDE-StartupNotify=false
+#+END_SRC
+
 When the daemon is running, I almost always want to do a few particular things
 with it, so I may as well eat the load time at startup. We also want to keep =mu4e= running.
 
