@@ -3991,6 +3991,13 @@ Let's make headings a bit bigger
   '(outline-8 :weight semi-bold)
   '(outline-9 :weight semi-bold))
 #+END_SRC
+
+And the same with the title.
+#+BEGIN_SRC emacs-lisp
+(after! org
+  (custom-set-faces!
+    '(org-document-title :height 1.2)))
+#+END_SRC
 ***** Symbols
 It's also nice to change the character used for collapsed items (by default ~…~),
 I think ~▾~ is better for indicating 'collapsed section'.
