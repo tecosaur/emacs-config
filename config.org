@@ -3309,11 +3309,16 @@ Hence, we need to do a bit of overriding.
         <title>Roam Graph</title>
         <meta name="viewport" content="width=device-width">
         <style type="text/css">
+         body {
+             background: white;
+         }
+
          svg {
              position: relative;
              top: 50vh;
              left: 50vw;
              transform: translate(-50%, -50%);
+             width: 95vw;
          }
 
          a > polygon {
@@ -3358,27 +3363,44 @@ Hence, we need to do a bit of overriding.
 
 #+BEGIN_SRC emacs-lisp
 (after! org-roam
-  (setq +org-roam-graph--html-template (replace-regexp-in-string "%\\([^s]\\)" "%%\\1" (f-read-text (concat doom-private-dir "misc/org-roam-template.html"))))
+  (setq org-roam-graph-node-extra-config '(("shape"      . "underline")
+                                           ("style"      . "rounded,filled")
+                                           ("fillcolor"  . "#EEEEEE")
+                                           ("color"      . "#C9C9C9")
+                                           ("fontcolor"  . "#111111")
+                                           ("fontname"   . "Overpass")))
 
-  (defadvice! +org-roam-graph--build-html (&optional node-query)
+  (setq +org-roam-graph--html-template
+        (replace-regexp-in-string "%\\([^s]\\)" "%%\\1"
+                                  (f-read-text (concat doom-private-dir "misc/org-roam-template.html"))))
+
+  (defadvice! +org-roam-graph--build-html (&optional node-query callback)
     "Generate a graph showing the relations between nodes in NODE-QUERY. HTML style."
     :override #'org-roam-graph--build
-    (unless org-roam-graph-executable
-      (user-error "Can't find %s executable.  Please check if it is in your path"
+    (unless (stringp org-roam-graph-executable)
+      (user-error "`org-roam-graph-executable' is not a string"))
+    (unless (executable-find org-roam-graph-executable)
+      (user-error (concat "Cannot find executable %s to generate the graph.  "
+                          "Please adjust `org-roam-graph-executable'")
                   org-roam-graph-executable))
     (let* ((node-query (or node-query
-                           `[:select [file titles]
-                                     :from titles
-                                     ,@(org-roam-graph--expand-matcher 'file t)]))
+                           `[:select [file titles] :from titles
+                             ,@(org-roam-graph--expand-matcher 'file t)]))
            (graph      (org-roam-graph--dot node-query))
            (temp-dot   (make-temp-file "graph." nil ".dot" graph))
            (temp-graph (make-temp-file "graph." nil ".svg"))
            (temp-html  (make-temp-file "graph." nil ".html")))
-      (call-process org-roam-graph-executable nil 0 nil
-                    temp-dot "-Tsvg" "-o" temp-graph)
-      (sleep-for 0.1)
-      (write-region (format +org-roam-graph--html-template (f-read-text temp-graph)) nil temp-html)
-      temp-html)))
+      (org-roam-message "building graph")
+      (make-process
+       :name "*org-roam-graph--build-process*"
+       :buffer "*org-roam-graph--build-process*"
+       :command `(,org-roam-graph-executable ,temp-dot "-Tsvg" "-o" ,temp-graph)
+       :sentinel (progn
+                   (lambda (process _event)
+                     (when (= 0 (process-exit-status process))
+                       (write-region (format +org-roam-graph--html-template (f-read-text temp-graph)) nil temp-html)
+                       (when callback
+                         (funcall callback temp-html)))))))))
 #+END_SRC
 ***** Modeline file name
 All those numbers! It's messy. Let's adjust this in a similar way that I have in
