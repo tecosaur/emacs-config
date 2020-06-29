@@ -3913,13 +3913,16 @@ Then we integrate this nicely with org-mode
                     (-contains-p '("png" "jpg" "jpeg") (file-name-extension file)))
                   (directory-files (file-name-directory track-file) t "cover"))))
 
-  (defun org-music-image-fn (protocol link description)
-    (let ((track-data (org-music-parse-link link)))
-      (+org-image-file-data-fn protocol
-                               (org-music-cover-image
-                                (org-music-find-track-file
-                                 (nth 0 track-data) (nth 1 track-data)))
-                               description)))
+  (defun org-music-image-fn (_protocol link _description)
+    (when-let* ((track-data (org-music-parse-link link))
+                (cover-file (org-music-cover-image
+                             (org-music-find-track-file
+                              (nth 0 track-data) (nth 1 track-data)))))
+      (with-temp-buffer
+        (set-buffer-multibyte nil)
+        (setq buffer-file-coding-system 'binary)
+        (insert-file-contents-literally cover-file)
+        (buffer-substring-no-properties (point-min) (point-max)))))
 
   (defun org-music-fancy-export (path desc backend _com)
     (let* ((track-data (org-music-parse-link path))
