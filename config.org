@@ -5546,6 +5546,12 @@ Let's face it. Being evil is fun, let's take it as far as we can.
 (use-package! evil-tex
   :hook (LaTeX-mode . evil-tex-mode))
 #+END_SRC
+*** Fixes
+In case of Emacs28,
+#+BEGIN_SRC emacs-lisp
+(when EMACS28+
+  (add-hook 'latex-mode-hook #'TeX-latex-mode))
+#+END_SRC
 ** Python
 Since I'm using =mypyls=, as suggested in [[file:~/.emacs.d/modules/lang/python/README.org::*Language Server Protocol Support][:lang python LSP support]] I'll tweak the
 priority of =mypyls=
