@@ -4780,7 +4780,7 @@ be unaffected lest's use ~;~ as a prefix to prevent the transformation --- i.e.
 #+END_SRC
 
 Now for a few more adjustments.
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :noweb yes
 (after! ox-latex
   (add-to-list 'org-latex-classes
                '("fancy-article"
@@ -4849,25 +4849,12 @@ Now for a few more adjustments.
                ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
   (setq org-latex-default-class "fancy-article")
 
-  (add-to-list 'org-latex-packages-alist '("" "minted"))
+  <<org-latex-smart-minted>>
+
   (setq org-latex-listings 'minted
         org-latex-minted-options
-        '(("frame" "lines")
-          ("fontsize" "\\scriptsize")
-          ("linenos" "")
-          ("breakanywhere" "true")
-          ("breakautoindent" "true")
-          ("breaklines" "true")
-          ("autogobble" "true")
-          ("obeytabs" "true")
-          ("python3" "true")
-          ("breakbefore" "\\\\\\.+")
-          ("breakafter" "\\,")
-          ("style" "autumn")
-          ("breaksymbol" "\\tiny\\ensuremath{\\hookrightarrow}")
-          ("breakanywheresymbolpre" "\\,\\footnotesize\\ensuremath{{}_{\\rfloor}}")
-          ("breakbeforesymbolpre" "\\,\\footnotesize\\ensuremath{{}_{\\rfloor}}")
-          ("breakaftersymbolpre" "\\,\\footnotesize\\ensuremath{{}_{\\rfloor}}")))
+        '())
+
   (setq org-latex-tables-booktabs t)
 
   (setq org-latex-hyperref-template "
@@ -4890,6 +4877,63 @@ Now for a few more adjustments.
 \\urlstyle{same}\n")
   (setq org-latex-pdf-process
         '("latexmk -shell-escape -interaction=nonstopmode -f -pdf -output-directory=%o %f")))
+#+END_SRC
+
+Instead of just loading doing the 'minted stuff' all the time, we can try to be
+a bit cleverer.
+#+NAME: org-latex-smart-minted
+#+BEGIN_SRC emacs-lisp
+(defadvice! org-latex-header-smart-minted (orig-fn tpl def-pkg pkg snippets-p &optional extra)
+  "Include minted config if src blocks are detected."
+  :around #'org-splice-latex-header
+  (let ((header (funcall orig-fn tpl def-pkg pkg snippets-p extra))
+        (src-p (when (save-excursion
+                       (goto-char (point-min))
+                       (search-forward-regexp "#\\+BEGIN_SRC\\|#\\+begin_src" nil t))
+                 t)))
+    (concat header
+            (when src-p "
+\\usepackage{minted}
+\\usepackage[many]{tcolorbox}
+\\setminted{
+  frame=none,
+  % framesep=2mm,
+  baselinestretch=1.2,
+  fontsize=\\footnotesize,
+  highlightcolor=white!95!black!80!blue,
+  linenos,
+  breakanywhere=true,
+  breakautoindent=true,
+  breaklines=true,
+  tabsize=4,
+  xleftmargin=3.5em,
+  autogobble=true,
+  obeytabs=true,
+  python3=true,
+  % texcomments=true,
+  framesep=2mm,
+  breakbefore=\\\\\.+,
+  breakafter=\\,
+  style=autumn,
+  breaksymbol=\\color{page!60!text}\\tiny\\ensuremath{\\hookrightarrow},
+  breakanywheresymbolpre=\\,\\footnotesize\\ensuremath{_{\\color{page!60!text}\\rfloor}},
+  breakbeforesymbolpre=\\,\\footnotesize\\ensuremath{_{\\color{page!60!text}\\rfloor}},
+  breakaftersymbolpre=\\,\\footnotesize\\ensuremath{_{\\color{page!60!text}\\rfloor}},
+}
+
+\\BeforeBeginEnvironment{minted}{
+  \\begin{tcolorbox}[
+    enhanced,
+    overlay={\\fill[white!90!black] (frame.south west) rectangle ([xshift=2.8em]frame.north west);},
+    colback=white!95!black,
+    colframe=white!95!black, % make frame colour same as background
+    breakable,% Allow white breaks
+    arc=0pt,outer arc=0pt,sharp corners, % sharp corners
+    boxsep=0pt,left=0pt,right=0pt,top=0pt,bottom=0pt % no margin/paddding
+  ]
+}
+\\AfterEndEnvironment{minted}{\\end{tcolorbox}}
+\\renewcommand\\theFancyVerbLine{\\color{black!60!white}\\arabic{FancyVerbLine}} % minted line numbering"))))
 #+END_SRC
 ***** Chameleon --- aka. match theme
 Once the idea of having the look of the LaTeX document produced match the
