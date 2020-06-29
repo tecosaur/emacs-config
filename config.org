@@ -3766,6 +3766,9 @@ This action is reversed by `org-music-time-to-seconds'."
         (t (user-error! "The specified music player: %s is not supported" org-music-player)))
       (user-error! "Could not find the track '%s' by '%s'" title artist)))
 
+  (add-transient-hook! #'org-music-play-track
+    (require 'dbus))
+
   (defun org-music-mpris-play (file &optional start-time end-time)
     (let ((uri (url-encode-url (rng-file-name-uri file))))
       (org-music-mpris-call-method "OpenUri" uri)
