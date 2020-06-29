@@ -1642,7 +1642,7 @@ information is accessible without the database). =Mu4e= also seems to have a lar
 user base, which tends to correlate with better support and attention.
 
 As I installed mu4e from source, I need to add the =/usr/local/= loadpath so Mu4e has a chance of loading
-#+BEGIN_SRC emacs-lisp
+#+BEGIN_SRC emacs-lisp :tangle (if (file-directory-p "/usr/local/share/emacs/site-lisp/mu4e") "yes" "no")
 (add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu4e")
 #+END_SRC
 
