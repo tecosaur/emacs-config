@@ -661,6 +661,22 @@ To actually get notifications, we can use =mu4e-alert=.
 (package! evil-tex :recipe (:host github :repo "itai33/evil-tex")
                             :pin "9365aa33a0e73d8015cd93f039d2ba91dbe52cad")
 #+END_SRC
+For mathematical convenience, WIP
+#+BEGIN_SRC emacs-lisp
+(package! auto-latex-snippets
+  :recipe (:local-repo "~/Desktop/TEC/Programming/GitHub/Auto-LaTeX-Snippets"
+           :no-byte-compile t))
+#+END_SRC
+And some basic config
+#+BEGIN_SRC emacs-lisp :tangle yes
+(use-package! auto-latex-snippets
+  :hook (LaTeX-mode . auto-latex-snippets-mode)
+  :config
+  (defun als-tex-fold-maybe ()
+    (unless (equal "/" als-transient-snippet-key)
+      (+latex-fold-last-macro-a)))
+  (add-hook 'als-post-snippet-expand-hook #'als-tex-fold-maybe))
+#+END_SRC
 *** Org Mode
 **** Improve agenda/capture
 The agenda is nice, but a souped up version is nicer.
@@ -5390,32 +5406,6 @@ but more convenient, like =;=.
    '( ;; my own stuff
      (?B    "\\mathbb"        nil          t    nil  nil)
      (?a    "\\abs"           nil          t    nil  nil))))
-#+END_SRC
-
-In a smilar vein to this, really whenever I have a number after a symbol (letter
-or command) I want it as a subscript. *@yoavm448* did some lovely legwork to
-provide this:
-#+BEGIN_SRC emacs-lisp
-(defun prvt/auto-number-subscript ()
-  (interactive)
-  (if (and (or (and (>= (char-before) ?a) (<= (char-before) ?z))
-               (and (>= (char-before) ?A) (<= (char-before) ?Z)))
-           (cl-digit-char-p (string-to-char (this-command-keys)))
-           (texmathp))
-      (insert "_" (this-command-keys))
-    (insert (this-command-keys))))
-
-(map!
- :after tex :map LaTeX-mode-map
- :i "1" #'prvt/auto-number-subscript
- :i "2" #'prvt/auto-number-subscript
- :i "3" #'prvt/auto-number-subscript
- :i "4" #'prvt/auto-number-subscript
- :i "5" #'prvt/auto-number-subscript
- :i "6" #'prvt/auto-number-subscript
- :i "7" #'prvt/auto-number-subscript
- :i "8" #'prvt/auto-number-subscript
- :i "9" #'prvt/auto-number-subscript)
 #+END_SRC
 *** SyncTeX
 #+BEGIN_SRC emacs-lisp
