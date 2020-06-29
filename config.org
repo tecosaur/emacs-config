@@ -5221,7 +5221,7 @@ Then let's bind the content to a function, and define some nice helpers.
         (?9  ")")
         (?\[ "]")
         (?\{ "\\}")
-        (?<  ")")
+        (?<  ">")
         (?\) ")")
         (?0  ")")
         (?\] "]")
