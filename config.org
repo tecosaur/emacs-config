@@ -3872,7 +3872,8 @@ Then we integrate this nicely with org-mode
                            :export #'org-music-export-text)
 
   (org-link-set-parameters "Music" ;; like music, but visually fancier
-                           :image-data-fun #'org-music-image-fn
+                           ;; FIXME this should work as far as I can tell
+                           ;; :image-data-fun #'org-music-image-fn
                            :follow #'org-music-open-fn
                            :export #'org-music-fancy-export)
 
