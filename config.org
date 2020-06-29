@@ -1032,7 +1032,7 @@ mail. Unfortunately this means /yet another/ config file :(
 We install with
 #+BEGIN_SRC shell :eval no
 go get -u gitlab.com/shackra/goimapnotify
-ln -s ~/go/bin/goimapnotify ~/.local/bin/
+ln -s ~/.local/share/go/bin/goimapnotify ~/.local/bin/
 #+END_SRC
 
 Here's the general plan:
@@ -1476,7 +1476,7 @@ ConditionPathExists=%h/.imapnotify/%I/notify.conf
 After=network.target
 
 [Service]
-ExecStart=%h/go/bin/goimapnotify -conf %h/.imapnotify/%I/notify.conf
+ExecStart=%h/.local/bin/goimapnotify -conf %h/.imapnotify/%I/notify.conf
 Restart=always
 RestartSec=30
 
