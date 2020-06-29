@@ -959,6 +959,7 @@ So I'm going to make use of ~flyspell-lazy~
 (add-hook 'Info-mode-hook #'mixed-pitch-mode)
 #+END_SRC
 ** Ispell
+*** Downloading dictionaries
 Let's get a nice big dictionary from [[http://app.aspell.net/create][SCOWL Custom List/Dictionary Creator]] with
 the following configuration
  - size :: 80 (huge)
@@ -966,8 +967,28 @@ the following configuration
  - spelling variants level :: 0
  - diacritics :: keep
  - extra lists :: hacker, roman numerals
+
+**** Hunspell
+#+BEGIN_SRC shell
+cd /tmp
+curl -o "hunspell-en-custom.zip" 'http://app.aspell.net/create?max_size=80&spelling=GBs&spelling=AU&max_variant=0&diacritic=keep&special=hacker&special=roman-numerals&encoding=utf-8&format=inline&download=hunspell'
+unzip "hunspell-en-custom.zip"
+
+sudo chown root:root en-custom.*
+sudo mv en-custom.{aff,dic} /usr/share/myspell/
+#+END_SRC
+**** Aspell
+#+BEGIN_SRC shell
+cd /tmp
+curl -o "aspell6-en-custom.tar.bz2" 'http://app.aspell.net/create?max_size=80&spelling=GBs&spelling=AU&max_variant=0&diacritic=keep&special=hacker&special=roman-numerals&encoding=utf-8&format=inline&download=aspell'
+tar -xjf "aspell6-en-custom.tar.bz2"
+
+cd aspell6-en-custom
+./configure && make && sudo make install
+#+END_SRC
+*** Configuration
 #+BEGIN_SRC emacs-lisp
-(setq ispell-dictionary "en_GBs_au_SCOWL_80_0_k_hr")
+(setq ispell-dictionary "en-custom")
 #+END_SRC
 Oh, and by the way, if ~company-ispell-dictionary~ is ~nil~, then
 ~ispell-complete-word-dict~ is used instead, which once again when ~nil~ is
@@ -977,7 +998,7 @@ the above.
 It seems reasonable to want to keep an eye on my personal dict, let's have it
 nearby (also means that if I change the 'main' dictionary I keep my addition).
 #+BEGIN_SRC emacs-lisp
-(setq ispell-personal-dictionary (expand-file-name ".hunspell_personal" doom-private-dir))
+(setq ispell-personal-dictionary (expand-file-name ".ispell_personal" doom-private-dir))
 #+END_SRC
 ** Ivy
 While in an ivy mini-buffer =C-o= shows a list of all possible actions one may take.
