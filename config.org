@@ -422,7 +422,7 @@ quite a nice resizing effect.
 #+END_SRC
 *** Systemd daemon
 For running a systemd service for a Emacs server I have the following
-#+BEGIN_SRC systemd :tangle ~/.config/systemd/user/emacs.service
+#+BEGIN_SRC systemd :tangle ~/.config/systemd/user/emacs.service :mkdirp yes
 [Unit]
 Description=Emacs server daemon
 Documentation=info:emacs man:emacs(1) https://gnu.org/software/emacs/
@@ -1827,7 +1827,7 @@ prompt otherwise also seems sensible.
 
 We can register Emacs as a potential email client with the following desktop
 file, thanks to Etienne Deparis's [[https://etienne.depar.is/emacs.d/mu4e.html][Mu4e customization]].
-#+BEGIN_SRC conf :tangle ~/.local/share/applications/emacsmail.desktop
+#+BEGIN_SRC conf :tangle ~/.local/share/applications/emacsmail.desktop :mkdirp yes
 [Desktop Entry]
 Name=Compose message in Emacs
 GenericName=Compose a new message with Mu4e in Emacs
@@ -3195,7 +3195,7 @@ could be worth seeing if I could hook this up to a [[https://nextcloud.com/][Nex
 ***** Registering roam protocol
 The recommended method of registering a protocol is by registering a desktop
 application, which seems reasonable.
-#+BEGIN_SRC conf :tangle ~/.local/share/applications/org-protocol.desktop
+#+BEGIN_SRC conf :tangle ~/.local/share/applications/org-protocol.desktop :mkdirp yes
 [Desktop Entry]
 Name=Org-Protocol
 Exec=emacsclient %u
