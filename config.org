@@ -4808,6 +4808,16 @@ Now for a few more adjustments.
 \\newcommand{\\checkboxUnchecked}{$\\square$}
 \\newcommand{\\checkboxTransitive}{\\rlap{\\raisebox{0.0ex}{\\hspace{0.35ex}\\Large\\textbf -}}$\\square$}
 \\newcommand{\\checkboxChecked}{\\rlap{\\raisebox{0.2ex}{\\hspace{0.35ex}\\scriptsize \\ding{56}}}$\\square$}
+
+\\newenvironment{warning}
+    {\\begin{center}
+    \\begin{tabular}{rp{0.9\\textwidth}}
+    \\ding{82} & \\textbf{Warning} \\\\ &
+    }
+    {
+    \\end{tabular}
+    \\end{center}
+    }
 "
                ("\\section{%s}" . "\\section*{%s}")
                ("\\subsection{%s}" . "\\subsection*{%s}")
