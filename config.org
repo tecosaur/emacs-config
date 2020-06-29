@@ -4605,7 +4605,7 @@ match out theme (they don't by default), so I scraped some code from ~emacs.stac
               (doom-color 'violet)
               (doom-color 'cyan)
               (doom-color 'dark-cyan))
-      (if org-msg-currently-exporting ""
+      (if (bound-and-true-p org-msg-currently-exporting) ""
       "
 <<orgHtmlStyle>>
 ")
