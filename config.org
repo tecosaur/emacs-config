@@ -1229,7 +1229,7 @@ def finaliseAccount():
     except subprocess.TimeoutExpired as e:
         print(
             f"\033[1;31mError:\033[0;31m failed to fetch mailboxes (skipping): "
-            + f"`{' '.join(e.cmd)}' timed out after {e.timeout} seconds\033[0;37m"
+            + f"`{' '.join(e.cmd)}' timed out after {e.timeout.2f} seconds\033[0;37m"
         )
         return
 
@@ -1372,7 +1372,7 @@ def setSystemdServiceState(state, service):
             ["systemctl", "--user", state, service, "--now"],
             check=True,
             stderr=subprocess.DEVNULL,
-            timeout=2.0,
+            timeout=5.0,
         )
         return True
     except subprocess.CalledProcessError as e:
@@ -1381,7 +1381,7 @@ def setSystemdServiceState(state, service):
             + f"returned code {e.returncode}\033[0;37m"
         )
     except subprocess.TimeoutExpired as e:
-        print(f" \033[1;31mtimed out after {e.timeout} seconds\033[0;37m")
+        print(f" \033[1;31mtimed out after {e.timeout.2f} seconds\033[0;37m")
         return False
 
 
@@ -2709,6 +2709,7 @@ I also like the ~:comments~ header-argument, so let's make that a default.
                                       (:tangle . "no")
                                       (:comments . "link")))
 #+END_SRC
+
 By default, ~visual-line-mode~ is turned =on=, and ~auto-fill-mode~ =off= by a hook.
 However this messes with tables in Org-mode, and other plaintext files (e.g.
 markdown, \LaTeX) so I'll turn it off for this, and manually enable it for more
