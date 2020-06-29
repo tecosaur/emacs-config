@@ -232,7 +232,9 @@ just need to resort to =SPC b o= for now.
 *** Visual Settings
 **** Font Face
 'Fira Code' is nice, and 'Overpass' makes for a nice sans companion. We just need to
-fiddle with the font sizes a tad so that they visually match.
+fiddle with the font sizes a tad so that they visually match. Just for fun I'm
+trying out JetBrains Mono though. So far I have mixed feelings on it, some
+aspects are nice, but on others I prefer Fira.
 #+BEGIN_SRC emacs-lisp
 (setq doom-font (font-spec :family "JetBrains Mono" :size 24)
       doom-big-font (font-spec :family "JetBrains Mono" :size 36)
