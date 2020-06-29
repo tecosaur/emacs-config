@@ -739,6 +739,29 @@ I have my own [[file:lisp/org-plot.el][modified version]] of ~org-plot~, so let'
 #+BEGIN_SRC emacs-lisp
 (package! org-plot :recipe (:local-repo "lisp" :no-byte-compile t))
 #+END_SRC
+
+Org-roam is nice by itself, but there are so /extra/ nice packages which integrate
+with it.
+#+BEGIN_SRC emacs-lisp
+(package! org-roam-server :pin "3ecc8d599dbc2b67ba6b30277f0b65f7f3578fa6")
+#+END_SRC
+#+BEGIN_SRC emacs-lisp :tangle yes
+(use-package org-roam-server
+  :after org-roam
+  :config
+  (setq org-roam-server-host "127.0.0.1"
+        org-roam-server-port 8078
+        org-roam-server-export-inline-images t
+        org-roam-server-authenticate nil
+        org-roam-server-label-truncate t
+        org-roam-server-label-truncate-length 60
+        org-roam-server-label-wrap-length 20)
+  (defun org-roam-server-open ()
+    "Ensure the server is active, then open the roam graph."
+    (interactive)
+    (org-roam-server-mode 1)
+    (browse-url-xdg-open (format "http://localhost:%d" org-roam-server-port))))
+#+END_SRC
 *** Systemd
 For editing systemd unit files
 #+BEGIN_SRC emacs-lisp
