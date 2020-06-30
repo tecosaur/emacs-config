@@ -4410,8 +4410,7 @@ the final documents.
 There is a fantastic exporter config ([[https://github.com/fniessen/org-html-themes][fniessen/org-html-themes]]) which we can
 setup to be used with all our org files. Since most of the syntax highlighting
 colours from our [[*Theme and modeline][Theme]] gets used, we benefit from customising the code block style.
-#+NAME: orgHtmlStyle
-#+BEGIN_SRC web :exports none :tangle no
+#+BEGIN_SRC html :tangle misc/org-export-header.html
 <link rel='stylesheet' type='text/css' href='https://fniessen.github.io/org-html-themes/styles/readtheorg/css/htmlize.css'/>
 <link rel='stylesheet' type='text/css' href='https://fniessen.github.io/org-html-themes/styles/readtheorg/css/readtheorg.css'/>
 
@@ -4419,234 +4418,237 @@ colours from our [[*Theme and modeline][Theme]] gets used, we benefit from custo
 <script src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js'></script>
 <script type='text/javascript' src='https://fniessen.github.io/org-html-themes/styles/lib/js/jquery.stickytableheaders.min.js'></script>
 <script type='text/javascript' src='https://fniessen.github.io/org-html-themes/styles/readtheorg/js/readtheorg.js'></script>
-
-<style>
- pre.src {
-     background-color: var(--theme-bg);
-     color: var(--theme-fg);
-     scrollbar-color:#bbb6#9992;
-     scrollbar-width: thin;
-     margin: 0;
-     border: none;
- }
- div.org-src-container {
-     border-radius: 12px;
-     overflow: hidden;
-     margin-bottom: 24px;
-     margin-top: 1px;
-     border: 1px solid#e1e4e5;
- }
- pre.src::before {
-     background-color:#6666;
-     top: 8px;
-     border: none;
-     border-radius: 5px;
-     line-height: 1;
-     border: 2px solid var(--theme-bg);
-     opacity: 0;
-     transition: opacity 200ms;
- }
- pre.src:hover::before { opacity: 1; }
- pre.src:active::before { opacity: 0; }
-
- pre.example {
-     border-radius: 12px;
-     background: var(--theme-bg-alt);
-     color: var(--theme-fg);
- }
-
- code {
-     border-radius: 5px;
-     background:#e8e8e8;
-     font-size: 80%;
- }
-
- kbd {
-     display: inline-block;
-     padding: 3px 5px;
-     font: 80% SFMono-Regular,Consolas,Liberation Mono,Menlo,monospace;
-     line-height: normal;
-     line-height: 10px;
-     color:#444d56;
-     vertical-align: middle;
-     background-color:#fafbfc;
-     border: 1px solid#d1d5da;
-     border-radius: 3px;
-     box-shadow: inset 0 -1px 0#d1d5da;
- }
-
- table {
-     max-width: 100%;
-     overflow-x: auto;
-     display: block;
-     border-top: none;
- }
-
- a:not([aria-hidden='true']) {
-     text-decoration: none;
-     background-image: linear-gradient(#d8dce9, #d8dce9);
-     background-position: 0% 100%;
-     background-repeat: no-repeat;
-     background-size: 0% 2px;
-     transition: background-size .3s;
- }
- \#table-of-contents a {
-     background-image: none;
- }
- a:hover:not([aria-hidden='true']),
- a:focus:not([aria-hidden='true']) {
-     background-size: 100% 2px;
- }
- a[href^='#'] { font-variant-numeric: oldstyle-nums; }
- a[href^='#']:visited { color:#3091d1; }
-
- li .checkbox {
-     display: inline-block;
-     width: 0.9em;
-     height: 0.9em;
-     border-radius: 3px;
-     margin: 3px;
-     top: 4px;
-     position: relative;
- }
- li.on > .checkbox { background: var(--theme-green); box-shadow: 0 0 2px var(--theme-green); }
- li.trans > .checkbox { background: var(--theme-orange); box-shadow: 0 0 2px var(--theme-orange); }
- li.off > .checkbox { background: var(--theme-red); box-shadow: 0 0 2px var(--theme-red); }
- li.on > .checkbox::after {
-     content: '';
-     height: 0.45em;
-     width: 0.225em;
-     -webkit-transform-origin: left top;
-     transform-origin: left top;
-     transform: scaleX(-1) rotate(135deg);
-     border-right: 2.8px solid#fff;
-     border-top: 2.8px solid#fff;
-     opacity: 0.9;
-     left: 0.10em;
-     top: 0.45em;
-     position: absolute;
- }
- li.trans > .checkbox::after {
-     content: '';
-     font-weight: bold;
-     font-size: 1.6em;
-     position: absolute;
-     top: 0.23em;
-     left: 0.09em;
-     width: 0.35em;
-     height: 0.12em;
-     background:#fff;
-     opacity: 0.9;
-     border-radius: 0.1em;
- }
- li.off > .checkbox::after {
-     content: '✖';
-     color:#fff;
-     opacity: 0.9;
-     position: relative;
-     top: -0.40rem;
-     left: 0.17em;
-     font-size: 0.75em;
- }
-
- span.timestamp {
-     color: #003280;
-     background: #647CFF44;
-     border-radius: 3px;
-     line-height: 1.25;
- }
-
- \#content img {
-     border-radius: 3px;
- }
-
- \#table-of-contents { overflow-y: auto; }
- blockquote p { margin: 8px 0px 16px 0px; }
- \#postamble .date { color: var(--theme-green); }
-
- ::-webkit-scrollbar { width: 10px; height: 8px; }
- ::-webkit-scrollbar-track { background:#9992; }
- ::-webkit-scrollbar-thumb { background:#ccc; border-radius: 10px; }
- ::-webkit-scrollbar-thumb:hover { background:#888; }
-
- /* sometimes this all-important space seems to go missing
- /so let's protect against that. If it's exteranious it's
- /just gobbled anyway. */
- span.section-number-1:after,
- span.section-number-2:after,
- span.section-number-3:after,
- span.section-number-4:after,
- span.section-number-5:after,
- span.section-number-6:after {
-     content: ' '
- }
-
- /* so the bounding box coveres the <a> */
- h1,h2,h3,h4,h5,h6 {
-     padding-left: 30px;
-     margin-left: -30px;
- }
-
- h1 > a[aria-hidden='true'],
- h2 > a[aria-hidden='true'],
- h3 > a[aria-hidden='true'],
- h4 > a[aria-hidden='true'],
- h5 > a[aria-hidden='true'],
- h6 > a[aria-hidden='true'] {
-     color: #6a737d;
-     float: left;
-     padding-right: 4px;
-     margin-left: -25px;
-     position: relative;
-     top: 7px;
-     line-height: 1;
-     font-size: 70%;
-     visibility: hidden;
- }
-
- h1:hover > a[aria-hidden='true'],
- h2:hover > a[aria-hidden='true'],
- h3:hover > a[aria-hidden='true'],
- h4:hover > a[aria-hidden='true'],
- h5:hover > a[aria-hidden='true'],
- h6:hover > a[aria-hidden='true'] {
-     visibility: visible;
- }
-
- .music-track {
-     display: flex;
-     justify-content: center;
-     align-items: center;
-     flex-wrap: wrap;
- }
-
- .music-track > img {
-     height: 6rem;
- }
-
- .music-track > span {
-     margin-left: 2rem;
-     min-width: 25%;
- }
-</style>
 #+END_SRC
-#+NAME: orgHtmlScript
+
+#+BEGIN_SRC css :tangle misc/org-export-style.css
+pre.src {
+    background-color: var(--theme-bg);
+    color: var(--theme-fg);
+    scrollbar-color:#bbb6#9992;
+    scrollbar-width: thin;
+    margin: 0;
+    border: none;
+}
+div.org-src-container {
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 24px;
+    margin-top: 1px;
+    border: 1px solid#e1e4e5;
+}
+pre.src::before {
+    background-color:#6666;
+    top: 8px;
+    border: none;
+    border-radius: 5px;
+    line-height: 1;
+    border: 2px solid var(--theme-bg);
+    opacity: 0;
+    transition: opacity 200ms;
+}
+pre.src:hover::before { opacity: 1; }
+pre.src:active::before { opacity: 0; }
+
+pre.example {
+    border-radius: 12px;
+    background: var(--theme-bg-alt);
+    color: var(--theme-fg);
+}
+
+code {
+    border-radius: 5px;
+    background:#e8e8e8;
+    font-size: 80%;
+}
+
+kbd {
+    display: inline-block;
+    padding: 3px 5px;
+    font: 80% SFMono-Regular,Consolas,Liberation Mono,Menlo,monospace;
+    line-height: normal;
+    line-height: 10px;
+    color:#444d56;
+    vertical-align: middle;
+    background-color:#fafbfc;
+    border: 1px solid#d1d5da;
+    border-radius: 3px;
+    box-shadow: inset 0 -1px 0#d1d5da;
+}
+
+table {
+    max-width: 100%;
+    overflow-x: auto;
+    display: block;
+    border-top: none;
+}
+
+a:not([aria-hidden='true']) {
+    text-decoration: none;
+    background-image: linear-gradient(#d8dce9, #d8dce9);
+    background-position: 0% 100%;
+    background-repeat: no-repeat;
+    background-size: 0% 2px;
+    transition: background-size .3s;
+}
+\#table-of-contents a {
+    background-image: none;
+}
+a:hover:not([aria-hidden='true']),
+a:focus:not([aria-hidden='true']) {
+    background-size: 100% 2px;
+}
+a[href^='#'] { font-variant-numeric: oldstyle-nums; }
+a[href^='#']:visited { color:#3091d1; }
+
+li .checkbox {
+    display: inline-block;
+    width: 0.9em;
+    height: 0.9em;
+    border-radius: 3px;
+    margin: 3px;
+    top: 4px;
+    position: relative;
+}
+li.on > .checkbox { background: var(--theme-green); box-shadow: 0 0 2px var(--theme-green); }
+li.trans > .checkbox { background: var(--theme-orange); box-shadow: 0 0 2px var(--theme-orange); }
+li.off > .checkbox { background: var(--theme-red); box-shadow: 0 0 2px var(--theme-red); }
+li.on > .checkbox::after {
+    content: '';
+    height: 0.45em;
+    width: 0.225em;
+    -webkit-transform-origin: left top;
+    transform-origin: left top;
+    transform: scaleX(-1) rotate(135deg);
+    border-right: 2.8px solid#fff;
+    border-top: 2.8px solid#fff;
+    opacity: 0.9;
+    left: 0.10em;
+    top: 0.45em;
+    position: absolute;
+}
+li.trans > .checkbox::after {
+    content: '';
+    font-weight: bold;
+    font-size: 1.6em;
+    position: absolute;
+    top: 0.23em;
+    left: 0.09em;
+    width: 0.35em;
+    height: 0.12em;
+    background:#fff;
+    opacity: 0.9;
+    border-radius: 0.1em;
+}
+li.off > .checkbox::after {
+    content: '✖';
+    color:#fff;
+    opacity: 0.9;
+    position: relative;
+    top: -0.40rem;
+    left: 0.17em;
+    font-size: 0.75em;
+}
+
+span.timestamp {
+    color: #003280;
+    background: #647CFF44;
+    border-radius: 3px;
+    line-height: 1.25;
+}
+
+\#content img {
+    border-radius: 3px;
+}
+
+\#table-of-contents { overflow-y: auto; }
+blockquote p { margin: 8px 0px 16px 0px; }
+\#postamble .date { color: var(--theme-green); }
+
+::-webkit-scrollbar { width: 10px; height: 8px; }
+::-webkit-scrollbar-track { background:#9992; }
+::-webkit-scrollbar-thumb { background:#ccc; border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background:#888; }
+
+/* sometimes this all-important space seems to go missing
+/so let's protect against that. If it's exteranious it's
+/just gobbled anyway. */
+span.section-number-1:after,
+span.section-number-2:after,
+span.section-number-3:after,
+span.section-number-4:after,
+span.section-number-5:after,
+span.section-number-6:after {
+    content: ' '
+}
+
+/* so the bounding box coveres the <a> */
+h1,h2,h3,h4,h5,h6 {
+    padding-left: 30px;
+    margin-left: -30px;
+}
+
+h1 > a[aria-hidden='true'],
+h2 > a[aria-hidden='true'],
+h3 > a[aria-hidden='true'],
+h4 > a[aria-hidden='true'],
+h5 > a[aria-hidden='true'],
+h6 > a[aria-hidden='true'] {
+    color: #6a737d;
+    float: left;
+    padding-right: 4px;
+    margin-left: -25px;
+    position: relative;
+    top: 7px;
+    line-height: 1;
+    font-size: 70%;
+    visibility: hidden;
+}
+
+h1:hover > a[aria-hidden='true'],
+h2:hover > a[aria-hidden='true'],
+h3:hover > a[aria-hidden='true'],
+h4:hover > a[aria-hidden='true'],
+h5:hover > a[aria-hidden='true'],
+h6:hover > a[aria-hidden='true'] {
+    visibility: visible;
+}
+
+.music-track {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.music-track > img {
+    height: 6rem;
+}
+
+.music-track > span {
+    margin-left: 2rem;
+    min-width: 25%;
+}
+#+END_SRC
+
 We also want to make the background and foreground colours of the ~<pre>~ blocks
 match out theme (they don't by default), so I scraped some code from ~emacs.stackexchange~.
 #+BEGIN_SRC emacs-lisp :noweb yes
 (after! org
-(defun my-org-inline-css-hook (exporter)
-  "Insert custom inline css to automatically set the
+  (setq org-custom-css (f-read-text (expand-file-name "misc/org-export-style.css")))
+  (setq org-custom-html-header (f-read-text (expand-file-name "misc/org-export-header.html")))
+
+  (defun my-org-inline-css-hook (exporter)
+    "Insert custom inline css to automatically set the
    background of code to whatever theme I'm using's background"
-  (when (eq exporter 'html)
-    (setq
-     org-html-head-extra
-     (concat
-      (if (s-contains-p "<!––tec/custom-head-start-->" org-html-head-extra)
-          (s-replace-regexp "<!––tec\\/custom-head-start-->[^🙜]*<!––tec\\/custom-head-end-->" "" org-html-head-extra)
-        org-html-head-extra)
-      "<!––tec/custom-head-start-->"
-      (format "<style type=\"text/css\">
+    (when (eq exporter 'html)
+      (setq
+       org-html-head-extra
+       (concat
+        (if (s-contains-p "<!––tec/custom-head-start-->" org-html-head-extra)
+            (s-replace-regexp "<!––tec\\/custom-head-start-->[^🙜]*<!––tec\\/custom-head-end-->" "" org-html-head-extra)
+          org-html-head-extra)
+        "<!––tec/custom-head-start-->"
+        (format "<style type=\"text/css\">
    :root {
       --theme-bg: %s;
       --theme-bg-alt: %s;
@@ -4675,37 +4677,35 @@ match out theme (they don't by default), so I scraped some code from ~emacs.stac
       --theme-dark-cyan: %s;
    }
 </style>"
-              (doom-color 'bg)
-              (doom-color 'bg-alt)
-              (doom-color 'base0)
-              (doom-color 'base1)
-              (doom-color 'base2)
-              (doom-color 'base3)
-              (doom-color 'base4)
-              (doom-color 'base5)
-              (doom-color 'base6)
-              (doom-color 'base7)
-              (doom-color 'base8)
-              (doom-color 'fg)
-              (doom-color 'fg-alt)
-              (doom-color 'grey)
-              (doom-color 'red)
-              (doom-color 'orange)
-              (doom-color 'green)
-              (doom-color 'teal)
-              (doom-color 'yellow)
-              (doom-color 'blue)
-              (doom-color 'dark-blue)
-              (doom-color 'magenta)
-              (doom-color 'violet)
-              (doom-color 'cyan)
-              (doom-color 'dark-cyan))
-      (if (bound-and-true-p org-msg-currently-exporting) ""
-      "
-<<orgHtmlStyle>>
-")
-      "<!––tec/custom-head-end-->"
-      ))))
+                (doom-color 'bg)
+                (doom-color 'bg-alt)
+                (doom-color 'base0)
+                (doom-color 'base1)
+                (doom-color 'base2)
+                (doom-color 'base3)
+                (doom-color 'base4)
+                (doom-color 'base5)
+                (doom-color 'base6)
+                (doom-color 'base7)
+                (doom-color 'base8)
+                (doom-color 'fg)
+                (doom-color 'fg-alt)
+                (doom-color 'grey)
+                (doom-color 'red)
+                (doom-color 'orange)
+                (doom-color 'green)
+                (doom-color 'teal)
+                (doom-color 'yellow)
+                (doom-color 'blue)
+                (doom-color 'dark-blue)
+                (doom-color 'magenta)
+                (doom-color 'violet)
+                (doom-color 'cyan)
+                (doom-color 'dark-cyan))
+        (if (bound-and-true-p org-msg-currently-exporting) ""
+          (concat org-custom-html-header "<style>" org-custom-css "</style>"))
+        "<!––tec/custom-head-end-->"
+        ))))
 
 (add-hook 'org-export-before-processing-hook 'my-org-inline-css-hook))
 #+END_SRC
