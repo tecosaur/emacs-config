@@ -4634,8 +4634,8 @@ We also want to make the background and foreground colours of the ~<pre>~ blocks
 match out theme (they don't by default), so I scraped some code from ~emacs.stackexchange~.
 #+BEGIN_SRC emacs-lisp :noweb yes
 (after! org
-  (setq org-custom-css (f-read-text (expand-file-name "misc/org-export-style.css")))
-  (setq org-custom-html-header (f-read-text (expand-file-name "misc/org-export-header.html")))
+  (setq org-custom-css (f-read-text (expand-file-name "misc/org-export-style.css" doom-private-dir)))
+  (setq org-custom-html-header (f-read-text (expand-file-name "misc/org-export-header.html" doom-private-dir)))
 
   (defun my-org-inline-css-hook (exporter)
     "Insert custom inline css to automatically set the
