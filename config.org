@@ -1814,6 +1814,19 @@ few more visual tweaks, we'll tweak the headers a bit.
                           'face 'mu4e-footer-face)))))))
 #+END_SRC
 
+While considering width and the mu4e header view --- it's hard to see enough with
+a with less than 120 charachters, so let's add a hook to mu4e's header mode.
+#+BEGIN_SRC emacs-lisp
+(after! mu4e
+  (defvar mu4e-min-header-frame-width 120
+    "Minimum reasonable with for the header view.")
+  (defun mu4e-widen-frame-maybe ()
+    "Expand the frame with if it's less than `mu4e-min-header-frame-width'."
+    (when (< (frame-width) mu4e-min-header-frame-width)
+      (set-frame-width (selected-frame) mu4e-min-header-frame-width)))
+  (add-hook 'mu4e-headers-mode-hook #'mu4e-widen-frame-maybe))
+#+END_SRC
+
 Due to evil, none of the marking commands work when making a visual selection in
 the headers view of mu4e. Without overriding any evil commands we may actually
 want to use in and evil selection, this can be easily fixed.
