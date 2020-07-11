@@ -4879,8 +4879,10 @@ be unaffected lest's use ~;~ as a prefix to prevent the transformation --- i.e.
 
   (add-to-list 'org-export-filter-plain-text-functions
                'tec/org-export-latex-filter-acronym)
-  (add-to-list 'org-export-filter-headline-functions
-               'tec/org-export-latex-filter-acronym))
+  ;; FIXME I want to process headings, but this causes issues ATM
+  ;; (add-to-list 'org-export-filter-headline-functions
+  ;;              'tec/org-export-latex-filter-acronym)
+  )
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
