@@ -96,7 +96,7 @@ def finaliseAccount():
     except subprocess.TimeoutExpired as e:
         print(
             f"\033[1;31mError:\033[0;31m failed to fetch mailboxes (skipping): "
-            + f"`{' '.join(e.cmd)}' timed out after {e.timeout.2f} seconds\033[0;37m"
+            + f"`{' '.join(e.cmd)}' timed out after {e.timeout:.2f} seconds\033[0;37m"
         )
         return
 
@@ -248,7 +248,7 @@ def setSystemdServiceState(state, service):
             + f"returned code {e.returncode}\033[0;37m"
         )
     except subprocess.TimeoutExpired as e:
-        print(f" \033[1;31mtimed out after {e.timeout.2f} seconds\033[0;37m")
+        print(f" \033[1;31mtimed out after {e.timeout:.2f} seconds\033[0;37m")
         return False
 
 
