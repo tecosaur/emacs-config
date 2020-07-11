@@ -5061,8 +5061,8 @@ We also always want some particular elements in the preamble, let's call this
 the "universal preamble"
 #+NAME: org-universal-preamble
 #+BEGIN_SRC LaTeX
-\\usepackage[main,input,include]{embedall}
-\\IfFileExists{./\\jobname.org}{\\embedfile{\\jobname.org}}{}
+\\usepackage[main,include]{embedall}
+\\IfFileExists{./\\jobname.org}{\\embedfile[desc=The original file]{\\jobname.org}}{}
 #+END_SRC
 
 Instead of just loading doing the 'minted stuff' all the time, we can try to be
