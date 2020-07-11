@@ -3755,23 +3755,25 @@ Saving seconds adds up after all! (but only so much)
       (message alt)
       (+org-image-file-data-fn protocol (xkcd-download img (string-to-number link)) description)))
 
-  (defun +org-xkcd-export (path desc backend _com)
+  (defun +org-xkcd-export (num desc backend _com)
     "Convert xkcd to html/LaTeX form"
-    (let* ((xkcd-info (+xkcd-fetch-info (string-to-number path)))
+    (let* ((xkcd-info (+xkcd-fetch-info (string-to-number num)))
            (img (plist-get xkcd-info :img))
            (alt (plist-get xkcd-info :alt))
            (title (plist-get xkcd-info :title))
-           (file (xkcd-download img (string-to-number path))))
+           (file (xkcd-download img (string-to-number num))))
       (cond ((org-export-derived-backend-p backend 'html)
              (format "<img src='%s' title=\"%s\" alt='%s'>" img (subst-char-in-string ?\" ?“ alt) title))
             ((org-export-derived-backend-p backend 'latex)
              (format "\\begin{figure}[!htb]
   \\centering
-  \\includegraphics[scale=0.4]{%s}
-  \\caption*{\\label{xkcd:%s} %s}
-\\end{figure}" file path (or desc
-                             (format "\\textbf{%s} %s" title alt))))
-            (t (format "https://xkcd.com/%s" path)))))
+  \\includegraphics[scale=0.4]{%s}%s
+\\end{figure}" file (if (equal desc (format "xkcd:%s" num)) ""
+                      (format "\n  \\caption*{\\label{xkcd:%s} %s}"
+                              num
+                              (or desc
+                                  (format "\\textbf{%s} %s" title alt))))))
+            (t (format "https://xkcd.com/%s" num)))))
 
   (defun +org-xkcd-complete (&optional arg)
     "Complete xkcd using `+xkcd-stored-info'"
