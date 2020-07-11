@@ -295,6 +295,18 @@ if len(sys.argv) > 1:
     elif sys.argv[1] == "--status":
         getAccountServiceStates(oldAccounts)
         exit()
+    elif sys.argv[1] == "--help":
+        print("""\033[1;37mMbsync to IMAP Notify config generator.\033[0;37m
+
+Usage: mbsync-imapnotify [options]
+
+Options:
+    --enable       enable all services
+    --disable      disable all services
+    --status       fetch the status for all services
+    --help         show this help
+""", end='')
+        exit()
     else:
         print(f"\033[0;31mFlag {sys.argv[1]} not recognised\033[0;37m")
         exit()
