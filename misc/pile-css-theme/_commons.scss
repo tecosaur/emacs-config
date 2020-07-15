@@ -1,0 +1,207 @@
+// Common mixins and variables
+@charset "UTF-8";
+
+// Shades
+$c1: #000;
+$c2: #222;
+$c3: #444;
+$c4: #7b7b7b;
+$c5: #c8c8c8;
+$c6: #efefef;
+$c7: #fff;
+
+$accent: #002642;
+$accent-dark: #00151c;
+
+$code-foreground: #2c3e50;
+$code-background: $c6;
+
+$back-white: $c7;
+$back-light: $c6;
+$back-medium: $c5;
+
+$text-light: $c4;
+$text-gray: $c3;
+$text-medium: $c2;
+$text-dark: $c1;
+
+// Fonts
+@font-face {
+  font-family: 'Bebas Neue Bold';
+  src: url("../fonts/BebasNeue Bold.otf");
+}
+@font-face {
+  font-family: 'et-book';
+  src: url('../fonts/et-book/et-book-roman-line-figures/et-book-roman-line-figures.eot');
+  src: url('../fonts/et-book/et-book-roman-line-figures/et-book-roman-line-figures.eot?#iefix') format('embedded-opentype'), url('../fonts/et-book/et-book-roman-line-figures/et-book-roman-line-figures.woff') format('woff'), url('../fonts/et-book/et-book-roman-line-figures/et-book-roman-line-figures.ttf') format('truetype'), url('../fonts/et-book/et-book-roman-line-figures/et-book-roman-line-figures.svg#etbookromanosf') format('svg');
+  font-weight: normal;
+  font-style: normal
+}
+
+@font-face {
+  font-family: 'et-book';
+  src: url('../fonts/et-book/et-book-display-italic-old-style-figures/et-book-display-italic-old-style-figures.eot');
+  src: url('../fonts/et-book/et-book-display-italic-old-style-figures/et-book-display-italic-old-style-figures.eot?#iefix') format('embedded-opentype'), url('../fonts/et-book/et-book-display-italic-old-style-figures/et-book-display-italic-old-style-figures.woff') format('woff'), url('../fonts/et-book/et-book-display-italic-old-style-figures/et-book-display-italic-old-style-figures.ttf') format('truetype'), url('../fonts/et-book/et-book-display-italic-old-style-figures/et-book-display-italic-old-style-figures.svg#etbookromanosf') format('svg');
+  font-weight: normal;
+  font-style: italic
+}
+
+@font-face {
+  font-family: 'et-book';
+  src: url('../fonts/et-book/et-book-bold-line-figures/et-book-bold-line-figures.eot');
+  src: url('../fonts/et-book/et-book-bold-line-figures/et-book-bold-line-figures.eot?#iefix') format('embedded-opentype'), url('../fonts/et-book/et-book-bold-line-figures/et-book-bold-line-figures.woff') format('woff'), url('../fonts/et-book/et-book-bold-line-figures/et-book-bold-line-figures.ttf') format('truetype'), url('../fonts/et-book/et-book-bold-line-figures/et-book-bold-line-figures.svg#etbookromanosf') format('svg');
+  font-weight: bold;
+  font-style: normal
+}
+
+// Face variables
+$sans-font: 'Open Sans';
+$body-font: 'Merriweather';
+$title-font: 'et-book';
+$code-font: 'Fira Mono';
+
+@mixin text-underline-crop($background) {
+  text-shadow: .03em 0 $background,
+  -.03em 0 $background,
+  0 .03em $background,
+  0 -.03em $background,
+  .06em 0 $background,
+  -.06em 0 $background,
+  .09em 0 $background,
+  -.09em 0 $background,
+  .12em 0 $background,
+  -.12em 0 $background,
+  .15em 0 $background,
+  -.15em 0 $background;
+}
+
+@mixin text-background($color-bg, $color-text) {
+  background-image: linear-gradient($color-text, $color-text);
+  background-size: 1px 1px;
+  background-repeat: repeat-x;
+  background-position: 0% 95%;
+}
+
+@mixin text-selection($selection) {
+  &::selection {
+    @include text-underline-crop($selection);
+    background: $selection;
+  }
+
+  &::-moz-selection {
+    @include text-underline-crop($selection);
+    background: $selection;
+  }
+}
+
+@mixin link-underline($background, $text) {
+  @include text-underline-crop($background);
+  @include text-background($background, $text);
+  @include text-selection($back-medium);
+
+  border-radius: 1px;
+  background-color: $background;
+  color: $text;
+  text-decoration: none;
+
+  *,
+  *:after,
+  &:after,
+  *:before,
+  &:before {
+    text-shadow: none;
+  }
+
+  &:visited {
+    color: $text;
+  }
+}
+
+@mixin link-reset() {
+  background: none;
+  text-shadow: none;
+  text-decoration: none;
+}
+
+@function twice($v1) {
+  @return $v1 + $v1;
+}
+
+@mixin button($radius, $font-size, $padding) {
+  padding: $padding twice($padding);
+  border-style: solid;
+  border-width: 1px;
+  border-color: $back-light;
+  border-radius: $radius;
+  font-family: $sans-font;
+  font-variant: all-small-caps;
+  font-size: $font-size;
+  font-style: normal;
+  letter-spacing: 2px;
+  background-image: none;
+  &:hover {
+    background-color: $back-light;
+    background-image: none;
+  }
+}
+
+@mixin tag() {
+  @include button(1px, 13px, 4px);
+  line-height: 8px;
+  white-space: nowrap;
+
+  &.active {
+    text-shadow: none;
+    text-decoration: none;
+    color: $back-white;
+    background-color: $code-foreground;
+
+    &:hover {
+      background-color: $back-light;
+      background-image: none;
+      color: $text-dark;
+    }
+  }
+}
+
+@mixin light-para($font-size) {
+  font-family: $sans-font;
+  font-weight: normal;
+  font-size: $font-size;
+  line-height: 1.6;
+  color: $text-gray;
+}
+
+@mixin light-meta() {
+  font-family: $sans-font;
+  font-weight: normal;
+  font-style: normal;
+  font-size: 12px;
+  line-height: 1.9;
+  color: $text-light;
+  text-transform: uppercase;
+}
+
+@mixin left-line() {
+  border-width: 0;
+  border-left-style: solid;
+  border-left-width: 1px;
+  border-left-color: $back-medium;
+  margin: 20px 0;
+  padding: 0;
+  padding-left: 15px;
+}
+
+// Selection colors:
+*::selection {
+  background: $back-medium;
+}
+
+*::-moz-selection {
+  background: $back-medium;
+}
+
+// Loading bar
+.pace .pace-progress {
+  background-color: $accent !important;
+}

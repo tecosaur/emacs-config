@@ -1,0 +1,26 @@
+#footnotes {
+  margin-top: 70px;
+  padding-top: 30px;
+  border-width: 0;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-color: $back-light;
+  @include light-para(15px);
+
+  p, li {
+    @include light-para(15px);
+  }
+
+  h2.footnotes {
+    margin-top: 0;
+    margin-bottom: 30px;
+    font-family: $sans-font;
+    font-size: 18px;
+    letter-spacing: 5px;
+    display: none;
+  }
+
+  .footnum {
+    color: $text-dark;
+  }
+}

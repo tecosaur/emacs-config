@@ -1,0 +1,75 @@
+// Lists
+ul, ol, dl {
+  list-style: none;
+  list-style-position: outside;
+  padding: 0;
+
+  li::before, dt::before {
+    display: inline-block;
+    width: 1em;
+    @include light-para(15px);
+  }
+
+  li {
+    margin: 5px 0;
+    font-size: 14px;
+
+    p {
+      // Revert inside p
+      font-size: 15px;
+    }
+  }
+}
+
+ul {
+  li::before {
+    content: "•";
+    margin-left: -1em;
+  }
+}
+
+ol {
+  counter-reset: li;
+  li::before {
+    content: counter(li);
+    margin-left: -1.5em;
+    margin-right: 0.5em;
+    text-align: right;
+    direction: rtl;
+  }
+  li {
+    counter-increment: li;
+  }
+}
+
+ul ul, ol ol {
+  padding-left: 20px;
+}
+
+// Only go three levels deep
+ul ul ul, ol ol ol {
+  padding-left: 30px;
+}
+
+li p:first-child {
+  display: inline-block;
+  margin-bottom: 0;
+}
+
+// Definition lists
+dl {
+  dt::before {
+    content: "•";
+    margin-left: -1em;
+  }
+
+  dt {
+    font-weight: normal;
+    margin-bottom: 10px;
+  }
+
+  dd {
+    font-style: italic;
+    margin-bottom: 20px;
+  }
+}

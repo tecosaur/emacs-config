@@ -1,0 +1,43 @@
+table {
+  border-color: $text-light;
+  border-left: transparent;
+  border-right: transparent;
+  border-style: solid;
+  border-width: 1px;
+  font-size: 15px;
+  font-family: $sans-font;
+  margin: 20px;
+  padding: 20px;
+
+  thead {
+    @include light-meta();
+  }
+
+  thead tr th {
+    border-bottom: solid 1px $back-light;
+    padding: 10px;
+  }
+
+  tbody tr td {
+    border-top: 0;
+    padding: 0 10px;
+  }
+
+  thead tr th,
+  tbody tr td {
+    border-left: solid 1px $back-light;
+    border-right: solid 1px $back-light;
+  }
+
+  tr {
+    line-height: 1.9;
+  }
+
+  caption {
+    .table-number {
+      @include light-meta();
+    }
+    margin-bottom: 10px;
+    @include light-para(15px);
+  }
+}

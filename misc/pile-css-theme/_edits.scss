@@ -1,0 +1,24 @@
+.edits {
+  margin-top: 70px;
+  border-width: 0;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-color: $back-light;
+  padding-top: 30px;
+  @include light-para(15px);
+
+  p, li {
+    @include light-para(15px);
+  }
+
+  li {
+    margin-bottom: 16px;
+  }
+}
+
+.edits::before {
+  content: 'EDITS';
+  font-family: 'Open Sans';
+  font-size: 18px;
+  letter-spacing: 5px;
+}

@@ -1,0 +1,28 @@
+// Bibliography section and page styling
+
+.org-ref-bib-h1 {
+  margin-top: 70px;
+  padding-top: 30px;
+  border-width: 0;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-color: $back-light;
+  font-family: $sans-font;
+  @include light-para(20px);
+}
+
+.org-ref-bib {
+  @include light-para(15px);
+
+  li > a:nth-child(2) {
+    @include link-reset();
+    &:hover {
+      @include link-reset();
+    }
+  }
+
+  .bib-link {
+    @include light-meta();
+    @include link-reset();
+  }
+}

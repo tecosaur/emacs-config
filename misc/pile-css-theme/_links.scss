@@ -1,0 +1,83 @@
+// Link and buttons
+
+#breadcrumbs a,
+figcaption a,
+p a,
+.page-tags a,
+table a,
+#crosslinks a:not(.highlight),
+li a {
+  @include link-underline($back-white, $text-dark);
+
+  &:hover {
+    @include link-underline($back-light, $text-dark);
+  }
+}
+
+#content .page-intro p a,
+#footnotes a {
+  @include link-underline($back-white, $text-gray);
+
+  &:hover {
+    @include link-underline($back-light, $text-gray);
+  }
+}
+
+.pile-link::before {
+  background-color: $back-white;
+  content: "‹\00a0";
+}
+
+.pile-link::after {
+  background-color: $back-white;
+  content: "\00a0›";
+}
+
+#crosslinks {
+  margin-top: 20px;
+  a:not(.highlight) {
+    @include tag;
+  }
+}
+
+.btn {
+  @include button(1px, 14px, 7px);
+  cursor: pointer;
+}
+
+.btn.disabled {
+  color: $text-light;
+  &:hover {
+    cursor: default;
+  }
+}
+
+.btn.small {
+  @include button(1px, 12px, 3px);
+  padding-right: 9px;
+  padding-left: 9px;
+}
+
+.btn.highlight {
+  text-shadow: none;
+  text-decoration: none;
+  color: $text-dark;
+  background-color: yellow;
+}
+
+.btn.primary {
+  text-shadow: none;
+  text-decoration: none;
+  color: $back-white;
+  background-color: $accent;
+
+  &:hover {
+    background-color: $back-light;
+    background-image: none;
+    color: $text-dark;
+  }
+}
+
+.image-link, .image-link:hover {
+  @include link-reset();
+}

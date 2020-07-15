@@ -1,0 +1,80 @@
+// Table of contents
+
+nav#table-of-contents {
+  background-color: $code-background;
+  border-radius: 5px;
+  @include light-para(13px);
+  margin: 20px 0;
+  padding: 20px;
+  padding-left: 50px;
+  line-height: 1.6 !important;
+
+  #text-table-of-contents {
+    background-color: $code-background;
+  }
+
+  h2 {
+    @include light-meta();
+    margin-top: 10px;
+  }
+
+  li a {
+    @include link-underline($code-background, $text-gray);
+
+    &:hover {
+      @include link-underline($code-background, $text-gray);
+    }
+  }
+}
+
+@media (min-width: 1280px) {
+  nav#table-of-contents {
+    z-index: 9999;
+    position: fixed;
+    top: 200px;
+    left: 50px;
+    background-color: transparent;
+    max-width: 50vw;
+    padding: 0;
+
+    #text-table-of-contents {
+      background-color: $back-white;
+      box-shadow: 0 0 2px;
+      padding: 20px;
+      display: none;
+      max-height: 50vh;
+      overflow: auto;
+
+      ul {
+        margin: 0;
+      }
+    }
+
+    &:hover {
+      #text-table-of-contents {
+        display: block;
+      }
+      h2 {
+        display: none;
+      }
+    }
+
+    h2 {
+      transform: rotate(-90deg);
+      position: relative;
+      top: 50px;
+    }
+
+    li::before {
+      content: "";
+    }
+
+    li a {
+      @include link-underline($back-white, $text-gray);
+
+      &:hover {
+        @include link-underline($back-light, $text-gray);
+      }
+    }
+  }
+}

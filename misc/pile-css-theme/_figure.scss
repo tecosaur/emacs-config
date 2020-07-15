@@ -1,0 +1,17 @@
+figure {
+  text-align: center;
+  img {
+    max-width: 100%;
+  }
+  figcaption {
+    .figure-number {
+      @include light-meta();
+    }
+    margin-top: 10px;
+    @include light-para(15px);
+  }
+}
+
+img.zoomTarget:hover {
+  cursor: default !important;
+}

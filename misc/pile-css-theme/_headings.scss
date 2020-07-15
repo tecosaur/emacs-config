@@ -1,0 +1,55 @@
+// Headings for the post and index pages
+
+// Default face and margins
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: $title-font;
+  font-weight: normal;
+  margin-bottom: 0;
+  margin-top: 60px;
+}
+
+// Override sizes
+h1 {
+  font-size: 30px;
+}
+
+h2 {
+  font-size: 24px;
+}
+
+// Just use three levels
+h3, h4, h5, h6 {
+  font-size: 20px;
+  font-style: italic;
+}
+
+// Section numbers
+.section-number-1,
+.section-number-2,
+.section-number-3,
+.section-number-4,
+.section-number-5,
+.section-number-6 {
+  @include light-meta();
+  color: $back-medium;
+}
+
+.section-number-1 {
+  font-size: 30px;
+}
+
+.section-number-2 {
+  font-size: 24px;
+}
+
+.section-number-3,
+.section-number-4,
+.section-number-5,
+.section-number-6 {
+  font-size: 20px;
+}

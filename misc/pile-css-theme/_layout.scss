@@ -1,0 +1,160 @@
+// Basic layout
+
+html, body {
+  height: 100%;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  font-size: 16px;
+  font-family: $body-font;
+}
+
+#content, header, .page-header {
+  margin: 32px;
+  flex: 1 0 auto;
+}
+
+#content {
+  margin-top: 0;
+}
+
+.clearfix::after {
+  clear: both;
+}
+
+.clearfix::before, .clearfix::after {
+  content: " ";
+  display: table;
+}
+
+.page-header {
+  margin-top: 80px;
+  h1 {
+    font-size: 40px;
+    margin-bottom: 10px;
+    margin-top: 10px;
+    text-transform: none;
+  }
+}
+
+.page-meta {
+  @include light-meta();
+}
+
+header {
+  .site-nav {
+    @include light-meta();
+    font-weight: bold;
+    line-height: 2.0;
+    a {
+      color: $text-light;
+      text-decoration: none;
+      &:hover {
+        color: $text-gray;
+      }
+      margin-left: 10px;
+
+      &.active {
+        border-bottom: solid;
+        border-bottom-width: 2px;
+      }
+    }
+    a:first-child {
+      margin-left: 0;
+    }
+    margin-top: 22px;
+  }
+}
+
+header > div {
+  display: inherit;
+}
+
+.site-title {
+  font-size: 16px;
+
+  span {
+    display: none !important;
+  }
+
+  ul {
+    display: block !important;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+
+    img {
+      border-radius: 2px;
+      max-width: 32px;
+    }
+  }
+}
+
+.site-header nav a {
+  color: $text-light;
+  font-family: $sans-font;
+  font-size: 12px;
+  font-weight: bold;
+  text-transform: uppercase;
+
+  &:hover {
+    border: 0;
+    color: $accent;
+  }
+}
+
+@media (max-width: 1000px) {
+  header * {
+    display: inline;
+  }
+}
+
+@media (min-width: 1000px) {
+  #content, header, .page-header {
+    margin-left: 164px;
+    max-width: 720px;
+  }
+
+  header {
+    .site-title {
+      float: left;
+    }
+    .site-nav {
+      float: right;
+      margin-top: 0;
+    }
+  }
+}
+
+#content {
+  .page-intro {
+    @include light-para(15px);
+    margin-bottom: 40px;
+  }
+  p, li, dd {
+    line-height: 1.9;
+  }
+}
+
+#footer {
+  margin-top: 70px;
+  height: 10px;
+  background: $accent-dark;
+}
+
+// Archive listing
+.archive-item {
+  margin: 50px 0;
+
+  .archive-title {
+    font-size: 25px;
+    margin: 5px 0;
+    @include link-reset();
+
+    &:hover {
+      @include link-reset();
+    }
+  }
+}

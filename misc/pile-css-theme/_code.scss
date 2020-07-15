@@ -1,0 +1,85 @@
+// Code highlighting
+
+pre.src, pre.example {
+  @include left-line();
+  font-family: $code-font;
+  font-size: 14px;
+  line-height: 1.9;
+  overflow-x: auto;
+  box-shadow: none;
+}
+
+code {
+  font-family: $code-font;
+  color: $code-foreground;
+  font-size: 15px;
+  padding: 0 5px;
+}
+
+li {
+  code {
+    font-size: 14px;
+  }
+  p code {
+    font-size: 15px;
+  }
+}
+
+// Palette copied from blog
+// ------------------------
+// foreground: #655370
+// background: #ffffff
+$code-builtin: #3a81c3;
+$code-comment: #555555;
+$code-constant: #4e3163;
+$code-doc: #2aa1ae;
+$code-func: #6c3163;
+$code-keyword: #3a81c3;
+$code-regex: #655370;
+$code-string: #2d9574;
+$code-type: #ba2f59;
+$code-variable: #715ab1;
+$code-warning: #dc752f;
+
+.example,
+.src {
+  color: $code-foreground;
+
+  .org-keyword {
+    color: $code-keyword;
+  }
+
+  .org-variable-name {
+    color: $code-variable;
+  }
+
+  .org-rainbow-delimiters-depth-1,
+  .org-rainbow-delimiters-depth-2,
+  .org-rainbow-delimiters-depth-3,
+  .org-rainbow-delimiters-depth-4,
+  .org-rainbow-delimiters-depth-5,
+  .org-rainbow-delimiters-depth-6,
+  .org-rainbow-delimiters-depth-7,
+  .org-rainbow-delimiters-depth-8,
+  .org-rainbow-delimiters-depth-9 {
+    color: $code-comment;
+  }
+
+  .org-string {
+    color: $code-string;
+  }
+
+  .org-comment,
+  .org-comment-delimiter {
+    color: $code-comment;
+  }
+
+  .org-function-name {
+    color: $code-func;
+  }
+
+  .org-constant,
+  .org-highlight-numbers-number {
+    color: $code-constant;
+  }
+}
