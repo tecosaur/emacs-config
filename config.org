@@ -4669,6 +4669,19 @@ somewhat spiffy.
   (advice-add 'org-html-fixed-width     :around #'org-html-block-collapsable)
   (advice-add 'org-html-property-drawer :around #'org-html-block-collapsable))
 #+END_SRC
+***** Handle table overflow
+In order to accommodate wide tables ---particularly on mobile devices--- we want
+to set a maximum width and scroll overflow. Unfortunately, this cannot be applied
+directly to the ~table~ element, so we have to wrap it in a ~div~.
+
+#+BEGIN_SRC emacs-lisp
+(defadvice! org-html-table-wrapped (orig-fn table contents info)
+  "Wrap the usual <table> in a <div>"
+  :around #'org-html-table
+  (concat "<div class='table'>"
+          (funcall orig-fn table contents info)
+          "</div>"))
+#+END_SRC
 ***** Make verbatim different to code
 Since we have =verbatim= and ~code~, let's use =verbatim= for key strokes.
 #+BEGIN_SRC emacs-lisp

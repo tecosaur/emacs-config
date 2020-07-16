@@ -2234,6 +2234,10 @@ li.off > .checkbox::after {
   color: var(--text-light);
   font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace; }
 
+div.table {
+  max-width: 100%;
+  overflow-x: auto; }
+
 table {
   border-color: var(--text-light);
   border-left: transparent;

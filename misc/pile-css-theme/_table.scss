@@ -1,3 +1,8 @@
+div.table {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
 table {
   border-color: $text-light;
   border-left: transparent;
@@ -20,8 +25,6 @@ table {
     tr:last-of-type th {
       border-bottom: solid 1px $text-light;
     }
-   
-    
   }
   
   tr,th,td {
