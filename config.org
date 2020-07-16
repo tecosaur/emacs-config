@@ -3763,7 +3763,7 @@ Saving seconds adds up after all! (but only so much)
            (title (plist-get xkcd-info :title))
            (file (xkcd-download img (string-to-number num))))
       (cond ((org-export-derived-backend-p backend 'html)
-             (format "<img src='%s' title=\"%s\" alt='%s'>" img (subst-char-in-string ?\" ?“ alt) title))
+             (format "<img class='invertable' src='%s' title=\"%s\" alt='%s'>" img (subst-char-in-string ?\" ?“ alt) title))
             ((org-export-derived-backend-p backend 'latex)
              (format "\\begin{figure}[!htb]
   \\centering
@@ -4433,308 +4433,202 @@ the final documents.
   (ox-extras-activate '(ignore-headlines)))
 #+END_SRC
 **** Exporting to HTML
+***** Extra header content
+We want to tack on a few more bits to the start of the body. Unfortunately, there
+doesn't seem to be any nice variable or hook, so we'll just override the
+relevant function.
+
+This is done to allow me to add the date and author to the page header,
+implement a CSS-only light/dark theme toggle, and a sprinkle of [[https://ogp.me/][Open Graph]]
+metadata.
+#+BEGIN_SRC emacs-lisp
+(defadvice! org-html-template-fancier (contents info)
+  "Return complete document string after HTML conversion.
+CONTENTS is the transcoded contents string.  INFO is a plist
+holding export options. Adds a few extra things to the body
+compared to the default implementation."
+  :override #'org-html-template
+  (concat
+   (when (and (not (org-html-html5-p info)) (org-html-xhtml-p info))
+     (let* ((xml-declaration (plist-get info :html-xml-declaration))
+      (decl (or (and (stringp xml-declaration) xml-declaration)
+          (cdr (assoc (plist-get info :html-extension)
+          xml-declaration))
+          (cdr (assoc "html" xml-declaration))
+          "")))
+       (when (not (or (not decl) (string= "" decl)))
+   (format "%s\n"
+     (format decl
+       (or (and org-html-coding-system
+          (fboundp 'coding-system-get)
+          (coding-system-get org-html-coding-system 'mime-charset))
+           "iso-8859-1"))))))
+   (org-html-doctype info)
+   "\n"
+   (concat "<html"
+     (cond ((org-html-xhtml-p info)
+      (format
+       " xmlns=\"http://www.w3.org/1999/xhtml\" lang=\"%s\" xml:lang=\"%s\""
+       (plist-get info :language) (plist-get info :language)))
+     ((org-html-html5-p info)
+      (format " lang=\"%s\"" (plist-get info :language))))
+     ">\n")
+   "<head>\n"
+   (org-html--build-meta-info info)
+   (org-html--build-head info)
+   (org-html--build-mathjax-config info)
+   "</head>\n"
+   "<body>\n<input type='checkbox' id='theme-switch'><div id='page'><label id='switch-label' for='theme-switch'></label>"
+   (let ((link-up (org-trim (plist-get info :html-link-up)))
+   (link-home (org-trim (plist-get info :html-link-home))))
+     (unless (and (string= link-up "") (string= link-home ""))
+       (format (plist-get info :html-home/up-format)
+         (or link-up link-home)
+         (or link-home link-up))))
+   ;; Preamble.
+   (org-html--build-pre/postamble 'preamble info)
+   ;; Document contents.
+   (let ((div (assq 'content (plist-get info :html-divs))))
+     (format "<%s id=\"%s\">\n" (nth 1 div) (nth 2 div)))
+   ;; Document title.
+   (when (plist-get info :with-title)
+     (let ((title (and (plist-get info :with-title)
+           (plist-get info :title)))
+     (subtitle (plist-get info :subtitle))
+     (html5-fancy (org-html--html5-fancy-p info)))
+       (when title
+   (format
+    "<div class='page-header'><div class='page-meta'>%s, %s</div><h1 class=\"title\">%s%s</h1></div>\n"
+    (format-time-string "%Y-%m-%d %A %-I:%M%p")
+    (org-export-data (plist-get info :author) info)
+    (org-export-data title info)
+    (if subtitle
+        (format
+         (if html5-fancy
+       "<p class=\"subtitle\">%s</p>\n"
+     (concat "\n" (org-html-close-tag "br" nil info) "\n"
+       "<span class=\"subtitle\">%s</span>\n"))
+         (org-export-data subtitle info))
+      "")))))
+   contents
+   (format "</%s>\n" (nth 1 (assq 'content (plist-get info :html-divs))))
+   ;; Postamble.
+   (org-html--build-pre/postamble 'postamble info)
+   ;; Possibly use the Klipse library live code blocks.
+   (when (plist-get info :html-klipsify-src)
+     (concat "<script>" (plist-get info :html-klipse-selection-script)
+       "</script><script src=\""
+       org-html-klipse-js
+       "\"></script><link rel=\"stylesheet\" type=\"text/css\" href=\""
+       org-html-klipse-css "\"/>"))
+   ;; Closing document.
+   "</div>\n</body>\n</html>"))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(defun org-html--build-meta-entry (label identity &optional content-format &rest content-formatters)
+  "Construct <meta> tag with LABEL=\"IDENTITY\" and content from CONTENT-FORMAT and CONTENT-FORMATTER."
+  (concat "<meta "
+          (format "%s=\"%s" label identity)
+          (when content-format
+            (concat "\" content=\""
+                    (replace-regexp-in-string
+                     "\"" "&quot;"
+                     (org-html-encode-plain-text
+                      (if content-formatters
+                          (apply #'format content-format content-formatters)
+                        content-format)))))
+          "\" />\n"))
+
+(defadvice! org-html--build-meta-info-extended (info)
+  "Return meta tags for exported document, with more meta than usual.
+INFO is a plist used as a communication channel."
+  :override #'org-html--build-meta-info
+  (let* ((protect-string
+          (lambda (str)
+            (replace-regexp-in-string
+             "\"" "&quot;" (org-html-encode-plain-text str))))
+         (title (org-export-data (plist-get info :title) info))
+         ;; Set title to an invisible character instead of leaving it
+         ;; empty, which is invalid.
+         (title (if (org-string-nw-p title) title "&lrm;"))
+         (subtitle (org-export-data (plist-get info :subtitle) info))
+         (author (and (plist-get info :with-author)
+                      (let ((auth (plist-get info :author)))
+         ;; Return raw Org syntax.
+                        (and auth (org-element-interpret-data auth)))))
+         (description (plist-get info :description))
+         (keywords (plist-get info :keywords))
+         (charset (or (and org-html-coding-system
+                           (fboundp 'coding-system-get)
+                           (coding-system-get org-html-coding-system
+                                              'mime-charset))
+                      "iso-8859-1")))
+    (concat
+     (when (plist-get info :time-stamp-file)
+       (format-time-string
+        (concat "<!-- "
+                (plist-get info :html-metadata-timestamp-format)
+                " -->\n")))
+
+     (org-html--build-meta-entry "charset" charset)
+
+     (let ((viewport-options
+            (cl-remove-if-not (lambda (cell) (org-string-nw-p (cadr cell)))
+                              (plist-get info :html-viewport))))
+       (if viewport-options
+           (org-html--build-meta-entry "name" "viewport"
+                                       (mapconcat
+                                        (lambda (elm) (format "%s=%s" (car elm) (cadr elm)))
+                                        viewport-options ", "))))
+
+     (format "<title>%s</title>\n" title)
+
+     (org-html--build-meta-entry "name" "generator" "Org Mode")
+
+     (when (org-string-nw-p author)
+       (org-html--build-meta-entry "name" "author" author))
+
+     (when (org-string-nw-p description)
+       (org-html--build-meta-entry "name" "description" description))
+
+     (when (org-string-nw-p keywords)
+       (org-html--build-meta-entry "name" "keywords" keywords))
+
+     (org-html--build-meta-entry "name" "theme-color" "#77aa99")
+
+     (org-html--build-meta-entry "property" "og:title" title)
+     (org-html--build-meta-entry "property" "og:type" "article")
+     (when (org-string-nw-p author)
+       (org-html--build-meta-entry "property" "og:article:author:first_name" (car (s-split " " author))))
+     (when (and (org-string-nw-p author) (s-contains-p " " author))
+       (org-html--build-meta-entry "property" "og:article:author:first_name" (cdr (s-split-up-to " " author 2))))
+     (org-html--build-meta-entry "property" "og:article:published_time" (format-time-string "%FT%T%z"))
+     (when (org-string-nw-p subtitle)
+       (org-html--build-meta-entry "property" "og:description" subtitle)))))
+#+END_SRC
 ***** Custom CSS/JS
-There is a fantastic exporter config ([[https://github.com/fniessen/org-html-themes][fniessen/org-html-themes]]) which we can
-setup to be used with all our org files. Since most of the syntax highlighting
-colours from our [[*Theme and modeline][Theme]] gets used, we benefit from customising the code block style.
-#+BEGIN_SRC html :tangle misc/org-export-header.html
-<link rel='stylesheet' type='text/css' href='https://fniessen.github.io/org-html-themes/styles/readtheorg/css/htmlize.css'/>
-<link rel='stylesheet' type='text/css' href='https://fniessen.github.io/org-html-themes/styles/readtheorg/css/readtheorg.css'/>
+The default org HTML export is ... alright, but we can really jazz it up.
+[[https://lepisma.xyz][lepisma.xyz]] has a really nice style, and from and org export too!
+Suffice to say I've snatched it, with a few of my own tweaks applied.
 
-<script src='https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
-<script src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js'></script>
-<script type='text/javascript' src='https://fniessen.github.io/org-html-themes/styles/lib/js/jquery.stickytableheaders.min.js'></script>
-<script type='text/javascript' src='https://fniessen.github.io/org-html-themes/styles/readtheorg/js/readtheorg.js'></script>
+#+BEGIN_SRC html :tangle misc/org-export-header.html :comments no
+<link rel="icon" href="https://tecosaur.com/resources/org/nib.ico" type="image/ico" />
+
+<link rel="preload" as="font" crossorigin="crossorigin" type="font/woff2" href="https://tecosaur.com/resources/org/etbookot-roman-webfont.woff2">
+<link rel="preload" as="font" crossorigin="crossorigin" type="font/woff2" href="https://tecosaur.com/resources/org/etbookot-italic-webfont.woff2">
 #+END_SRC
 
-#+BEGIN_SRC css :tangle misc/org-export-style.css
-pre.src {
-    background-color: var(--theme-bg);
-    color: var(--theme-fg);
-    scrollbar-color:#bbb6#9992;
-    scrollbar-width: thin;
-    margin: 0;
-    border: none;
-}
-div.org-src-container {
-    border-radius: 12px;
-    overflow: hidden;
-    margin-bottom: 24px;
-    margin-top: 1px;
-    border: 1px solid#e1e4e5;
-}
-pre.src::before {
-    background-color:#6666;
-    top: 8px;
-    border: none;
-    border-radius: 5px;
-    line-height: 1;
-    border: 2px solid var(--theme-bg);
-    opacity: 0;
-    transition: opacity 200ms;
-}
-pre.src:hover::before { opacity: 1; }
-pre.src:active::before { opacity: 0; }
-
-pre.example {
-    border-radius: 12px;
-    background: var(--theme-bg-alt);
-    color: var(--theme-fg);
-}
-
-code {
-    border-radius: 5px;
-    background:#e8e8e8;
-    font-size: 80%;
-}
-
-kbd {
-    display: inline-block;
-    padding: 3px 5px;
-    font: 80% SFMono-Regular,Consolas,Liberation Mono,Menlo,monospace;
-    line-height: normal;
-    line-height: 10px;
-    color:#444d56;
-    vertical-align: middle;
-    background-color:#fafbfc;
-    border: 1px solid#d1d5da;
-    border-radius: 3px;
-    box-shadow: inset 0 -1px 0#d1d5da;
-}
-
-table {
-    max-width: 100%;
-    overflow-x: auto;
-    display: block;
-    border-top: none;
-}
-
-a:not([aria-hidden='true']) {
-    text-decoration: none;
-    background-image: linear-gradient(#d8dce9, #d8dce9);
-    background-position: 0% 100%;
-    background-repeat: no-repeat;
-    background-size: 0% 2px;
-    transition: background-size .3s;
-}
-\#table-of-contents a {
-    background-image: none;
-}
-a:hover:not([aria-hidden='true']),
-a:focus:not([aria-hidden='true']) {
-    background-size: 100% 2px;
-}
-a[href^='#'] { font-variant-numeric: oldstyle-nums; }
-a[href^='#']:visited { color:#3091d1; }
-
-li .checkbox {
-    display: inline-block;
-    width: 0.9em;
-    height: 0.9em;
-    border-radius: 3px;
-    margin: 3px;
-    top: 4px;
-    position: relative;
-}
-li.on > .checkbox { background: var(--theme-green); box-shadow: 0 0 2px var(--theme-green); }
-li.trans > .checkbox { background: var(--theme-orange); box-shadow: 0 0 2px var(--theme-orange); }
-li.off > .checkbox { background: var(--theme-red); box-shadow: 0 0 2px var(--theme-red); }
-li.on > .checkbox::after {
-    content: '';
-    height: 0.45em;
-    width: 0.225em;
-    -webkit-transform-origin: left top;
-    transform-origin: left top;
-    transform: scaleX(-1) rotate(135deg);
-    border-right: 2.8px solid#fff;
-    border-top: 2.8px solid#fff;
-    opacity: 0.9;
-    left: 0.10em;
-    top: 0.45em;
-    position: absolute;
-}
-li.trans > .checkbox::after {
-    content: '';
-    font-weight: bold;
-    font-size: 1.6em;
-    position: absolute;
-    top: 0.23em;
-    left: 0.09em;
-    width: 0.35em;
-    height: 0.12em;
-    background:#fff;
-    opacity: 0.9;
-    border-radius: 0.1em;
-}
-li.off > .checkbox::after {
-    content: '✖';
-    color:#fff;
-    opacity: 0.9;
-    position: relative;
-    top: -0.40rem;
-    left: 0.17em;
-    font-size: 0.75em;
-}
-
-span.timestamp {
-    color: #003280;
-    background: #647CFF44;
-    border-radius: 3px;
-    line-height: 1.25;
-}
-
-\#content img {
-    border-radius: 3px;
-}
-
-\#table-of-contents { overflow-y: auto; }
-blockquote p { margin: 8px 0px 16px 0px; }
-\#postamble .date { color: var(--theme-green); }
-
-::-webkit-scrollbar { width: 10px; height: 8px; }
-::-webkit-scrollbar-track { background:#9992; }
-::-webkit-scrollbar-thumb { background:#ccc; border-radius: 10px; }
-::-webkit-scrollbar-thumb:hover { background:#888; }
-
-/* sometimes this all-important space seems to go missing
-/so let's protect against that. If it's exteranious it's
-/just gobbled anyway. */
-span.section-number-1:after,
-span.section-number-2:after,
-span.section-number-3:after,
-span.section-number-4:after,
-span.section-number-5:after,
-span.section-number-6:after {
-    content: ' '
-}
-
-/* so the bounding box coveres the <a> */
-h1,h2,h3,h4,h5,h6 {
-    padding-left: 30px;
-    margin-left: -30px;
-}
-
-h1 > a[aria-hidden='true'],
-h2 > a[aria-hidden='true'],
-h3 > a[aria-hidden='true'],
-h4 > a[aria-hidden='true'],
-h5 > a[aria-hidden='true'],
-h6 > a[aria-hidden='true'] {
-    color: #6a737d;
-    float: left;
-    padding-right: 4px;
-    margin-left: -25px;
-    position: relative;
-    top: 7px;
-    line-height: 1;
-    font-size: 70%;
-    visibility: hidden;
-}
-
-h1:hover > a[aria-hidden='true'],
-h2:hover > a[aria-hidden='true'],
-h3:hover > a[aria-hidden='true'],
-h4:hover > a[aria-hidden='true'],
-h5:hover > a[aria-hidden='true'],
-h6:hover > a[aria-hidden='true'] {
-    visibility: visible;
-}
-
-.music-track {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-wrap: wrap;
-}
-
-.music-track > img {
-    height: 6rem;
-}
-
-.music-track > span {
-    margin-left: 2rem;
-    min-width: 25%;
-}
-#+END_SRC
-
-We also want to make the background and foreground colours of the ~<pre>~ blocks
-match out theme (they don't by default), so I scraped some code from ~emacs.stackexchange~.
-#+BEGIN_SRC emacs-lisp :noweb yes
+#+BEGIN_SRC emacs-lisp
 (after! org
-  (setq org-custom-css (f-read-text (expand-file-name "misc/org-export-style.css" doom-private-dir)))
-  (setq org-custom-html-header (f-read-text (expand-file-name "misc/org-export-header.html" doom-private-dir)))
-
-  (defun my-org-inline-css-hook (exporter)
-    "Insert custom inline css to automatically set the
-   background of code to whatever theme I'm using's background"
-    (when (eq exporter 'html)
-      (setq
-       org-html-head-extra
-       (concat
-        (if (s-contains-p "<!––tec/custom-head-start-->" org-html-head-extra)
-            (s-replace-regexp "<!––tec\\/custom-head-start-->[^🙜]*<!––tec\\/custom-head-end-->" "" org-html-head-extra)
-          org-html-head-extra)
-        "<!––tec/custom-head-start-->"
-        (format "<style type=\"text/css\">
-   :root {
-      --theme-bg: %s;
-      --theme-bg-alt: %s;
-      --theme-base0: %s;
-      --theme-base1: %s;
-      --theme-base2: %s;
-      --theme-base3: %s;
-      --theme-base4: %s;
-      --theme-base5: %s;
-      --theme-base6: %s;
-      --theme-base7: %s;
-      --theme-base8: %s;
-      --theme-fg: %s;
-      --theme-fg-alt: %s;
-      --theme-grey: %s;
-      --theme-red: %s;
-      --theme-orange: %s;
-      --theme-green: %s;
-      --theme-teal: %s;
-      --theme-yellow: %s;
-      --theme-blue: %s;
-      --theme-dark-blue: %s;
-      --theme-magenta: %s;
-      --theme-violet: %s;
-      --theme-cyan: %s;
-      --theme-dark-cyan: %s;
-   }
-</style>"
-                (doom-color 'bg)
-                (doom-color 'bg-alt)
-                (doom-color 'base0)
-                (doom-color 'base1)
-                (doom-color 'base2)
-                (doom-color 'base3)
-                (doom-color 'base4)
-                (doom-color 'base5)
-                (doom-color 'base6)
-                (doom-color 'base7)
-                (doom-color 'base8)
-                (doom-color 'fg)
-                (doom-color 'fg-alt)
-                (doom-color 'grey)
-                (doom-color 'red)
-                (doom-color 'orange)
-                (doom-color 'green)
-                (doom-color 'teal)
-                (doom-color 'yellow)
-                (doom-color 'blue)
-                (doom-color 'dark-blue)
-                (doom-color 'magenta)
-                (doom-color 'violet)
-                (doom-color 'cyan)
-                (doom-color 'dark-cyan))
-        (if (bound-and-true-p org-msg-currently-exporting) ""
-          (concat org-custom-html-header "<style>" org-custom-css "</style>"))
-        "<!––tec/custom-head-end-->"
-        ))))
-
-(add-hook 'org-export-before-processing-hook 'my-org-inline-css-hook))
+  (setq org-html-style-default
+        (concat (f-read-text (expand-file-name "misc/org-export-header.html" doom-private-dir))
+              "<script>\n"
+              (f-read-text (expand-file-name "misc/pile-css-theme/toc.js" doom-private-dir))
+              "</script>\n<style>\n"
+              (f-read-text (expand-file-name "misc/pile-css-theme/main.css" doom-private-dir))
+              "</style>"))
+  org-html-htmlize-output-type 'css)
 #+END_SRC
 ***** Make verbatim different to code
 Since we have =verbatim= and ~code~, let's use =verbatim= for key strokes.
@@ -4768,9 +4662,8 @@ I want to add github-style links on hover for headings.
     (when (org-export-derived-backend-p backend 'html)
       (unless org-msg-currently-exporting
         (replace-regexp-in-string
-         "<h\\([0-9]\\) id=\"\\([a-z0-9-]+\\)\">" ; this is quite restrictive, but due to `org-heading-contraction' I can do this
-         "<h\\1 id=\"\\2\">\
- <a class=\"anchor\" aria-hidden=\"true\" href=\"#\\2\">🔗</a>"
+         "<h\\([0-9]\\) id=\"\\([a-z0-9-]+\\)\">\\(.*[^ ]\\)<\\/h[0-9]>" ; this is quite restrictive, but due to `org-heading-contraction' I can do this
+         "<h\\1 id=\"\\2\">\\3<a aria-hidden=\"true\" href=\"#\\2\">#</a> </h\\1>"
          text))))
 
   (add-to-list 'org-export-filter-headline-functions

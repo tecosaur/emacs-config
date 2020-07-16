@@ -11,13 +11,18 @@ body {
   font-family: $body-font;
 }
 
+#page {
+  color: $text-dark;
+  background-color: $back-light;
+}
+
 #content, header, .page-header {
   margin: 32px;
   flex: 1 0 auto;
 }
 
 #content {
-  margin-top: 0;
+  margin-top: 4rem;
 }
 
 .clearfix::after {
@@ -31,11 +36,16 @@ body {
 
 .page-header {
   margin-top: 80px;
+  margin-left: 0 !important; // as inside #content
   h1 {
     font-size: 40px;
     margin-bottom: 10px;
     margin-top: 10px;
     text-transform: none;
+    .subtitle {
+      font-size: 24px;
+      color: $text-light;
+    }
   }
 }
 
@@ -157,4 +167,8 @@ header > div {
       @include link-reset();
     }
   }
+}
+
+#postamble {
+  display: none;
 }

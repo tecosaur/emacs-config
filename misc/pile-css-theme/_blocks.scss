@@ -1,0 +1,54 @@
+blockquote {
+  @include left-line();
+
+  p {
+    display: inline;
+    font-size: 13px;
+  }
+
+  footer {
+    @include light-meta();
+    text-transform: none;
+  }
+}
+
+@mixin box($name, $base-color, $symbol-letter, $symbol-path, $symbol-height: 35px, $symbol-width: 35px, $symbol-line-height: 1.1) {
+  div.#{$name} {
+    background: rgba($base-color, 0.15);
+    border-left: 4px solid rgba($base-color, 0.45);
+    margin-top: 1.8rem;
+    margin-bottom: 1.25rem;
+    padding: 0.8em;
+    line-height: 1.4;
+    text-align: center;
+    position: relative;
+    clear: both;
+    p {
+      margin: 0;
+    }
+  }
+  div.#{$name}::before {
+    content: $symbol-letter;
+    color: $back-white;
+    background: rgba($base-color, 0.8);
+    align-items: flex-end;
+    top: -1rem;
+    font-weight: 700;
+    font-size: 1.4rem;
+    -webkit-clip-path: $symbol-path;
+    clip-path: $symbol-path;
+    width: $symbol-width;
+    height: $symbol-height;
+    display: inline-flex;
+    justify-content: center;
+    position: absolute;
+    left: -1.2rem;
+    line-height: $symbol-line-height;
+    text-align: center;
+  }
+}
+
+@include box(info, $blue, "i", circle(50% at 50% 50%), 30px, 30px, 1.3)
+@include box(success, $green, "✔", polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%), 35px, 35px, 1.5)
+@include box(warning, $orange, "!", polygon(50% 0,0 100%,100% 100%))
+@include box(error, $red, "!", polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%), 30px)

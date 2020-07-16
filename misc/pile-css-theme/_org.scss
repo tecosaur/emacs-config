@@ -1,7 +1,6 @@
 // Org export specific styling
 
-#org-div-home-and-up,
-pre.src:hover::before {
+#org-div-home-and-up {
   display: none !important;
 }
 
@@ -25,6 +24,8 @@ pre.src:hover::before {
 
 .timestamp, .timestamp-kwd {
   @include light-meta();
+  background-color: $back-white;
+  border-radius: 1px;
 }
 
 .todo, .done {

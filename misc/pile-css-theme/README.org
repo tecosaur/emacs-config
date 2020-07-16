@@ -1,11 +1,10 @@
 #+TITLE: pile-theme
 
-Sass files for my [[http://lepisma.github.io/][web site]].
+Sass files for my org exporting. Taken from [[github:lepisma/pile-theme][lepisma/pile-theme]].
 
 #+NAME: om-sass
 #+BEGIN_SRC shell :exports none
-sass --sourcemap=none ./main.scss ../lepisma.github.io/assets/css/main.css
-yes | cp ../lepisma.github.io/assets/css/main.css ../lepisma.github.io-deploy/assets/css/main.css
+sassc main.scss main.css
 #+END_SRC
 
 #+RESULTS: om-sass

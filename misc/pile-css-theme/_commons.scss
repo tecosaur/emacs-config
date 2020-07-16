@@ -1,64 +1,32 @@
 // Common mixins and variables
 @charset "UTF-8";
 
-// Shades
-$c1: #000;
-$c2: #222;
-$c3: #444;
-$c4: #7b7b7b;
-$c5: #c8c8c8;
-$c6: #efefef;
-$c7: #fff;
-
-$accent: #002642;
-$accent-dark: #00151c;
-
-$code-foreground: #2c3e50;
-$code-background: $c6;
-
-$back-white: $c7;
-$back-light: $c6;
-$back-medium: $c5;
-
-$text-light: $c4;
-$text-gray: $c3;
-$text-medium: $c2;
-$text-dark: $c1;
+@import 'theme';
 
 // Fonts
-@font-face {
-  font-family: 'Bebas Neue Bold';
-  src: url("../fonts/BebasNeue Bold.otf");
-}
+@import url('https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;1,300;1,400&display=swap');
+
 @font-face {
   font-family: 'et-book';
-  src: url('../fonts/et-book/et-book-roman-line-figures/et-book-roman-line-figures.eot');
-  src: url('../fonts/et-book/et-book-roman-line-figures/et-book-roman-line-figures.eot?#iefix') format('embedded-opentype'), url('../fonts/et-book/et-book-roman-line-figures/et-book-roman-line-figures.woff') format('woff'), url('../fonts/et-book/et-book-roman-line-figures/et-book-roman-line-figures.ttf') format('truetype'), url('../fonts/et-book/et-book-roman-line-figures/et-book-roman-line-figures.svg#etbookromanosf') format('svg');
+  src: url('https://tecosaur.com/resources/org/etbookot-roman-webfont.woff2') format('woff2');
   font-weight: normal;
-  font-style: normal
+  font-style: normal;
+  font-display: fallback;
 }
 
 @font-face {
   font-family: 'et-book';
-  src: url('../fonts/et-book/et-book-display-italic-old-style-figures/et-book-display-italic-old-style-figures.eot');
-  src: url('../fonts/et-book/et-book-display-italic-old-style-figures/et-book-display-italic-old-style-figures.eot?#iefix') format('embedded-opentype'), url('../fonts/et-book/et-book-display-italic-old-style-figures/et-book-display-italic-old-style-figures.woff') format('woff'), url('../fonts/et-book/et-book-display-italic-old-style-figures/et-book-display-italic-old-style-figures.ttf') format('truetype'), url('../fonts/et-book/et-book-display-italic-old-style-figures/et-book-display-italic-old-style-figures.svg#etbookromanosf') format('svg');
+  src: url('https://tecosaur.com/resources/org/etbookot-italic-webfont.woff2') format('woff2');
   font-weight: normal;
-  font-style: italic
-}
-
-@font-face {
-  font-family: 'et-book';
-  src: url('../fonts/et-book/et-book-bold-line-figures/et-book-bold-line-figures.eot');
-  src: url('../fonts/et-book/et-book-bold-line-figures/et-book-bold-line-figures.eot?#iefix') format('embedded-opentype'), url('../fonts/et-book/et-book-bold-line-figures/et-book-bold-line-figures.woff') format('woff'), url('../fonts/et-book/et-book-bold-line-figures/et-book-bold-line-figures.ttf') format('truetype'), url('../fonts/et-book/et-book-bold-line-figures/et-book-bold-line-figures.svg#etbookromanosf') format('svg');
-  font-weight: bold;
-  font-style: normal
+  font-style: italic;
+  font-display: fallback;
 }
 
 // Face variables
 $sans-font: 'Open Sans';
 $body-font: 'Merriweather';
 $title-font: 'et-book';
-$code-font: 'Fira Mono';
+$code-font: SFMono-Regular,Consolas,Liberation Mono,Menlo,monospace;
 
 @mixin text-underline-crop($background) {
   text-shadow: .03em 0 $background,
@@ -100,7 +68,7 @@ $code-font: 'Fira Mono';
   @include text-selection($back-medium);
 
   border-radius: 1px;
-  background-color: $background;
+  // background-color: $background;
   color: $text;
   text-decoration: none;
 
@@ -179,7 +147,6 @@ $code-font: 'Fira Mono';
   font-size: 12px;
   line-height: 1.9;
   color: $text-light;
-  text-transform: uppercase;
 }
 
 @mixin left-line() {

@@ -13,19 +13,79 @@ h6 {
   margin-top: 60px;
 }
 
+// link
+
+h1 > a[aria-hidden='true'],
+h2 > a[aria-hidden='true'],
+h3 > a[aria-hidden='true'],
+h4 > a[aria-hidden='true'],
+h5 > a[aria-hidden='true'],
+h6 > a[aria-hidden='true'] {
+    color: $back-medium;
+    position: relative;
+    top: 0.06em;
+    line-height: 1;
+    font-size: 110%;
+    padding-left: 0.2em;
+    text-decoration: none;
+    visibility: hidden;
+}
+h1 > a[aria-hidden='true']:hover,
+h2 > a[aria-hidden='true']:hover,
+h3 > a[aria-hidden='true']:hover,
+h4 > a[aria-hidden='true']:hover,
+h5 > a[aria-hidden='true']:hover,
+h6 > a[aria-hidden='true']:hover {
+    color: $text-light;
+}
+h1:hover > a[aria-hidden='true'],
+h2:hover > a[aria-hidden='true'],
+h3:hover > a[aria-hidden='true'],
+h4:hover > a[aria-hidden='true'],
+h5:hover > a[aria-hidden='true'],
+h6:hover > a[aria-hidden='true'] {
+    visibility: visible;
+}
+h1,h2,h3,h4,h5,h6 {
+// so the bounding box coveres the <a> 
+    padding-left: 30px;
+    margin-left: -30px;
+    // to work with the right-aligned section numbers
+    position: relative;
+}
+
 // Override sizes
-h1 {
+h1, .section-number-1 {
+  font-size: 40px;
+}
+
+h2, .section-number-2  {
   font-size: 30px;
 }
 
-h2 {
+h3, .section-number-3  {
   font-size: 24px;
 }
 
-// Just use three levels
-h3, h4, h5, h6 {
+h4, .section-number-4  {
   font-size: 20px;
   font-style: italic;
+}
+
+h5 {
+  font-size: 20px;
+  font-variant: small-caps;
+}
+.section-number-5 {
+  font-size: 20px;
+}
+
+h6 {
+  font-size: 18px;
+  font-style: italic;
+}
+.section-number-6 {
+  font-size: 18px;
 }
 
 // Section numbers
@@ -36,20 +96,28 @@ h3, h4, h5, h6 {
 .section-number-5,
 .section-number-6 {
   @include light-meta();
+  font-size: inherit;
   color: $back-medium;
+  line-height: 1;
+  position: absolute; // to remove the bounding box
+  transform: translateX(-100%) translateX(-10px);
 }
 
-.section-number-1 {
-  font-size: 30px;
-}
+// spacing tweaks
 
-.section-number-2 {
-  font-size: 24px;
-}
-
-.section-number-3,
-.section-number-4,
-.section-number-5,
-.section-number-6 {
-  font-size: 20px;
-}
+.outline-text-2:empty, .outline-text-2:-moz-only-whitespace {
+  + .outline-3 > h3 {
+    margin-top: 20px;
+  }}
+.outline-text-3:empty, .outline-text-3:-moz-only-whitespace {
+  + .outline-4 > h4 {
+    margin-top: 15px;
+  }}
+.outline-text-4:empty, .outline-text-4:-moz-only-whitespace {
+  + .outline-5 > h5 {
+    margin-top: 15px;
+  }}
+.outline-text-5:empty, .outline-text-5:-moz-only-whitespace {
+  + .outline-6 > h6 {
+    margin-top: 10px;
+  }}

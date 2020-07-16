@@ -1,8 +1,5 @@
 figure {
   text-align: center;
-  img {
-    max-width: 100%;
-  }
   figcaption {
     .figure-number {
       @include light-meta();
@@ -14,4 +11,10 @@ figure {
 
 img.zoomTarget:hover {
   cursor: default !important;
+}
+
+// make white image backgrounds match page
+img {
+  filter: invert(6%);
+    max-width: 100%;
 }

@@ -1,0 +1,107 @@
+$blue: #3a81c3;
+$green: #2d9574;
+$red: #ba2f59;
+$orange: #dc752f;
+$cyan: #2aa1ae;
+$purple: #715ab1;
+
+$accent: var(--accent);
+$accent-dark: var(--accent-dark);
+
+$code-foreground: var(--code-foreground);
+$code-background: var(--code-background);
+$code-func: var(--code-func);
+$code-constant: var(--code-const);
+$code-regex: var(--code-regex);
+
+$back-white: var(--back-white);
+$back-light: var(--back-light);
+$back-medium: var(--back-medium);
+
+$text-light: var(--text-light);
+$text-gray: var(--text-gray);
+$text-medium: var(--text-medium);
+$text-dark: var(--text-dark);
+
+#page {
+  --accent: #002642;
+  --accent-dark: #00151c;
+
+  --code-foreground: #2c3e50;
+  --code-background: #efefef;
+  --code-func: #6c3163;
+  --code-const: #4e3163;
+  --code-regex: #655370;
+
+  --back-white: #fff;
+  --back-light: #efefef;
+  --back-medium: #c8c8c8;
+
+  --text-light: #7b7b7b;
+  --text-gray: #444;
+  --text-medium: #222;
+  --text-dark: #000;
+
+  --switch-icon: "🌝";
+  --switch-shadow-color: #fce477;
+}
+
+#theme-switch:checked ~ #page {
+    --accent: #002642;
+    --accent-dark: #daf1ff;
+
+    --code-foreground: #a1a8ae;
+    --code-background: #222;
+    --code-func: #bd56ad;
+    --code-const: #8755ab;
+    --code-regex: #a184b3;
+
+    --back-white: #000;
+    --back-light: #111;
+    --back-medium: #444;
+
+    --text-light: #7b7b7b;
+    --text-gray: #c8c8c8;
+    --text-medium: #ddd;
+    --text-dark: #efefef;
+
+    --switch-icon: "🌚";
+    --switch-shadow-color: #373d4e;
+    img.invertable {
+        filter: invert(93%);
+    }
+}
+
+#theme-switch {
+    display: none;
+}
+
+#switch-label {
+    position: fixed;
+    bottom: 4rem;
+    left: 3rem;
+}
+@media (max-width: 1000px) {
+    #switch-label {
+        left: auto;
+        left: bottom;
+        right: 1%;
+        top: 2.5rem;
+    }
+}
+
+#switch-label::before {
+  content: var(--switch-icon);
+  font-size: 20px;
+  transition: text-shadow .2s;
+}
+
+#switch-label::after {
+  content: var(--switch-text);
+  color: var(--switch-shadow-color);
+}
+
+#theme-switch:focus ~ #page #switch-label::before,
+#switch-label:hover::before {
+  text-shadow: 0 0 15px var(--switch-shadow-color);
+}

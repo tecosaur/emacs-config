@@ -17,14 +17,6 @@ nav#table-of-contents {
     @include light-meta();
     margin-top: 10px;
   }
-
-  li a {
-    @include link-underline($code-background, $text-gray);
-
-    &:hover {
-      @include link-underline($code-background, $text-gray);
-    }
-  }
 }
 
 @media (min-width: 1280px) {
@@ -68,13 +60,79 @@ nav#table-of-contents {
     li::before {
       content: "";
     }
+  }
+}
 
-    li a {
-      @include link-underline($back-white, $text-gray);
+//
+// Fancy toc
+//
 
-      &:hover {
-        @include link-underline($back-light, $text-gray);
+::-webkit-scrollbar { width: 10px; height: 8px; }
+::-webkit-scrollbar-track { background:transparent; }
+::-webkit-scrollbar-thumb { background:transparent; border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background:transparent; }
+
+@media (min-width: 1280px) {
+  #table-of-contents {
+    position: fixed;
+    right: 4rem;
+    top: 0;
+    padding: 1em;
+    width: 15rem;
+    line-height: 1.5;
+    margin-top: 4rem;
+    h2 {
+      margin-top: 0;
+    }
+    > div > ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      max-height: calc(100vh - 5rem - 40px);
+      overflow-y: auto;
+      overflow-x: visible;
+      scrollbar-color: transparent transparent;
+      scrollbar-width: thin;
+      ul {
+        padding-left: 2em;
+      }
+      > li {
+        display: block;
       }
     }
+    ul.active > li {
+      display: block;
+    }
+    li {
+      display: none;
+      a {
+        display: inline-block;
+        color: $text-light;
+        text-decoration: none;
+        -webkit-transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+        transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+        // negating earlir styles
+        text-shadow: none;
+        background: none;
+      }
+    }
+    li:hover, li:hover > ul > li {
+      display: block !important;
+      a {
+        color: $text-gray;
+      }
+    }
+    li.active > a {
+      color: $text-dark;
+    }
+    li::before {
+      content: "";
+    }
+  }
+}
+
+@media (min-width: 1640px) {
+  #table-of-contents {
+    right: 10rem;
   }
 }

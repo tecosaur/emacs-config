@@ -5,8 +5,34 @@ pre.src, pre.example {
   font-family: $code-font;
   font-size: 14px;
   line-height: 1.9;
-  overflow-x: auto;
+  overflow-x: visible;
   box-shadow: none;
+  white-space: pre-wrap;
+  position: relative;
+}
+
+pre.example {
+  border-left-style: dotted;
+  border-left-width: 2px;
+}
+
+pre.src::before {
+    display: inline-block;
+    position: absolute;
+    background-color: transparent;
+    top: unset;
+    bottom: -16px;
+    left: 20px;
+    padding: 0px;
+    border: none;
+    font-size: 80%;
+    font-style: italic;
+    color: $text-light;
+}
+
+// accout for the odd result of noweb
+pre.src:empty {
+  display: none;
 }
 
 code {
@@ -14,6 +40,20 @@ code {
   color: $code-foreground;
   font-size: 15px;
   padding: 0 5px;
+}
+
+kbd {
+    display: inline-block;
+    padding: 3px 5px;
+    font: 80% $code-font;
+    line-height: normal;
+    line-height: 80%;
+    color: $text-gray;
+    vertical-align: middle;
+    background-color: $back-light;
+    border: 1px solid #91959a88;
+    border-radius: 3px;
+    box-shadow: inset 0 -1px 0 #91959a88;
 }
 
 li {
@@ -31,15 +71,15 @@ li {
 // background: #ffffff
 $code-builtin: #3a81c3;
 $code-comment: #555555;
-$code-constant: #4e3163;
-$code-doc: #2aa1ae;
-$code-func: #6c3163;
-$code-keyword: #3a81c3;
-$code-regex: #655370;
-$code-string: #2d9574;
-$code-type: #ba2f59;
-$code-variable: #715ab1;
-$code-warning: #dc752f;
+// $code-constant in _theme
+$code-doc: $cyan;
+// $code-func in _theme
+$code-keyword: $blue;
+// $code-regex: 
+$code-string: $green;
+$code-type: $red;
+$code-variable: $purple;
+$code-warning: $orange;
 
 .example,
 .src {
@@ -83,3 +123,95 @@ $code-warning: #dc752f;
     color: $code-constant;
   }
 }
+
+/* Languages per Org manual */
+
+pre.src-asymptote::before { content: 'Asymptote'; }
+pre.src-awk::before { content: 'Awk'; }
+pre.src-C::before { content: 'C'; }
+/* pre.src-C++ doesn't work in CSS */
+pre.src-clojure::before { content: 'Clojure'; }
+pre.src-css::before { content: 'CSS'; }
+pre.src-D::before { content: 'D'; }
+pre.src-ditaa::before { content: 'ditaa'; }
+pre.src-dot::before { content: 'Graphviz'; }
+pre.src-calc::before { content: 'Emacs Calc'; }
+pre.src-emacs-lisp::before { content: 'Emacs Lisp'; }
+pre.src-fortran::before { content: 'Fortran'; }
+pre.src-gnuplot::before { content: 'gnuplot'; }
+pre.src-haskell::before { content: 'Haskell'; }
+pre.src-hledger::before { content: 'hledger'; }
+pre.src-java::before { content: 'Java'; }
+pre.src-js::before { content: 'Javascript'; }
+pre.src-latex::before { content: 'LaTeX'; }
+pre.src-ledger::before { content: 'Ledger'; }
+pre.src-lisp::before { content: 'Lisp'; }
+pre.src-lilypond::before { content: 'Lilypond'; }
+pre.src-lua::before { content: 'Lua'; }
+pre.src-matlab::before { content: 'MATLAB'; }
+pre.src-mscgen::before { content: 'Mscgen'; }
+pre.src-ocaml::before { content: 'Objective Caml'; }
+pre.src-octave::before { content: 'Octave'; }
+pre.src-org::before { content: 'Org mode'; }
+pre.src-oz::before { content: 'OZ'; }
+pre.src-plantuml::before { content: 'Plantuml'; }
+pre.src-processing::before { content: 'Processing.js'; }
+pre.src-python::before { content: 'Python'; }
+pre.src-R::before { content: 'R'; }
+pre.src-ruby::before { content: 'Ruby'; }
+pre.src-sass::before { content: 'Sass'; }
+pre.src-scheme::before { content: 'Scheme'; }
+pre.src-screen::before { content: 'Gnu Screen'; }
+pre.src-sed::before { content: 'Sed'; }
+pre.src-sh::before { content: 'shell'; }
+pre.src-sql::before { content: 'SQL'; }
+pre.src-sqlite::before { content: 'SQLite'; }
+/* additional languages in org.el's org-babel-load-languages alist */
+pre.src-forth::before { content: 'Forth'; }
+pre.src-io::before { content: 'IO'; }
+pre.src-J::before { content: 'J'; }
+pre.src-makefile::before { content: 'Makefile'; }
+pre.src-maxima::before { content: 'Maxima'; }
+pre.src-perl::before { content: 'Perl'; }
+pre.src-picolisp::before { content: 'Pico Lisp'; }
+pre.src-scala::before { content: 'Scala'; }
+pre.src-shell::before { content: 'Shell Script'; }
+pre.src-ebnf2ps::before { content: 'ebfn2ps'; }
+/* additional language identifiers per \"defun org-babel-execute\"
+      in ob-*.el */
+pre.src-cpp::before  { content: 'C++'; }
+pre.src-abc::before  { content: 'ABC'; }
+pre.src-coq::before  { content: 'Coq'; }
+pre.src-groovy::before  { content: 'Groovy'; }
+/* additional language identifiers from org-babel-shell-names in
+    ob-shell.el: ob-shell is the only babel language using a lambda to put
+    the execution function name together. */
+pre.src-bash::before  { content: 'bash'; }
+pre.src-csh::before  { content: 'csh'; }
+pre.src-ash::before  { content: 'ash'; }
+pre.src-dash::before  { content: 'dash'; }
+pre.src-ksh::before  { content: 'ksh'; }
+pre.src-mksh::before  { content: 'mksh'; }
+pre.src-posh::before  { content: 'posh'; }
+/* Additional Emacs modes also supported by the LaTeX listings package */
+pre.src-ada::before { content: 'Ada'; }
+pre.src-asm::before { content: 'Assembler'; }
+pre.src-caml::before { content: 'Caml'; }
+pre.src-delphi::before { content: 'Delphi'; }
+pre.src-html::before { content: 'HTML'; }
+pre.src-idl::before { content: 'IDL'; }
+pre.src-mercury::before { content: 'Mercury'; }
+pre.src-metapost::before { content: 'MetaPost'; }
+pre.src-modula-2::before { content: 'Modula-2'; }
+pre.src-pascal::before { content: 'Pascal'; }
+pre.src-ps::before { content: 'PostScript'; }
+pre.src-prolog::before { content: 'Prolog'; }
+pre.src-simula::before { content: 'Simula'; }
+pre.src-tcl::before { content: 'tcl'; }
+pre.src-tex::before { content: 'LaTeX'; }
+pre.src-plain-tex::before { content: 'TeX'; }
+pre.src-verilog::before { content: 'Verilog'; }
+pre.src-vhdl::before { content: 'VHDL'; }
+pre.src-xml::before { content: 'XML'; }
+pre.src-nxml::before { content: 'XML'; }
+pre.src-conf::before { content: 'Configuration File'; }
