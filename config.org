@@ -4630,6 +4630,11 @@ Suffice to say I've snatched it, with a few of my own tweaks applied.
               "</style>"))
   org-html-htmlize-output-type 'css)
 #+END_SRC
+
+#+begin_warning
+The TOC and theme toggle both use ~position: fixed~, and for some strange reason
+Chrome seems to be treating this as ~position: absolute~.
+#+end_warning
 ***** Make verbatim different to code
 Since we have =verbatim= and ~code~, let's use =verbatim= for key strokes.
 #+BEGIN_SRC emacs-lisp

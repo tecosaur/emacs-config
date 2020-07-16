@@ -22,6 +22,7 @@ nav#table-of-contents {
 @media (min-width: 1280px) {
   nav#table-of-contents {
     z-index: 9999;
+    // FIXME Chrome seems to treat this as position: absolute
     position: fixed;
     top: 200px;
     left: 50px;
