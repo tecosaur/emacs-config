@@ -1141,7 +1141,7 @@ li p code {
 
 details.code summary {
   position: relative;
-  left: -2px;
+  left: -3px;
   padding-left: 10px;
   padding-botton: 4px;
   margin-left: -10px;
