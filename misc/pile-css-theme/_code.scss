@@ -75,24 +75,28 @@ details.code {
     padding-botton: 4px;
     margin-left: -10px;
     z-index: 1;
+    outline: none;
     @include light-meta;
     .name {
       font-size: 14px;
       color: $text-medium;
+      margin-right: 0.7em;
     }
   }
   summary::marker {
     color: $back-medium;
   }
   &[open] summary {
-    color: transparent;
     margin-bottom: -32px;
+    .lang {
+      color: transparent;
+    }
   }
   &[open] summary.named {
     margin-bottom: -26px;
   }
   &:not([open]) summary {
-    margin-bottom: -16px;
+    margin-bottom: -10px;
   }
 }
 

@@ -1146,6 +1146,7 @@ details.code summary {
   padding-botton: 4px;
   margin-left: -10px;
   z-index: 1;
+  outline: none;
   font-family: "Open Sans";
   font-weight: normal;
   font-style: normal;
@@ -1154,20 +1155,22 @@ details.code summary {
   color: var(--text-light); }
   details.code summary .name {
     font-size: 14px;
-    color: var(--text-medium); }
+    color: var(--text-medium);
+    margin-right: 0.7em; }
 
 details.code summary::marker {
   color: var(--back-medium); }
 
 details.code[open] summary {
-  color: transparent;
   margin-bottom: -32px; }
+  details.code[open] summary .lang {
+    color: transparent; }
 
 details.code[open] summary.named {
   margin-bottom: -26px; }
 
 details.code:not([open]) summary {
-  margin-bottom: -16px; }
+  margin-bottom: -10px; }
 
 .example,
 .src {
