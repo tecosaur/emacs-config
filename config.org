@@ -4635,6 +4635,38 @@ Suffice to say I've snatched it, with a few of my own tweaks applied.
 The TOC and theme toggle both use ~position: fixed~, and for some strange reason
 Chrome seems to be treating this as ~position: absolute~.
 #+end_warning
+***** Collapsable src and example blocks
+By wrapping the ~<pre>~ element in a ~<details>~ block, we can obtain collapsable
+blocks with no CSS, though we will toss a little in anyway to have this looking
+somewhat spiffy.
+
+#+NAME: Src blocks
+#+BEGIN_SRC emacs-lisp
+(defadvice! org-html-src-block-collapsable (orig-fn src-block contents info)
+  "Wrap the usual <pre> block in a <details>"
+  :around #'org-html-src-block
+  (let* ((properties (cadr src-block))
+         (lang (plist-get properties :language))
+         (name (plist-get properties :name)))
+    (format "<details class='code' open><summary%s>%s</summary>%s</details>"
+            (if name " class='named'" "")
+            (if (not name) lang (format "<span class='name'>%s</span> %s" name lang))
+            (funcall orig-fn src-block contents info))))
+#+END_SRC
+
+#+NAME: Exampl, fixed width, and property blocks
+#+BEGIN_SRC emacs-lisp
+(after! org
+  (defun org-html-block-collapsable (orig-fn block contents info)
+    "Wrap the usual block in a <details>"
+    (concat "<details class='code' open><summary></summary>"
+            (funcall orig-fn block contents info)
+            "</details>"))
+
+  (advice-add 'org-html-example-block   :around #'org-html-block-collapsable)
+  (advice-add 'org-html-fixed-width     :around #'org-html-block-collapsable)
+  (advice-add 'org-html-property-drawer :around #'org-html-block-collapsable))
+#+END_SRC
 ***** Make verbatim different to code
 Since we have =verbatim= and ~code~, let's use =verbatim= for key strokes.
 #+BEGIN_SRC emacs-lisp

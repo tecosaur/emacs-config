@@ -65,6 +65,37 @@ li {
   }
 }
 
+// folding
+
+details.code {
+  summary {
+    position: relative;
+    left: -2px;
+    padding-left: 10px;
+    padding-botton: 4px;
+    margin-left: -10px;
+    z-index: 1;
+    @include light-meta;
+    .name {
+      font-size: 14px;
+      color: $text-medium;
+    }
+  }
+  summary::marker {
+    color: $back-medium;
+  }
+  &[open] summary {
+    color: transparent;
+    margin-bottom: -32px;
+  }
+  &[open] summary.named {
+    margin-bottom: -26px;
+  }
+  &:not([open]) summary {
+    margin-bottom: -16px;
+  }
+}
+
 // Palette copied from blog
 // ------------------------
 // foreground: #655370
