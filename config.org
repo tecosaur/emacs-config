@@ -1,4 +1,5 @@
 #+TITLE: Doom Emacs Configuration
+#+SUBTITLE: The Methods, Management, and Menagerie of Madness
 #+AUTHOR: tecosaur
 #+PROPERTY: header-args:emacs-lisp :tangle yes :cache yes :results silent :comments link
 #+PROPERTY: header-args:shell :tangle "setup.sh"
