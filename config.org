@@ -4600,6 +4600,7 @@ INFO is a plist used as a communication channel."
 
      (org-html--build-meta-entry "property" "og:title" title)
      (org-html--build-meta-entry "property" "og:type" "article")
+     (org-html--build-meta-entry "property" "og:image" "https://tecosaur.com/resources/org/nib.png")
      (when (org-string-nw-p author)
        (org-html--build-meta-entry "property" "og:article:author:first_name" (car (s-split " " author))))
      (when (and (org-string-nw-p author) (s-contains-p " " author))
