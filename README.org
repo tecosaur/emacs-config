@@ -1,8 +1,8 @@
-#+TITLE:  Doom Emacs Configuration
+#+TITLE:  Doom Emacs Configuration --- [[https://tecosaur.github.io/emacs-config/config.html][HTML Version]]
 
 Here you may find my config. There are only two files which matter
  - [[file:config.org][config.org]], my configuration file
  - [[file:init.el][init.el]], the doom-modules file
 
-What you *really* want is the ~M-x org-html-export-to-html~ version of my config,
-which you can find [[https://tecosaur.github.io/emacs-config/config.html][here]].
+What you *really* want is the =M-x org-html-export-to-html= version of ~config.org~
+(linked in the title).
