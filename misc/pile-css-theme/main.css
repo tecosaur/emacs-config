@@ -491,7 +491,9 @@ body {
 
 #page {
   color: var(--text-dark);
-  background-color: var(--back-light); }
+  background-color: var(--back-light);
+  transition-property: color background-color;
+  transition-duration: 200ms; }
 
 #content, header, .page-header {
   margin: 32px;
@@ -1157,6 +1159,9 @@ details.code summary {
     font-size: 14px;
     color: var(--text-medium);
     margin-right: 0.7em; }
+  details.code summary .lang {
+    font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace;
+    font-style: italic; }
 
 details.code summary::marker {
   color: var(--back-medium); }

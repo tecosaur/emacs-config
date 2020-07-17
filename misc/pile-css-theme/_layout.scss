@@ -14,6 +14,8 @@ body {
 #page {
   color: $text-dark;
   background-color: $back-light;
+  transition-property: color background-color;
+  transition-duration: 200ms;
 }
 
 #content, header, .page-header {

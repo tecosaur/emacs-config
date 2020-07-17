@@ -82,6 +82,10 @@ details.code {
       color: $text-medium;
       margin-right: 0.7em;
     }
+    .lang {
+      font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace;
+      font-style: italic;
+    }
   }
   summary::marker {
     color: $back-medium;
