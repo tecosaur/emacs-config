@@ -4635,11 +4635,6 @@ Suffice to say I've snatched it, with a few of my own tweaks applied.
               "</style>"))
   org-html-htmlize-output-type 'css)
 #+END_SRC
-
-#+begin_warning
-The TOC and theme toggle both use ~position: fixed~, and for some strange reason
-Chrome seems to be treating this as ~position: absolute~.
-#+end_warning
 ***** Collapsable src and example blocks
 By wrapping the ~<pre>~ element in a ~<details>~ block, we can obtain collapsable
 blocks with no CSS, though we will toss a little in anyway to have this looking
