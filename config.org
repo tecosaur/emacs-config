@@ -4632,8 +4632,8 @@ Suffice to say I've snatched it, with a few of my own tweaks applied.
               (f-read-text (expand-file-name "misc/pile-css-theme/toc.js" doom-private-dir))
               "</script>\n<style>\n"
               (f-read-text (expand-file-name "misc/pile-css-theme/main.css" doom-private-dir))
-              "</style>"))
-  org-html-htmlize-output-type 'css)
+              "</style>")
+        org-html-htmlize-output-type 'css))
 #+END_SRC
 ***** Collapsable src and example blocks
 By wrapping the ~<pre>~ element in a ~<details>~ block, we can obtain collapsable
