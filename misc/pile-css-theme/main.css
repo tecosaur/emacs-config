@@ -1177,6 +1177,9 @@ details.code[open] summary.named {
 details.code:not([open]) summary {
   margin-bottom: -10px; }
 
+p + details.code {
+  margin-top: -20px; }
+
 .example,
 .src {
   color: var(--code-foreground); }

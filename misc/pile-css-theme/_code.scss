@@ -104,6 +104,11 @@ details.code {
   }
 }
 
+// de-duplicate margin
+p + details.code  {
+  margin-top: -20px; // pre margin size
+}
+
 // Palette copied from blog
 // ------------------------
 // foreground: #655370
