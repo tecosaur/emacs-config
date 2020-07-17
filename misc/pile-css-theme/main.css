@@ -1629,9 +1629,16 @@ h6 {
   color: var(--text-light);
   font-size: inherit;
   color: var(--back-medium);
-  line-height: 1;
-  position: absolute;
-  transform: translateX(-100%) translateX(-10px); }
+  line-height: 1; }
+  @media (min-width: 1000px) {
+    .section-number-1,
+    .section-number-2,
+    .section-number-3,
+    .section-number-4,
+    .section-number-5,
+    .section-number-6 {
+      position: absolute;
+      transform: translateX(-100%) translateX(-10px); } }
 
 .outline-text-2:empty + .outline-3 > h3, .outline-text-2:-moz-only-whitespace + .outline-3 > h3 {
   margin-top: 20px; }
