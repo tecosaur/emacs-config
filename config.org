@@ -5074,10 +5074,10 @@ We also want a particular preamble when minted is used,
   breakbefore=\\\\\.+,
   breakafter=\\,
   style=autumn,
-  breaksymbol=\\color{page!60!text}\\tiny\\ensuremath{\\hookrightarrow},
-  breakanywheresymbolpre=\\,\\footnotesize\\ensuremath{_{\\color{page!60!text}\\rfloor}},
-  breakbeforesymbolpre=\\,\\footnotesize\\ensuremath{_{\\color{page!60!text}\\rfloor}},
-  breakaftersymbolpre=\\,\\footnotesize\\ensuremath{_{\\color{page!60!text}\\rfloor}},
+  breaksymbol=\\color{white!60!black}\\tiny\\ensuremath{\\hookrightarrow},
+  breakanywheresymbolpre=\\,\\footnotesize\\ensuremath{_{\\color{white!60!black}\\rfloor}},
+  breakbeforesymbolpre=\\,\\footnotesize\\ensuremath{_{\\color{white!60!black}\\rfloor}},
+  breakaftersymbolpre=\\,\\footnotesize\\ensuremath{_{\\color{white!60!black}\\rfloor}},
 }
 
 \\BeforeBeginEnvironment{minted}{
@@ -5106,7 +5106,7 @@ the "universal preamble"
 Instead of just loading doing the 'minted stuff' all the time, we can try to be
 a bit cleverer, and handle the "universal preamble" while we're at it.
 #+NAME: org-latex-smart-minted
-#+BEGIN_SRC emacs-lisp :noweb yes
+#+BEGIN_SRC emacs-lisp :tangle no :noweb yes
 (after! org
   (defadvice! org-latex-header-smart-minted (orig-fn tpl def-pkg pkg snippets-p &optional extra)
     "Include minted config if src blocks are detected."
