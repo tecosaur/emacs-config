@@ -57,3 +57,20 @@
   color: $text-light;
   font-family: $code-font;
 }
+
+.footref  {
+  text-shadow: none;
+}
+.footpara {
+  display: inline;
+}
+.footdef:last-of-type  {
+  margin-bottom: 1em;
+}
+
+th.org-right  { text-align: center; }
+th.org-left   { text-align: center; }
+th.org-center { text-align: center; }
+td.org-right  { text-align: right;  }
+td.org-left   { text-align: left;   }
+td.org-center { text-align: center; }

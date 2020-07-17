@@ -16,5 +16,9 @@ img.zoomTarget:hover {
 // make white image backgrounds match page
 img {
   filter: invert(6%);
-    max-width: 100%;
+  max-width: 100%;
+}
+
+.org-svg {
+  width: 90%
 }

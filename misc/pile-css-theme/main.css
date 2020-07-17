@@ -1510,6 +1510,9 @@ img {
   filter: invert(6%);
   max-width: 100%; }
 
+.org-svg {
+  width: 90%; }
+
 #footnotes {
   margin-top: 70px;
   padding-top: 30px;
@@ -2244,6 +2247,33 @@ li.off > .checkbox::after {
 .priority {
   color: var(--text-light);
   font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace; }
+
+.footref {
+  text-shadow: none; }
+
+.footpara {
+  display: inline; }
+
+.footdef:last-of-type {
+  margin-bottom: 1em; }
+
+th.org-right {
+  text-align: center; }
+
+th.org-left {
+  text-align: center; }
+
+th.org-center {
+  text-align: center; }
+
+td.org-right {
+  text-align: right; }
+
+td.org-left {
+  text-align: left; }
+
+td.org-center {
+  text-align: center; }
 
 div.table {
   max-width: 100%;
