@@ -68,6 +68,7 @@ li {
 // folding
 
 details.code {
+  position: relative;
   summary {
     position: relative;
     left: -3px;
@@ -100,13 +101,16 @@ details.code {
     margin-bottom: -26px;
   }
   &:not([open]) summary {
-    margin-bottom: -10px;
+    margin-bottom: -5px;
   }
 }
 
 // de-duplicate margin
 p + details.code  {
   margin-top: -20px; // pre margin size
+}
+li p + details.code  {
+  margin-top: -5px;
 }
 
 // Palette copied from blog
@@ -165,6 +169,30 @@ $code-warning: $orange;
   .org-constant,
   .org-highlight-numbers-number {
     color: $code-constant;
+  }
+}
+
+// copy button
+
+details.code > .gutter {
+  position: absolute;
+  top: 0;
+  left: -2.5rem;
+  width: 2.3rem;
+  padding-top: 10px;
+  height: calc(100% - 10px);
+  z-index: 1;
+  text-align: right;
+  transition: opacity 200ms;
+  opacity: 0;
+  font-size: 15px;
+  &:hover {
+    opacity: 1;
+  }
+  button {
+    color: $text-gray;
+    background: none;
+    border: none;
   }
 }
 

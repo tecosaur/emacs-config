@@ -441,8 +441,8 @@ template {
   #switch-label {
     left: auto;
     left: bottom;
-    right: 1%;
-    top: 2.5rem; } }
+    right: 1vw;
+    top: 1vh; } }
 
 #switch-label::before {
   content: var(--switch-icon);
@@ -1141,44 +1141,45 @@ li code {
 li p code {
   font-size: 15px; }
 
-details.code summary {
-  position: relative;
-  left: -3px;
-  padding-left: 10px;
-  padding-botton: 4px;
-  margin-left: -10px;
-  z-index: 1;
-  outline: none;
-  font-family: "Open Sans";
-  font-weight: normal;
-  font-style: normal;
-  font-size: 12px;
-  line-height: 1.9;
-  color: var(--text-light); }
-  details.code summary .name {
-    font-size: 14px;
-    color: var(--text-medium);
-    margin-right: 0.7em; }
-  details.code summary .lang {
-    font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace;
-    font-style: italic; }
-
-details.code summary::marker {
-  color: var(--back-medium); }
-
-details.code[open] summary {
-  margin-bottom: -32px; }
-  details.code[open] summary .lang {
-    color: transparent; }
-
-details.code[open] summary.named {
-  margin-bottom: -26px; }
-
-details.code:not([open]) summary {
-  margin-bottom: -10px; }
+details.code {
+  position: relative; }
+  details.code summary {
+    position: relative;
+    left: -3px;
+    padding-left: 10px;
+    padding-botton: 4px;
+    margin-left: -10px;
+    z-index: 1;
+    outline: none;
+    font-family: "Open Sans";
+    font-weight: normal;
+    font-style: normal;
+    font-size: 12px;
+    line-height: 1.9;
+    color: var(--text-light); }
+    details.code summary .name {
+      font-size: 14px;
+      color: var(--text-medium);
+      margin-right: 0.7em; }
+    details.code summary .lang {
+      font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace;
+      font-style: italic; }
+  details.code summary::marker {
+    color: var(--back-medium); }
+  details.code[open] summary {
+    margin-bottom: -32px; }
+    details.code[open] summary .lang {
+      color: transparent; }
+  details.code[open] summary.named {
+    margin-bottom: -26px; }
+  details.code:not([open]) summary {
+    margin-bottom: -5px; }
 
 p + details.code {
   margin-top: -20px; }
+
+li p + details.code {
+  margin-top: -5px; }
 
 .example,
 .src {
@@ -1224,6 +1225,25 @@ p + details.code {
   .src .org-constant,
   .src .org-highlight-numbers-number {
     color: var(--code-const); }
+
+details.code > .gutter {
+  position: absolute;
+  top: 0;
+  left: -2.5rem;
+  width: 2.3rem;
+  padding-top: 10px;
+  height: calc(100% - 10px);
+  z-index: 1;
+  text-align: right;
+  transition: opacity 200ms;
+  opacity: 0;
+  font-size: 15px; }
+  details.code > .gutter:hover {
+    opacity: 1; }
+  details.code > .gutter button {
+    color: var(--text-gray);
+    background: none;
+    border: none; }
 
 /* Languages per Org manual */
 pre.src-asymptote::before {
@@ -1789,7 +1809,82 @@ dl a {
   #crosslinks a:not(.highlight)[href^="#"],
   li a[href^="#"],
   dl a[href^="#"] {
-    color: var(--text-gray); }
+    text-shadow: 0.03em 0 var(--back-white), -0.03em 0 var(--back-white), 0 0.03em var(--back-white), 0 -0.03em var(--back-white), 0.06em 0 var(--back-white), -0.06em 0 var(--back-white), 0.09em 0 var(--back-white), -0.09em 0 var(--back-white), 0.12em 0 var(--back-white), -0.12em 0 var(--back-white), 0.15em 0 var(--back-white), -0.15em 0 var(--back-white);
+    background-image: linear-gradient(var(--text-gray), var(--text-gray));
+    background-size: 1px 1px;
+    background-repeat: repeat-x;
+    background-position: 0% 95%;
+    border-radius: 1px;
+    color: var(--text-gray);
+    text-decoration: none; }
+    #breadcrumbs a[href^="#"]::selection,
+    figcaption a[href^="#"]::selection,
+    p a[href^="#"]::selection,
+    .page-tags a[href^="#"]::selection,
+    table a[href^="#"]::selection,
+    #crosslinks a:not(.highlight)[href^="#"]::selection,
+    li a[href^="#"]::selection,
+    dl a[href^="#"]::selection {
+      text-shadow: 0.03em 0 var(--back-medium), -0.03em 0 var(--back-medium), 0 0.03em var(--back-medium), 0 -0.03em var(--back-medium), 0.06em 0 var(--back-medium), -0.06em 0 var(--back-medium), 0.09em 0 var(--back-medium), -0.09em 0 var(--back-medium), 0.12em 0 var(--back-medium), -0.12em 0 var(--back-medium), 0.15em 0 var(--back-medium), -0.15em 0 var(--back-medium);
+      background: var(--back-medium); }
+    #breadcrumbs a[href^="#"]::-moz-selection,
+    figcaption a[href^="#"]::-moz-selection,
+    p a[href^="#"]::-moz-selection,
+    .page-tags a[href^="#"]::-moz-selection,
+    table a[href^="#"]::-moz-selection,
+    #crosslinks a:not(.highlight)[href^="#"]::-moz-selection,
+    li a[href^="#"]::-moz-selection,
+    dl a[href^="#"]::-moz-selection {
+      text-shadow: 0.03em 0 var(--back-medium), -0.03em 0 var(--back-medium), 0 0.03em var(--back-medium), 0 -0.03em var(--back-medium), 0.06em 0 var(--back-medium), -0.06em 0 var(--back-medium), 0.09em 0 var(--back-medium), -0.09em 0 var(--back-medium), 0.12em 0 var(--back-medium), -0.12em 0 var(--back-medium), 0.15em 0 var(--back-medium), -0.15em 0 var(--back-medium);
+      background: var(--back-medium); }
+    #breadcrumbs a[href^="#"] *,
+    #breadcrumbs a[href^="#"] *:after, #breadcrumbs a[href^="#"]:after,
+    #breadcrumbs a[href^="#"] *:before, #breadcrumbs a[href^="#"]:before,
+    figcaption a[href^="#"] *,
+    figcaption a[href^="#"] *:after,
+    figcaption a[href^="#"]:after,
+    figcaption a[href^="#"] *:before,
+    figcaption a[href^="#"]:before,
+    p a[href^="#"] *,
+    p a[href^="#"] *:after,
+    p a[href^="#"]:after,
+    p a[href^="#"] *:before,
+    p a[href^="#"]:before,
+    .page-tags a[href^="#"] *,
+    .page-tags a[href^="#"] *:after,
+    .page-tags a[href^="#"]:after,
+    .page-tags a[href^="#"] *:before,
+    .page-tags a[href^="#"]:before,
+    table a[href^="#"] *,
+    table a[href^="#"] *:after,
+    table a[href^="#"]:after,
+    table a[href^="#"] *:before,
+    table a[href^="#"]:before,
+    #crosslinks a:not(.highlight)[href^="#"] *,
+    #crosslinks a:not(.highlight)[href^="#"] *:after,
+    #crosslinks a:not(.highlight)[href^="#"]:after,
+    #crosslinks a:not(.highlight)[href^="#"] *:before,
+    #crosslinks a:not(.highlight)[href^="#"]:before,
+    li a[href^="#"] *,
+    li a[href^="#"] *:after,
+    li a[href^="#"]:after,
+    li a[href^="#"] *:before,
+    li a[href^="#"]:before,
+    dl a[href^="#"] *,
+    dl a[href^="#"] *:after,
+    dl a[href^="#"]:after,
+    dl a[href^="#"] *:before,
+    dl a[href^="#"]:before {
+      text-shadow: none; }
+    #breadcrumbs a[href^="#"]:visited,
+    figcaption a[href^="#"]:visited,
+    p a[href^="#"]:visited,
+    .page-tags a[href^="#"]:visited,
+    table a[href^="#"]:visited,
+    #crosslinks a:not(.highlight)[href^="#"]:visited,
+    li a[href^="#"]:visited,
+    dl a[href^="#"]:visited {
+      color: var(--text-gray); }
     #breadcrumbs a[href^="#"]:hover,
     figcaption a[href^="#"]:hover,
     p a[href^="#"]:hover,
