@@ -4778,6 +4778,40 @@ directly to the ~table~ element, so we have to wrap it in a ~div~.
           (funcall orig-fn table contents info)
           "</div>"))
 #+END_SRC
+***** TOC as a collapsable tree
+The TOC is much nicer to navigate as a collapsable tree. Unfortunately we cannot
+achieve this with CSS alone. Thankfully we can avoid JS though, by adapting the
+TOC generation code to use a ~label~ for each item, and a hidden ~checkbox~ to keep
+track of state.
+
+To add this, we need to change one line in [[file:~/.emacs.d/.local/straight/repos/org-mode/lisp/ox-html.el::(format "<a href=\"#%s\">%s</a>"][org-html--format-toc-headline]].
+
+Since we can actually accomplish the desired effect by adding advice /around/ the
+function, without overriding it --- let's do that to reduce the bug surface of
+this config a tad.
+#+BEGIN_SRC emacs-lisp
+(defadvice! org-html--format-toc-headline-colapseable (orig-fn headline info)
+  "Add a label and checkbox to `org-html--format-toc-headline's usual output,
+to allow the TOC to be a collapseable tree."
+  :around #'org-html--format-toc-headline
+  (let ((id (or (org-element-property :CUSTOM_ID headline)
+                (org-export-get-reference headline info))))
+    (format "<input type='checkbox' id='toc--%s'/><label for='toc--%s'>%s</label>"
+            id id (funcall orig-fn headline info))))
+#+END_SRC
+
+Now, leaves (headings with no children) shouldn't have the ~label~ item. The
+obvious way to achieve this is by including some /if no children.../ logic in
+~org-html--format-toc-headline-colapseable~. Unfortunately, I can't my elisp isn't
+up to par to extract the number of child headings from the mountain of info that
+org provides.
+#+BEGIN_SRC emacs-lisp
+(defadvice! org-html--toc-text-stripped-leaves (orig-fn toc-entries)
+  "Remove label"
+  :around #'org-html--toc-text
+  (replace-regexp-in-string "<input [^>]+><label [^>]+>\\(.+?\\)</label></li>" "\\1</li>"
+                            (funcall orig-fn toc-entries)))
+#+END_SRC
 ***** Make verbatim different to code
 Since we have =verbatim= and ~code~, let's use =verbatim= for key strokes.
 #+BEGIN_SRC emacs-lisp

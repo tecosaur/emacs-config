@@ -43,15 +43,6 @@ nav#table-of-contents {
       }
     }
 
-    &:hover {
-      #text-table-of-contents {
-        display: block;
-      }
-      h2 {
-        display: none;
-      }
-    }
-
     h2 {
       transform: rotate(-90deg);
       position: relative;
@@ -69,71 +60,135 @@ nav#table-of-contents {
 //
 
 ::-webkit-scrollbar { width: 10px; height: 8px; }
-::-webkit-scrollbar-track { background:transparent; }
-::-webkit-scrollbar-thumb { background:transparent; border-radius: 10px; }
-::-webkit-scrollbar-thumb:hover { background:transparent; }
+::-webkit-scrollbar-track { background:#9992; }
+::-webkit-scrollbar-thumb { background:#ccc; }
+::-webkit-scrollbar-thumb:hover { background:#888; }
 
 @media (min-width: 1280px) {
   #table-of-contents {
     position: fixed;
-    right: 4rem;
+    width: 18rem;
+    right: 1rem;
     top: 0;
     padding: 1em;
-    width: 15rem;
     line-height: 1.5;
     margin-top: 4rem;
     h2 {
       margin-top: 0;
     }
-    > div > ul {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-      max-height: calc(100vh - 5rem - 40px);
-      overflow-y: auto;
-      overflow-x: visible;
-      scrollbar-color: transparent transparent;
-      scrollbar-width: thin;
-      ul {
-        padding-left: 2em;
+    #text-table-of-contents {
+      position: relative;
+      &::before, &::after {
+        position: absolute;
+        content: '';
+        width: calc(100% - 10px);
+        height: 0.7rem;
+        left: 0;
+        z-index: 1;
       }
-      > li {
-        display: block;
+      &::before {
+        top: 0;
+        background: linear-gradient(180deg, $back-light 0%, $back-light 35%, rgba(0,0,0,0) 100%);
       }
-    }
-    ul.active > li {
-      display: block;
-    }
-    li {
-      display: none;
-      a {
-        display: inline-block;
-        color: $text-light;
-        text-decoration: none;
-        -webkit-transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
-        transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
-        // negating earlir styles
-        text-shadow: none;
-        background: none !important;
+      &::after {
+        bottom: 0;
+        background: linear-gradient(0deg, $back-light 0%, $back-light 35%, rgba(0,0,0,0) 100%);
       }
-    }
-    li:hover, li:hover > ul > li {
-      display: block !important;
-      a {
-        color: $text-gray;
+      > ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        max-height: calc(100vh - 5rem - 50px);
+        overflow-y: auto;
+        overflow-x: hidden;
+        scrollbar-width: thin;
+        ul {
+          padding-left: 2em;
+        }
+        ul.active {
+          display: inline-block;
+        }
+        li.active > ul {
+          display: inline-block;
+        }
+        li.active > label a, li.active > a {
+          color: $text-dark;
+        }
+        li.active > input:not(:checked) ~ label::after {
+          transform: rotate(90deg);
+          top: 5px;
+          opacity: 0.35;
+        }
+        > li:last-child {
+          margin-bottom: 2rem;
+        }
       }
-    }
-    li.active > a {
-      color: $text-dark;
-    }
-    li::before {
-      content: "";
     }
   }
 }
+#table-of-contents {
+    // width: 20rem;
+    // right: 1rem;
+  @media (min-width: 1440px) {
+    width: 20rem;
+    right: 2rem;
+  }
+  @media (min-width: 1640px) {
+    right: 5rem;
+  }
+  @media (min-width: 2000px) {
+    width: 25rem;
+  }
+}
 
-@media (min-width: 1640px) {
-  #table-of-contents {
-    right: 10rem;
+#table-of-contents {
+  #text-table-of-contents {
+    > ul ul {
+      display: none;
+    }
+    li {
+      input[type=checkbox] {
+        display: none;
+      }
+      label {
+        display: inline-block;
+        width: 100%;
+        position: relative;
+      }
+      a {
+        display: inline-block;
+        color: $text-light;
+        text-decoration: none !important;
+        // negating other <a> styles
+        text-shadow: none;
+        background: none !important;
+      }
+      label::after {
+        content: "\25b6";
+        color: $text-light;
+        margin-left: 0.5em;
+        font-size: 10px;
+        display: inline-block;
+        position: absolute;
+        top: 3.4px;
+        left: -20px;
+        opacity: 0.8;
+      }
+      input:checked ~ ul {
+        display: inline-block !important; // needs to override more deeper selector div > ul ul
+      }
+      input:checked ~ label {
+        a {
+          font-weight: bold;
+        }
+        &::after {
+          transform: rotate(90deg);
+          top: 5px;
+        }
+      }
+      &::before {
+        content: "" !important;
+      }
+    }
   }
 }
