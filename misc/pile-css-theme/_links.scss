@@ -9,7 +9,7 @@ table a,
 li a,
 dl a {
   @include link-underline($back-white, $text-dark);
-
+  text-shadow: none;
   &:hover {
     @include text-underline-crop($back-white);
     @include text-background($back-white, $text-dark);
@@ -21,9 +21,14 @@ dl a {
   }
 
   &[href^="#"] {
-    color: $text-gray;
+    @include text-underline-crop($back-white);
+    @include text-background($back-white, $text-gray);
+    @include text-selection($back-white);
+    text-shadow: none;
     &:hover {
-      @include link-underline($back-white, $text-medium);
+      @include text-underline-crop($back-white);
+      @include text-background($back-white, $text-medium);
+      @include text-selection($back-white);
     }
   }
 }

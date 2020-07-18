@@ -97,7 +97,7 @@ h6 {
 .section-number-6 {
   @include light-meta();
   font-size: inherit;
-  color: $back-medium;
+  color: $text-light;
   line-height: 1;
   @media (min-width: 1000px) {
     position: absolute; // to remove the bounding box

@@ -42,8 +42,9 @@ $text-dark: var(--text-dark);
   --text-medium: #222;
   --text-dark: #000;
 
-  --switch-icon: "🌝";
-  --switch-shadow-color: #fce477;
+  --switch-icon: "🌚";
+  --switch-shadow-color: #373d4e;
+  --switch-text: "dark mode?";
 }
 
 #theme-switch:checked ~ #page {
@@ -57,7 +58,7 @@ $text-dark: var(--text-dark);
     --code-regex: #a184b3;
 
     --back-white: #000;
-    --back-light: #111;
+    --back-light: #181818;
     --back-medium: #444;
 
     --text-light: #7b7b7b;
@@ -65,8 +66,9 @@ $text-dark: var(--text-dark);
     --text-medium: #ddd;
     --text-dark: #efefef;
 
-    --switch-icon: "🌚";
-    --switch-shadow-color: #373d4e;
+    --switch-icon: "🌝";
+    --switch-shadow-color: #fce477;
+    --switch-text: "light mode?";
     img.invertable {
         filter: invert(93%);
     }
@@ -77,18 +79,9 @@ $text-dark: var(--text-dark);
 }
 
 #switch-label {
-    // FIXME Chrome seems to treat this as position: absolute
     position: fixed;
     bottom: 4rem;
     left: 3rem;
-}
-@media (max-width: 1000px) {
-    #switch-label {
-        left: auto;
-        left: bottom;
-        right: 1vw;
-        top: 1vh;
-    }
 }
 
 #switch-label::before {
@@ -100,9 +93,37 @@ $text-dark: var(--text-dark);
 #switch-label::after {
   content: var(--switch-text);
   color: var(--switch-shadow-color);
+  font-size: 12px;
+  visibility: hidden;
+  margin-left: 0.5em;
+  z-index: 1;
+  position: fixed;
+  bottom: calc(4rem - 25px);
+  left: calc(3rem - 10px);
 }
 
-#theme-switch:focus ~ #page #switch-label::before,
-#switch-label:hover::before {
+@media (max-width: 1000px) {
+    #switch-label {
+        left: auto;
+        bottom: auto;
+        right: 1vw;
+        top: 1vh;
+        &::after {
+          position: fixed;
+          top: calc(1vh + 3px);
+          right: calc(1vw + 30px);
+          left: auto;
+          bottom: auto;
+        }
+    }
+}
+
+#theme-switch:focus ~ #page #switch-label,
+#switch-label:hover {
+  &::before {
   text-shadow: 0 0 15px var(--switch-shadow-color);
+  }
+  &::after {
+    visibility: visible;
+  }
 }
