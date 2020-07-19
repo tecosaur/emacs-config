@@ -1905,7 +1905,7 @@ before switching if it is empty.
 Let's send emails too.
 #+BEGIN_SRC emacs-lisp
 (after! mu4e
-  (setq sendmail-program "/usr/local/bin/msmtp"
+  (setq sendmail-program "/usr/bin/msmtp"
         send-mail-function 'smtpmail-send-it
         message-sendmail-f-is-evil t
         message-sendmail-extra-arguments '("--read-envelope-from"); , "--read-recipients")
