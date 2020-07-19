@@ -2309,8 +2309,19 @@ td.org-center {
   text-align: center; }
 
 div.table {
-  max-width: 100%;
-  overflow-x: auto; }
+  position: relative; }
+  div.table .gutter {
+    left: calc(20px - 2.5rem);
+    padding-top: 18px; }
+  div.table .name {
+    position: absolute;
+    font-size: 14px;
+    font-family: "Open Sans";
+    left: 20px;
+    color: var(--text-medium); }
+  div.table .tabular {
+    max-width: 100%;
+    overflow-x: auto; }
 
 table {
   border-color: var(--text-light);

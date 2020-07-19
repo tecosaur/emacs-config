@@ -1,6 +1,13 @@
 div.table {
-  max-width: 100%;
-  overflow-x: auto;
+  position: relative;
+  .gutter {
+    left: calc(20px - 2.5rem);
+    padding-top: 18px;
+  }
+  .tabular {
+    max-width: 100%;
+    overflow-x: auto;
+  }
 }
 
 table {
