@@ -1757,8 +1757,8 @@ will also be the width of all other printable characters."
         mu4e-headers-unread-mark     (cons "u" (mu4e~normalised-icon "eye-slash" :v-adjust 0.05))))
 #+END_SRC
 
-To account for the increase width of each flag charachter, and make perform a
-few more visual tweaks, we'll tweak the headers a bit.
+To account for the increase width of each flag character, and make perform a
+few more visual tweaks, we'll tweak the headers a bit
 #+BEGIN_SRC emacs-lisp
 (after! mu4e
 
@@ -4664,6 +4664,10 @@ Suffice to say I've snatched it, with a few of my own tweaks applied.
 By wrapping the ~<pre>~ element in a ~<details>~ block, we can obtain collapsable
 blocks with no CSS, though we will toss a little in anyway to have this looking
 somewhat spiffy.
+
+We can take our modification a step further, and add a gutter on the side of the
+Src block containing both an anchor referencing the current block, and a button
+to copy the content of the block.
 
 #+NAME: Src blocks
 #+BEGIN_SRC emacs-lisp
