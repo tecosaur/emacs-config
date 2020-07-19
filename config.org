@@ -4657,6 +4657,7 @@ Suffice to say I've snatched it, with a few of my own tweaks applied.
               (f-read-text (expand-file-name "misc/pile-css-theme/main.css" doom-private-dir))
               "</style>")
         org-html-htmlize-output-type 'css
+        org-html-doctype "html5"
         org-html-html5-fancy t))
 #+END_SRC
 ***** Collapsable src and example blocks
