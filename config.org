@@ -2323,9 +2323,9 @@ Let's try to make tramp handle prompts better
   (setenv "SHELL" "/bin/bash")
   (setq tramp-shell-prompt-pattern "\\(?:^\\|\\)[^]#$%>\n]*#?[]#$%>] *\\(\\[[0-9;]*[a-zA-Z] *\\)*")) ;; default + 
 #+END_SRC
-**** Troubleshooting
+*** Troubleshooting
 In case the remote shell is misbehaving, here are some things to try
-***** Zsh
+**** Zsh
 There are some escape code you don't want, let's make it behave more considerately.
 #+BEGIN_SRC shell :eval no :tangle no
 if [[ "$TERM" == "dumb" ]]; then
@@ -2705,6 +2705,7 @@ Nested snippets are good, enable that.
 (setq yas-triggers-in-field t)
 #+END_SRC
 * Language configuration
+** General
 *** File Templates
 For some file types, we overwrite defaults in the [[file:./snippets][snippets]] directory, others
 need to have a template assigned.
