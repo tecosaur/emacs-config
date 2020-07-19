@@ -148,7 +148,7 @@ Apparently this is used by ~GPG~, and all sorts of other things.
 
 Speaking of ~GPG~, I want to use =~/.authsource.gpg= instead of the default in
 =~/.emacs.d=. Why? Because my home directory is already cluttered, so this won't
-make a difference, and I don't want to accidently purge this file (I have done
+make a difference, and I don't want to accidentaly purge this file (I have done
 ~rm -rf~/.emac.d~ before). I also want to cache as much as possible, as my home
 machine is pretty safe, and my laptop is shutdown a lot.
 #+BEGIN_SRC emacs-lisp
@@ -181,7 +181,7 @@ shown by =SPC h v= and selecting what I thought looks good, I've ended up adding
 (global-subword-mode 1)                           ; Iterate through CamelCase words
 #+END_SRC
 *** Fullscreen
-I also like the idea of fullscreen-ing when opened by ~emacs~ or the ~.desktop~ file.
+I also like the idea of fullscreen-ing when opened by ~Emacs~ or the ~.desktop~ file.
 #+BEGIN_SRC emacs-lisp
 (if (eq initial-window-system 'x)                 ; if started by emacs command or desktop file
     (toggle-frame-maximized)
@@ -285,7 +285,7 @@ There's a bug with the modeline in insert mode for org documents ([[https://gith
 There are a few handy macros added by doom, namely
 - ~load!~ for loading external ~.el~ files relative to this one
 - ~use-package!~ for configuring packages
-- ~add-load-path!~ for adding directories to the ~load-path~ where ~emacs~ looks when
+- ~add-load-path!~ for adding directories to the ~load-path~ where ~Emacs~ looks when
   you load packages with ~require~ or ~use-package~
 - ~map!~ for binding new keys
 ** Other things
@@ -311,7 +311,7 @@ I'd like to have just the buffer name, then if applicable the project folder
 #+END_SRC
 *** Splash screen
 Emacs can render an image as the splash screen, and [[https://github.com/MarioRicalde][@MarioRicalde]] came up with a
-cracker! He's also provided me with a nice emacs-style /E/, which is good for
+cracker! He's also provided me with a nice Emacs-style /E/, which is good for
 smaller windows. *@MarioRicalde* you have my sincere thanks, you're great!
 [[file:misc/splash-images/blackhole-lines.svg]]
 
@@ -831,14 +831,14 @@ are just waiting to be saved!
   (setq company-show-numbers t)
 (add-hook 'evil-normal-state-entry-hook #'company-abort)) ;; make aborting less annoying.
 #+END_SRC
-Now, the improvements from ~precident~ are mostly from remembering history, so
+Now, the improvements from ~precedent~ are mostly from remembering history, so
 let's improve that memory.
 #+BEGIN_SRC emacs-lisp
 (setq-default history-length 1000)
 (setq-default prescient-history-length 1000)
 #+END_SRC
 *** Plain Text
-~ispell~ is nice, let's have it in ~text~, ~markdown~, and ~GFM~.
+~Ispell~ is nice, let's have it in ~text~, ~markdown~, and ~GFM~.
 #+BEGIN_SRC emacs-lisp
 (set-company-backend! '(text-mode
                         markdown-mode
@@ -847,7 +847,7 @@ let's improve that memory.
               company-files
               company-yasnippet))
 #+END_SRC
-We then configure the dictionary we're using in [[*Ispell][ispell]].
+We then configure the dictionary we're using in [[*Ispell][Ispell]].
 *** ESS
 ~company-dabbrev-code~ is nice. Let's have it.
 #+BEGIN_SRC emacs-lisp
@@ -1819,7 +1819,7 @@ few more visual tweaks, we'll tweak the headers a bit
 #+END_SRC
 
 While considering width and the mu4e header view --- it's hard to see enough with
-a with less than 120 charachters, so let's add a hook to mu4e's header mode.
+a with less than 120 characters, so let's add a hook to mu4e's header mode.
 #+BEGIN_SRC emacs-lisp
 (after! mu4e
   (defvar mu4e-min-header-frame-width 120
@@ -1843,7 +1843,7 @@ want to use in and evil selection, this can be easily fixed.
     :v "u" #'mu4e-headers-mark-for-unmark)
 #+END_SRC
 
-The main mu4e window is ... alright. I'm not afraid of unicode though, so I'll
+The main mu4e window is ... alright. I'm not afraid of Unicode though, so I'll
 define a fancier version. Look, it's the asterisks. We can do better than
 asterisks. The keybindings can also be made nicer, why have ~[x]~ when we can just
 have a bold, coloured ~x~. Does the same job, while looking much less garish.
@@ -1892,7 +1892,7 @@ unbound in the main mu4e view.
 
 I often find myself viewing new mails using the Emacs client. When opening a new
 window and switching to view the mu4e workspace, and empty workspace is left. We
-can try to avoid this workspace polution by deleting the current workspace
+can try to avoid this workspace pollution by deleting the current workspace
 before switching if it is empty.
 #+BEGIN_SRC emacs-lisp
 (defadvice! delete-current-worspace-if-empty ()
@@ -1912,7 +1912,7 @@ Let's send emails too.
         message-send-mail-function 'message-send-mail-with-sendmail))
 #+END_SRC
 
-It's also nice to avoid accidently sending emails with the wrong account.
+It's also nice to avoid accidentally sending emails with the wrong account.
 If we can send from the address in the ~To~ field, let's do that. Opening an ~ivy~
 prompt otherwise also seems sensible.
 #+BEGIN_SRC emacs-lisp
@@ -2054,7 +2054,7 @@ Here's what I want
  + No crufty timers on loops et. al
 I think a file watch etc. setup similar to that in [[*Rebuild mail index while using mu4e][Rebuild mail index while
 using mu4e]] is probably the cleanest way to operate. We can put the current PID
-in the file and check for existance too.
+in the file and check for exitance too.
 #+BEGIN_SRC emacs-lisp
 (after! mu4e
   (defvar mu4e-lock-file "/tmp/mu4e_lock"
@@ -2422,7 +2422,7 @@ I also think that having =evil-= appear in so many popups is a bit too verbose, 
    ))
 #+END_SRC
 ** xkcd
-We wan't to set this up so it loads nicely in [[*Extra links][Extra links]].
+We want to set this up so it loads nicely in [[*Extra links][Extra links]].
 #+BEGIN_SRC emacs-lisp
 (use-package! xkcd
   :commands (xkcd-get-json xkcd-download xkcd-get
@@ -2713,7 +2713,7 @@ need to have a template assigned.
 (set-file-template! "\\.tex$" :trigger "__" :mode 'latex-mode)
 #+END_SRC
 ** Plaintext
-It's nice to see ansi colour codes displayed
+It's nice to see ANSI colour codes displayed
 #+BEGIN_SRC emacs-lisp
 (after! text-mode
   (add-hook! 'text-mode-hook
@@ -4905,7 +4905,7 @@ We also want to use HTML checkboxes, however we want to get a bit fancier than d
 - [-] Work in progress
 - [X] This is done
 ***** Header anchors
-I want to add github-style links on hover for headings.
+I want to add GitHub-style links on hover for headings.
 #+BEGIN_SRC emacs-lisp
 (after! org
   (defun tec/org-export-html-headline-anchor (text backend info)
@@ -5837,7 +5837,7 @@ will do it's own line wrapping, hence we /only/ want to use visual line wrapping
 #+END_SRC
 
 Since markdown is often seen as rendered HTML, let's try to somewhat mirror the
-style or markdown renderes.
+style or markdown renderers.
 
 Most markdown renders seem to make the first three headings levels larger than
 normal text, the first two much so. Then the fourth level tends to be the same
