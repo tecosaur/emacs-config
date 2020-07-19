@@ -1189,7 +1189,7 @@ details.code {
   details.code[open] summary {
     margin-bottom: -32px; }
     details.code[open] summary .lang {
-      color: transparent; }
+      display: none; }
   details.code[open] summary.named {
     margin-bottom: -26px; }
   details.code:not([open]) summary {
@@ -2313,12 +2313,6 @@ div.table {
   div.table .gutter {
     left: calc(20px - 2.5rem);
     padding-top: 18px; }
-  div.table .name {
-    position: absolute;
-    font-size: 14px;
-    font-family: "Open Sans";
-    left: 20px;
-    color: var(--text-medium); }
   div.table .tabular {
     max-width: 100%;
     overflow-x: auto; }

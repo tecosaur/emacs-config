@@ -94,7 +94,7 @@ details.code {
   &[open] summary {
     margin-bottom: -32px;
     .lang {
-      color: transparent;
+      display: none;
     }
   }
   &[open] summary.named {
