@@ -3550,7 +3550,7 @@ made unique when necessary."
                         (when (org-element-property :raw-value datum)
                           ;; Heading with a title
                           (unpackaged/org-export-new-named-reference datum cache))
-                        (when (memq (car datum) '(src-block table))
+                        (when (member (car datum) '(src-block table))
                           ;; Nameable elements
                           (unpackaged/org-export-new-named-reference datum cache))
                         ;; NOTE: This probably breaks some Org Export
@@ -3585,12 +3585,18 @@ made unique when necessary."
                                                     (string-to-number suffix)
                                                   0)))
                                   (setf ,place (format "%s--%s" s1 (cl-incf suffix)))))))
-    (let* ((title (if (eq (car datum) 'headline)
+    (let* ((headline-p (eq (car datum) 'headline))
+           (title (if headline-p
                       (org-element-property :raw-value datum)
-                    (or (org-element-property :name datum) (symbol-name (car datum)))))
+                    (or (org-element-property :name datum)
+                        (concat (org-element-property :raw-value
+                                 (org-element-property :parent
+                                  (org-element-property :parent datum)))))))
            ;; get ascii-only form of title without needing percent-encoding
-           (ref (org-heading-contraction (substring-no-properties title)))
-           (parent (org-element-property :parent datum)))
+           (ref (concat (org-heading-contraction (substring-no-properties title))
+                        (unless (or headline-p (org-element-property :name datum))
+                          (concat "," (symbol-name (car datum)) "--1"))))
+           (parent (when headline-p (org-element-property :parent datum))))
       (while (--any (equal ref (car it))
                     cache)
         ;; Title not unique: make it so.
@@ -3600,7 +3606,7 @@ made unique when necessary."
                                 "--" title)
                   ;; get ascii-only form of title without needing percent-encoding
                   ref (org-heading-contraction (substring-no-properties title))
-                  parent (org-element-property :parent parent))
+                  parent (when headline-p (org-element-property :parent parent)))
           ;; No more ancestors: add and increment a number.
           (inc-suffixf ref)))
       ref)))
@@ -4658,18 +4664,25 @@ somewhat spiffy.
   (let* ((properties (cadr src-block))
          (lang (mode-name-to-lang-name
           (plist-get properties :language)))
-         (name (plist-get properties :name)))
+         (name (plist-get properties :name))
+         (ref (org-export-get-reference src-block info)))
     (format
-     "<details class='code' open><summary%s>%s</summary>
+     "<details id='%s' class='code' open><summary%s>%s</summary>
 <div class='gutter'>
+<a href='#%s'>#</a>
 <button title='Copy to clipboard' onclick='copyPreToClipdord(this)'>⎘</button>\
 </div>
 %s
 </details>"
+     ref
      (if name " class='named'" "")
      (if (not name) (concat "<span class='lang'>" lang "</span>")
        (format "<span class='name'>%s</span><span class='lang'>%s</span>" name lang))
-     (funcall orig-fn src-block contents info))))
+     ref
+     (if name
+         (replace-regexp-in-string (format "<pre\\( class=\"[^\"]+\"\\)? id=\"%s\">" ref) "<pre\\1>"
+                                   (funcall orig-fn src-block contents info))
+       (funcall orig-fn src-block contents info)))))
 
 (defun mode-name-to-lang-name (mode)
   (or (cadr (assoc mode

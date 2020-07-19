@@ -1245,22 +1245,33 @@ li p + details.code {
   .src .org-highlight-numbers-number {
     color: var(--code-const); }
 
-details.code > .gutter {
+.gutter {
   position: absolute;
   top: 0;
   left: -2.5rem;
-  width: 2.3rem;
-  padding-top: 10px;
+  width: 2rem;
+  padding-right: 0.3rem;
+  padding-top: 5px;
   height: calc(100% - 10px);
   z-index: 1;
-  text-align: right;
   transition: opacity 200ms;
   opacity: 0;
   font-size: 15px; }
-  details.code > .gutter:hover {
+  .gutter:hover {
     opacity: 1; }
-  details.code > .gutter button {
-    color: var(--text-gray);
+  .gutter * {
+    display: block;
+    width: 100%;
+    text-align: right;
+    padding: 0;
+    margin: 0;
+    color: var(--text-light); }
+    .gutter *:hover {
+      color: var(--text-gray); }
+  .gutter a {
+    text-decoration: none;
+    font-size: 110%; }
+  .gutter button {
     background: none;
     border: none; }
 
