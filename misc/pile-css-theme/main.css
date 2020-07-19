@@ -429,7 +429,7 @@ template {
   --switch-shadow-color: #fce477;
   --switch-text: "light mode?"; }
   #theme-switch:checked ~ #page img.invertable {
-    filter: invert(93%); }
+    filter: invert(90.4%); }
 
 #theme-switch {
   display: none; }
@@ -511,8 +511,8 @@ body {
 #page {
   color: var(--text-dark);
   background-color: var(--back-light);
-  transition-property: color background-color;
-  transition-duration: 200ms; }
+  transition-property: color, background-color;
+  transition-duration: 100ms; }
 
 #content, header, .page-header {
   margin: 32px;
