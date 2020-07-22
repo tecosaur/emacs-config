@@ -6,6 +6,16 @@
 #+PROPERTY: header-args :tangle no :results silent
 #+HTML_HEAD: <link rel='shortcut icon' type='image/png' href='https://www.gnu.org/software/emacs/favicon.png'>
 
+#+BEGIN_EXPORT html
+<a href="https://github.com/tecosaur/emacs-config/"
+   style="font-family: 'Open Sans'; background-image: none; color: inherit;
+   text-decoration: none; position: relative; top: -26px; opacity: 0.7;">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/9/91/Octicons-mark-github.svg"
+       class="invertable"
+       style="height: 1em; position: relative; top: 0.1em;">
+  View on GitHub</a>
+#+END_EXPORT
+
 #+BEGIN_QUOTE
 Let us change our traditional attitude to the construction of programs:
 Instead of imagining that our main task is to instruct a computer what to do,
