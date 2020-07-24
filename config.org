@@ -228,9 +228,22 @@ Oh, and previews are nice
 Window rotation is nice, and can be found under =SPC w r= and =SPC w R=.
 /Layout/ rotation is also nice though. Let's stash this under =SPC w SPC=, inspired
 by Tmux's use of =C-b SPC= to rotate windows.
+
+We could also do with adding the missing arrow-key variants of the window
+navigation/swapping commands.
 #+BEGIN_SRC emacs-lisp
 (map! :map evil-window-map
-      "SPC" #'rotate-layout)
+      "SPC" #'rotate-layout
+       ;; Navigation
+       "C-<left>"     #'evil-window-left
+       "C-<down>"     #'evil-window-down
+       "C-<up>"       #'evil-window-up
+       "C-<right>"    #'evil-window-right
+       ;; Swapping windows
+       "<left>"       #'+evil/window-move-left
+       "<down>"       #'+evil/window-move-down
+       "<up>"         #'+evil/window-move-up
+       "<right>"      #'+evil/window-move-right)
 #+END_SRC
 *** Buffer defaults
 I'd much rather have my new buffers in ~org-mode~ than ~fundamental-mode~, hence
