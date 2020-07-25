@@ -667,6 +667,18 @@ Variable pitch fontification + colouring
 #+BEGIN_SRC emacs-lisp
 (package! info-colors :pin "47ee73cc19b1049eef32c9f3e264ea7ef2aaf8a5")
 #+END_SRC
+**** Large files
+The /very large files/ mode loads large files in chunks, allowing one to open
+ridiculously large files.
+#+BEGIN_SRC emacs-lisp
+(package! vlf :recipe (:host github :repo "m00natic/vlfi" :files ("*.el"))
+  :pin "cc02f2533782d6b9b628cec7e2dcf25b2d05a27c")
+#+END_SRC
+To make VLF available without delaying startup, we'll just load it in quiet moments.
+#+BEGIN_SRC emacs-lisp :tangle yes
+(use-package! vlf-setup
+  :defer-incrementally vlf-tune vlf-base vlf-write vlf-search vlf-occur vlf-follow vlf-ediff vlf)
+#+END_SRC
 *** Email
 It's nice to send out fancy HTML emails. The =org-msg= package allows to write
 emails in org mode, and send as an HTML multipart email. We can setup some CSS
