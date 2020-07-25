@@ -893,7 +893,20 @@ We then configure the dictionary we're using in [[*Ispell][Ispell]].
 (setq elcord-use-major-mode-as-main-icon t)
 #+END_SRC
 ** [[https://github.com/zachcurry/emacs-anywhere][Emacs Anywhere]] configuration
-# NB: install with curl -fsSL https://raw.github.com/zachcurry/emacs-anywhere/master/install | bash
+To start with, let's install this.
+#+BEGIN_SRC shell
+cd /tmp
+curl -fsSL https://raw.github.com/zachcurry/emacs-anywhere/master/install -o ea-install.sh
+sed -i 's/EA_PATH=$HOME\/.emacs_anywhere/EA_PATH=$HOME\/.local\/share\/emacs_anywhere/' ea-install.sh
+bash ea-install.sh || exit
+cd ~/.local/share/emacs_anywhere
+# Install in ~/.local not ~/.emacs_anywhere
+sed -i 's/$HOME\/.emacs_anywhere/$HOME\/.local\/share\/emacs_anywhere/' ./bin/linux ./bin/emacstask
+ln -s ~/.local/share/emacs_anywhere/bin/linux ~/.local/bin/emacs_anywhere
+# Improve paste robustness --- https://github.com/zachcurry/emacs-anywhere/pull/66
+sed -i 's/xdotool key --clearmodifiers ctrl+v/xdotool key --clearmodifiers Shift+Insert/' ./bin/linux
+#+END_SRC
+
 It's nice to recognise GitHub (so we can use ~GFM~), and other apps which we know
 take markdown
 #+BEGIN_SRC emacs-lisp
