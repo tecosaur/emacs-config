@@ -564,13 +564,6 @@ our package manager can't deal with; see [[https://github.com/raxod502/straight.
 (package! builtin-package :recipe (:branch "develop"))
 #+END_SRC
 ** General packages
-*** Prettification
-~prettify-mode~ is nice and all, but adding substitutions is a little verbose.
-This helps with that.
-#+BEGIN_SRC emacs-lisp
-(package! prettify-utils ; simplify messing with prettify-mode
-  :recipe (:host github :repo "Ilazki/prettify-utils.el") :pin "8b783d316c23bffdf2b9e6f52635482c4812ee43")
-#+END_SRC
 *** Window management
 #+BEGIN_SRC emacs-lisp
 (package! rotate :pin "091b5ac4fc310773253efb317e3dbe8e46959ba6")
