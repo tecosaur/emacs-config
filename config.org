@@ -672,6 +672,26 @@ To make VLF available without delaying startup, we'll just load it in quiet mome
 (use-package! vlf-setup
   :defer-incrementally vlf-tune vlf-base vlf-write vlf-search vlf-occur vlf-follow vlf-ediff vlf)
 #+END_SRC
+**** Definitions
+Doom already loads =define-word=, and provides it's own definition service using
+[[https://github.com/gromnitsky/wordnut][wordnut]]. However, using an offline dictionary possess a few compelling
+advantages, namely:
+ + speed
+ + integration of multiple dictionaries
+[[http://goldendict.org/][GoldenDict]] seems like the best option currently avalible, but lacks a CLI.
+Hence, we'll fall back to [[https://dushistov.github.io/sdcv/][sdcv]] (a CLI version of StarDict) for now.
+To interface with this, we'll use a local copy of [[https://github.com/gucong/emacs-sdcv][emacs-sdcv]] (to enable easy
+modification).
+#+BEGIN_SRC emacs-lisp
+(package! sdcv-mode :recipe (:local-repo "lisp" :no-byte-compile t))
+#+END_SRC
+
+Given that a request for a CLI is the most upvoted issue on GitHub for
+GoldenDict, it's likely we'll be able to switch from ~sdcv~ to that in the future.
+
+Since GoldenDict supports StarDict files, I expect this will be a relatively
+painless switch.
+
 *** Email
 It's nice to send out fancy HTML emails. The =org-msg= package allows to write
 emails in org mode, and send as an HTML multipart email. We can setup some CSS
@@ -2338,6 +2358,13 @@ add package src directories to projectile. This isn't desirable in my opinion.
 (defun projectile-ignored-project-function (filepath)
   "Return t if FILEPATH is within any of `projectile-ignored-projects'"
   (or (mapcar (lambda (p) (s-starts-with-p p filepath)) projectile-ignored-projects)))
+#+END_SRC
+** StarDict
+We start off my loading =sdcv-mode=, then we'll integrate it into pre-existing
+definition functionality (like ~+lookup/dictionary-definition~).
+#+BEGIN_SRC emacs-lisp
+(use-package! sdcv-mode
+  :commands sdcv-search sdcv-list-dictionary)
 #+END_SRC
 ** Smart Parentheses
 #+BEGIN_SRC emacs-lisp
