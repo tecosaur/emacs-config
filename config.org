@@ -631,6 +631,44 @@ let's just make sure this is lazy-loaded appropriately.
                   :height 1.1
                   :weight bold)))
 #+END_SRC
+
+In a similar manner, [[https://gitlab.com/ambrevar/emacs-gif-screencast][gif-screencast]] may come in handy.
+#+BEGIN_SRC emacs-lisp
+(package! gif-screencast)
+#+END_SRC
+
+We can lazy load this using the start/stop commands.
+
+I initially installed ~scrot~ for this, since it was the default capture program.
+However it raised ~glib error: Saving to file ... failed~ each time it was run.
+Google didn't reveal any easy fixed, so I switched to [[https://github.com/naelstrof/maim][maim]]. We now need to pass
+it the window ID. This doesn't change throughout the lifetime of an emacs
+instance, so as long as a single window is used ~xdotool getactivewindow~ will
+give a satisfactory result.
+
+It seems that when new colours appear, that tends to make ~gifsicle~ introduce
+artefacts. To avoid this we pre-populate the colour map using the current doom
+theme.
+#+BEGIN_SRC emacs-lisp :tangle yes
+(use-package! gif-screencast
+  :commands gif-screencast-mode
+  :config
+  (setq gif-screencast-program "maim"
+        gif-screencast-args `("--quality" "3" "-i" ,(string-trim-right
+                                                     (shell-command-to-string
+                                                      "xdotool getactivewindow")))
+        gif-screencast-optimize-args '("--batch" "--optimize=3" "--usecolormap=/tmp/doom-color-theme"))
+  (defun gif-screencast-write-colormap ()
+    (f-write-text
+     (replace-regexp-in-string
+      "\n+" "\n"
+      (mapconcat (lambda (c) (if (listp (cdr c))
+                            (cadr c))) doom-themes--colors "\n"))
+     'utf-8
+     "/tmp/doom-color-theme" ))
+  (gif-screencast-write-colormap)
+  (add-hook 'doom-load-theme-hook #'gif-screencast-write-colormap))
+#+END_SRC
 *** Improving features
 **** Flyspell-lazy
 To alleviate some [[Flyspell][issues with flyspell]]
