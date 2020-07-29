@@ -653,6 +653,9 @@ theme.
 (use-package! gif-screencast
   :commands gif-screencast-mode
   :config
+  (map! :map gif-screencast-mode-map
+        :g "<f8>" #'gif-screencast-toggle-pause
+        :g "<f9>" #'gif-screencast-stop)
   (setq gif-screencast-program "maim"
         gif-screencast-args `("--quality" "3" "-i" ,(string-trim-right
                                                      (shell-command-to-string
