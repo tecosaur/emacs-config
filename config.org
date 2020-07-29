@@ -718,10 +718,10 @@ advantages, namely:
  + integration of multiple dictionaries
 [[http://goldendict.org/][GoldenDict]] seems like the best option currently avalible, but lacks a CLI.
 Hence, we'll fall back to [[https://dushistov.github.io/sdcv/][sdcv]] (a CLI version of StarDict) for now.
-To interface with this, we'll use a local copy of [[https://github.com/gucong/emacs-sdcv][emacs-sdcv]] (to enable easy
-modification).
+To interface with this, we'll use a my =sdcv= package.
 #+BEGIN_SRC emacs-lisp
-(package! sdcv-mode :recipe (:local-repo "lisp" :no-byte-compile t))
+(package! sdcv-mode :recipe (:host github :repo "tecosaur/sdcv")
+  :pin "7fabf83c74afbd0d0c9f2f0cd16967c9b8bb37d5")
 #+END_SRC
 
 Given that a request for a CLI is the most upvoted issue on GitHub for
@@ -2398,11 +2398,37 @@ add package src directories to projectile. This isn't desirable in my opinion.
   (or (mapcar (lambda (p) (s-starts-with-p p filepath)) projectile-ignored-projects)))
 #+END_SRC
 ** StarDict
-We start off my loading =sdcv-mode=, then we'll integrate it into pre-existing
+We start off my loading =sdcv=, then we'll integrate it into pre-existing
 definition functionality (like ~+lookup/dictionary-definition~).
 #+BEGIN_SRC emacs-lisp
-(use-package! sdcv-mode
-  :commands sdcv-search sdcv-list-dictionary)
+(use-package! sdcv
+  :commands sdcv-search sdcv-list-dictionary
+  :config
+  (map! :map sdcv-mode-map
+        :n "q" #'sdcv-return-from-sdcv
+        :nv "RET" #'sdcv-search-word-at-point
+        :n "a" #'outline-show-all
+        :n "h" (cmd! (outline-hide-sublevels 3))
+        :n "o" #'sdcv-toggle-entry
+        :n "n" #'sdcv-next-entry
+        :n "N" (cmd! (sdcv-next-entry t))
+        :n "p" #'sdcv-previous-entry
+        :n "P" (cmd! (sdcv-previous-entry t))
+        :n "b" #'sdcv-search-history-backwards
+        :n "f" #'sdcv-search-history-forwards
+        :n "/" (cmd! (call-interactively #'sdcv-search))))
+#+END_SRC
+
+Now let's use this instead of wordnet.
+#+BEGIN_SRC emacs-lisp
+(defadvice! +lookup/dictionary-definition-cdcv (identifier &optional arg)
+  "Look up the definition of the word at point (or selection) using `sdcv-search'."
+  :override #'+lookup/dictionary-definition
+  (interactive
+   (list (or (doom-thing-at-point-or-region 'word)
+             (read-string "Look up in dictionary: "))
+         current-prefix-arg))
+  (sdcv-search identifier nil nil t))
 #+END_SRC
 ** Smart Parentheses
 #+BEGIN_SRC emacs-lisp
