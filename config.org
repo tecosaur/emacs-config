@@ -946,9 +946,37 @@ We then configure the dictionary we're using in [[*Ispell][Ispell]].
 #+BEGIN_SRC emacs-lisp
 (set-company-backend! 'ess-r-mode '(company-R-args company-R-objects company-dabbrev-code :separate))
 #+END_SRC
-** Circe (IRC)
+** Circe
+Circe is a client for IRC in Emacs (hey, isn't that a nice project
+name+acronym), and a greek enchantress who turned humans into animals.
+
+Let's use the former to chat to +recluses+ discerning individuals online.
+
 [[xkcd:1782]]
-#+BEGIN_SRC emacs-lisp :noweb yes
+
+Before we start seeing and sending messages, we need to authenticate with our
+IRC servers. The circe manual provided a snippet for putting some of the auth
+details in =.authinfo.gpg= --- but I think we should go further than that: have
+the entire server info in our authinfo.
+
+First, a reasonable format by which we can specify:
+ + server
+ + port
+ + SASL username
+ + SASL password
+ + channels to join
+
+We can have these stored like so
+#+BEGIN_SRC authinfo
+machine chat.freenode.net login USERNAME password PASSWORD port PORT for irc channels emacs,org-mode
+#+END_SRC
+
+The ~for irc~ bit is used so we can uniquely identify all IRC auth info. By
+omitting the =#= in channel names we can have a list of channels comma-separated
+(no space!) which the secrets API will return as a single string.
+
+#+NAME: irc-authinfo-reader
+#+BEGIN_SRC emacs-lisp :tangle no
 (defun auth-server-pass (server)
   (if-let ((secret (plist-get (car (auth-source-search :host server)) :secret)))
       (if (functionp secret)
@@ -965,7 +993,7 @@ We then configure the dictionary we're using in [[*Ispell][Ispell]].
                         (let* ((host (plist-get entry :host))
                                (label (or (plist-get entry :label) host))
                                (_ports (mapcar #'string-to-number
-                                              (s-split "," (plist-get entry :port))))
+                                               (s-split "," (plist-get entry :port))))
                                (port (if (= 1 (length _ports)) (car _ports) _ports))
                                (user (plist-get entry :user))
                                (nick (or (plist-get entry :nick) user))
@@ -976,7 +1004,13 @@ We then configure the dictionary we're using in [[*Ispell][Ispell]].
                             :sasl-username ,user :sasl-password auth-server-pass
                             :channels ,channels)))
                       accounts))))
+#+END_SRC
 
+We'll just call ~(register-irc-auths)~ on a hook when we start Circe up.
+
+Now we're ready to go, let's actually wire-up Circe, with one or two
+configuration tweaks.
+#+BEGIN_SRC emacs-lisp :noweb yes
 (after! circe
   (setq-default circe-use-tls t)
   (setq circe-notifications-alert-icon "/usr/share/icons/breeze/actions/24/network-connect.svg"
@@ -1005,6 +1039,8 @@ We then configure the dictionary we're using in [[*Ispell][Ispell]].
   (appendq! all-the-icons-mode-icon-alist
             '((circe-channel-mode all-the-icons-material "message" :face all-the-icons-lblue)
               (circe-server-mode all-the-icons-material "chat_bubble_outline" :face all-the-icons-purple))))
+
+<<irc-authinfo-reader>>
 
 (add-transient-hook! #'=irc (register-irc-auths))
 #+END_SRC
