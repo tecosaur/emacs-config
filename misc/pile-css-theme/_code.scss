@@ -213,6 +213,7 @@ $code-warning: $orange;
 /* Languages per Org manual */
 
 pre.src-asymptote::before { content: 'Asymptote'; }
+pre.src-authinfo::before { content: 'Authinfo'; }
 pre.src-awk::before { content: 'Awk'; }
 pre.src-C::before { content: 'C'; }
 /* pre.src-C++ doesn't work in CSS */

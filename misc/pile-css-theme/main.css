@@ -1280,6 +1280,9 @@ li p + details.code {
 pre.src-asymptote::before {
   content: 'Asymptote'; }
 
+pre.src-authinfo::before {
+  content: 'Authinfo'; }
+
 pre.src-awk::before {
   content: 'Awk'; }
 
