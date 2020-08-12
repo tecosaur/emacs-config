@@ -263,6 +263,7 @@ pre.src-perl::before { content: 'Perl'; }
 pre.src-picolisp::before { content: 'Pico Lisp'; }
 pre.src-scala::before { content: 'Scala'; }
 pre.src-shell::before { content: 'Shell Script'; }
+pre.src-systemd::before { content: 'Systemd'; }
 pre.src-ebnf2ps::before { content: 'ebfn2ps'; }
 /* additional language identifiers per \"defun org-babel-execute\"
       in ob-*.el */

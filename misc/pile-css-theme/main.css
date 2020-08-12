@@ -1426,6 +1426,9 @@ pre.src-scala::before {
 pre.src-shell::before {
   content: 'Shell Script'; }
 
+pre.src-systemd::before {
+  content: 'Systemd'; }
+
 pre.src-ebnf2ps::before {
   content: 'ebfn2ps'; }
 
