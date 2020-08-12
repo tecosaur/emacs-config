@@ -428,7 +428,7 @@ template {
   --switch-icon: "🌝";
   --switch-shadow-color: #fce477;
   --switch-text: "light mode?"; }
-  #theme-switch:checked ~ #page img.invertable {
+  #theme-switch:checked ~ #page img.invertible {
     filter: invert(90%) hue-rotate(180deg) sepia(1%); }
 
 #theme-switch {
