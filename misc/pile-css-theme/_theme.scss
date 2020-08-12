@@ -70,7 +70,7 @@ $text-dark: var(--text-dark);
     --switch-shadow-color: #fce477;
     --switch-text: "light mode?";
     img.invertable {
-        filter: invert(90.4%);
+        filter: invert(90.0%) hue-rotate(180deg) sepia(1%);
     }
 }
 

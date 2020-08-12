@@ -429,7 +429,7 @@ template {
   --switch-shadow-color: #fce477;
   --switch-text: "light mode?"; }
   #theme-switch:checked ~ #page img.invertable {
-    filter: invert(90.4%); }
+    filter: invert(90%) hue-rotate(180deg) sepia(1%); }
 
 #theme-switch {
   display: none; }
