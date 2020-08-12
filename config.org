@@ -141,6 +141,7 @@ I have attempted to quantify aspects of my impressions of them below.
 | Emacs       |             4 |         4 |           2 |       4 |        3.5 |           3 |
 | Komodo Edit |             2 |         1 |           3 |       2 |          2 |           2 |
 
+#+attr_html: :class invertable :alt Radar chart comparing my thoughts on a few editors.
 [[https://tecosaur.com/lfs/emacs-config/editor-comparison.png]]
 * Rudimentary configuration
 Make this file run (slightly) faster with lexical binding (see [[https://nullprogram.com/blog/2016/12/22/][this blog post]]
@@ -265,6 +266,10 @@ aspects are nice, but on others I prefer Fira.
       doom-variable-pitch-font (font-spec :family "Overpass" :size 24)
       doom-serif-font (font-spec :family "IBM Plex Mono" :weight 'light))
 #+END_SRC
+
+#+attr_html: :class invertable :alt Screenshot of the fonts within Emacs.
+[[https://tecosaur.com/lfs/emacs-config/screenshots/font-face.png]]
+
 **** Theme and modeline
 ~doom-one~ is nice and all, but I find the ~vibrant~ variant nicer. Oh, and with the
 nice selection doom provides there's no reason for me to want the defaults.
@@ -444,6 +449,10 @@ quite a nice resizing effect.
 (add-hook 'window-size-change-functions #'set-appropriate-splash)
 (add-hook 'doom-load-theme-hook #'set-appropriate-splash)
 #+END_SRC
+
+#+attr_html: :class invertable :alt The splash screen, just loaded.
+[[https://tecosaur.com/lfs/emacs-config/screenshots/splash-screen.png]]
+
 *** Systemd daemon
 For running a systemd service for a Emacs server I have the following
 #+BEGIN_SRC systemd :tangle ~/.config/systemd/user/emacs.service :mkdirp yes
@@ -466,7 +475,8 @@ which is then enabled by
 systemctl --user enable emacs.service
 #+END_SRC
 
-It can now be nice to use this as a 'default app' for opening files
+It can now be nice to use this as a 'default app' for opening files. If we add
+an appropriate desktop entry, and enable it in the desktop environment.
 
 #+BEGIN_SRC conf :tangle ~/.local/share/applications/emacs-client.desktop :mkdirp yes
 [Desktop Entry]
@@ -611,6 +621,10 @@ about it?
 For some reason, I find myself demoing Emacs every now and then. Showing what
 keyboard stuff I'm doing on-screen seems helpful. While [[https://gitlab.com/screenkey/screenkey][screenkey]] does exist,
 having something that doesn't cover up screen content is nice.
+
+#+attr_html: :class invertable :alt Screenshot of Keycast-mode in action
+[[https://tecosaur.com/lfs/emacs-config/screenshots/keycast.png]]
+
 #+BEGIN_SRC emacs-lisp
 (package! keycast :pin "038475c178e90c7bad64d113db26d42cad60e149")
 #+END_SRC
@@ -702,6 +716,10 @@ package to hook this into the magit diff view. This requires the ~delta~ binary.
 **** Info colours
 This makes manual pages nicer to look at :)
 Variable pitch fontification + colouring
+
+#+attr_html: :class invertable :width 80% :alt Example info-colours page.
+[[https://tecosaur.com/lfs/emacs-config/screenshots/info-colours.png]]
+
 #+BEGIN_SRC emacs-lisp
 (package! info-colors :pin "47ee73cc19b1049eef32c9f3e264ea7ef2aaf8a5")
 #+END_SRC
@@ -3162,6 +3180,7 @@ I really like org mode, I've given some thought to why, and below is the result.
 | Markdown          |                    1 |              3 |                 3 |              4 |            3 |                   3 |           1 |
 | Markdown + Pandoc |                  2.5 |            2.5 |               2.5 |              3 |            3 |                   3 |           2 |
 
+#+attr_html: :class invertable :alt Radar chart comparing my opinions of document formats.
 [[https://tecosaur.com/lfs/emacs-config/document-format-comparison.png]]
 
 *** System config
