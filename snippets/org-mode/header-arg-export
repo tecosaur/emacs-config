@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: Header arg - export
+# key: e
+# condition: (+yas/org-src-header-p)
+# --
+:exports `(ivy-read "Exports: " '("code" "results" "both" "none"))` $0

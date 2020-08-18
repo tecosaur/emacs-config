@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: Header arg - eval
+# key: v
+# condition: (+yas/org-src-header-p)
+# --
+:eval `(ivy-read "Evaluate: " '("no" "query" "no-export" "query-export"))` $0

@@ -4173,6 +4173,65 @@ appropriate.  In tables, insert a new row or end the table."
  :map evil-org-mode-map
  :i [return] #'unpackaged/org-return-dwim)
 #+END_SRC
+**** Snippet Helper
+For snippets which want to depend on the ~#+THING:~ on the current line.
+This is mostly source blocks, and property args, so let's get fancy with them.
+
+One-letter snippets are super-convenient, but for them to not be a pain
+everywhere else we'll need a nice condition function to use in yasnippet.
+
+By having this function give slightly more than a simple ~t~ or ~nil~, we can
+use in a second function to get the most popular language without explicit
+global header args.
+#+BEGIN_SRC emacs-lisp
+(defun +yas/org-src-lang ()
+  "Try to find the current language of the src/header at point.
+Return nil otherwise."
+  (save-excursion
+    (pcase
+        (downcase
+         (buffer-substring-no-properties
+          (goto-char (line-beginning-position))
+          (or (ignore-errors (1- (search-forward " " (line-end-position))))
+              (1+ (point)))))
+      ("#+property:"
+       (when (re-search-forward "header-args:")
+         (buffer-substring-no-properties
+          (point)
+          (or (and (forward-word) (point))
+              (1+ (point))))))
+      ("#+begin_src"
+       (buffer-substring-no-properties
+        (point)
+        (or (and (forward-word) (point))
+            (1+ (point)))))
+      ("#+header:"
+       (search-forward "#+begin_src")
+       (+yas/org-src-lang))
+      (t nil))))
+
+(defun +yas/org-most-common-no-property-lang ()
+  "Find the lang with the most source blocks that has no global header-args, else nil."
+  (let (src-langs header-langs)
+    (save-excursion
+      (goto-char (point-min))
+      (while (search-forward "#+begin_src" nil t)
+        (push (+yas/org-src-lang) src-langs))
+      (goto-char (point-min))
+      (while (re-search-forward "#\\+property: +header-args" nil t)
+        (push (+yas/org-src-lang) header-langs)))
+
+    (setq src-langs
+          (mapcar #'car
+                  ;; sort alist by frequency (desc.)
+                  (sort
+                   ;; generate alist with form (value . frequency)
+                   (cl-loop for (n . m) in (seq-group-by #'identity src-langs)
+                            collect (cons n (length m)))
+                   (lambda (a b) (> (cdr a) (cdr b))))))
+
+    (car (set-difference src-langs header-langs :test #'string=))))
+#+END_SRC
 **** Org Plot
 There are two main bits of extra functionality I wan to add
 + the ability to transpose tables (internally)

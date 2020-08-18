@@ -1,0 +1,13 @@
+# -*- mode: snippet -*-
+# name: Header arg - results
+# key: r
+# condition: (+yas/org-src-header-p)
+# --
+:results `
+(replace-regexp-in-string "(default)" ""
+(concat
+    (ivy-read "Result collection: " '("(default)" "value " "output ") :preselect "(default)")
+    (ivy-read "Result type: " '("(default)" "table " "vector " "list " "verbatim " "file ") :preselect "(default)")
+    (ivy-read "Result format: " '("(default)" "code " "drawer " "html " "latex " "link " "graphics " "org " "pp " "raw ") :preselect "(default)")
+    (ivy-read "Result handling: " '("(default)" "silent " "replace " "append " "prepend ") :preselect "(default)")))
+`$0
