@@ -1,3 +1,4 @@
+# -*- mode: org; eval: (add-hook 'after-save-hook (lambda () (org-html-export-to-html t)) nil t) -*-
 #+TITLE: Doom Emacs Configuration
 #+SUBTITLE: The Methods, Management, and Menagerie of Madness
 #+AUTHOR: tecosaur
@@ -6426,9 +6427,6 @@ enable it for ~.beancount~ files.
         :i "TAB" #'beancount-tab-dwim))
 #+END_SRC
 
-# Local variables:
-# eval: (add-hook 'after-save-hook 'org-html-export-to-html t t)
-# end:
 ** Authinfo
 I just like syntax highlighting. So, let's define a mode with some simple font
 locking.
