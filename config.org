@@ -6432,32 +6432,66 @@ enable it for ~.beancount~ files.
 ** Authinfo
 I just like syntax highlighting. So, let's define a mode with some simple font
 locking.
-#+BEGIN_SRC emacs-lisp :tangle lisp/authinfo-mode.el
-(setq authinfo-keywords
+#+BEGIN_SRC emacs-lisp :tangle lisp/authinfo-colour-mode.el :comments no
+;;; authinfo-mode.el -*- lexical-binding: t; -*-
+(setq authinfo-colour-keywords
       '(("^#.*" . font-lock-comment-face)
-        ("^\\(machine\\) \\([^ \t\n]+\\)"
+        ("^\\(machine\\)[ \t]+\\([^ \t\n]+\\)"
          (1 font-lock-variable-name-face)
          (2 font-lock-builtin-face))
-        ("\\(login\\) \\([^ \t\n]+\\)"
-         (1 font-lock-keyword-face)
-         (2 font-lock-string-face))
-        ("\\(password\\) \\([^ \t\n]+\\)"
-         (1 font-lock-constant-face)
+        ("\\(login\\)[ \t]+\\([^ \t\n]+\\)"
+         (1 font-lock-comment-delimiter-face)
+         (2 font-lock-keyword-face))
+        ("\\(password\\)[ \t]+\\([^ \t\n]+\\)"
+         (1 font-lock-comment-delimiter-face)
          (2 font-lock-doc-face))
-        ("\\(port\\) \\([^ \t\n]+\\)"
-         (1 font-lock-type-face)
-         (2 font-lock-type-face))))
+        ("\\(port\\)[ \t]+\\([^ \t\n]+\\)"
+         (1 font-lock-comment-delimiter-face)
+         (2 font-lock-type-face))
+        ("\\([^ \t\n]+\\)[, \t]+\\([^ \t\n]+\\)"
+         (1 font-lock-constant-face)
+         (2 nil))))
 
-(define-derived-mode authinfo-mode fundamental-mode "authinfo"
-  "Major mode for editing the authinfo file."
-  (font-lock-add-keywords nil authinfo-keywords)
+(defun authinfo-colour--hide-passwords (start end)
+  "Just `authinfo--hide-passwords' with a different colour face overlay."
+  (save-excursion
+    (save-restriction
+      (narrow-to-region start end)
+      (goto-char start)
+      (while (re-search-forward "\\bpassword +\\([^\n\t ]+\\)"
+                                nil t)
+        (let ((overlay (make-overlay (match-beginning 1) (match-end 1))))
+          (overlay-put overlay 'display (propertize "****"
+                                                    'face 'font-lock-doc-face))
+          (overlay-put overlay 'reveal-toggle-invisible
+                       #'authinfo-colour--toggle-display))))))
+
+(defun authinfo-colour--toggle-display (overlay hide)
+  "Just `authinfo--toggle-display' with a different colour face overlay."
+  (if hide
+      (overlay-put overlay 'display (propertize "****" 'face 'font-lock-doc-face))
+    (overlay-put overlay 'display nil)))
+
+(defvar authinfo-hide-passwords t
+  "Whether to hide passwords in authinfo.")
+
+(define-derived-mode authinfo-colour-mode fundamental-mode "Authinfo"
+  "Major mode for editing .authinfo files.
+
+Like `fundamental-mode', just with colour and passoword hiding."
+  (font-lock-add-keywords nil authinfo-colour-keywords)
   (setq-local comment-start "#")
-  (setq-local comment-end ""))
+  (setq-local comment-end "")
+  (when authinfo-hide-passwords
+    (authinfo-colour--hide-passwords (point-min) (point-max))
+    (reveal-mode)))
 
-(provide 'authinfo-mode)
+(provide 'authinfo-colour-mode)
 #+END_SRC
 Now we just need to load it appropriately.
 #+BEGIN_SRC emacs-lisp
-(use-package! authinfo-mode
-  :mode ("authinfo\\.gpg\\'" . authinfo-mode))
+(use-package! authinfo-colour-mode
+  :mode ("authinfo\\.gpg\\'" . authinfo-colour-mode)
+  :config
+  (advice-add 'authinfo-mode :override #'authinfo-colour-mode))
 #+END_SRC
