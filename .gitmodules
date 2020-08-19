@@ -1,0 +1,9 @@
+[submodule "Auto-LaTeX-Snippets"]
+	path = lisp/Auto-LaTeX-Snippets
+	url = https://github.com/tecosaur/Auto-LaTeX-Snippets.git
+[submodule "Lexic"]
+	path = lisp/lexic
+	url = https://github.com/tecosaur/sdcv.git
+[submodule "org-pandoc-import"]
+	path = lisp/org-pandoc-import
+	url = https://github.com/tecosaur/org-pandoc-import.git

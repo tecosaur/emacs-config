@@ -743,10 +743,13 @@ advantages, namely:
  + integration of multiple dictionaries
 [[http://goldendict.org/][GoldenDict]] seems like the best option currently avalible, but lacks a CLI.
 Hence, we'll fall back to [[https://dushistov.github.io/sdcv/][sdcv]] (a CLI version of StarDict) for now.
-To interface with this, we'll use a my =sdcv= package.
+To interface with this, we'll use a my =lexic= package.
+
+#+attr_html: :class invertible :alt Screenshot of the lexic-mode view of "literate"
+[[https://tecosaur.com/lfs/emacs-config/screenshots/lexic.png]]
+
 #+BEGIN_SRC emacs-lisp
-(package! sdcv-mode :recipe (:host github :repo "tecosaur/sdcv")
-  :pin "7fabf83c74afbd0d0c9f2f0cd16967c9b8bb37d5")
+(package! lexic :recipe (:local-repo "lisp/lexic"))
 #+END_SRC
 
 Given that a request for a CLI is the most upvoted issue on GitHub for
@@ -776,8 +779,7 @@ To actually get notifications, we can use =mu4e-alert=.
 For mathematical convenience, WIP
 #+BEGIN_SRC emacs-lisp
 (package! auto-latex-snippets
-  :recipe (:local-repo "~/Desktop/TEC/Programming/GitHub/Auto-LaTeX-Snippets"
-           :no-byte-compile t))
+  :recipe (:local-repo "lisp/Auto-LaTeX-Snippets"))
 #+END_SRC
 And some basic config
 #+BEGIN_SRC emacs-lisp :tangle yes
@@ -847,9 +849,15 @@ inserts an org-ified version at point. Isn't that just great.
 (package! org-chef :pin "77f97ad07b957d6b5ea6c2a57a9e623f2ab36d04")
 #+END_SRC
 
-I have my own [[file:lisp/org-plot.el][modified version]] of ~org-plot~, so let's use that
+Sometimes I'm given non-org files, that's very sad. Luckily Pandoc offers a way
+to make that right again, and this package makes that even easier to do.
 #+BEGIN_SRC emacs-lisp
-;; (package! org-plot :recipe (:local-repo "lisp" :no-byte-compile t))
+(package! org-pandoc-import :recipe
+  (:local-repo "lisp/org-pandoc-import" :files ("*.el" "filters" "preprocessors")))
+#+END_SRC
+#+BEGIN_SRC emacs-lisp :tangle yes
+(use-package! org-pandoc-import
+  :after org)
 #+END_SRC
 
 Org-roam is nice by itself, but there are so /extra/ nice packages which integrate
@@ -2709,38 +2717,38 @@ add package src directories to projectile. This isn't desirable in my opinion.
   "Return t if FILEPATH is within any of `projectile-ignored-projects'"
   (or (mapcar (lambda (p) (s-starts-with-p p filepath)) projectile-ignored-projects)))
 #+END_SRC
-** StarDict
-We start off my loading =sdcv=, then we'll integrate it into pre-existing
+** Lexic
+We start off my loading =lexic=, then we'll integrate it into pre-existing
 definition functionality (like ~+lookup/dictionary-definition~).
 #+BEGIN_SRC emacs-lisp
-(use-package! sdcv
-  :commands sdcv-search sdcv-list-dictionary
+(use-package! lexic
+  :commands lexic-search lexic-list-dictionary
   :config
-  (map! :map sdcv-mode-map
-        :n "q" #'sdcv-return-from-sdcv
-        :nv "RET" #'sdcv-search-word-at-point
+  (map! :map lexic-mode-map
+        :n "q" #'lexic-return-from-lexic
+        :nv "RET" #'lexic-search-word-at-point
         :n "a" #'outline-show-all
         :n "h" (cmd! (outline-hide-sublevels 3))
-        :n "o" #'sdcv-toggle-entry
-        :n "n" #'sdcv-next-entry
-        :n "N" (cmd! (sdcv-next-entry t))
-        :n "p" #'sdcv-previous-entry
-        :n "P" (cmd! (sdcv-previous-entry t))
-        :n "b" #'sdcv-search-history-backwards
-        :n "f" #'sdcv-search-history-forwards
-        :n "/" (cmd! (call-interactively #'sdcv-search))))
+        :n "o" #'lexic-toggle-entry
+        :n "n" #'lexic-next-entry
+        :n "N" (cmd! (lexic-next-entry t))
+        :n "p" #'lexic-previous-entry
+        :n "P" (cmd! (lexic-previous-entry t))
+        :n "b" #'lexic-search-history-backwards
+        :n "f" #'lexic-search-history-forwards
+        :n "/" (cmd! (call-interactively #'lexic-search))))
 #+END_SRC
 
 Now let's use this instead of wordnet.
 #+BEGIN_SRC emacs-lisp
-(defadvice! +lookup/dictionary-definition-cdcv (identifier &optional arg)
-  "Look up the definition of the word at point (or selection) using `sdcv-search'."
+(defadvice! +lookup/dictionary-definition-lexic (identifier &optional arg)
+  "Look up the definition of the word at point (or selection) using `lexic-search'."
   :override #'+lookup/dictionary-definition
   (interactive
    (list (or (doom-thing-at-point-or-region 'word)
              (read-string "Look up in dictionary: "))
          current-prefix-arg))
-  (sdcv-search identifier nil nil t))
+  (lexic-search identifier nil nil t))
 #+END_SRC
 ** Smart Parentheses
 #+BEGIN_SRC emacs-lisp
