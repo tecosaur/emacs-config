@@ -5475,6 +5475,10 @@ I want to add GitHub-style links on hover for headings.
                'org-export-html-headline-anchor))
 #+END_SRC
 It's worth noting that ~org-msg-currently-exporting~ is defined in [[*Org Msg][Org Msg]].
+***** Acronyms
+I want to style acronyms nicely. For the sake of convenience in implementation
+I've actually done this under the [[#org-latex-acronyms][LaTeX export section]], for the sake of
+convenance in implementation (this transformation was first added there).
 ***** LaTeX Rendering
 When displaying images, we want to resize by the reciprocal of ~preview-scale~.
 Unfortunately that doesn't happen by default, but not to worry! Advice exists.
@@ -5554,27 +5558,43 @@ option. However this isn't sized very well at the moment.
 #+END_SRC
 
 **** Exporting to LaTeX
+***** Acronyms
+:PROPERTIES:
+:CUSTOM_ID: org-latex-acronyms
+:END:
 I like automatically using spaced small caps for acronyms. For strings I want to
 be unaffected let's use ~;~ as a prefix to prevent the transformation --- i.e.
 ~;JFK~ (as one would want for two-letter geographic locations and names).
+
+While this is the LaTeX section, it's convenient to also provide HTML acronyms here.
 #+BEGIN_SRC emacs-lisp
-;; TODO make this /only/ apply to text (i.e. not URL)
 (after! org
   (defun tec/org-export-latex-filter-acronym (text backend info)
-    (when (org-export-derived-backend-p backend 'latex)
-      (let ((case-fold-search nil))
+    (let ((the-backend
+           (cond
+            ((org-export-derived-backend-p backend 'latex) 'latex)
+            ((org-export-derived-backend-p backend 'html) 'html)))
+          (case-fold-search nil))
+      (when the-backend
         (replace-regexp-in-string
          "[;\\\\]?\\b[A-Z][A-Z]+s?"
          (lambda (all-caps-str)
-           ; only \acr if str doesn't start with ";" or "\" (for LaTeX commands)
+           ;; only format as acronym if str doesn't start with ";" or "\" (for LaTeX commands)
            (cond ((equal (aref all-caps-str 0) ?\;) (substring all-caps-str 1))
                  ((equal (aref all-caps-str 0) ?\\) all-caps-str)
                  ((equal (aref all-caps-str (- (length all-caps-str) 1)) ?s)
-                  (concat "\\textls*[70]{\\textsc{"
-                            (s-downcase (substring all-caps-str 0 -1))
-                            "}\\protect\\scalebox{.91}[.84]{s}}"))
-                 (t (concat "\\textls*[70]{\\textsc{"
-                              (s-downcase all-caps-str) "}}"))))
+                  (case the-backend
+                    ('latex
+                     (concat "\\textls*[70]{\\textsc{" (s-downcase (substring all-caps-str 0 -1))
+                             "}\\protect\\scalebox{.91}[.84]{s}}"))
+                    ('html
+                     (concat "<span class='acr'>" (s-downcase (substring all-caps-str 0 -1))
+                             "</span><small>s</small>"))))
+                 (t
+                  (case the-backend
+                    ('latex
+                     (concat "\\textls*[70]{\\textsc{" (s-downcase all-caps-str) "}}"))
+                    ('html (concat "<span class='acr'>" (s-downcase all-caps-str) "</span>"))))))
          text t t))))
 
   (add-to-list 'org-export-filter-plain-text-functions

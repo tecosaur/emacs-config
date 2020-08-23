@@ -2314,6 +2314,10 @@ td.org-left {
 td.org-center {
   text-align: center; }
 
+span.acr {
+  font-variant: small-caps;
+  letter-spacing: 0.06em; }
+
 div.table {
   position: relative; }
   div.table .gutter {

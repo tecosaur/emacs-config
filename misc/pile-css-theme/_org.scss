@@ -74,3 +74,10 @@ th.org-center { text-align: center; }
 td.org-right  { text-align: right;  }
 td.org-left   { text-align: left;   }
 td.org-center { text-align: center; }
+
+// custom org acronym element
+
+span.acr {
+    font-variant: small-caps;
+    letter-spacing: 0.06em;
+}
