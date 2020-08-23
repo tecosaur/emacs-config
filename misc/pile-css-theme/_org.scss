@@ -78,6 +78,6 @@ td.org-center { text-align: center; }
 // custom org acronym element
 
 span.acr {
-    font-variant: small-caps;
-    letter-spacing: 0.06em;
+  font-variant-caps: all-small-caps;
+  letter-spacing: 0.1em;
 }

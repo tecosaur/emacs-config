@@ -4,23 +4,23 @@
 @import 'theme';
 
 // Fonts
-@import url('https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;1,300;1,400&display=swap');
 
-@font-face {
-  font-family: 'et-book';
-  src: url('https://tecosaur.com/resources/org/etbookot-roman-webfont.woff2') format('woff2');
-  font-weight: normal;
-  font-style: normal;
-  font-display: fallback;
+@mixin font-face($name, $file, $weight, $style) {
+  @font-face {
+    font-family: $name;
+    src: url("https://tecosaur.com/resources/org/#{$file}.woff2") format("woff2");
+    font-weight: $weight;
+    font-style: $style;
+    font-display: fallback;
+  }
 }
 
-@font-face {
-  font-family: 'et-book';
-  src: url('https://tecosaur.com/resources/org/etbookot-italic-webfont.woff2') format('woff2');
-  font-weight: normal;
-  font-style: italic;
-  font-display: fallback;
-}
+@include font-face('Merriweather', 'Merriweather-TextRegular', normal, normal)
+@include font-face('Merriweather', 'Merriweather-TextItalic', normal, italic)
+@include font-face('Merriweather', 'Merriweather-TextBold', bold, normal)
+
+@include font-face('et-book', 'etbookot-roman-webfont', normal, normal)
+@include font-face('et-book', 'etbookot-italic-webfont', normal, italic)
 
 // Face variables
 $sans-font: 'Open Sans';

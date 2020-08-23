@@ -7,7 +7,6 @@
  * 2. Prevent adjustments of font size after orientation changes in
  *    IE on Windows Phone and in iOS.
  */
-@import url("https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;1,300;1,400&display=swap");
 html {
   line-height: 1.15;
   /* 1 */
@@ -477,14 +476,35 @@ template {
   visibility: visible; }
 
 @font-face {
-  font-family: 'et-book';
+  font-family: "Merriweather";
+  src: url("https://tecosaur.com/resources/org/Merriweather-TextRegular.woff2") format("woff2");
+  font-weight: normal;
+  font-style: normal;
+  font-display: fallback; }
+
+@font-face {
+  font-family: "Merriweather";
+  src: url("https://tecosaur.com/resources/org/Merriweather-TextItalic.woff2") format("woff2");
+  font-weight: normal;
+  font-style: italic;
+  font-display: fallback; }
+
+@font-face {
+  font-family: "Merriweather";
+  src: url("https://tecosaur.com/resources/org/Merriweather-TextBold.woff2") format("woff2");
+  font-weight: bold;
+  font-style: normal;
+  font-display: fallback; }
+
+@font-face {
+  font-family: "et-book";
   src: url("https://tecosaur.com/resources/org/etbookot-roman-webfont.woff2") format("woff2");
   font-weight: normal;
   font-style: normal;
   font-display: fallback; }
 
 @font-face {
-  font-family: 'et-book';
+  font-family: "et-book";
   src: url("https://tecosaur.com/resources/org/etbookot-italic-webfont.woff2") format("woff2");
   font-weight: normal;
   font-style: italic;
