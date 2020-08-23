@@ -5589,6 +5589,7 @@ I want to style acronyms nicely. For the sake of convenience in implementation
 I've actually done this under the [[#org-latex-acronyms][LaTeX export section]], for the sake of
 convenance in implementation (this transformation was first added there).
 ***** LaTeX Rendering
+****** Pre-rendered
 When displaying images, we want to resize by the reciprocal of ~preview-scale~.
 Unfortunately that doesn't happen by default, but not to worry! Advice exists.
 
@@ -5666,6 +5667,43 @@ option. However this isn't sized very well at the moment.
 ;; (setq-default org-html-with-latex `dvisvgm)
 #+END_SRC
 
+****** MathJax
+If MathJax is used, we want to use version 3 instead of the default version 2.
+Looking at a [[https://www.intmath.com/cg5/katex-mathjax-comparison.php][comparison]] we seem to find that it is ~5 times as fast, uses a
+single file instead of multiple, but seems to be a bit bigger unfortunately.
+Thankfully this can be mitigated my adding the ~async~ attribute to defer loading.
+
+#+BEGIN_SRC emacs-lisp
+(after! org
+  (setq org-html-mathjax-options
+        '((path "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" )
+          (scale "1")
+          (autonumber "ams")
+          (multlinewidth "85%")
+          (tagindent ".8em")
+          (tagside "right")))
+
+  (setq org-html-mathjax-template
+        "<script>
+MathJax = {
+  chtml: {
+    scale: %SCALE
+  },
+  svg: {
+    scale: %SCALE,
+    fontCache: \"global\"
+  },
+  tex: {
+    tags: \"%AUTONUMBER\",
+    multlineWidth: \"%MULTLINEWIDTH\",
+    tagSide: \"%TAGSIDE\",
+    tagIndent: \"%TAGINDENT\"
+  }
+};
+</script>
+<script type=\"text/javascript\" id=\"MathJax-script\" async
+        src=\"%PATH\"></script>"))
+#+END_SRC
 **** Exporting to LaTeX
 ***** Acronyms
 :PROPERTIES:
