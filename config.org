@@ -46,6 +46,134 @@ settled by the day. This is my config, and also a cautionary tale (just replace
 
 [[xkcd:456]]
 
+** Why Emacs?
+# https://github.com/esac-io/eos
+# https://github.com/remacs/remacs
+# https://www.eigenbahn.com/2020/01/12/emacs-is-no-editor
+
+Emacs is not a text editor, this is a common misnomer. It is far more apt to
+describe Emacs as Lisp machine providing a generic user-centric text
+manipulation environment.
+In simpler terms one can think of Emacs as a platform for text-related
+applications. It's a vague and generic definition because Emacs itself is
+generic.
+
+Good with text. How far does that go? A lot further than one initially thinks:
++ [[https://orgmode.org/][Task planning]]
++ [[https://www.gnu.org/software/emacs/manual/html_node/emacs/Dired.html][File management]]
++ [[https://github.com/akermu/emacs-libvterm][Terminal emulation]]
++ [[https://www.djcbsoftware.nl/code/mu/mu4e.html][Email client]]
++ [[https://www.gnu.org/software/tramp/][Remote server tool]]
++ [[https://magit.vc/][Git frontend]]
++ Web [[https://github.com/pashky/restclient.el][client]]/[[https://github.com/skeeto/emacs-web-server][server]]
++ and more...
+
+Ideally, one may use Emacs as /the/ interface to perform =input → transform →
+output= cycles, i.e. form a bridge between the human mind and information
+manipulation.
+
+*** The enveloping editor
+Emacs allows one to do more in one place than any other application. Why is this
+good?
++ Enables one to complete tasks with a consistent, standard set of keybindings,
+  GUI and editing methods --- learn once, use everywhere
++ Reduced context-switching
++ Compressing the stages of a project --- a more centralised workflow can progress
+  with greater ease
++ Integration between tasks previously relegated to different applications, but
+  with a common subject --- e.g. linking to an email in a to-do list
+
+*** Some notably unique features
++ Recursive editing
++ Completely introspectable, with pervasive docstrings
++ Mutable environment, which can be incrementally modified
++ Functionality without applications
++ Client-server seperation allows for a daemon, giving near-instant perceived
+  startup time.
+
+*** Issues
++ Emacs has irritating quirks
++ Some aspects are showing their age (naming conventions, APIs)
++ Emacs is ([[https://www.gnu.org/software/emacs/manual/html_node/elisp/Threads.html][mostly]]) single-threaded, meaning that when something holds that
+  thread up the whole application freezes
++ A few other nuisances
+
+*** Teach a man to fish...
+#+BEGIN_QUOTE
+Give a man a fish, and you feed him for a day. Teach a man to fish, and you feed
+him for a lifetime. --- Anne Isabella
+#+END_QUOTE
+
+Most popular editors have a simple and pretty [[https://code.visualstudio.com/docs/getstarted/settings][settings interface]], filled with
+check-boxes, selects, and the occasional text-box. This makes it easy for the
+user to pick between common desirable behaviours. To me this is now like /giving
+a man a fish/.
+
+What if you want one of those 'check-box' settings to be only on in certain
+conditions? Some editors have workspace settings, but that requires you to
+manually set the value for /every single instance/. Urgh, [[https://github.com/microsoft/vscode/issues/93153][what]] [[https://github.com/microsoft/vscode/issues/93628][a]] [[https://github.com/microsoft/vscode/issues/5595][pain]].
+
+What if you could set the value of that 'check-box' setting to be the result of
+an arbitrary expression evaluated for each file? This is where an editor like
+Emacs comes in.
+Configuration for Emacs isn't a list of settings in JSON etc. it's *an executable
+program which modifies the behaviour of the editor to suit your liking*.
+This is 'teaching a man to fish'.
+
+Emacs is built in the same language you configure it in (Emacs [[https://en.wikipedia.org/wiki/Lisp_(programming_language)][Lisp]], or [[https://www.gnu.org/software/emacs/manual/html_node/eintr/][elisp]]).
+It comes with a broad array of useful functions for text-editing, and Doom adds
+a few handy little convenience functions.
+
+Want to add a keybinding to delete the previous line? It's as easy as
+#+NAME: Keybinding to delete the previous line
+#+BEGIN_SRC emacs-lisp :tangle no
+(map! "C-d"
+      (cmd! (previous-line)
+            (kill-line)
+            (forward-line)))
+#+END_SRC
+
+How about another example, say you want to be presented with a list of currently
+open /buffers/ (think files, almost) when you split the window. It's as simple as
+#+NAME: Prompt for buffer after split
+#+BEGIN_SRC emacs-lisp :tangle no
+(defadvice! prompt-for-buffer (&rest _)
+  :after 'window-split (switch-to-buffer))
+#+END_SRC
+
+Want to test it out? You don't need to save and restart, you can just /evaluate
+the expression/ within your current Emacs instance and try it immediately! This
+editor is, after all, a Lisp interpreter.
+
+Want to tweak the behaviour? Just re-evaluate your new version --- it's a
+super-tight iteration loop.
+
+** Editor comparison
+
+[[xkcd:378]]
+
+Over the years I have tried out (spent at least a year using as my primary
+editor) the following applications
+- Python IDLE
+- Komodo Edit
+- Brackets
+- ;VSCode
+- and now, Emacs
+
+I have attempted to quantify aspects of my impressions of them below.
+
+#+PLOT: transpose:yes type:radar min:0 max:4 ticks:4 file:"misc/editor-comparison.png"
+| Editor      | Extensibility | Ecosystem | Ease of Use | Comfort | Completion | Performance |
+|-------------+---------------+-----------+-------------+---------+------------+-------------|
+| IDLE        |             1 |         1 |           3 |       1 |          1 |           2 |
+| ;VSCode     |             3 |         3 |           4 |     3.5 |          4 |           3 |
+| Brackets    |           2.5 |         2 |           3 |       3 |        2.5 |           2 |
+| Emacs       |             4 |         4 |           2 |       4 |        3.5 |           3 |
+| Komodo Edit |             2 |         1 |           3 |       2 |          2 |           2 |
+
+#+attr_html: :class invertible :alt Radar chart comparing my thoughts on a few editors.
+[[https://tecosaur.com/lfs/emacs-config/editor-comparison.png]]
+
 ** Notes for the unwary adventurer
 If you like the look of this, that's marvellous, and I'm really happy that I've
 made something which you may find interesting, however:
@@ -71,6 +199,7 @@ this whole thing is a hack job? If you can suggest any improvements, please do
 so, no matter how much criticism you include I'll appreciate it :)
 
 [[xkcd:1513]]
+
 *** Extra Requirements
 The lovely ~doom doctor~ is good at diagnosing most missing things, but here are a
 few extras.
@@ -96,6 +225,7 @@ cargo install git-delta
   #+BEGIN_SRC shell :eval no
 cargo install cargo-script
   #+END_SRC
+
 ** Current Issues
 *** Magit push in daemon
 Quite often trying to push to a remote in the Emacs daemon produces as error like this:
@@ -119,31 +249,7 @@ change the action to open the Emacs daemon, but it should be possible.
 This would probably involve hooking into the daemon's modeline update function
 to write to a temporary file, and having a file watcher started in other Emacs
 instances, in a similar manner to [[*Rebuild mail index while using mu4e][Rebuild mail index while using mu4e]].
-** Editor comparison
 
-[[xkcd:378]]
-
-Over the years I have tried out (spent at least a year using as my primary
-editor) the following applications
-- Python IDLE
-- Komodo Edit
-- Brackets
-- VSCode
-- and now, Emacs
-
-I have attempted to quantify aspects of my impressions of them below.
-
-#+PLOT: transpose:yes type:radar min:0 max:4 ticks:4 file:"misc/editor-comparison.png"
-| Editor      | Extensibility | Ecosystem | Ease of Use | Comfort | Completion | Performance |
-|-------------+---------------+-----------+-------------+---------+------------+-------------|
-| IDLE        |             1 |         1 |           3 |       1 |          1 |           2 |
-| VSCode      |             3 |         3 |           4 |     3.5 |          4 |           3 |
-| Brackets    |           2.5 |         2 |           3 |       3 |        2.5 |           2 |
-| Emacs       |             4 |         4 |           2 |       4 |        3.5 |           3 |
-| Komodo Edit |             2 |         1 |           3 |       2 |          2 |           2 |
-
-#+attr_html: :class invertible :alt Radar chart comparing my thoughts on a few editors.
-[[https://tecosaur.com/lfs/emacs-config/editor-comparison.png]]
 * Rudimentary configuration
 Make this file run (slightly) faster with lexical binding (see [[https://nullprogram.com/blog/2016/12/22/][this blog post]]
 for more info).
