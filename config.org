@@ -4800,7 +4800,7 @@ I've also added some fun alternatives, just commented out.
 It's also nice to make use of the Unicode characters for check boxes, and other commands.
 #+BEGIN_SRC emacs-lisp
 (after! org
-  (appendq! +pretty-code-symbols
+  (appendq! +ligatures-extra-symbols
             `(:checkbox      "☐"
               :pending       "◼"
               :checkedbox    "☑"
@@ -4827,7 +4827,7 @@ It's also nice to make use of the Unicode characters for check boxes, and other 
               :priority_d   ,(propertize "⬇" 'face 'all-the-icons-green)
               :priority_e   ,(propertize "❓" 'face 'all-the-icons-blue)
               :em_dash       "—"))
-  (set-pretty-symbols! 'org-mode
+  (set-ligatures! 'org-mode
     :merge t
     :checkbox      "[ ]"
     :pending       "[-]"
@@ -4855,7 +4855,7 @@ It's also nice to make use of the Unicode characters for check boxes, and other 
     :priority_d    "[#D]"
     :priority_e    "[#E]"
     :em_dash       "---"))
-(plist-put +pretty-code-symbols :name "⁍") ; or › could be good?
+(plist-put +ligatures-extra-symbols :name "⁍") ; or › could be good?
 #+END_SRC
 We also like ~org-fragtog~, and that wants a hook.
 #+BEGIN_SRC emacs-lisp
@@ -6507,10 +6507,10 @@ priority of =mypyls=
 *** Editor Visuals
 #+BEGIN_SRC emacs-lisp
 (after! ess-r-mode
-  (appendq! +pretty-code-symbols
+  (appendq! +ligatures-extra-symbols
             '(:assign "⟵"
               :multiply "×"))
-  (set-pretty-symbols! 'ess-r-mode
+  (set-ligatures! 'ess-r-mode
     ;; Functional
     :def "function"
     ;; Types
