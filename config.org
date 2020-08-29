@@ -2272,6 +2272,7 @@ will also be the width of all other printable characters."
       (concat (propertize " " 'display `(space . (:width ,space-factor))) icon)
       ))
 
+  (defun mu4e~initialise-icons ()
   (setq mu4e-use-fancy-chars t
         mu4e-headers-draft-mark      (cons "D" (mu4e~normalised-icon "pencil"))
         mu4e-headers-flagged-mark    (cons "F" (mu4e~normalised-icon "flag"))
@@ -2284,6 +2285,15 @@ will also be the width of all other printable characters."
         mu4e-headers-encrypted-mark  (cons "x" (mu4e~normalised-icon "lock"))
         mu4e-headers-signed-mark     (cons "s" (mu4e~normalised-icon "certificate" :height 0.7 :colour "dpurple"))
         mu4e-headers-unread-mark     (cons "u" (mu4e~normalised-icon "eye-slash" :v-adjust 0.05))))
+
+  (if (display-graphic-p)
+      (mu4e~initialise-icons)
+    ;; When it's the server, wait till the first graphical frame
+    (add-hook! 'server-after-make-frame-hook
+      (defun mu4e~initialise-icons-hook ()
+        (when (display-graphic-p)
+          (mu4e~initialise-icons)
+          (remove-hook #'mu4e~initialise-icons-hook))))))
 #+END_SRC
 
 To account for the increase width of each flag character, and make perform a
