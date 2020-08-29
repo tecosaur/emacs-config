@@ -12,7 +12,7 @@
    style="font-family: 'Open Sans'; background-image: none; color: inherit;
    text-decoration: none; position: relative; top: clamp(-26px, calc(1280px - 100vw), 0px); opacity: 0.7;">
   <img src="https://upload.wikimedia.org/wikipedia/commons/9/91/Octicons-mark-github.svg"
-       class="invertible"
+       class="invertible" alt="GitHub Octicon"
        style="height: 1em; position: relative; top: 0.1em;">
   View on GitHub</a>
 #+END_EXPORT
@@ -3950,7 +3950,7 @@ Hence, we need to do a bit of overriding.
              stroke: #888;
          }
         </style>
-        <script type="text/javascript">
+        <script>
          function create_iframe (url) {
              i = document.createElement('iframe');
              i.setAttribute('src', url);
@@ -5308,11 +5308,11 @@ Suffice to say I've snatched it, with a few of my own tweaks applied.
 #+BEGIN_SRC html :tangle misc/org-export-header.html :comments no
 <link rel="icon" href="https://tecosaur.com/resources/org/nib.ico" type="image/ico" />
 
-<link rel="preload" as="font" crossorigin="crossorigin" type="font/woff2" href="https://tecosaur.com/resources/org/etbookot-roman-webfont.woff2">
-<link rel="preload" as="font" crossorigin="crossorigin" type="font/woff2" href="https://tecosaur.com/resources/org/etbookot-italic-webfont.woff2">
-<link rel="preload" as="font" crossorigin="crossorigin" type="font/woff2" href="https://tecosaur.com/resources/org/Merriweather-TextRegular.woff2">
-<link rel="preload" as="font" crossorigin="crossorigin" type="font/woff2" href="https://tecosaur.com/resources/org/Merriweather-TextItalic.woff2">
-<link rel="preload" as="font" crossorigin="crossorigin" type="font/woff2" href="https://tecosaur.com/resources/org/Merriweather-TextBold.woff2">
+<link rel="preload" as="font" crossorigin="anonymous" type="font/woff2" href="https://tecosaur.com/resources/org/etbookot-roman-webfont.woff2">
+<link rel="preload" as="font" crossorigin="anonymous" type="font/woff2" href="https://tecosaur.com/resources/org/etbookot-italic-webfont.woff2">
+<link rel="preload" as="font" crossorigin="anonymous" type="font/woff2" href="https://tecosaur.com/resources/org/Merriweather-TextRegular.woff2">
+<link rel="preload" as="font" crossorigin="anonymous" type="font/woff2" href="https://tecosaur.com/resources/org/Merriweather-TextItalic.woff2">
+<link rel="preload" as="font" crossorigin="anonymous" type="font/woff2" href="https://tecosaur.com/resources/org/Merriweather-TextBold.woff2">
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
@@ -5718,7 +5718,7 @@ MathJax = {
   }
 };
 </script>
-<script type=\"text/javascript\" id=\"MathJax-script\" async
+<script id=\"MathJax-script\" async
         src=\"%PATH\"></script>"))
 #+END_SRC
 **** Exporting to LaTeX
