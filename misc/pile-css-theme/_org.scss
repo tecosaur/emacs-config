@@ -32,6 +32,9 @@
   @include tag();
   font-weight: bold;
 }
+.outline-2, .outline-3, .outline-4 {
+  contain: content;
+}
 
 .todo {
   color: #ee3333;

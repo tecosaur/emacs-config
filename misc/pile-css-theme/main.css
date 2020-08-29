@@ -2263,6 +2263,9 @@ li.off > .checkbox::after {
       background-image: none;
       color: var(--text-dark); }
 
+.outline-2, .outline-3, .outline-4 {
+  contain: content; }
+
 .todo {
   color: #ee3333; }
 
