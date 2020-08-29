@@ -2854,8 +2854,8 @@ definition functionality (like ~+lookup/dictionary-definition~).
         :n "N" (cmd! (lexic-next-entry t))
         :n "p" #'lexic-previous-entry
         :n "P" (cmd! (lexic-previous-entry t))
-        :n "b" #'lexic-search-history-backwards
-        :n "f" #'lexic-search-history-forwards
+        :n "C-n" #'lexic-search-history-backwards
+        :n "C-p" #'lexic-search-history-forwards
         :n "/" (cmd! (call-interactively #'lexic-search))))
 #+END_SRC
 
