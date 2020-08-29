@@ -3570,7 +3570,11 @@ functionality as in LaTeX. Let's try viewing possible output files with this.
                           (:discard (:tag ("Chore" "Routine" "Daily")))))))))))
 #+END_SRC
 **** Capture
-Let's setup some org-capture templates
+Let's setup some org-capture templates, and make them visually nice to access.
+
+#+attr_html: :class invertible :alt My org-capture dialouge.
+[[https://tecosaur.com/lfs/emacs-config/screenshots/org-capture.png]]
+
 #+BEGIN_SRC emacs-lisp :noweb yes
 (use-package! doct
   :commands (doct))
