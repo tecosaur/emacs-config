@@ -5769,6 +5769,7 @@ While this is the LaTeX section, it's convenient to also provide HTML acronyms h
   )
 #+END_SRC
 
+***** Nicer checkboxes
 #+BEGIN_SRC emacs-lisp
 (after! org
   (defun tec/org-export-latex-fancy-item-checkboxes (text backend info)
@@ -5787,7 +5788,7 @@ While this is the LaTeX section, it's convenient to also provide HTML acronyms h
                'tec/org-export-latex-fancy-item-checkboxes))
 #+END_SRC
 
-Now for a few more adjustments.
+***** Class templates
 #+BEGIN_SRC emacs-lisp :noweb yes
 (after! ox-latex
   (add-to-list 'org-latex-classes
@@ -5897,6 +5898,7 @@ Now for a few more adjustments.
         '("latexmk -shell-escape -interaction=nonstopmode -f -pdf -output-directory=%o %f")))
 #+END_SRC
 
+***** A cleverer preamble
 We also want a particular preamble when minted is used,
 #+NAME: org-minted-preamble
 #+BEGIN_SRC LaTeX
