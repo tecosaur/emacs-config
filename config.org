@@ -206,10 +206,6 @@ so, no matter how much criticism you include I'll appreciate it :)
 *** Extra Requirements
 The lovely ~doom doctor~ is good at diagnosing most missing things, but here are a
 few extras.
-+ The [[https://github.com/dandavison/delta/][Delta]] binary. It's packaged for some distributions but I installed it with
-  #+BEGIN_SRC shell :eval no
-cargo install git-delta
-  #+END_SRC
 + A [[https://www.tug.org/texlive/][LaTeX Compiler]] is required for the mathematics rendering performed in [[#org][Org]],
   and by [[*CalcTeX][CalcTeX]].
 + I use the [[https://overpassfont.org/][Overpass]] font as a go-to sans serif.
@@ -225,8 +221,12 @@ cargo install git-delta
 + The =cargo-script= rust crate is required for evaluation of rust blocks by babel.
   As described in the README for [[https://github.com/micanzhang/ob-rust][ob-rust]]. Like ~delta~, this can just be installed
   using cargo.
-  #+BEGIN_SRC shell :eval no
+  #+BEGIN_SRC shell :eval no :tangle (if (executable-find "cargo-script") "no" "setup.sh")
 cargo install cargo-script
+  #+END_SRC
++ The [[https://github.com/dandavison/delta/][Delta]] binary. It's packaged for some distributions but I installed it with
+  #+BEGIN_SRC shell :eval no :tangle (if (executable-find "delta") "no" "setup.sh")
+cargo install git-delta
   #+END_SRC
 + The =theme-magic= package requires the ~wal~ (=pywal=) executable. If this is
   packaged for you, great! If not, it's just a quick ~pip install~ away.
@@ -586,7 +586,7 @@ Restart=on-failure
 WantedBy=default.target
 #+END_SRC
 which is then enabled by
-#+BEGIN_SRC shell :tangle no
+#+BEGIN_SRC shell :tangle (if (string= "enabled\n" (shell-command-to-string "systemctl --user is-enabled emacs.service")) "no" "setup.sh")
 systemctl --user enable emacs.service
 #+END_SRC
 
@@ -1380,7 +1380,7 @@ Now, some actual emojis to use.
 #+END_SRC
 ** [[https://github.com/zachcurry/emacs-anywhere][Emacs Anywhere]] configuration
 To start with, let's install this.
-#+BEGIN_SRC shell
+#+BEGIN_SRC shell :tangle (if (executable-find "emacs_anywhere") "no" "setup.sh")
 cd /tmp
 curl -fsSL https://raw.github.com/zachcurry/emacs-anywhere/master/install -o ea-install.sh
 sed -i 's/EA_PATH=$HOME\/.emacs_anywhere/EA_PATH=$HOME\/.local\/share\/emacs_anywhere/' ea-install.sh
@@ -1527,7 +1527,7 @@ the following configuration
  - extra lists :: hacker, roman numerals
 
 **** Hunspell
-#+BEGIN_SRC shell
+#+BEGIN_SRC shell :tangle (if (file-exists-p "/usr/share/myspell/en-custom.dic") "no" "setup.sh")
 cd /tmp
 curl -o "hunspell-en-custom.zip" 'http://app.aspell.net/create?max_size=80&spelling=GBs&spelling=AU&max_variant=0&diacritic=keep&special=hacker&special=roman-numerals&encoding=utf-8&format=inline&download=hunspell'
 unzip "hunspell-en-custom.zip"
@@ -1536,7 +1536,7 @@ sudo chown root:root en-custom.*
 sudo mv en-custom.{aff,dic} /usr/share/myspell/
 #+END_SRC
 **** Aspell
-#+BEGIN_SRC shell
+#+BEGIN_SRC shell :tangle (if (file-expand-wildcards "/usr/lib64/aspell*/en-custom.multi") "no" "setup.sh")
 cd /tmp
 curl -o "aspell6-en-custom.tar.bz2" 'http://app.aspell.net/create?max_size=80&spelling=GBs&spelling=AU&max_variant=0&diacritic=keep&special=hacker&special=roman-numerals&encoding=utf-8&format=inline&download=aspell'
 tar -xjf "aspell6-en-custom.tar.bz2"
@@ -1609,7 +1609,7 @@ Using [[https://gitlab.com/shackra/goimapnotify][goimapnotify]] we should be abl
 mail. Unfortunately this means /yet another/ config file :(
 
 We install with
-#+BEGIN_SRC shell :eval no
+#+BEGIN_SRC shell :eval no :tangle (if (executable-find "goimapnotify") "no" "setup.sh")
 go get -u gitlab.com/shackra/goimapnotify
 ln -s ~/.local/share/go/bin/goimapnotify ~/.local/bin/
 #+END_SRC
@@ -1686,7 +1686,7 @@ Prevents a series of redisplays from being called (when set to an appropriate va
 
 **** Config transcoding & service management
 As long as the =mbsyncrc= file exists, this is as easy as running
-#+BEGIN_SRC shell
+#+BEGIN_SRC shell :tangle (if (file-exists-p "~/.imapnotify") "no" "setup.sh")
 ~/.config/doom/misc/mbsync-imapnotify.py
 #+END_SRC
 
@@ -2114,7 +2114,7 @@ WantedBy=mail.target
 #+END_SRC
 
 Enabling (and starting) this is as simple as
-#+BEGIN_SRC shell
+#+BEGIN_SRC shell :tangle (if (string= "enabled\n" (shell-command-to-string "systemctl --user is-enabled mbsync.timer")) "no" "setup.sh")
 systemctl --user enable mbsync.timer --now
 #+END_SRC
 *** Indexing/Searching
@@ -2132,8 +2132,8 @@ building it from source then. I needed to install these packages
  + =gmime-devel=
  + =xapian-core-devel=
 
-#+NAME: install mu from source (solus)
-#+BEGIN_SRC shell :eval no
+#+NAME: Install mu from source
+#+BEGIN_SRC shell :eval no :tangle (if (executable-find "mu") "no" "setup.sh")
 cd ~/.local/lib/
 git clone https://github.com/djcb/mu.git
 cd ./mu
@@ -2144,7 +2144,7 @@ sudo make install
 
 To check how my version compares to the latest published:
 
-#+BEGIN_SRC shell
+#+BEGIN_SRC shell :tangle no
 curl --silent "https://api.github.com/repos/djcb/mu/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/'
 mu --version | head -n 1 | sed 's/.* version //'
 #+END_SRC
@@ -2171,7 +2171,8 @@ we'll just install the latest from source.
 
 For full use of the ~auth~ options, I need =GNU SASL=, which isn't packaged for me.
 I don't think I want it, but in case I do, I'll need to do this.
-#+BEGIN_SRC shell :eval no :tangle no
+#+NAME: Install gsasl from source
+#+BEGIN_SRC shell :eval no :tangle (if (executable-find "msmtp") "no" "setup.sh")
 export GSASL_VERSION=1.8.1
 cd ~/.local/lib/
 curl "ftp://ftp.gnu.org/gnu/gsasl/libgsasl-$GSASL_VERSION.tar.gz" | tar xz
@@ -2189,7 +2190,8 @@ cd ..
 #+END_SRC
 
 Now actually compile ~msmtp~.
-#+BEGIN_SRC shell :eval no
+#+NAME: Install msmtp from source
+#+BEGIN_SRC shell :eval no :tangle (if (executable-find "msmtp") "no" "setup.sh")
 cd ~/.local/lib/
 git clone https://github.com/marlam/msmtp-mirror.git ./msmtp
 cd ./msmtp
