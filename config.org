@@ -228,6 +228,11 @@ cargo install git-delta
   #+BEGIN_SRC shell :eval no
 cargo install cargo-script
   #+END_SRC
++ The =theme-magic= package requires the ~wal~ (=pywal=) executable. If this is
+  packaged for you, great! If not, it's just a quick ~pip install~ away.
+  #+BEGIN_SRC shell :eval no :tangle (if (executable-find "wal") "no" "setup.sh")
+sudo python3 -m pip install pywal
+  #+END_SRC
 
 ** Current Issues
 *** Magit push in daemon
@@ -2884,8 +2889,8 @@ Let's make this suit me slightly better.
       spray-height 700)
 #+END_SRC
 ** Theme magic
-Let's automatically update terminals on theme change
-#+BEGIN_SRC emacs-lisp
+Let's automatically update terminals on theme change (as long as ~pywal~ is available).
+#+BEGIN_SRC emacs-lisp :tangle (if (executable-find "wal") "yes" "no")
 (add-hook 'doom-load-theme-hook 'theme-magic-from-emacs)
 #+END_SRC
 ** Tramp
