@@ -883,10 +883,6 @@ To actually get notifications, we can use =mu4e-alert=.
 #+END_SRC
 ** Language packages
 *** LaTeX
-#+BEGIN_SRC emacs-lisp
-(package! evil-tex :recipe (:host github :repo "itai33/evil-tex")
-                            :pin "925337a4d5799d48c03e0384757decb6363ab478")
-#+END_SRC
 For mathematical convenience, WIP
 #+BEGIN_SRC emacs-lisp
 (package! auto-latex-snippets
@@ -6505,12 +6501,6 @@ but more convenient, like =;=.
 (after! tex
   (add-to-list 'TeX-view-program-list '("Evince" "evince %o"))
   (add-to-list 'TeX-view-program-selection '(output-pdf "Evince")))
-#+END_SRC
-*** Evilification
-Let's face it. Being evil is fun, let's take it as far as we can.
-#+BEGIN_SRC emacs-lisp
-(use-package! evil-tex
-  :hook (LaTeX-mode . evil-tex-mode))
 #+END_SRC
 *** Fixes
 In case of Emacs28,
