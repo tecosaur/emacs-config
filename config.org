@@ -829,7 +829,7 @@ package to hook this into the magit diff view. This requires the ~delta~ binary.
 This makes manual pages nicer to look at :)
 Variable pitch fontification + colouring
 
-#+attr_html: :class invertible :width 80% :alt Example info-colours page.
+#+attr_html: :class invertible :style width:80% :alt Example info-colours page.
 [[https://tecosaur.com/lfs/emacs-config/screenshots/info-colours.png]]
 
 #+BEGIN_SRC emacs-lisp
