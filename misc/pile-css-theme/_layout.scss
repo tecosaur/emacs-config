@@ -126,8 +126,8 @@ header > div {
 
 @media (min-width: 1000px) {
   #content, header, .page-header {
-    margin-left: 164px;
     max-width: 720px;
+    margin-left: 164px;
   }
 
   header {
@@ -138,6 +138,13 @@ header > div {
       float: right;
       margin-top: 0;
     }
+  }
+}
+
+@media (min-width: 2800px) {
+  #content, header, .page-header {
+    margin-left: auto;
+    margin-right: auto;
   }
 }
 
