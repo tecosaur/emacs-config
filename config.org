@@ -6669,6 +6669,5 @@ Now we just need to load it appropriately.
 #+BEGIN_SRC emacs-lisp
 (use-package! authinfo-colour-mode
   :mode ("authinfo\\.gpg\\'" . authinfo-colour-mode)
-  :config
-  (advice-add 'authinfo-mode :override #'authinfo-colour-mode))
+  :init (advice-add 'authinfo-mode :override #'authinfo-colour-mode))
 #+END_SRC
