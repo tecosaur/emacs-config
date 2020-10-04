@@ -2999,6 +2999,40 @@ I also think that having =evil-= appear in so many popups is a bit too verbose, 
    '(("\\`g s" . "\\`evilem--?motion-\\(.*\\)") . (nil . "◃\\1"))
    ))
 #+END_SRC
+** Writeroom
+For starters, I think Doom is a bit over-zealous when zooming in
+#+BEGIN_SRC emacs-lisp
+(setq +zen-text-scale 0.6)
+#+END_SRC
+
+Now, I think it would also be nice to remove line numbers and org stars in
+writeroom.
+#+BEGIN_SRC emacs-lisp
+(after! writeroom-mode
+  (add-hook 'writeroom-mode-hook
+            (defun +zen-cleaner-org ()
+              (when (and (eq major-mode 'org-mode) writeroom-mode)
+                (setq-local -display-line-numbers display-line-numbers
+                            display-line-numbers nil)
+                (setq-local -org-indent-mode org-indent-mode)
+                (org-indent-mode -1)
+                (when (featurep 'org-superstar)
+                  (setq-local -org-superstar-headline-bullets-list org-superstar-headline-bullets-list
+                              org-superstar-headline-bullets-list '("​")
+                              -org-superstar-remove-leading-stars org-superstar-remove-leading-stars
+                              org-superstar-remove-leading-stars t)
+                  (org-superstar-restart)))))
+  (add-hook 'writeroom-mode-disable-hook
+            (defun +zen-dirty-org ()
+              (when (eq major-mode 'org-mode)
+                (setq-local display-line-numbers -display-line-numbers)
+                (when -org-indent-mode
+                  (org-indent-mode 1))
+                (when (featurep 'org-superstar)
+                  (setq-local org-superstar-headline-bullets-list -org-superstar-headline-bullets-list
+                              org-superstar-remove-leading-stars -org-superstar-remove-leading-stars)
+                  (org-superstar-restart))))))
+#+END_SRC
 ** xkcd
 We want to set this up so it loads nicely in [[*Extra links][Extra links]].
 #+BEGIN_SRC emacs-lisp
