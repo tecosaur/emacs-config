@@ -1,6 +1,6 @@
-[submodule "Auto-LaTeX-Snippets"]
-	path = lisp/Auto-LaTeX-Snippets
-	url = https://github.com/tecosaur/Auto-LaTeX-Snippets.git
+[submodule "LaTeX-auto-activiating-snippets"]
+	path = lisp/LaTeX-auto-activating-snippets
+	url = git@github.com:tecosaur/LaTeX-auto-activating-snippets.git
 [submodule "Lexic"]
 	path = lisp/lexic
 	url = https://github.com/tecosaur/sdcv.git

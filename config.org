@@ -886,24 +886,30 @@ To actually get notifications, we can use =mu4e-alert=.
 *** LaTeX
 For mathematical convenience, WIP
 #+BEGIN_SRC emacs-lisp
-(package! auto-latex-snippets
-  :recipe (:local-repo "lisp/Auto-LaTeX-Snippets"))
+(package! auto-activating-snippets :recipe
+  (:host github :repo "ymarco/auto-activating-snippets")
+  :pin "0927bb5e853c9a5524b46e438c2efe2022b36ac2")
+(package! latex-auto-activating-snippets
+  :recipe (:local-repo "lisp/LaTeX-auto-activating-snippets"))
 #+END_SRC
 And some basic config
 #+BEGIN_SRC emacs-lisp :tangle yes
-(use-package! auto-latex-snippets
-  :hook (LaTeX-mode . auto-latex-snippets-mode)
+(use-package! auto-activating-snippets
+  :hook (LaTeX-mode . auto-activating-snippets-mode)
+  :config (require 'latex-auto-activating-snippets))
+
+(use-package! latex-auto-activating-snippets
   :config
   (defun als-tex-fold-maybe ()
     (unless (equal "/" als-transient-snippet-key)
       (+latex-fold-last-macro-a)))
-  (add-hook 'als-post-snippet-expand-hook #'als-tex-fold-maybe))
+  (add-hook 'aas-post-snippet-expand-hook #'als-tex-fold-maybe))
 #+END_SRC
 *** Org Mode
 **** Improve agenda/capture
 The agenda is nice, but a souped up version is nicer.
 #+BEGIN_SRC emacs-lisp
-(package! org-super-agenda :pin "dd0d104c269fab9ebe5af7009bc1dd2a3a8f3c12")
+(package! org-super-agenda :pin "3264255989021b8563ea42b5d26acbc2a024f14d")
 #+END_SRC
 
 Similarly ~doct~ (Declarative Org Capture Templates) seems to be a nicer way to
@@ -911,7 +917,7 @@ set up org-capture.
 #+BEGIN_SRC emacs-lisp
 (package! doct
   :recipe (:host github :repo "progfolio/doct")
-  :pin "80d291e5f1cbdabd4eb7f88c917653c59d3f14be")
+  :pin "dabb30ebea866ef225b81561c8265d740b1e81c3")
 #+END_SRC
 **** Visuals
 Org tables aren't the prettiest thing to look at. This package is supposed to
@@ -943,7 +949,7 @@ features that GitHub has. Initialised in [[Exporting to GFM]].
 
 Now and then citations need to happen
 #+BEGIN_SRC emacs-lisp
-(package! org-ref :pin "9a8053f0b0e799b8edbae2376dda44704054725a")
+(package! org-ref :pin "f582e9c53e8e4c5dcc1d3889f1b5c536c9a9b524")
 #+END_SRC
 
 Came across this and ... it's cool
@@ -954,7 +960,7 @@ Came across this and ... it's cool
 I *need* this in my life. It take a URL to a recipe from a common site, and
 inserts an org-ified version at point. Isn't that just great.
 #+BEGIN_SRC emacs-lisp
-(package! org-chef :pin "77f97ad07b957d6b5ea6c2a57a9e623f2ab36d04")
+(package! org-chef :pin "5b461ed7d458cdcbff0af5013fbdbe88cbfb13a4")
 #+END_SRC
 
 Sometimes I'm given non-org files, that's very sad. Luckily Pandoc offers a way
@@ -971,7 +977,7 @@ to make that right again, and this package makes that even easier to do.
 Org-roam is nice by itself, but there are so /extra/ nice packages which integrate
 with it.
 #+BEGIN_SRC emacs-lisp
-(package! org-roam-server :pin "bfc70327413948fb7e631f4424fb92c3dbdeafc0")
+(package! org-roam-server :pin "8d1d143f5db415864c008b8e42e4d92279df9a81")
 #+END_SRC
 #+BEGIN_SRC emacs-lisp :tangle yes
 (use-package org-roam-server
