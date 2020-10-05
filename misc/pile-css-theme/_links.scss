@@ -48,6 +48,22 @@ dl a {
   }
 }
 
+*:target::before {
+  content: "🠖";
+  position: absolute;
+  left: -7rem;
+  @media (max-width:1000px) {
+    content: "🠔";
+    left: unset;
+    right: 0;
+  }
+  top: calc(0.5em - 2rem);
+  line-height: 1;
+  color: #e65353aa;
+  font-size: 3rem;
+  font-style: normal;
+}
+
 #content .page-intro p a,
 #footnotes a {
   @include link-underline($back-white, $text-gray);
