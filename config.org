@@ -1740,11 +1740,11 @@ So I'm going to make use of ~flyspell-lazy~
 *** Downloading dictionaries
 Let's get a nice big dictionary from [[http://app.aspell.net/create][SCOWL Custom List/Dictionary Creator]] with
 the following configuration
- - size :: 80 (huge)
- - spellings :: British(-ise) and Australian
- - spelling variants level :: 0
- - diacritics :: keep
- - extra lists :: hacker, roman numerals
+- size :: 80 (huge)
+- spellings :: British(-ise) and Australian
+- spelling variants level :: 0
+- diacritics :: keep
+- extra lists :: hacker, roman numerals
 
 **** Hunspell
 #+BEGIN_SRC shell :tangle (if (file-exists-p "/usr/share/myspell/en-custom.dic") "no" "setup.sh")
@@ -1807,12 +1807,12 @@ into later.
 
 *** Fetching
 The contenders for this seem to be:
- + [[https://www.offlineimap.org/][OfflineIMAP]] ([[https://wiki.archlinux.org/index.php/OfflineIMAP][ArchWiki page]])
- + [[http://isync.sourceforge.net/mbsync.html][isync/mbsync]] ([[https://wiki.archlinux.org/index.php/isync][ArchWiki page]])
++ [[https://www.offlineimap.org/][OfflineIMAP]] ([[https://wiki.archlinux.org/index.php/OfflineIMAP][ArchWiki page]])
++ [[http://isync.sourceforge.net/mbsync.html][isync/mbsync]] ([[https://wiki.archlinux.org/index.php/isync][ArchWiki page]])
 
 From perusing r/emacs the prevailing opinion seems to be that
- + isync is faster
- + isync works more reliably
++ isync is faster
++ isync works more reliably
 So let's use that.
 
 The config was straightforward, and is located at [[file:~/.mbsyncrc][~/.mbsyncrc]].
@@ -1913,27 +1913,27 @@ As long as the =mbsyncrc= file exists, this is as easy as running
 #+END_SRC
 
 When run without flags this will perform the following actions
- + Read, and parse [[file:~/.mbsyncrc][~/.mbsyncrc]], specifically recognising the following properties
-   - ~IMAPAccount~
-   - ~Host~
-   - ~Port~
-   - ~User~
-   - ~Password~
-   - ~PassCmd~
-   - ~Patterns~
- + Call ~mbsync --list ACCOUNT~, and filter results according to ~Patterns~
- + Construct a imapnotify config for each account, with the following hooks
-   - onNewMail :: ~mbsync --pull ACCOUNT:MAILBOX~
-   - onNewMailPost :: ~if mu index --lazy-check; then test -f /tmp/mu_reindex_now && rm /tmp/mu_reindex_now; else touch /tmp/mu_reindex_now; fi~
- + Compare accounts list to previous accounts, enable/disable the relevant
-   systemd services, called with the ~--now~ flag (start/stop services as well)
++ Read, and parse [[file:~/.mbsyncrc][~/.mbsyncrc]], specifically recognising the following properties
+  - ~IMAPAccount~
+  - ~Host~
+  - ~Port~
+  - ~User~
+  - ~Password~
+  - ~PassCmd~
+  - ~Patterns~
++ Call ~mbsync --list ACCOUNT~, and filter results according to ~Patterns~
++ Construct a imapnotify config for each account, with the following hooks
+  - onNewMail :: ~mbsync --pull ACCOUNT:MAILBOX~
+  - onNewMailPost :: ~if mu index --lazy-check; then test -f /tmp/mu_reindex_now && rm /tmp/mu_reindex_now; else touch /tmp/mu_reindex_now; fi~
++ Compare accounts list to previous accounts, enable/disable the relevant
+  systemd services, called with the ~--now~ flag (start/stop services as well)
 
 This script also supports the following flags
- + ~--status~ to get the status of the relevant systemd services supports =active=,
-   =failing=, and =disabled=
- + ~--enable~ to enable all relevant systemd services
- + ~--disable~ to disable all relevant systemd services
-#+BEGIN_SRC python :tangle misc/mbsync-imapnotify.py :shebang "#!/usr/bin/env python3"
++ ~--status~ to get the status of the relevant systemd services supports =active=,
+  =failing=, and =disabled=
++ ~--enable~ to enable all relevant systemd services
++ ~--disable~ to disable all relevant systemd services
+#+begin_src python :tangle misc/mbsync-imapnotify.py :shebang "#!/usr/bin/env python3"
 from pathlib import Path
 import json
 import re
@@ -1992,7 +1992,7 @@ def processLine(line):
     if parameter == "IMAPAccount":
         if currentAccountNumber > 0:
             finaliseAccount()
-        newAccount(value)
+            newAccount(value)
     elif parameter in mbsyncInotifyMapping.keys():
         parser, key = mbsyncInotifyMapping[parameter]
         currentAccountData[key] = parser(value)
@@ -2051,8 +2051,8 @@ def finaliseAccount():
         print(f"  \033[1;37m{key:<13} {valColor}{val}\033[0;37m")
 
     if (
-        len(currentAccountData["boxes"]) > 15
-        and "@gmail.com" in currentAccountData["username"]
+            len(currentAccountData["boxes"]) > 15
+            and "@gmail.com" in currentAccountData["username"]
     ):
         print(
             "  \033[1;31mWarning:\033[0;31m Gmail raises an error when more than"
@@ -2144,7 +2144,7 @@ def enableAccountSystemdServices(accounts):
     for account in accounts:
         print(f" \033[0;32m - \033[1;37m{account:<18}", end="\033[0;37m", flush=True)
         if setSystemdServiceState(
-            "enable", f"goimapnotify@{accountToFoldername(account)}.service"
+                "enable", f"goimapnotify@{accountToFoldername(account)}.service"
         ):
             print("\033[1;32m enabled")
 
@@ -2153,7 +2153,7 @@ def disableAccountSystemdServices(accounts):
     for account in accounts:
         print(f" \033[0;33m - \033[1;37m{account:<18}", end="\033[0;37m", flush=True)
         if setSystemdServiceState(
-            "disable", f"goimapnotify@{accountToFoldername(account)}.service"
+                "disable", f"goimapnotify@{accountToFoldername(account)}.service"
         ):
             print("\033[1;33m disabled")
 
@@ -2162,7 +2162,7 @@ def restartAccountSystemdServices(accounts):
     for account in accounts:
         print(f" \033[0;34m - \033[1;37m{account:<18}", end="\033[0;37m", flush=True)
         if setSystemdServiceState(
-            "restart", f"goimapnotify@{accountToFoldername(account)}.service"
+                "restart", f"goimapnotify@{accountToFoldername(account)}.service"
         ):
             print("\033[1;34m restarted")
 
@@ -2342,17 +2342,17 @@ systemctl --user enable mbsync.timer --now
 *** Indexing/Searching
 This is performed by [[https://www.djcbsoftware.nl/code/mu/][Mu]]. This is a tool for finding emails stored in the [[http://en.wikipedia.org/wiki/Maildir][Maildir]] format.
 According to the homepage, it's main features are
- + Fast indexing
- + Good searching
- + Support for encrypted and signed messages
- + Rich CLI tooling
- + accent/case normalisation
- + strong integration with email clients
++ Fast indexing
++ Good searching
++ Support for encrypted and signed messages
++ Rich CLI tooling
++ accent/case normalisation
++ strong integration with email clients
 
 Unfortunately ~mu~ is not currently packaged from me. Oh well, I guess I'm
 building it from source then. I needed to install these packages
- + =gmime-devel=
- + =xapian-core-devel=
++ =gmime-devel=
++ =xapian-core-devel=
 
 #+NAME: Install mu from source
 #+BEGIN_SRC shell :eval no :tangle (if (executable-find "mu") "no" "setup.sh")
@@ -2379,11 +2379,11 @@ mu --version | head -n 1 | sed 's/.* version //'
 me. [[https://marlam.de/msmtp/][msmtp]] is however, so I'll give that a shot. Reading around a bit (googling
 "msmtp vs sendmail" for example) almost every comparison mentioned seems to
 suggest msmtp to be a better choice. I have seen the following points raised
- + ~sendmail~ has several vulnerabilities
- + ~sendmail~ is tedious to configure
- + ~ssmtp~ is no longer maintained
- + ~msmtp~ is a maintained alternative to ~ssmtp~
- + ~msmtp~ is easier to configure
++ ~sendmail~ has several vulnerabilities
++ ~sendmail~ is tedious to configure
++ ~ssmtp~ is no longer maintained
++ ~msmtp~ is a maintained alternative to ~ssmtp~
++ ~msmtp~ is easier to configure
 
 The config file is [[file:~/.msmtprc][~/.msmtprc]]
 
@@ -2568,8 +2568,8 @@ We also want to define ~mu4e-compose-from-mailto~.
 This may not quite function as intended for now due to [[github:jeremy-compostella/org-msg/issues/52][jeremy-compostella/org-msg#52]].
 **** Process control
 Here's what I want
- + An instance of Mu4e to be active all the time, for notifications
- + No crufty timers on loops et. al
++ An instance of Mu4e to be active all the time, for notifications
++ No crufty timers on loops et. al
 I think a file watch etc. setup similar to that in [[*Rebuild mail index while using mu4e][Rebuild mail index while
 using mu4e]] is probably the cleanest way to operate. We can put the current PID
 in the file and check for exitance too.
@@ -2591,14 +2591,14 @@ in the file and check for exitance too.
     (when (file-exists-p mu4e-lock-file)
       (let* ((pid (string-to-number (f-read-text mu4e-lock-file 'utf-8)))
              (process (process-attributes pid)))
-          (if process (cons pid process)
-            (delete-file mu4e-lock-file) nil))))
+        (if process (cons pid process)
+          (delete-file mu4e-lock-file) nil))))
 
   (defun mu4e-lock-avalible (&optional strict)
     "If the `mu4e-lock-file' is avalible (unset or owned by this emacs) return t.
 If STRICT only accept an unset lock file."
     (not (when-let* ((lock-info (mu4e-lock-pid-info))
-                (pid (car lock-info)))
+                     (pid (car lock-info)))
            (when (or strict (/= (emacs-pid) pid)) t))))
 
   (defadvice! mu4e-lock-file-delete-maybe ()
@@ -2728,10 +2728,9 @@ Now let's use this instead of wordnet.
 ** Smart Parentheses
 #+BEGIN_SRC emacs-lisp
 (sp-local-pair
-     '(org-mode)
-     "<<" ">>"
-     :actions '(insert))
-#+END_SRC
+ '(org-mode)
+ "<<" ">>"
+ :actions '(insert))
 ** Spray
 Let's make this suit me slightly better.
 #+BEGIN_SRC emacs-lisp
@@ -2756,10 +2755,10 @@ In case the remote shell is misbehaving, here are some things to try
 There are some escape code you don't want, let's make it behave more considerately.
 #+BEGIN_SRC shell :eval no :tangle no
 if [[ "$TERM" == "dumb" ]]; then
-        unset zle_bracketed_paste
-        unset zle
-        PS1='$ '
-        return
+    unset zle_bracketed_paste
+    unset zle
+    PS1='$ '
+    return
 fi
 #+END_SRC
 *** Guix
@@ -2897,7 +2896,8 @@ writeroom.
 We want to set this up so it loads nicely in [[*Extra links][Extra links]].
 #+BEGIN_SRC emacs-lisp
 (use-package! xkcd
-  :commands (xkcd-get-json xkcd-download xkcd-get
+  :commands (xkcd-get-json
+             xkcd-download xkcd-get
              ;; now for funcs from my extension of this pkg
              +xkcd-find-and-copy +xkcd-find-and-view
              +xkcd-fetch-info +xkcd-select)
@@ -3189,10 +3189,10 @@ It's nice to see ANSI colour codes displayed
 #+BEGIN_SRC emacs-lisp
 (after! text-mode
   (add-hook! 'text-mode-hook
-    ;; Apply ANSI color codes
-    (with-silent-modifications
-      (ansi-color-apply-on-region (point-min) (point-max)))))
 #+END_SRC
+             ;; Apply ANSI color codes
+             (with-silent-modifications
+               (ansi-color-apply-on-region (point-min) (point-max)))))
 ** Org Mode
 :PROPERTIES:
 :CUSTOM_ID: org
@@ -3292,9 +3292,9 @@ Let's also make creating an org buffer just that little bit easier.
       (with-current-buffer buffer
         (org-mode)))))
 (map! :leader
-  (:prefix "b"
-    :desc "New empty ORG buffer" "o" #'evil-buffer-org-new))
 #+END_SRC
+      (:prefix "b"
+       :desc "New empty ORG buffer" "o" #'evil-buffer-org-new))
 ***** List bullet sequence
 I think it makes sense to have list bullets change with depth
 #+BEGIN_SRC emacs-lisp
@@ -3304,10 +3304,10 @@ I think it makes sense to have list bullets change with depth
 Occasionally I want to cite something.
 #+BEGIN_SRC emacs-lisp
 (use-package! org-ref
-   :after org
-   :config
-    (setq org-ref-completion-library 'org-ref-ivy-cite))
 #+END_SRC
+  :after org
+  :config
+  (setq org-ref-completion-library 'org-ref-ivy-cite))
 ***** cdlatex
 It's also nice to be able to use ~cdlatex~.
 #+BEGIN_SRC emacs-lisp
@@ -3334,34 +3334,34 @@ My spelling is atrocious, so let's get flycheck going.
 Now, by default, LSPs don't really function at all in ~src~ blocks.
 #+BEGIN_SRC emacs-lisp
 (cl-defmacro lsp-org-babel-enable (lang)
-    "Support LANG in org source code block."
-    (setq centaur-lsp 'lsp-mode)
-    (cl-check-type lang stringp)
-    (let* ((edit-pre (intern (format "org-babel-edit-prep:%s" lang)))
-           (intern-pre (intern (format "lsp--%s" (symbol-name edit-pre)))))
-      `(progn
-         (defun ,intern-pre (info)
-           (let ((file-name (->> info caddr (alist-get :file))))
-             (unless file-name
-               (setq file-name (make-temp-file "babel-lsp-")))
-             (setq buffer-file-name file-name)
-              (lsp-deferred)))
-         (put ',intern-pre 'function-documentation
-              (format "Enable lsp-mode in the buffer of org source block (%s)."
-                      (upcase ,lang)))
-         (if (fboundp ',edit-pre)
-             (advice-add ',edit-pre :after ',intern-pre)
-           (progn
-             (defun ,edit-pre (info)
-               (,intern-pre info))
-             (put ',edit-pre 'function-documentation
-                  (format "Prepare local buffer environment for org source block (%s)."
-                          (upcase ,lang))))))))
-  (defvar org-babel-lang-list
-    '("go" "python" "ipython" "bash" "sh"))
-  (dolist (lang org-babel-lang-list)
-    (eval `(lsp-org-babel-enable ,lang)))
 #+END_SRC
+  "Support LANG in org source code block."
+  (setq centaur-lsp 'lsp-mode)
+  (cl-check-type lang stringp)
+  (let* ((edit-pre (intern (format "org-babel-edit-prep:%s" lang)))
+         (intern-pre (intern (format "lsp--%s" (symbol-name edit-pre)))))
+    `(progn
+       (defun ,intern-pre (info)
+         (let ((file-name (->> info caddr (alist-get :file))))
+           (unless file-name
+             (setq file-name (make-temp-file "babel-lsp-")))
+           (setq buffer-file-name file-name)
+           (lsp-deferred)))
+       (put ',intern-pre 'function-documentation
+            (format "Enable lsp-mode in the buffer of org source block (%s)."
+                    (upcase ,lang)))
+       (if (fboundp ',edit-pre)
+           (advice-add ',edit-pre :after ',intern-pre)
+         (progn
+           (defun ,edit-pre (info)
+             (,intern-pre info))
+           (put ',edit-pre 'function-documentation
+                (format "Prepare local buffer environment for org source block (%s)."
+                        (upcase ,lang))))))))
+(defvar org-babel-lang-list
+  '("go" "python" "ipython" "bash" "sh"))
+(dolist (lang org-babel-lang-list)
+  (eval `(lsp-org-babel-enable ,lang)))
 ***** View exported file
 ='localeader v= has no pre-existing binding, so I may as well use it with the same
 functionality as in LaTeX. Let's try viewing possible output files with this.
@@ -3382,7 +3382,7 @@ functionality as in LaTeX. Let's try viewing possible output files with this.
         (unless output-file
           (when (file-exists-p
                  (concat dir basename "." ext))
-                 (setq output-file (concat dir basename "." ext)))))
+            (setq output-file (concat dir basename "." ext)))))
       (if output-file
           (if (member (file-name-extension output-file) org-view-external-file-extensions)
               (browse-url-xdg-open output-file)
@@ -3414,59 +3414,59 @@ functionality as in LaTeX. Let's try viewing possible output files with this.
          ((agenda "" ((org-agenda-span 'day)
                       (org-super-agenda-groups
                        '((:name "Today"
-                                :time-grid t
-                                :date today
-                                :todo "TODAY"
-                                :scheduled today
-                                :order 1)))))
+                          :time-grid t
+                          :date today
+                          :todo "TODAY"
+                          :scheduled today
+                          :order 1)))))
           (alltodo "" ((org-agenda-overriding-header "")
                        (org-super-agenda-groups
                         '((:name "Next to do"
-                                 :todo "NEXT"
-                                 :order 1)
+                           :todo "NEXT"
+                           :order 1)
                           (:name "Important"
-                                 :tag "Important"
-                                 :priority "A"
-                                 :order 6)
+                           :tag "Important"
+                           :priority "A"
+                           :order 6)
                           (:name "Due Today"
-                                 :deadline today
-                                 :order 2)
+                           :deadline today
+                           :order 2)
                           (:name "Due Soon"
-                                 :deadline future
-                                 :order 8)
+                           :deadline future
+                           :order 8)
                           (:name "Overdue"
-                                 :deadline past
-                                 :face error
-                                 :order 7)
+                           :deadline past
+                           :face error
+                           :order 7)
                           (:name "Assignments"
-                                 :tag "Assignment"
-                                 :order 10)
+                           :tag "Assignment"
+                           :order 10)
                           (:name "Issues"
-                                 :tag "Issue"
-                                 :order 12)
+                           :tag "Issue"
+                           :order 12)
                           (:name "Emacs"
-                                 :tag "Emacs"
-                                 :order 13)
+                           :tag "Emacs"
+                           :order 13)
                           (:name "Projects"
-                                 :tag "Project"
-                                 :order 14)
+                           :tag "Project"
+                           :order 14)
                           (:name "Research"
-                                 :tag "Research"
-                                 :order 15)
+                           :tag "Research"
+                           :order 15)
                           (:name "To read"
-                                 :tag "Read"
-                                 :order 30)
+                           :tag "Read"
+                           :order 30)
                           (:name "Waiting"
-                                 :todo "WAITING"
-                                 :order 20)
+                           :todo "WAITING"
+                           :order 20)
                           (:name "University"
-                                 :tag "uni"
-                                 :order 32)
+                           :tag "uni"
+                           :order 32)
                           (:name "Trivial"
-                                 :priority<= "E"
-                                 :tag ("Trivial" "Unimportant")
-                                 :todo ("SOMEDAY" )
-                                 :order 90)
+                           :priority<= "E"
+                           :tag ("Trivial" "Unimportant")
+                           :todo ("SOMEDAY" )
+                           :order 90)
                           (:discard (:tag ("Chore" "Routine" "Daily")))))))))))
 #+END_SRC
 **** Capture
@@ -3616,8 +3616,8 @@ Let's setup some org-capture templates, and make them visually nice to access.
                                :extra "\nSCHEDULED: %^{Start time:}t"
                                )
                               ))
-                ("Project" :keys "p"
-                 :icon ("repo" :set "octicon" :color "silver")
+                  ("Project" :keys "p"
+                   :icon ("repo" :set "octicon" :color "silver")
                    :prepend t
                    :type entry
                    :headline "Inbox"
@@ -3712,67 +3712,67 @@ alist with (\"key\" \"description\") entries.  When one of these
 is selected, only the bare key is returned."
   (save-window-excursion
     (let ((inhibit-quit t)
-    (buffer (org-switch-to-buffer-other-window "*Org Select*"))
-    (prompt (or prompt "Select: "))
-    case-fold-search
-    current)
+          (buffer (org-switch-to-buffer-other-window "*Org Select*"))
+          (prompt (or prompt "Select: "))
+          case-fold-search
+          current)
       (unwind-protect
-    (catch 'exit
-      (while t
-        (setq-local evil-normal-state-cursor (list nil))
-        (erase-buffer)
-        (insert title "\n\n")
-        (let ((des-keys nil)
-        (allowed-keys '("\C-g"))
-        (tab-alternatives '("\s" "\t" "\r"))
-        (cursor-type nil))
-    ;; Populate allowed keys and descriptions keys
-    ;; available with CURRENT selector.
-    (let ((re (format "\\`%s\\(.\\)\\'"
-          (if current (regexp-quote current) "")))
-          (prefix (if current (concat current " ") "")))
-      (dolist (entry table)
-        (pcase entry
-          ;; Description.
-          (`(,(and key (pred (string-match re))) ,desc)
-           (let ((k (match-string 1 key)))
-       (push k des-keys)
-       ;; Keys ending in tab, space or RET are equivalent.
-       (if (member k tab-alternatives)
-           (push "\t" allowed-keys)
-         (push k allowed-keys))
-       (insert (propertize prefix 'face 'font-lock-comment-face) (propertize k 'face 'bold) (propertize "›" 'face 'font-lock-comment-face) "  " desc "…" "\n")))
-          ;; Usable entry.
-          (`(,(and key (pred (string-match re))) ,desc . ,_)
-           (let ((k (match-string 1 key)))
-       (insert (propertize prefix 'face 'font-lock-comment-face) (propertize k 'face 'bold) "   " desc "\n")
-       (push k allowed-keys)))
-          (_ nil))))
-    ;; Insert special entries, if any.
-    (when specials
-      (insert "─────────────────────────\n")
-      (pcase-dolist (`(,key ,description) specials)
-        (insert (format "%s   %s\n" (propertize key 'face '(bold all-the-icons-red)) description))
-        (push key allowed-keys)))
-    ;; Display UI and let user select an entry or
-    ;; a sub-level prefix.
-    (goto-char (point-min))
-    (unless (pos-visible-in-window-p (point-max))
-      (org-fit-window-to-buffer))
-    (let ((pressed (org--mks-read-key allowed-keys prompt)))
-      (setq current (concat current pressed))
-      (cond
-       ((equal pressed "\C-g") (user-error "Abort"))
-       ;; Selection is a prefix: open a new menu.
-       ((member pressed des-keys))
-       ;; Selection matches an association: return it.
-       ((let ((entry (assoc current table)))
-          (and entry (throw 'exit entry))))
-       ;; Selection matches a special entry: return the
-       ;; selection prefix.
-       ((assoc current specials) (throw 'exit current))
-       (t (error "No entry available")))))))
-  (when buffer (kill-buffer buffer))))))
+          (catch 'exit
+            (while t
+              (setq-local evil-normal-state-cursor (list nil))
+              (erase-buffer)
+              (insert title "\n\n")
+              (let ((des-keys nil)
+                    (allowed-keys '("\C-g"))
+                    (tab-alternatives '("\s" "\t" "\r"))
+                    (cursor-type nil))
+                ;; Populate allowed keys and descriptions keys
+                ;; available with CURRENT selector.
+                (let ((re (format "\\`%s\\(.\\)\\'"
+                                  (if current (regexp-quote current) "")))
+                      (prefix (if current (concat current " ") "")))
+                  (dolist (entry table)
+                    (pcase entry
+                      ;; Description.
+                      (`(,(and key (pred (string-match re))) ,desc)
+                       (let ((k (match-string 1 key)))
+                         (push k des-keys)
+                         ;; Keys ending in tab, space or RET are equivalent.
+                         (if (member k tab-alternatives)
+                             (push "\t" allowed-keys)
+                           (push k allowed-keys))
+                         (insert (propertize prefix 'face 'font-lock-comment-face) (propertize k 'face 'bold) (propertize "›" 'face 'font-lock-comment-face) "  " desc "…" "\n")))
+                      ;; Usable entry.
+                      (`(,(and key (pred (string-match re))) ,desc . ,_)
+                       (let ((k (match-string 1 key)))
+                         (insert (propertize prefix 'face 'font-lock-comment-face) (propertize k 'face 'bold) "   " desc "\n")
+                         (push k allowed-keys)))
+                      (_ nil))))
+                ;; Insert special entries, if any.
+                (when specials
+                  (insert "─────────────────────────\n")
+                  (pcase-dolist (`(,key ,description) specials)
+                    (insert (format "%s   %s\n" (propertize key 'face '(bold all-the-icons-red)) description))
+                    (push key allowed-keys)))
+                ;; Display UI and let user select an entry or
+                ;; a sub-level prefix.
+                (goto-char (point-min))
+                (unless (pos-visible-in-window-p (point-max))
+                  (org-fit-window-to-buffer))
+                (let ((pressed (org--mks-read-key allowed-keys prompt)))
+                  (setq current (concat current pressed))
+                  (cond
+                   ((equal pressed "\C-g") (user-error "Abort"))
+                   ;; Selection is a prefix: open a new menu.
+                   ((member pressed des-keys))
+                   ;; Selection matches an association: return it.
+                   ((let ((entry (assoc current table)))
+                      (and entry (throw 'exit entry))))
+                   ;; Selection matches a special entry: return the
+                   ;; selection prefix.
+                   ((assoc current specials) (throw 'exit current))
+                   (t (error "No entry available")))))))
+        (when buffer (kill-buffer buffer))))))
 (advice-add 'org-mks :override #'org-mks-pretty)
 #+END_SRC
 The [[file:~/.emacs.d/bin/org-capture][org-capture bin]] is rather nice, but I'd be nicer with a smaller frame, and
@@ -3804,72 +3804,72 @@ Icon=emacs-icon
 Type=Application
 Terminal=false
 MimeType=x-scheme-handler/org-protocol
-#+END_SRC
+#+end_src
 To associate ~org-protocol://~ links with the desktop file,
-#+BEGIN_SRC shell
+#+begin_src shell
 xdg-mime default org-protocol.desktop x-scheme-handler/org-protocol
-#+END_SRC
+#+end_src
 ***** Graph Behaviour
 By default, clicking on an ~org-protocol://~ link messes with the =svg= view. To fix
 this we can use an ~iframe~, however that requires shifting to an =html= file.
 Hence, we need to do a bit of overriding.
-#+BEGIN_SRC html :tangle misc/org-roam-template.html
+#+begin_src html :tangle misc/org-roam-template.html
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="utf-8">
-        <title>Roam Graph</title>
-        <meta name="viewport" content="width=device-width">
-        <style type="text/css">
-         body {
-             background: white;
-         }
+  <head>
+    <meta charset="utf-8">
+    <title>Roam Graph</title>
+    <meta name="viewport" content="width=device-width">
+    <style type="text/css">
+      body {
+      background: white;
+      }
 
-         svg {
-             position: relative;
-             top: 50vh;
-             left: 50vw;
-             transform: translate(-50%, -50%);
-             width: 95vw;
-         }
+      svg {
+      position: relative;
+      top: 50vh;
+      left: 50vw;
+      transform: translate(-50%, -50%);
+      width: 95vw;
+      }
 
-         a > polygon {
-             transition-duration: 200ms;
-             transition-property: fill;
-         }
+      a > polygon {
+      transition-duration: 200ms;
+      transition-property: fill;
+      }
 
-         a > polyline {
-             transition-duration: 400ms;
-             transition-property: stroke;
-         }
+      a > polyline {
+      transition-duration: 400ms;
+      transition-property: stroke;
+      }
 
-         a:hover > polygon {
-             fill: #d4d4d4;
-         }
-         a:hover > polyline {
-             stroke: #888;
-         }
-        </style>
-        <script>
-         function create_iframe (url) {
-             i = document.createElement('iframe');
-             i.setAttribute('src', url);
-             i.style.setProperty('display', 'none');
-             document.body.append(i);
-         }
-         function listen_on_all_a () {
-             document.querySelectorAll("svg a").forEach(elem => {
-                 elem.addEventListener('click', (e) => {
-                     e.preventDefault();
-                     create_iframe(elem.href.baseVal);
-                 });
-             });
-         }
-        </script>
-    </head>
-    <body onload="listen_on_all_a()">
-%s
-    </body>
+      a:hover > polygon {
+      fill: #d4d4d4;
+      }
+      a:hover > polyline {
+      stroke: #888;
+      }
+    </style>
+    <script>
+      function create_iframe (url) {
+      i = document.createElement('iframe');
+      i.setAttribute('src', url);
+      i.style.setProperty('display', 'none');
+      document.body.append(i);
+      }
+      function listen_on_all_a () {
+      document.querySelectorAll("svg a").forEach(elem => {
+      elem.addEventListener('click', (e) => {
+      e.preventDefault();
+      create_iframe(elem.href.baseVal);
+      });
+      });
+      }
+    </script>
+  </head>
+  <body onload="listen_on_all_a()">
+    %s
+  </body>
 </html>
 #+END_SRC
 
@@ -4069,8 +4069,8 @@ made unique when necessary."
                       (org-element-property :raw-value datum)
                     (or (org-element-property :name datum)
                         (concat (org-element-property :raw-value
-                                 (org-element-property :parent
-                                  (org-element-property :parent datum)))))))
+                                                      (org-element-property :parent
+                                                                            (org-element-property :parent datum)))))))
            ;; get ascii-only form of title without needing percent-encoding
            (ref (concat (org-heading-contraction (substring-no-properties title))
                         (unless (or headline-p (org-element-property :name datum))
@@ -4368,15 +4368,15 @@ First, we set up all the necessarily 'utility' functions.
                      (album-artist (caar (cadr (assoc "xesam:albumArtist" track-metadata))))
                      (artist (if (or (equal album-artist "")
                                      (s-contains-p "various" album-artist t))
-                             (caar (cadr (assoc "xesam:artist" track-metadata)))
-                             album-artist))
+                                 (caar (cadr (assoc "xesam:artist" track-metadata)))
+                               album-artist))
                      (track (car (cadr (assoc "xesam:title" track-metadata))))
                      (start-time (when include-time
                                    (/ (org-music-mpris-get-property "Position") 1000000))))
                 (if full
                     (format "[[music:%s][%s by %s]]" (org-music-format-link artist track start-time) track artist)
                   (org-music-format-link artist track start-time))))
-        (t (user-error! "The specified music player: %s is not supported" org-music-player))))
+      (t (user-error! "The specified music player: %s is not supported" org-music-player))))
 
   (defun org-music-format-link (artist track &optional start-time end-time)
     (let ((artist (replace-regexp-in-string ":" "\\:" artist))
@@ -4399,8 +4399,8 @@ First, we set up all the necessarily 'utility' functions.
            (artist (nth 0 link-components))
            (track (nth 1 link-components))
            (durations (when (and (> (length link-components) 3)
-                                  (equal (nth 2 link-components) ""))
-                         (s-split "-" (nth 3 link-components))))
+                                 (equal (nth 2 link-components) ""))
+                        (s-split "-" (nth 3 link-components))))
            (start-time (when durations
                          (org-music-time-to-seconds (car durations))))
            (end-time (when (cdr durations)
@@ -4429,9 +4429,9 @@ This action is reversed by `org-music-time-to-seconds'."
   (defun org-music-play-track (artist title &optional start-time end-time)
     "Play the track specified by ARTIST and TITLE, optionally skipping to START-TIME in, stopping at END-TIME."
     (if-let ((file (org-music-find-track-file artist title)))
-      (case org-music-player
-        ('mpris (org-music-mpris-play file start-time end-time))
-        (t (user-error! "The specified music player: %s is not supported" org-music-player)))
+        (case org-music-player
+          ('mpris (org-music-mpris-play file start-time end-time))
+          (t (user-error! "The specified music player: %s is not supported" org-music-player)))
       (user-error! "Could not find the track '%s' by '%s'" title artist)))
 
   (add-transient-hook! #'org-music-play-track
@@ -4458,7 +4458,7 @@ This action is reversed by `org-music-time-to-seconds'."
             (org-music-mpris-call-method "Pause")
           (if (< time-delta 6)
               (run-at-time (max 0.001 (* 0.9 time-delta)) nil #'org-music-mpris-stop-at-time url end-time)
-              (run-at-time 5 nil #'org-music-mpris-stop-at-time url end-time))))))
+            (run-at-time 5 nil #'org-music-mpris-stop-at-time url end-time))))))
 
   (defun org-music-mpris-get-property (property)
     "Return the value of org.mpris.MediaPlayer2.Player.PROPERTY."
@@ -4469,8 +4469,8 @@ This action is reversed by `org-music-time-to-seconds'."
   (defun org-music-mpris-call-method (property &rest args)
     "Call org.mpris.MediaPlayer2.Player.PROPERTY with ARGS, returning the result."
     (apply #'dbus-call-method :session (concat "org.gnome." org-music-mpris-player)
-                      "/org/mpris/MediaPlayer2" "org.mpris.MediaPlayer2.Player"
-                      property args))
+           "/org/mpris/MediaPlayer2" "org.mpris.MediaPlayer2.Player"
+           property args))
 
   (defun org-music-guess-mpris-player ()
     (when-let ((players
@@ -4523,15 +4523,15 @@ This action is reversed by `org-music-time-to-seconds'."
                                      (file-directory-p file-or-folder)))
                                   (directory-files music-folder t))
                                  (list music-folder)))
-              (extension-regex (format "\\.\\(?:%s\\)\\'" (s-join "\\|" org-music-recognised-extensions)))
-              (tracks (-filter
-                       (lambda (file)
-                         (s-contains-p title (file-name-base file) t))
-                       (-flatten (mapcar (lambda (dir)
-                                           (directory-files-recursively dir extension-regex))
-                                         search-folders)))))
-        (when (> (length tracks) 1)
-          (message "Warning: multiple matches for %s by %s found" title artist))
+                (extension-regex (format "\\.\\(?:%s\\)\\'" (s-join "\\|" org-music-recognised-extensions)))
+                (tracks (-filter
+                         (lambda (file)
+                           (s-contains-p title (file-name-base file) t))
+                         (-flatten (mapcar (lambda (dir)
+                                             (directory-files-recursively dir extension-regex))
+                                           search-folders)))))
+      (when (> (length tracks) 1)
+        (message "Warning: multiple matches for %s by %s found" title artist))
       (car tracks))))
 #+END_SRC
 
@@ -4605,11 +4605,11 @@ Then we integrate this nicely with org-mode
                               ((org-export-derived-backend-p backend 'latex) "\\newline ")
                               (t " ")))
            (text (org-music-export-text path nil backend nil newline-str)))
-    (cond ((org-export-derived-backend-p backend 'html)
-           (format "<div class='music-track'>
+      (cond ((org-export-derived-backend-p backend 'html)
+             (format "<div class='music-track'>
     <img src='%s'> <span>%s</span>
 </div>" cover-img text)
-           )
+             )
             ((org-export-derived-backend-p backend 'latex)
              (format "\\begin{tabular}{@{\\hspace{0.3\\columnwidth}}r@{\\hspace{0.1\\columnwidth}}p{0.4\\columnwidth}}
   \\includegraphics[height=6em]{%s} & \\vspace{-0.12\\columnwidth}%s
@@ -4847,10 +4847,10 @@ As well as having a sans font, there are a few other tweaks which can make them
 look better. Namely making sure that the colours switch when the theme does.
 #+BEGIN_SRC emacs-lisp
 (after! org
-;; make background of fragments transparent
-;; (let ((dvipng--plist (alist-get 'dvipng org-preview-latex-process-alist)))
-;;   (plist-put dvipng--plist :use-xcolor t)
-;;   (plist-put dvipng--plist :image-converter '("dvipng -D %D -bg 'transparent' -T tight -o %O %f")))
+  ;; make background of fragments transparent
+  ;; (let ((dvipng--plist (alist-get 'dvipng org-preview-latex-process-alist)))
+  ;;   (plist-put dvipng--plist :use-xcolor t)
+  ;;   (plist-put dvipng--plist :image-converter '("dvipng -D %D -bg 'transparent' -T tight -o %O %f")))
   (add-hook! 'doom-load-theme-hook
     (defun +org-refresh-latex-background ()
       (plist-put! org-format-latex-options
@@ -5119,11 +5119,11 @@ compared to the default implementation."
 (setq org-html-meta-tags
       '((lambda (_title author _info)
           (when (org-string-nw-p author)
-        (list "name" "author" author)))
+            (list "name" "author" author)))
         (lambda (_title _author info)
           (when (org-string-nw-p (plist-get info :description))
-        (list "name" "description"
-                        (plist-get info :description))))
+            (list "name" "description"
+                  (plist-get info :description))))
         ("name" "generator" "org mode")
         ("name" "theme-color" "#77aa99")
         ("property" "og:type" "article")
@@ -5161,11 +5161,11 @@ Suffice to say I've snatched it, with a few of my own tweaks applied.
 (after! org
   (setq org-html-style-fancy
         (concat (f-read-text (expand-file-name "misc/org-export-header.html" doom-private-dir))
-              "<script>\n"
-              (f-read-text (expand-file-name "misc/pile-css-theme/main.js" doom-private-dir))
-              "</script>\n<style>\n"
-              (f-read-text (expand-file-name "misc/pile-css-theme/main.css" doom-private-dir))
-              "</style>")
+                "<script>\n"
+                (f-read-text (expand-file-name "misc/pile-css-theme/main.js" doom-private-dir))
+                "</script>\n<style>\n"
+                (f-read-text (expand-file-name "misc/pile-css-theme/main.css" doom-private-dir))
+                "</style>")
         org-html-style-plain org-html-style-default
         org-html-style-default  org-html-style-fancy
         org-html-htmlize-output-type 'css
@@ -5417,12 +5417,12 @@ Since we have =verbatim= and ~code~, let's use =verbatim= for key strokes.
 We also want to use HTML checkboxes, however we want to get a bit fancier than default
 #+BEGIN_SRC emacs-lisp
 (after! org
-(appendq! org-html-checkbox-types '((html-span .
-	  ((on . "<span class='checkbox'></span>")
-	  (off . "<span class='checkbox'></span>")
-	  (trans . "<span class='checkbox'></span>")))))
-(setq org-html-checkbox-type 'html-span))
 #+END_SRC
+  (appendq! org-html-checkbox-types '((html-span .
+                                             ((on . "<span class='checkbox'></span>")
+                                              (off . "<span class='checkbox'></span>")
+                                              (trans . "<span class='checkbox'></span>")))))
+  (setq org-html-checkbox-type 'html-span))
 - [ ] I'm yet to do this
 - [-] Work in progress
 - [X] This is done
@@ -5599,44 +5599,44 @@ While this is the LaTeX section, it's convenient to also provide HTML acronyms h
     \\end{center}
     }
 "
-               ("\\section{%s}" . "\\section*{%s}")
-               ("\\subsection{%s}" . "\\subsection*{%s}")
-               ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-               ("\\paragraph{%s}" . "\\paragraph*{%s}")
-               ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+                 ("\\section{%s}" . "\\section*{%s}")
+                 ("\\subsection{%s}" . "\\subsection*{%s}")
+                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                 ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                 ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
   (add-to-list 'org-latex-classes
                '("blank"
-               "[NO-DEFAULT-PACKAGES]
+                 "[NO-DEFAULT-PACKAGES]
                [NO-PACKAGES]
                [EXTRA]"
-               ("\\section{%s}" . "\\section*{%s}")
-               ("\\subsection{%s}" . "\\subsection*{%s}")
-               ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-               ("\\paragraph{%s}" . "\\paragraph*{%s}")
-               ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+                 ("\\section{%s}" . "\\section*{%s}")
+                 ("\\subsection{%s}" . "\\subsection*{%s}")
+                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                 ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                 ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
   (add-to-list 'org-latex-classes
                '("bmc-article"
-               "\\documentclass[article,code,maths]{bmc}
+                 "\\documentclass[article,code,maths]{bmc}
                [NO-DEFAULT-PACKAGES]
                [NO-PACKAGES]
                [EXTRA]"
-               ("\\section{%s}" . "\\section*{%s}")
-               ("\\subsection{%s}" . "\\subsection*{%s}")
-               ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-               ("\\paragraph{%s}" . "\\paragraph*{%s}")
-               ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+                 ("\\section{%s}" . "\\section*{%s}")
+                 ("\\subsection{%s}" . "\\subsection*{%s}")
+                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                 ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                 ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
   (add-to-list 'org-latex-classes
                '("bmc"
-               "\\documentclass[code,maths]{bmc}
+                 "\\documentclass[code,maths]{bmc}
                [NO-DEFAULT-PACKAGES]
                [NO-PACKAGES]
                [EXTRA]"
-               ("\\chapter{%s}" . "\\chapter*{%s}")
-               ("\\section{%s}" . "\\section*{%s}")
-               ("\\subsection{%s}" . "\\subsection*{%s}")
-               ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-               ("\\paragraph{%s}" . "\\paragraph*{%s}")
-               ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+                 ("\\chapter{%s}" . "\\chapter*{%s}")
+                 ("\\section{%s}" . "\\section*{%s}")
+                 ("\\subsection{%s}" . "\\subsection*{%s}")
+                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                 ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                 ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
   (setq org-latex-default-class "fancy-article")
 
   <<org-latex-smart-minted>>
@@ -5896,13 +5896,14 @@ current Emacs theme, I was enraptured. The result is the pseudo-class ~chameleon
 Since have just gone to so much effort above let's make the most of it by making
 =verbatim= use ~verb~ instead of ~protectedtexttt~ (default).
 #+BEGIN_SRC emacs-lisp
-(setq org-latex-text-markup-alist '((bold . "\\textbf{%s}")
-           (code . protectedtexttt)
-           (italic . "\\emph{%s}")
-           (strike-through . "\\sout{%s}")
-           (underline . "\\uline{%s}")
-           (verbatim . verb)))
 #+END_SRC
+(setq org-latex-text-markup-alist
+      '((bold . "\\textbf{%s}")
+        (code . protectedtexttt)
+        (italic . "\\emph{%s}")
+        (strike-through . "\\sout{%s}")
+        (underline . "\\uline{%s}")
+        (verbatim . verb)))
 **** Exporting to Beamer
 It's nice to use a different theme
 #+BEGIN_SRC emacs-lisp
@@ -5936,9 +5937,8 @@ We also like auto-completion here
 #+BEGIN_SRC emacs-lisp
 (defun tec-org-python ()
   (if (eq major-mode 'python-mode)
-   (progn (anaconda-mode t)
-          (company-mode t)))
-  )
+      (progn (anaconda-mode t)
+             (company-mode t))))
 (add-hook 'org-src-mode-hook 'tec-org-python)
 #+END_SRC
 *** ESS
@@ -5948,19 +5948,20 @@ We don't want ~R~ evaluation to hang the editor, hence
 #+END_SRC
 Syntax highlighting is nice, so let's turn all of that on
 #+BEGIN_SRC emacs-lisp
-(setq ess-R-font-lock-keywords '((ess-R-fl-keyword:keywords . t)
- (ess-R-fl-keyword:constants . t)
- (ess-R-fl-keyword:modifiers . t)
- (ess-R-fl-keyword:fun-defs . t)
- (ess-R-fl-keyword:assign-ops . t)
- (ess-R-fl-keyword:%op% . t)
- (ess-fl-keyword:fun-calls . t)
- (ess-fl-keyword:numbers . t)
- (ess-fl-keyword:operators . t)
- (ess-fl-keyword:delimiters . t)
- (ess-fl-keyword:= . t)
- (ess-R-fl-keyword:F&T . t)))
 #+END_SRC
+(setq ess-R-font-lock-keywords
+      '((ess-R-fl-keyword:keywords . t)
+        (ess-R-fl-keyword:constants . t)
+        (ess-R-fl-keyword:modifiers . t)
+        (ess-R-fl-keyword:fun-defs . t)
+        (ess-R-fl-keyword:assign-ops . t)
+        (ess-R-fl-keyword:%op% . t)
+        (ess-fl-keyword:fun-calls . t)
+        (ess-fl-keyword:numbers . t)
+        (ess-fl-keyword:operators . t)
+        (ess-fl-keyword:delimiters . t)
+        (ess-fl-keyword:= . t)
+        (ess-R-fl-keyword:F&T . t)))
 ** LaTeX
 [[xkcd:1301]]
 *** To-be-implemented ideas
@@ -5972,12 +5973,12 @@ Syntax highlighting is nice, so let's turn all of that on
 command -v xclip >/dev/null 2>&1 || { echo >&1 "no xclip"; exit 1; }
 
 if
-xclip -selection clipboard -target image/png -o >/dev/null 2>&1
+    xclip -selection clipboard -target image/png -o >/dev/null 2>&1
 then
-xclip -selection clipboard -target image/png -o >$1 2>/dev/null
-echo $1
+    xclip -selection clipboard -target image/png -o >$1 2>/dev/null
+    echo $1
 else
-echo "no image"
+    echo "no image"
 fi
 #+END_SRC
   + Insert figure, with filled in details as a result (activate =yasnippet= with
@@ -6037,9 +6038,9 @@ Then let's bind the content to a function, and define some nice helpers.
 
 (defun tec/yas-latex-preamble-if ()
   "Based on class choice prompt for insertion of default preamble"
-    (if (equal tec/yas-latex-class-choice "bmc") 'nil
-             (eq (read-char-choice "Include default preamble? [Type y/n]" '(?y ?n)) ?y)))
 #+END_SRC
+  (if (equal tec/yas-latex-class-choice "bmc") 'nil
+    (eq (read-char-choice "Include default preamble? [Type y/n]" '(?y ?n)) ?y)))
 **** Deliminators
 #+BEGIN_SRC emacs-lisp
 (after! tex
@@ -6132,8 +6133,8 @@ Let's enhance ~TeX-fold-math~ a bit
         ;; known commands
         ("" ("phantom"))
         (,(lambda (num den) (if (and (TeX-string-single-token-p num) (TeX-string-single-token-p den))
-                           (concat num "／" den)
-                         (concat "❪" num "／" den "❫"))) ("frac"))
+                                (concat num "／" den)
+                              (concat "❪" num "／" den "❫"))) ("frac"))
         (,(lambda (arg) (concat "√" (TeX-fold-parenthesize-as-neccesary arg))) ("sqrt"))
         (,(lambda (arg) (concat "⭡" (TeX-fold-parenthesize-as-neccesary arg))) ("vec"))
         ("‘{1}’" ("text"))
@@ -6164,7 +6165,7 @@ Let's enhance ~TeX-fold-math~ a bit
         ("[i]" ("index" "glossary"))
         ("..." ("dots"))
         ("{1}" ("emph" "textit" "textsl" "textmd" "textrm" "textsf" "texttt"
-            "textbf" "textsc" "textup"))
+                "textbf" "textsc" "textup"))
         ;; tweaked defaults
         ("©" ("copyright"))
         ("®" ("textregistered"))
@@ -6184,8 +6185,8 @@ Let's enhance ~TeX-fold-math~ a bit
 
 (defun string-offset-roman-chars (offset word)
   "Shift the codepoint of each charachter in WORD by OFFSET with an extra -6 shift if the letter is lowercase"
-    (apply 'string
-       (mapcar (lambda (c) (+ (if (>= c 97) (- c 6) c) offset)) word)))
+  (apply 'string
+         (mapcar (lambda (c) (+ (if (>= c 97) (- c 6) c) offset)) word)))
 
 (defun TeX-fold-parenthesize-as-neccesary (tokens &optional suppress-left suppress-right)
   "Add ❪ ❫ parenthesis as if multiple LaTeX tokens appear to be present"
@@ -6196,8 +6197,8 @@ Let's enhance ~TeX-fold-math~ a bit
 
 (defun TeX-string-single-token-p (teststring)
   "Return t if TESTSTRING appears to be a single token, nil otherwise"
- (if (string-match-p "^\\\\?\\w+$" teststring) t nil))
 #+END_SRC
+  (if (string-match-p "^\\\\?\\w+$" teststring) t nil))
 
 Some local keybindings to make life a bit easier
 #+BEGIN_SRC emacs-lisp
