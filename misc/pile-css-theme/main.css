@@ -961,8 +961,7 @@ blockquote {
 div.info {
   background: rgba(58, 129, 195, 0.15);
   border-left: 4px solid rgba(58, 129, 195, 0.45);
-  margin-top: 1.8rem;
-  margin-bottom: 1.25rem;
+  margin: 1.8rem 0 1.25rem 15px;
   padding: 0.8em;
   line-height: 1.4;
   text-align: center;
@@ -993,8 +992,7 @@ div.info::before {
 div.success {
   background: rgba(45, 149, 116, 0.15);
   border-left: 4px solid rgba(45, 149, 116, 0.45);
-  margin-top: 1.8rem;
-  margin-bottom: 1.25rem;
+  margin: 1.8rem 0 1.25rem 15px;
   padding: 0.8em;
   line-height: 1.4;
   text-align: center;
@@ -1025,8 +1023,7 @@ div.success::before {
 div.warning {
   background: rgba(220, 117, 47, 0.15);
   border-left: 4px solid rgba(220, 117, 47, 0.45);
-  margin-top: 1.8rem;
-  margin-bottom: 1.25rem;
+  margin: 1.8rem 0 1.25rem 15px;
   padding: 0.8em;
   line-height: 1.4;
   text-align: center;
@@ -1057,8 +1054,7 @@ div.warning::before {
 div.error {
   background: rgba(186, 47, 89, 0.15);
   border-left: 4px solid rgba(186, 47, 89, 0.45);
-  margin-top: 1.8rem;
-  margin-bottom: 1.25rem;
+  margin: 1.8rem 0 1.25rem 15px;
   padding: 0.8em;
   line-height: 1.4;
   text-align: center;
@@ -1721,7 +1717,6 @@ h6 {
     .section-number-6 {
       position: absolute;
       transform: translateX(-100%) translateX(-10px); } }
-
 .outline-text-2:empty + .outline-3 > h3, .outline-text-2:-moz-only-whitespace + .outline-3 > h3 {
   margin-top: 20px; }
 
@@ -1738,9 +1733,9 @@ hr {
   border: none;
   border-top-style: solid;
   border-top-width: 1px;
-  color: var(--back-light);
-  margin-bottom: 50px;
-  margin-top: 50px; }
+  color: var(--back-medium);
+  margin-bottom: 30px;
+  margin-top: 40px; }
 
 #breadcrumbs a,
 figcaption a,
@@ -1869,7 +1864,7 @@ dl a {
   p a[href^="#"],
   .page-tags a[href^="#"],
   table a[href^="#"],
-  #crosslinks a:not(.highlight)[href^="#"],
+  #crosslinks a[href^="#"]:not(.highlight),
   li a[href^="#"],
   dl a[href^="#"] {
     text-shadow: 0.03em 0 var(--back-white), -0.03em 0 var(--back-white), 0 0.03em var(--back-white), 0 -0.03em var(--back-white), 0.06em 0 var(--back-white), -0.06em 0 var(--back-white), 0.09em 0 var(--back-white), -0.09em 0 var(--back-white), 0.12em 0 var(--back-white), -0.12em 0 var(--back-white), 0.15em 0 var(--back-white), -0.15em 0 var(--back-white);
@@ -1883,7 +1878,7 @@ dl a {
     p a[href^="#"]::selection,
     .page-tags a[href^="#"]::selection,
     table a[href^="#"]::selection,
-    #crosslinks a:not(.highlight)[href^="#"]::selection,
+    #crosslinks a[href^="#"]:not(.highlight)::selection,
     li a[href^="#"]::selection,
     dl a[href^="#"]::selection {
       text-shadow: 0.03em 0 var(--back-white), -0.03em 0 var(--back-white), 0 0.03em var(--back-white), 0 -0.03em var(--back-white), 0.06em 0 var(--back-white), -0.06em 0 var(--back-white), 0.09em 0 var(--back-white), -0.09em 0 var(--back-white), 0.12em 0 var(--back-white), -0.12em 0 var(--back-white), 0.15em 0 var(--back-white), -0.15em 0 var(--back-white);
@@ -1893,7 +1888,7 @@ dl a {
     p a[href^="#"]::-moz-selection,
     .page-tags a[href^="#"]::-moz-selection,
     table a[href^="#"]::-moz-selection,
-    #crosslinks a:not(.highlight)[href^="#"]::-moz-selection,
+    #crosslinks a[href^="#"]:not(.highlight)::-moz-selection,
     li a[href^="#"]::-moz-selection,
     dl a[href^="#"]::-moz-selection {
       text-shadow: 0.03em 0 var(--back-white), -0.03em 0 var(--back-white), 0 0.03em var(--back-white), 0 -0.03em var(--back-white), 0.06em 0 var(--back-white), -0.06em 0 var(--back-white), 0.09em 0 var(--back-white), -0.09em 0 var(--back-white), 0.12em 0 var(--back-white), -0.12em 0 var(--back-white), 0.15em 0 var(--back-white), -0.15em 0 var(--back-white);
@@ -1903,7 +1898,7 @@ dl a {
     p a[href^="#"]:hover,
     .page-tags a[href^="#"]:hover,
     table a[href^="#"]:hover,
-    #crosslinks a:not(.highlight)[href^="#"]:hover,
+    #crosslinks a[href^="#"]:not(.highlight):hover,
     li a[href^="#"]:hover,
     dl a[href^="#"]:hover {
       text-shadow: 0.03em 0 var(--back-white), -0.03em 0 var(--back-white), 0 0.03em var(--back-white), 0 -0.03em var(--back-white), 0.06em 0 var(--back-white), -0.06em 0 var(--back-white), 0.09em 0 var(--back-white), -0.09em 0 var(--back-white), 0.12em 0 var(--back-white), -0.12em 0 var(--back-white), 0.15em 0 var(--back-white), -0.15em 0 var(--back-white);
@@ -1916,7 +1911,7 @@ dl a {
       p a[href^="#"]:hover::selection,
       .page-tags a[href^="#"]:hover::selection,
       table a[href^="#"]:hover::selection,
-      #crosslinks a:not(.highlight)[href^="#"]:hover::selection,
+      #crosslinks a[href^="#"]:not(.highlight):hover::selection,
       li a[href^="#"]:hover::selection,
       dl a[href^="#"]:hover::selection {
         text-shadow: 0.03em 0 var(--back-white), -0.03em 0 var(--back-white), 0 0.03em var(--back-white), 0 -0.03em var(--back-white), 0.06em 0 var(--back-white), -0.06em 0 var(--back-white), 0.09em 0 var(--back-white), -0.09em 0 var(--back-white), 0.12em 0 var(--back-white), -0.12em 0 var(--back-white), 0.15em 0 var(--back-white), -0.15em 0 var(--back-white);
@@ -1926,7 +1921,7 @@ dl a {
       p a[href^="#"]:hover::-moz-selection,
       .page-tags a[href^="#"]:hover::-moz-selection,
       table a[href^="#"]:hover::-moz-selection,
-      #crosslinks a:not(.highlight)[href^="#"]:hover::-moz-selection,
+      #crosslinks a[href^="#"]:not(.highlight):hover::-moz-selection,
       li a[href^="#"]:hover::-moz-selection,
       dl a[href^="#"]:hover::-moz-selection {
         text-shadow: 0.03em 0 var(--back-white), -0.03em 0 var(--back-white), 0 0.03em var(--back-white), 0 -0.03em var(--back-white), 0.06em 0 var(--back-white), -0.06em 0 var(--back-white), 0.09em 0 var(--back-white), -0.09em 0 var(--back-white), 0.12em 0 var(--back-white), -0.12em 0 var(--back-white), 0.15em 0 var(--back-white), -0.15em 0 var(--back-white);
@@ -2014,28 +2009,33 @@ dl a {
 #crosslinks {
   margin-top: 20px; }
   #crosslinks a:not(.highlight) {
-    padding: 4px 8px;
+    padding: 0.1em 0.2em;
     border-style: solid;
     border-width: 1px;
     border-color: var(--back-light);
     border-radius: 1px;
     font-family: "Open Sans";
     font-variant: all-small-caps;
-    font-size: 13px;
+    font-size: max(0.4em, 10px);
     font-style: normal;
     letter-spacing: 2px;
     background-image: none;
-    line-height: 8px;
-    white-space: nowrap; }
+    line-height: 1;
+    white-space: nowrap;
+    vertical-align: middle;
+    padding: 0.1em 0.5em;
+    background-color: var(--back-white); }
     #crosslinks a:not(.highlight):hover {
       background-color: var(--back-light);
       background-image: none; }
-    #crosslinks a:not(.highlight).active {
+    #crosslinks a:not(.highlight):not(.active) {
+      border-color: var(--back-white); }
+    #crosslinks a.active:not(.highlight) {
       text-shadow: none;
       text-decoration: none;
       color: var(--back-white);
       background-color: var(--code-foreground); }
-      #crosslinks a:not(.highlight).active:hover {
+      #crosslinks a.active:not(.highlight):hover {
         background-color: var(--back-light);
         background-image: none;
         color: var(--text-dark); }
@@ -2241,23 +2241,30 @@ li.off > .checkbox::after {
   border-radius: 1px; }
 
 .todo, .done {
-  padding: 4px 8px;
+  padding: 0.1em 0.2em;
   border-style: solid;
   border-width: 1px;
   border-color: var(--back-light);
   border-radius: 1px;
   font-family: "Open Sans";
   font-variant: all-small-caps;
-  font-size: 13px;
+  font-size: max(0.4em, 10px);
   font-style: normal;
   letter-spacing: 2px;
   background-image: none;
-  line-height: 8px;
+  line-height: 1;
   white-space: nowrap;
+  vertical-align: middle;
+  padding: 0.1em 0.5em;
+  background-color: var(--back-white);
+  background-color: transparent;
+  border: none;
   font-weight: bold; }
   .todo:hover, .done:hover {
     background-color: var(--back-light);
     background-image: none; }
+  .todo:not(.active), .done:not(.active) {
+    border-color: var(--back-white); }
   .todo.active, .done.active {
     text-shadow: none;
     text-decoration: none;
@@ -2270,6 +2277,8 @@ li.off > .checkbox::after {
 
 .outline-2, .outline-3, .outline-4 {
   contain: layout; }
+  .outline-2 .todo, .outline-2 .done, .outline-3 .todo, .outline-3 .done, .outline-4 .todo, .outline-4 .done {
+    font-size: 18px; }
 
 .todo {
   color: #ee3333; }
@@ -2277,30 +2286,29 @@ li.off > .checkbox::after {
 .done {
   color: var(--text-light); }
 
-.tag {
-  background: white; }
-
 .tag > span {
-  padding: 4px 8px;
+  padding: 0.1em 0.2em;
   border-style: solid;
   border-width: 1px;
   border-color: var(--back-light);
   border-radius: 1px;
   font-family: "Open Sans";
   font-variant: all-small-caps;
-  font-size: 13px;
+  font-size: max(0.4em, 10px);
   font-style: normal;
   letter-spacing: 2px;
   background-image: none;
-  line-height: 8px;
+  line-height: 1;
   white-space: nowrap;
-  padding-left: 15px;
-  padding-right: 15px;
-  border-radius: 100px;
-  border-style: dashed; }
+  vertical-align: middle;
+  padding: 0.1em 0.5em;
+  background-color: var(--back-white);
+  border-radius: 100px; }
   .tag > span:hover {
     background-color: var(--back-light);
     background-image: none; }
+  .tag > span:not(.active) {
+    border-color: var(--back-white); }
   .tag > span.active {
     text-shadow: none;
     text-decoration: none;
@@ -2343,8 +2351,8 @@ td.org-center {
   text-align: center; }
 
 span.acr {
-  font-variant: small-caps;
-  letter-spacing: 0.06em; }
+  font-variant-caps: all-small-caps;
+  letter-spacing: 0.1em; }
 
 div.table {
   position: relative; }
@@ -2559,24 +2567,29 @@ table {
   letter-spacing: 5px; }
 
 .page-tags a {
-  padding: 4px 8px;
+  padding: 0.1em 0.2em;
   border-style: solid;
   border-width: 1px;
   border-color: var(--back-light);
   border-radius: 1px;
   font-family: "Open Sans";
   font-variant: all-small-caps;
-  font-size: 13px;
+  font-size: max(0.4em, 10px);
   font-style: normal;
   letter-spacing: 2px;
   background-image: none;
-  line-height: 8px;
+  line-height: 1;
   white-space: nowrap;
+  vertical-align: middle;
+  padding: 0.1em 0.5em;
+  background-color: var(--back-white);
   margin-right: 5px;
   line-height: 3em; }
   .page-tags a:hover {
     background-color: var(--back-light);
     background-image: none; }
+  .page-tags a:not(.active) {
+    border-color: var(--back-white); }
   .page-tags a.active {
     text-shadow: none;
     text-decoration: none;

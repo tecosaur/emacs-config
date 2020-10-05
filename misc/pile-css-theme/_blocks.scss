@@ -16,8 +16,7 @@ blockquote {
   div.#{$name} {
     background: rgba($base-color, 0.15);
     border-left: 4px solid rgba($base-color, 0.45);
-    margin-top: 1.8rem;
-    margin-bottom: 1.25rem;
+    margin: 1.8rem 0 1.25rem 15px;
     padding: 0.8em;
     line-height: 1.4;
     text-align: center;

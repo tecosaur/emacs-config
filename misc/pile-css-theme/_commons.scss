@@ -114,10 +114,16 @@ $code-font: SFMono-Regular,Consolas,Liberation Mono,Menlo,monospace;
 }
 
 @mixin tag() {
-  @include button(1px, 13px, 4px);
-  line-height: 8px;
+  @include button(1px, #{"max(0.4em, 10px)"}, 0.1em);
+  line-height: 1;
   white-space: nowrap;
+  vertical-align: middle;
+  padding: 0.1em 0.5em;
+  background-color: $back-white;
 
+  &:not(.active) {
+    border-color: $back-white;
+  }
   &.active {
     text-shadow: none;
     text-decoration: none;

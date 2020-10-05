@@ -30,10 +30,15 @@
 
 .todo, .done {
   @include tag();
+  background-color: transparent;
+  border: none;
   font-weight: bold;
 }
 .outline-2, .outline-3, .outline-4 {
   contain: layout;
+  .todo, .done {
+    font-size: 18px;
+  }
 }
 
 .todo {
@@ -44,16 +49,9 @@
   color: $text-light;
 }
 
-.tag {
-  background: white;
-}
-
 .tag > span {
   @include tag();
-  padding-left: 15px;
-  padding-right: 15px;
   border-radius: 100px;
-  border-style: dashed;
 }
 
 .priority {
