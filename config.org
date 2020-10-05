@@ -4886,89 +4886,31 @@ compared to the default implementation."
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-(defun org-html--build-meta-entry (label identity &optional content-format &rest content-formatters)
-  "Construct <meta> tag with LABEL=\"IDENTITY\" and content from CONTENT-FORMAT and CONTENT-FORMATTER."
-  (concat "<meta "
-          (format "%s=\"%s" label identity)
-          (when content-format
-            (concat "\" content=\""
-                    (replace-regexp-in-string
-                     "\"" "&quot;"
-                     (org-html-encode-plain-text
-                      (if content-formatters
-                          (apply #'format content-format content-formatters)
-                        content-format)))))
-          "\" />\n"))
-
-(defadvice! org-html--build-meta-info-extended (info)
-  "Return meta tags for exported document, with more meta than usual.
-INFO is a plist used as a communication channel."
-  :override #'org-html--build-meta-info
-  (let* ((protect-string
-          (lambda (str)
-            (replace-regexp-in-string
-             "\"" "&quot;" (org-html-encode-plain-text str))))
-         (title (org-export-data (plist-get info :title) info))
-         ;; Set title to an invisible character instead of leaving it
-         ;; empty, which is invalid.
-         (title (if (org-string-nw-p title) title "&lrm;"))
-         (subtitle (org-export-data (plist-get info :subtitle) info))
-         (author (and (plist-get info :with-author)
-                      (let ((auth (plist-get info :author)))
-         ;; Return raw Org syntax.
-                        (and auth (org-element-interpret-data auth)))))
-         (description (plist-get info :description))
-         (keywords (plist-get info :keywords))
-         (charset (or (and org-html-coding-system
-                           (fboundp 'coding-system-get)
-                           (coding-system-get org-html-coding-system
-                                              'mime-charset))
-                      "iso-8859-1")))
-    (concat
-     (when (plist-get info :time-stamp-file)
-       (format-time-string
-        (concat "<!-- "
-                (plist-get info :html-metadata-timestamp-format)
-                " -->\n")))
-
-     (org-html--build-meta-entry "charset" charset)
-
-     (let ((viewport-options
-            (cl-remove-if-not (lambda (cell) (org-string-nw-p (cadr cell)))
-                              (plist-get info :html-viewport))))
-       (if viewport-options
-           (org-html--build-meta-entry "name" "viewport"
-                                       (mapconcat
-                                        (lambda (elm) (format "%s=%s" (car elm) (cadr elm)))
-                                        viewport-options ", "))))
-
-     (format "<title>%s</title>\n" title)
-
-     (org-html--build-meta-entry "name" "generator" "Org Mode")
-
-     (when (org-string-nw-p author)
-       (org-html--build-meta-entry "name" "author" author))
-
-     (when (org-string-nw-p description)
-       (org-html--build-meta-entry "name" "description" description))
-
-     (when (org-string-nw-p keywords)
-       (org-html--build-meta-entry "name" "keywords" keywords))
-
-     (when org-fancy-html-export-mode
-       (concat
-        (org-html--build-meta-entry "name" "theme-color" "#77aa99")
-
-        (org-html--build-meta-entry "property" "og:title" title)
-        (org-html--build-meta-entry "property" "og:type" "article")
-        (org-html--build-meta-entry "property" "og:image" "https://tecosaur.com/resources/org/nib.png")
-        (when (org-string-nw-p author)
-          (org-html--build-meta-entry "property" "og:article:author:first_name" (car (s-split " " author))))
-        (when (and (org-string-nw-p author) (s-contains-p " " author))
-          (org-html--build-meta-entry "property" "og:article:author:first_name" (cdr (s-split-up-to " " author 2))))
-        (org-html--build-meta-entry "property" "og:article:published_time" (format-time-string "%FT%T%z"))
-        (when (org-string-nw-p subtitle)
-          (org-html--build-meta-entry "property" "og:description" subtitle)))))))
+(setq org-html-meta-tags
+      '((lambda (_title author _info)
+          (when (org-string-nw-p author)
+        (list "name" "author" author)))
+        (lambda (_title _author info)
+          (when (org-string-nw-p (plist-get info :description))
+        (list "name" "description"
+                        (plist-get info :description))))
+        ("name" "generator" "org mode")
+        ("name" "theme-color" "#77aa99")
+        ("property" "og:type" "article")
+        (lambda (title _author _info)
+          (list "property" "og:title" title))
+        ("property" "og:image" "https://tecosaur.com/resources/org/nib.png")
+        (lambda (_title author _info)
+          (when (org-string-nw-p author)
+            (list "property" "og:article:author:first_name" (car (s-split-up-to " " author 2)))))
+        (lambda (_title author _info)
+          (when (and (org-string-nw-p author) (s-contains-p " " author))
+            (list "property" "og:article:author:last_name" (cadr (s-split-up-to " " author 2)))))
+        (lambda (&rest _)
+          (list "property" "og:article:published_time" (format-time-string "%FT%T%z")))
+        (lambda (_title _author info)
+          (when (org-string-nw-p (plist-get info :subtitle))
+            (list "property" "og:description" (plist-get info :subtitle))))))
 #+END_SRC
 ***** Custom CSS/JS
 The default org HTML export is ... alright, but we can really jazz it up.
