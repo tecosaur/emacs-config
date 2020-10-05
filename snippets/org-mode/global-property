@@ -3,4 +3,4 @@
 # key: #+p
 # condition: (> 20 (line-number-at-pos))
 # --
-#+PROPERTY: $0
+#+property: $0

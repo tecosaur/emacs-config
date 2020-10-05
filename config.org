@@ -1,13 +1,13 @@
 # -*- mode: org; eval: (add-hook 'after-save-hook (lambda () (org-html-export-to-html t)) nil t) -*-
-#+TITLE: Doom Emacs Configuration
-#+SUBTITLE: The Methods, Management, and Menagerie of Madness
-#+AUTHOR: tecosaur
-#+PROPERTY: header-args:emacs-lisp :tangle yes :cache yes :results silent :comments link
-#+PROPERTY: header-args:shell :tangle "setup.sh"
-#+PROPERTY: header-args :tangle no :results silent
-#+HTML_HEAD: <link rel='shortcut icon' type='image/png' href='https://www.gnu.org/software/emacs/favicon.png'>
+#+title: Doom Emacs Configuration
+#+subtitle: The Methods, Management, and Menagerie of Madness
+#+author: tecosaur
+#+property: header-args:emacs-lisp :tangle yes :cache yes :results silent :comments link
+#+property: header-args:shell :tangle "setup.sh"
+#+property: header-args :tangle no :results silent
+#+html_head: <link rel='shortcut icon' type='image/png' href='https://www.gnu.org/software/emacs/favicon.png'>
 
-#+BEGIN_EXPORT html
+#+begin_export html
 <a href="https://github.com/tecosaur/emacs-config/"
    style="font-family: 'Open Sans'; background-image: none; color: inherit;
    text-decoration: none; position: relative; top: clamp(-26px, calc(1280px - 100vw), 0px); opacity: 0.7;">
@@ -15,17 +15,17 @@
        class="invertible" alt="GitHub Octicon"
        style="height: 1em; position: relative; top: 0.1em;">
   View on GitHub</a>
-#+END_EXPORT
-#+BEGIN_EXPORT latex
+#+end_export
+#+begin_export latex
 \newpage % because the contents are multi-page, this looks better
-#+END_EXPORT
+#+end_export
 
-#+BEGIN_QUOTE
+#+begin_quote
 Let us change our traditional attitude to the construction of programs:
 Instead of imagining that our main task is to instruct a computer what to do,
 let us concentrate rather on explaining to human beings what we want a
 computer to do. --- Donald Knuth
-#+END_QUOTE
+#+end_quote
 
 * Intro
 Customising an editor can be very rewarding ... until you have to leave it.
@@ -34,10 +34,10 @@ Then I discovered [[https://github.com/cknadler/vim-anywhere][vim-anywhere]], an
 [[https://github.com/zachcurry/emacs-anywhere][emacs-anywhere]]. To me, this looked most attractive.
 
 Separately, online I have seen the following statement enough times I think it's a catchphrase
-#+BEGIN_QUOTE
+#+begin_quote
 Redditor1: I just discovered this thing, isn't it cool. \\
 Redditor2: Oh, there's an Emacs mode for that.
-#+END_QUOTE
+#+end_quote
 
 I tried out the =spacemacs= distribution a bit, but it wasn't quite to my liking.
 Then I heard about =doom emacs= and thought I may as well give that a try.
@@ -102,10 +102,10 @@ good?
 + A few other nuisances
 
 *** Teach a man to fish...
-#+BEGIN_QUOTE
+#+begin_quote
 Give a man a fish, and you feed him for a day. Teach a man to fish, and you feed
 him for a lifetime. --- Anne Isabella
-#+END_QUOTE
+#+end_quote
 
 Most popular editors have a simple and pretty [[https://code.visualstudio.com/docs/getstarted/settings][settings interface]], filled with
 check-boxes, selects, and the occasional text-box. This makes it easy for the
@@ -128,21 +128,21 @@ It comes with a broad array of useful functions for text-editing, and Doom adds
 a few handy little convenience functions.
 
 Want to add a keybinding to delete the previous line? It's as easy as
-#+NAME: Keybinding to delete the previous line
-#+BEGIN_SRC emacs-lisp :tangle no
+#+name: Keybinding to delete the previous line
+#+begin_src emacs-lisp :tangle no
 (map! "C-d"
       (cmd! (previous-line)
             (kill-line)
             (forward-line)))
-#+END_SRC
+#+end_src
 
 How about another example, say you want to be presented with a list of currently
 open /buffers/ (think files, almost) when you split the window. It's as simple as
-#+NAME: Prompt for buffer after split
-#+BEGIN_SRC emacs-lisp :tangle no
+#+name: Prompt for buffer after split
+#+begin_src emacs-lisp :tangle no
 (defadvice! prompt-for-buffer (&rest _)
   :after 'window-split (switch-to-buffer))
-#+END_SRC
+#+end_src
 
 Want to test it out? You don't need to save and restart, you can just /evaluate
 the expression/ within your current Emacs instance and try it immediately! This
@@ -165,7 +165,7 @@ editor) the following applications
 
 I have attempted to quantify aspects of my impressions of them below.
 
-#+PLOT: transpose:yes type:radar min:0 max:4 ticks:4 file:"misc/editor-comparison.png"
+#+plot: transpose:yes type:radar min:0 max:4 ticks:4 file:"misc/editor-comparison.png"
 | Editor      | Extensibility | Ecosystem | Ease of Use | Comfort | Completion | Performance |
 |-------------+---------------+-----------+-------------+---------+------------+-------------|
 | IDLE        |             1 |         1 |           3 |       1 |          1 |           2 |
@@ -221,23 +221,23 @@ few extras.
 + The =cargo-script= rust crate is required for evaluation of rust blocks by babel.
   As described in the README for [[https://github.com/micanzhang/ob-rust][ob-rust]]. Like ~delta~, this can just be installed
   using cargo.
-  #+BEGIN_SRC shell :eval no :tangle (if (executable-find "cargo-script") "no" "setup.sh")
+  #+begin_src shell :eval no :tangle (if (executable-find "cargo-script") "no" "setup.sh")
 cargo install cargo-script
-  #+END_SRC
+  #+end_src
 + The [[https://github.com/dandavison/delta/][Delta]] binary. It's packaged for some distributions but I installed it with
-  #+BEGIN_SRC shell :eval no :tangle (if (executable-find "delta") "no" "setup.sh")
+  #+begin_src shell :eval no :tangle (if (executable-find "delta") "no" "setup.sh")
 cargo install git-delta
-  #+END_SRC
+  #+end_src
 + The =theme-magic= package requires the ~wal~ (=pywal=) executable. If this is
   packaged for you, great! If not, it's just a quick ~pip install~ away.
-  #+BEGIN_SRC shell :eval no :tangle (if (executable-find "wal") "no" "setup.sh")
+  #+begin_src shell :eval no :tangle (if (executable-find "wal") "no" "setup.sh")
 sudo python3 -m pip install pywal
-  #+END_SRC
+  #+end_src
 
 ** Current Issues
 *** Magit push in daemon
 Quite often trying to push to a remote in the Emacs daemon produces as error like this:
-#+BEGIN_SRC fundamental
+#+begin_src fundamental
 128 git … push -v origin refs/heads/master\:refs/heads/master
 Pushing to git@github.com:tecosaur/emacs-config.git
 
@@ -245,7 +245,7 @@ fatal: Could not read from remote repository.
 
 Please make sure you have the correct access rights
 and the repository exists.
-#+END_SRC
+#+end_src
 *** CalcTeX brings up compilation buffer
 With my [[*Calc][Calc]] hook, the first call of =M-x calc= brings up a compilation buffer
 from CalcTeX. I'm guessing this is from the compilation of the preamble / ~.fmt~ file.
@@ -261,15 +261,15 @@ instances, in a similar manner to [[*Rebuild mail index while using mu4e][Rebuil
 * Rudimentary configuration
 Make this file run (slightly) faster with lexical binding (see [[https://nullprogram.com/blog/2016/12/22/][this blog post]]
 for more info).
-#+BEGIN_SRC emacs-lisp :comments no
+#+begin_src emacs-lisp :comments no
 ;;; config.el -*- lexical-binding: t; -*-
-#+END_SRC
+#+end_src
 ** Personal Information
 It's useful to have some basic personal information
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq user-full-name "TEC"
       user-mail-address "tec@tecosaur.com")
-#+END_SRC
+#+end_src
 Apparently this is used by ~GPG~, and all sorts of other things.
 
 Speaking of ~GPG~, I want to use =~/.authsource.gpg= instead of the default in
@@ -277,15 +277,15 @@ Speaking of ~GPG~, I want to use =~/.authsource.gpg= instead of the default in
 make a difference, and I don't want to accidentaly purge this file (I have done
 ~rm -rf~/.emac.d~ before). I also want to cache as much as possible, as my home
 machine is pretty safe, and my laptop is shutdown a lot.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq auth-sources '("~/.authinfo.gpg")
       auth-source-cache-expiry nil) ; default is 7200 (2h)
-#+END_SRC
+#+end_src
 ** Better defaults
 *** Simple settings
 Browsing the web and seeing [[https://github.com/angrybacon/dotemacs/blob/master/dotemacs.org#use-better-defaults][angrybacon/dotemacs]] and comparing with the values
 shown by =SPC h v= and selecting what I thought looks good, I've ended up adding the following:
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq-default
  delete-by-moving-to-trash t                      ; Delete files to trash
  window-combination-resize t                      ; take new window space from all other windows (not just current)
@@ -301,41 +301,41 @@ shown by =SPC h v= and selecting what I thought looks good, I've ended up adding
                (battery))
   (display-battery-mode 1))                       ; On laptops it's nice to know how much power you have
 (global-subword-mode 1)                           ; Iterate through CamelCase words
-#+END_SRC
+#+end_src
 *** Fullscreen
 I also like the idea of fullscreen-ing when opened by ~Emacs~ or the ~.desktop~ file.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (if (eq initial-window-system 'x)                 ; if started by emacs command or desktop file
     (toggle-frame-maximized)
   (toggle-frame-fullscreen))
-#+END_SRC
+#+end_src
 *** Auto-customisations
 By default changes made via a customisation interface are added to =init.el=.
 I prefer the idea of using a separate file for this. We just need to change a
 setting, and load it if it exists.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq-default custom-file (expand-file-name ".custom.el" doom-private-dir))
 (when (file-exists-p custom-file)
   (load custom-file))
-#+END_SRC
+#+end_src
 *** Windows
 I find it rather handy to be asked which buffer I want to see after splitting
 the window. Let's make that happen.
 First, we'll enter the new window
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq evil-vsplit-window-right t
       evil-split-window-below t)
-#+END_SRC
+#+end_src
 Then, we'll pull up ~ivy~
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defadvice! prompt-for-buffer (&rest _)
   :after '(evil-window-split evil-window-vsplit)
   (+ivy/switch-buffer))
-#+END_SRC
+#+end_src
 Oh, and previews are nice
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq +ivy-buffer-preview t)
-#+END_SRC
+#+end_src
 
 Window rotation is nice, and can be found under =SPC w r= and =SPC w R=.
 /Layout/ rotation is also nice though. Let's stash this under =SPC w SPC=, inspired
@@ -343,7 +343,7 @@ by Tmux's use of =C-b SPC= to rotate windows.
 
 We could also do with adding the missing arrow-key variants of the window
 navigation/swapping commands.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (map! :map evil-window-map
       "SPC" #'rotate-layout
       ;; Navigation
@@ -356,12 +356,12 @@ navigation/swapping commands.
       "C-<down>"       #'+evil/window-move-down
       "C-<up>"         #'+evil/window-move-up
       "C-<right>"      #'+evil/window-move-right)
-#+END_SRC
+#+end_src
 *** Buffer defaults
 I'd much rather have my new buffers in ~org-mode~ than ~fundamental-mode~, hence
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 ;; (setq-default major-mode 'org-mode)
-#+END_SRC
+#+end_src
 For some reason this + the mixed pitch hook causes issues with hydra and so I'll
 just need to resort to =SPC b o= for now.
 ** Doom configuration
@@ -371,12 +371,12 @@ just need to resort to =SPC b o= for now.
 fiddle with the font sizes a tad so that they visually match. Just for fun I'm
 trying out JetBrains Mono though. So far I have mixed feelings on it, some
 aspects are nice, but on others I prefer Fira.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq doom-font (font-spec :family "JetBrains Mono" :size 24)
       doom-big-font (font-spec :family "JetBrains Mono" :size 36)
       doom-variable-pitch-font (font-spec :family "Overpass" :size 24)
       doom-serif-font (font-spec :family "IBM Plex Mono" :weight 'light))
-#+END_SRC
+#+end_src
 
 #+attr_html: :class invertible :alt Screenshot of the fonts within Emacs.
 [[https://tecosaur.com/lfs/emacs-config/screenshots/font-face.png]]
@@ -384,19 +384,19 @@ aspects are nice, but on others I prefer Fira.
 **** Theme and modeline
 ~doom-one~ is nice and all, but I find the ~vibrant~ variant nicer. Oh, and with the
 nice selection doom provides there's no reason for me to want the defaults.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq doom-theme 'doom-vibrant)
 (delq! t custom-theme-load-path)
-#+END_SRC
+#+end_src
 However, by default ~red~ text is used in the ~modeline~, so let's make that orange
 so I don't feel like something's gone /wrong/ when editing files.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (custom-set-faces!
   '(doom-modeline-buffer-modified :foreground "orange"))
-#+END_SRC
+#+end_src
 While we're modifying the modeline, =LF UTF-8= is the default file encoding, and
 thus not worth noting in the modeline. So, let's conditionally hide it.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defun doom-modeline-conditional-buffer-encoding ()
   "We expect the encoding to be LF UTF-8, so only show the modeline when this is not the case"
   (setq-local doom-modeline-buffer-encoding
@@ -404,22 +404,22 @@ thus not worth noting in the modeline. So, let's conditionally hide it.
                           (eq buffer-file-coding-system 'utf-8)))))
 
 (add-hook 'after-change-major-mode-hook #'doom-modeline-conditional-buffer-encoding)
-#+END_SRC
+#+end_src
 **** Miscellaneous
 Relative line numbers are fantastic for knowing how far away line numbers are,
 then =ESC 12 <UP>= gets you exactly where you think.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq display-line-numbers-type 'relative)
-#+END_SRC
+#+end_src
 I'd like some slightly nicer default buffer names
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq doom-fallback-buffer-name "► Doom"
       +doom-dashboard-name "► Doom")
-#+END_SRC
+#+end_src
 There's a bug with the modeline in insert mode for org documents ([[https://github.com/seagle0128/doom-modeline/issues/300][issue]]), so
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (custom-set-faces! '(doom-modeline-evil-insert-state :weight bold :foreground "#339CDB"))
-#+END_SRC
+#+end_src
 *** Some helper macros
 There are a few handy macros added by doom, namely
 - ~load!~ for loading external ~.el~ files relative to this one
@@ -430,13 +430,13 @@ There are a few handy macros added by doom, namely
 ** Other things
 *** Editor interaction
 **** Mouse buttons
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (map! :n [mouse-8] #'better-jumper-jump-backward
       :n [mouse-9] #'better-jumper-jump-forward)
-#+END_SRC
+#+end_src
 *** Window title
 I'd like to have just the buffer name, then if applicable the project folder
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq frame-title-format
       '(""
         (:eval
@@ -447,7 +447,7 @@ I'd like to have just the buffer name, then if applicable the project folder
          (let ((project-name (projectile-project-name)))
            (unless (string= "-" project-name)
              (format (if (buffer-modified-p)  " ◉ %s" "  ●  %s") project-name))))))
-#+END_SRC
+#+end_src
 *** Splash screen
 Emacs can render an image as the splash screen, and [[https://github.com/MarioRicalde][@MarioRicalde]] came up with a
 cracker! He's also provided me with a nice Emacs-style /E/, which is good for
@@ -456,7 +456,7 @@ smaller windows. *@MarioRicalde* you have my sincere thanks, you're great!
 
 By incrementally stripping away the outer layers of the logo one can obtain
 quite a nice resizing effect.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defvar fancy-splash-image-template
   (expand-file-name "misc/splash-images/blackhole-lines-template.svg" doom-private-dir)
   "Default template svg used for the splash image, with substitutions from ")
@@ -560,14 +560,14 @@ quite a nice resizing effect.
 
 (add-hook 'window-size-change-functions #'set-appropriate-splash)
 (add-hook 'doom-load-theme-hook #'set-appropriate-splash)
-#+END_SRC
+#+end_src
 
 #+attr_html: :class invertible :alt The splash screen, just loaded.
 [[https://tecosaur.com/lfs/emacs-config/screenshots/splash-screen.png]]
 
 *** Systemd daemon
 For running a systemd service for a Emacs server I have the following
-#+BEGIN_SRC systemd :tangle ~/.config/systemd/user/emacs.service :mkdirp yes
+#+begin_src systemd :tangle ~/.config/systemd/user/emacs.service :mkdirp yes
 [Unit]
 Description=Emacs server daemon
 Documentation=info:emacs man:emacs(1) https://gnu.org/software/emacs/
@@ -575,28 +575,28 @@ Documentation=info:emacs man:emacs(1) https://gnu.org/software/emacs/
 [Service]
 Type=forking
 ExecStart=/usr/bin/emacs --daemon
-ExecStop=/usr/bin/emacsclient --eval "(progn (setq kill-emacs-hook nil) (kill emacs))"
+ExecStop=/usr/bin/emacsclient --no-wait --eval "(progn (setq kill-emacs-hook nil) (kill emacs))"
 Environment=SSH_AUTH_SOCK=%t/keyring/ssh
 Restart=on-failure
 
 [Install]
 WantedBy=default.target
-#+END_SRC
+#+end_src
 which is then enabled by
-#+BEGIN_SRC shell :tangle (if (string= "enabled\n" (shell-command-to-string "systemctl --user is-enabled emacs.service")) "no" "setup.sh")
+#+begin_src shell :tangle (if (string= "enabled\n" (shell-command-to-string "systemctl --user is-enabled emacs.service")) "no" "setup.sh")
 systemctl --user enable emacs.service
-#+END_SRC
+#+end_src
 
 It can now be nice to use this as a 'default app' for opening files. If we add
 an appropriate desktop entry, and enable it in the desktop environment.
 
-#+BEGIN_SRC conf :tangle ~/.local/share/applications/emacs-client.desktop :mkdirp yes
+#+begin_src conf :tangle ~/.local/share/applications/emacs-client.desktop :mkdirp yes
 [Desktop Entry]
 Name=Emacs client
 GenericName=Text Editor
 Comment=A flexible platform for end-user applications
 MimeType=text/english;text/plain;text/x-makefile;text/x-c++hdr;text/x-c++src;text/x-chdr;text/x-csrc;text/x-java;text/x-moc;text/x-pascal;text/x-tcl;text/x-tex;application/x-shellscript;text/x-c;text/x-c++;
-Exec=emacsclient -create-frame --alternate-editor="" %F
+Exec=emacsclient -create-frame --alternate-editor="" --no-wait %F
 Icon=emacs
 Type=Application
 Terminal=false
@@ -604,7 +604,7 @@ Categories=TextEditor;Utility;
 StartupWMClass=Emacs
 Keywords=Text;Editor;
 X-KDE-StartupNotify=false
-#+END_SRC
+#+end_src
 
 When the daemon is running, I almost always want to do a few particular things
 with it, so I may as well eat the load time at startup. We also want to keep
@@ -613,7 +613,7 @@ with it, so I may as well eat the load time at startup. We also want to keep
 It would be good to start the IRC client (=circe=) too, but that seems to have
 issues when started in a non-graphical session.
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defun greedily-do-daemon-setup ()
   (when (daemonp)
     (require 'org)
@@ -628,15 +628,15 @@ issues when started in a non-graphical session.
       (run-at-time nil (* 8 60 60) #'elfeed-update))))
 
 (add-hook 'emacs-startup-hook #'greedily-do-daemon-setup)
-#+END_SRC
+#+end_src
 * Package loading
 :PROPERTIES:
 :header-args:emacs-lisp: :tangle "packages.el" :comments link
 :END:
 This file shouldn't be byte compiled.
-#+BEGIN_SRC emacs-lisp :tangle "packages.el" :comments no
+#+begin_src emacs-lisp :tangle "packages.el" :comments no
 ;; -*- no-byte-compile: t; -*-
-#+END_SRC
+#+end_src
 ** Loading instructions
 :PROPERTIES:
 :header-args:emacs-lisp: :tangle no
@@ -650,87 +650,87 @@ Doom requires these, and disabling them may have terrible side effects.
 
 *** Packages in MELPA/ELPA/emacsmirror
 To install ~some-package~ from MELPA, ELPA or emacsmirror:
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (package! some-package)
-#+END_SRC
+#+end_src
 
 *** Packages from git repositories
 To install a package directly from a particular repo, you'll need to specify
 a ~:recipe~. You'll find documentation on what ~:recipe~ accepts [[https://github.com/raxod502/straight.el#the-recipe-format][here]]:
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (package! another-package
   :recipe (:host github :repo "username/repo"))
-#+END_SRC
+#+end_src
 
 If the package you are trying to install does not contain a ~PACKAGENAME.el~
 file, or is located in a subdirectory of the repo, you'll need to specify
 ~:files~ in the ~:recipe~:
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (package! this-package
   :recipe (:host github :repo "username/repo"
            :files ("some-file.el" "src/lisp/*.el")))
-#+END_SRC
+#+end_src
 
 *** Disabling built-in packages
 If you'd like to disable a package included with Doom, for whatever reason,
 you can do so here with the ~:disable~ property:
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (package! builtin-package :disable t)
-#+END_SRC
+#+end_src
 You can override the recipe of a built in package without having to specify
 all the properties for ~:recipe~. These will inherit the rest of its recipe
 from Doom or MELPA/ELPA/Emacsmirror:
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (package! builtin-package :recipe (:nonrecursive t))
 (package! builtin-package-2 :recipe (:repo "myfork/package"))
-#+END_SRC
+#+end_src
 
 Specify a ~:branch~ to install a package from a particular branch or tag.
 This is required for some packages whose default branch isn't 'master' (which
 our package manager can't deal with; see [[https://github.com/raxod502/straight.el/issues/279][raxod502/straight.el#279]])
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (package! builtin-package :recipe (:branch "develop"))
-#+END_SRC
+#+end_src
 ** General packages
 *** Window management
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (package! rotate :pin "091b5ac4fc310773253efb317e3dbe8e46959ba6")
-#+END_SRC
+#+end_src
 *** Fun
 Sometimes one just wants a little fun.
 XKCD comics are fun.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (package! xkcd :pin "66e928706fd660cfdab204c98a347b49c4267bdf")
-#+END_SRC
+#+end_src
 
 Every so often, you want everyone else to /know/ that you're typing, or just to
 amuse oneself. Introducing: typewriter sounds!
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (package! selectric-mode :pin "bb9e66678f34e9bc23624ff6292cf5e7857e8e5f")
-#+END_SRC
+#+end_src
 
 Hey, let's get the weather in here while we're at it.
 Unfortunately this seems slightly unmaintained ([[https://github.com/bcbcarl/emacs-wttrin/pulls][few open bugfix PRs]]) so let's
 roll our [[file:lisp/wttrin.el][own version]].
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (package! wttrin :recipe (:local-repo "lisp" :no-byte-compile t))
-#+END_SRC
+#+end_src
 
 Why not flash words on the screen. Why not --- hey, it could be fun.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (package! spray :pin "00638bc916227f2f961013543d10e85a43a32e29")
-#+END_SRC
+#+end_src
 
 With all our fancy Emacs themes, my terminal is missing out!
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (package! theme-magic :pin "844c4311bd26ebafd4b6a1d72ddcc65d87f074e3")
-#+END_SRC
+#+end_src
 
 What's even the point of using Emacs unless you're constantly telling everyone
 about it?
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (package! elcord :pin "01b26d1af2f33a7c7c5a1c24d8bfb6d40115a7b0")
-#+END_SRC
+#+end_src
 
 For some reason, I find myself demoing Emacs every now and then. Showing what
 keyboard stuff I'm doing on-screen seems helpful. While [[https://gitlab.com/screenkey/screenkey][screenkey]] does exist,
@@ -739,11 +739,11 @@ having something that doesn't cover up screen content is nice.
 #+attr_html: :class invertible :alt Screenshot of Keycast-mode in action
 [[https://tecosaur.com/lfs/emacs-config/screenshots/keycast.png]]
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (package! keycast :pin "038475c178e90c7bad64d113db26d42cad60e149")
-#+END_SRC
+#+end_src
 let's just make sure this is lazy-loaded appropriately.
-#+BEGIN_SRC emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle yes
 (use-package! keycast
   :commands keycast-mode
   :config
@@ -762,12 +762,12 @@ let's just make sure this is lazy-loaded appropriately.
     '(keycast-key :inherit custom-modified
                   :height 1.1
                   :weight bold)))
-#+END_SRC
+#+end_src
 
 In a similar manner, [[https://gitlab.com/ambrevar/emacs-gif-screencast][gif-screencast]] may come in handy.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (package! gif-screencast)
-#+END_SRC
+#+end_src
 
 We can lazy load this using the start/stop commands.
 
@@ -781,7 +781,7 @@ give a satisfactory result.
 It seems that when new colours appear, that tends to make ~gifsicle~ introduce
 artefacts. To avoid this we pre-populate the colour map using the current doom
 theme.
-#+BEGIN_SRC emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle yes
 (use-package! gif-screencast
   :commands gif-screencast-mode
   :config
@@ -798,35 +798,39 @@ theme.
      (replace-regexp-in-string
       "\n+" "\n"
       (mapconcat (lambda (c) (if (listp (cdr c))
-                            (cadr c))) doom-themes--colors "\n"))
+                                 (cadr c))) doom-themes--colors "\n"))
      'utf-8
      "/tmp/doom-color-theme" ))
   (gif-screencast-write-colormap)
   (add-hook 'doom-load-theme-hook #'gif-screencast-write-colormap))
-#+END_SRC
+#+end_src
 *** Improving features
 **** Flyspell-lazy
 To alleviate some [[Flyspell][issues with flyspell]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (package! flyspell-lazy :pin "3ebf68cc9eb10c972a2de8d7861cbabbbce69570")
-#+END_SRC
+#+end_src
 **** CalcTeX
 This is a nice extension to ~calc~
-#+BEGIN_SRC emacs-lisp
+
+# TODO add calctex screenshot
+
+#+begin_src emacs-lisp
 (package! calctex :recipe (:host github :repo "johnbcoughlin/calctex"
-                                 :files ("*.el")) :pin "7fa2673c64e259e04aef684ccf09ef85570c388b")
-#+END_SRC
+                           :files ("*.el" "calctex/*.el" "calctex-contrib/*.el" "org-calctex/*.el"))
+  :pin "7fa2673c64e259e04aef684ccf09ef85570c388b")
+#+end_src
 **** ESS
 View data frames better with
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (package! ess-view :pin "d4e5a340b7bcc58c434867b97923094bd0680283")
-#+END_SRC
+#+end_src
 **** Magit Delta
 [[https://github.com/dandavison/delta/][Delta]] is a git diff syntax highlighter written in rust. The author also wrote a
 package to hook this into the magit diff view. This requires the ~delta~ binary.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 ;; (package! magit-delta :recipe (:host github :repo "dandavison/magit-delta") :pin "0c7d8b2359")
-#+END_SRC
+#+end_src
 **** Info colours
 This makes manual pages nicer to look at :)
 Variable pitch fontification + colouring
@@ -834,27 +838,27 @@ Variable pitch fontification + colouring
 #+attr_html: :class invertible :style width:80% :alt Example info-colours page.
 [[https://tecosaur.com/lfs/emacs-config/screenshots/info-colours.png]]
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (package! info-colors :pin "47ee73cc19b1049eef32c9f3e264ea7ef2aaf8a5")
-#+END_SRC
+#+end_src
 **** Large files
 The /very large files/ mode loads large files in chunks, allowing one to open
 ridiculously large files.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (package! vlf :recipe (:host github :repo "m00natic/vlfi" :files ("*.el"))
   :pin "cc02f2533782d6b9b628cec7e2dcf25b2d05a27c")
-#+END_SRC
+#+end_src
 To make VLF available without delaying startup, we'll just load it in quiet moments.
-#+BEGIN_SRC emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle yes
 (use-package! vlf-setup
   :defer-incrementally vlf-tune vlf-base vlf-write vlf-search vlf-occur vlf-follow vlf-ediff vlf)
-#+END_SRC
+#+end_src
 **** Definitions
 Doom already loads =define-word=, and provides it's own definition service using
 [[https://github.com/gromnitsky/wordnut][wordnut]]. However, using an offline dictionary possess a few compelling
 advantages, namely:
- + speed
- + integration of multiple dictionaries
++ speed
++ integration of multiple dictionaries
 [[http://goldendict.org/][GoldenDict]] seems like the best option currently avalible, but lacks a CLI.
 Hence, we'll fall back to [[https://dushistov.github.io/sdcv/][sdcv]] (a CLI version of StarDict) for now.
 To interface with this, we'll use a my =lexic= package.
@@ -862,9 +866,9 @@ To interface with this, we'll use a my =lexic= package.
 #+attr_html: :class invertible :alt Screenshot of the lexic-mode view of "literate"
 [[https://tecosaur.com/lfs/emacs-config/screenshots/lexic.png]]
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (package! lexic :recipe (:local-repo "lisp/lexic"))
-#+END_SRC
+#+end_src
 
 Given that a request for a CLI is the most upvoted issue on GitHub for
 GoldenDict, it's likely we'll be able to switch from ~sdcv~ to that in the future.
@@ -876,26 +880,26 @@ painless switch.
 It's nice to send out fancy HTML emails. The =org-msg= package allows to write
 emails in org mode, and send as an HTML multipart email. We can setup some CSS
 to be inlined, render LaTeX fragments, and all those goodies!
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (package! org-msg)
-#+END_SRC
+#+end_src
 
 To actually get notifications, we can use =mu4e-alert=.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (package! mu4e-alert)
-#+END_SRC
+#+end_src
 ** Language packages
 *** LaTeX
 For mathematical convenience, WIP
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (package! auto-activating-snippets :recipe
   (:host github :repo "ymarco/auto-activating-snippets")
   :pin "0927bb5e853c9a5524b46e438c2efe2022b36ac2")
 (package! latex-auto-activating-snippets
   :recipe (:local-repo "lisp/LaTeX-auto-activating-snippets"))
-#+END_SRC
+#+end_src
 And some basic config
-#+BEGIN_SRC emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle yes
 (use-package! auto-activating-snippets
   :hook (LaTeX-mode . auto-activating-snippets-mode)
   :config (require 'latex-auto-activating-snippets))
@@ -906,82 +910,87 @@ And some basic config
     (unless (equal "/" als-transient-snippet-key)
       (+latex-fold-last-macro-a)))
   (add-hook 'aas-post-snippet-expand-hook #'als-tex-fold-maybe))
-#+END_SRC
+#+end_src
 *** Org Mode
+Use HEAD for development.
+#+begin_src emacs-lisp
+(unpin! org)
+#+end_src
+
 **** Improve agenda/capture
 The agenda is nice, but a souped up version is nicer.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (package! org-super-agenda :pin "3264255989021b8563ea42b5d26acbc2a024f14d")
-#+END_SRC
+#+end_src
 
 Similarly ~doct~ (Declarative Org Capture Templates) seems to be a nicer way to
 set up org-capture.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (package! doct
   :recipe (:host github :repo "progfolio/doct")
   :pin "dabb30ebea866ef225b81561c8265d740b1e81c3")
-#+END_SRC
+#+end_src
 **** Visuals
 Org tables aren't the prettiest thing to look at. This package is supposed to
 redraw them in the buffer with box-drawing characters. Sounds like an
 improvement to me! Just need to get it working...
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (package! org-pretty-table-mode
   :recipe (:host github :repo "Fuco1/org-pretty-table") :pin "88380f865a79bba49e4f501b7fe73a7bfb03bd1a")
-#+END_SRC
+#+end_src
 
 For automatically toggling LaTeX fragment previews there's this nice package
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (package! org-fragtog :pin "92119e3ae7c9a0ae2b5c9d9e4801b5fdc4804ad7")
-#+END_SRC
+#+end_src
 
 ~org-superstar-mode~ is great. While we're at it we may as well make tags prettier as well :)
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (package! org-pretty-tags :pin "40fd72f3e701e31813f383fb429d30bb88cee769")
-#+END_SRC
+#+end_src
 **** Extra functionality
 Because of the /[[https://github.com/commonmark/commonmark-spec/wiki/markdown-flavors][lovely variety in markdown implementations]]/ there isn't actually
 such a thing a standard table spec ... or standard anything really. Because
 ~org-md~ is a goody-two-shoes, it just uses HTML for all these non-standardised
 elements (a lot of them). So ~ox-gfm~ is handy for exporting markdown with all the
 features that GitHub has. Initialised in [[Exporting to GFM]].
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (package! ox-gfm :pin "99f93011b069e02b37c9660b8fcb45dab086a07f")
-#+END_SRC
+#+end_src
 
 Now and then citations need to happen
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (package! org-ref :pin "f582e9c53e8e4c5dcc1d3889f1b5c536c9a9b524")
-#+END_SRC
+#+end_src
 
 Came across this and ... it's cool
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (package! org-graph-view :recipe (:host github :repo "alphapapa/org-graph-view") :pin "13314338d70d2c19511efccc491bed3ca0758170")
-#+END_SRC
+#+end_src
 
 I *need* this in my life. It take a URL to a recipe from a common site, and
 inserts an org-ified version at point. Isn't that just great.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (package! org-chef :pin "5b461ed7d458cdcbff0af5013fbdbe88cbfb13a4")
-#+END_SRC
+#+end_src
 
 Sometimes I'm given non-org files, that's very sad. Luckily Pandoc offers a way
 to make that right again, and this package makes that even easier to do.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (package! org-pandoc-import :recipe
   (:local-repo "lisp/org-pandoc-import" :files ("*.el" "filters" "preprocessors")))
-#+END_SRC
-#+BEGIN_SRC emacs-lisp :tangle yes
+#+end_src
+#+begin_src emacs-lisp :tangle yes
 (use-package! org-pandoc-import
   :after org)
-#+END_SRC
+#+end_src
 
 Org-roam is nice by itself, but there are so /extra/ nice packages which integrate
 with it.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (package! org-roam-server :pin "8d1d143f5db415864c008b8e42e4d92279df9a81")
-#+END_SRC
-#+BEGIN_SRC emacs-lisp :tangle yes
+#+end_src
+#+begin_src emacs-lisp :tangle yes
 (use-package org-roam-server
   :after org-roam
   :config
@@ -997,17 +1006,17 @@ with it.
     (interactive)
     (org-roam-server-mode 1)
     (browse-url-xdg-open (format "http://localhost:%d" org-roam-server-port))))
-#+END_SRC
+#+end_src
 *** Systemd
 For editing systemd unit files
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (package! systemd :pin "51c148e09a129ddf33d95276aa0e89d4ef6f8dd2")
-#+END_SRC
+#+end_src
 * Package configuration
 ** Abbrev mode
 Thanks to [[https://emacs.stackexchange.com/questions/45462/use-a-single-abbrev-table-for-multiple-modes/45476#45476][use a single abbrev-table for multiple modes? - Emacs Stack Exchange]] I
 have the following.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package abbrev
   :init
   (setq-default abbrev-mode t)
@@ -1022,18 +1031,18 @@ have the following.
   :config
   (setq abbrev-file-name (expand-file-name "abbrev.el" doom-private-dir))
   (setq save-abbrevs 'silently))
-#+END_SRC
+#+end_src
 ** Calc
 Radians are just better
-#+BEGIN_SRC emacs-lisp
 (setq calc-angle-mode 'rad  ;; radians are rad
       calc-algebraic-mode t ;; allows '2*x instead of 'x<RET>2*
       calc-symbolic-mode t) ;; keeps stuff like √2 irrational for as long as possible
 (after! calctex
   (setq calctex-format-latex-header (concat calctex-format-latex-header
                                             "\n\\usepackage{arevmath}")))
+#+begin_src emacs-lisp
 (add-hook 'calc-mode-hook #'calctex-mode)
-#+END_SRC
+#+end_src
 ** Centaur Tabs
 We want to make the tabs a nice, comfy size (~36~), with icons. The modifier
 marker is nice, but the particular default Unicode one causes a lag spike, so
@@ -1044,7 +1053,7 @@ turn on ~x-underline-at-decent~ though. For some reason this didn't seem to work
 inside the ~(after! ... )~ block ¯\_(ツ)_/¯.
 Then let's change the font to a sans serif, but the default one doesn't fit too
 well somehow, so let's switch to 'P22 Underground Book'; it looks much nicer.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (after! centaur-tabs
   (centaur-tabs-mode -1)
   (setq centaur-tabs-height 36
@@ -1055,26 +1064,26 @@ well somehow, so let's switch to 'P22 Underground Book'; it looks much nicer.
         centaur-tabs-gray-out-icons 'buffer)
   (centaur-tabs-change-fonts "P22 Underground Book" 160))
 ;; (setq x-underline-at-descent-line t)
-#+END_SRC
+#+end_src
 ** Company
 It's nice to have completions almost all the time, in my opinion. Key strokes
 are just waiting to be saved!
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (after! company
   (setq company-idle-delay 0.5
         company-minimum-prefix-length 2)
   (setq company-show-numbers t)
   (add-hook 'evil-normal-state-entry-hook #'company-abort)) ;; make aborting less annoying.
-#+END_SRC
+#+end_src
 Now, the improvements from ~precedent~ are mostly from remembering history, so
 let's improve that memory.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq-default history-length 1000)
 (setq-default prescient-history-length 1000)
-#+END_SRC
+#+end_src
 *** Plain Text
 ~Ispell~ is nice, let's have it in ~text~, ~markdown~, and ~GFM~.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (set-company-backend!
   '(text-mode
     markdown-mode
@@ -1083,13 +1092,13 @@ let's improve that memory.
     company-ispell
     company-files
     company-yasnippet))
-#+END_SRC
+#+end_src
 We then configure the dictionary we're using in [[*Ispell][Ispell]].
 *** ESS
 ~company-dabbrev-code~ is nice. Let's have it.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (set-company-backend! 'ess-r-mode '(company-R-args company-R-objects company-dabbrev-code :separate))
-#+END_SRC
+#+end_src
 ** Circe
 Circe is a client for IRC in Emacs (hey, isn't that a nice project
 name+acronym), and a greek enchantress who turned humans into animals.
@@ -1104,23 +1113,23 @@ details in =.authinfo.gpg= --- but I think we should go further than that: have
 the entire server info in our authinfo.
 
 First, a reasonable format by which we can specify:
- + server
- + port
- + SASL username
- + SASL password
- + channels to join
++ server
++ port
++ SASL username
++ SASL password
++ channels to join
 
 We can have these stored like so
-#+BEGIN_SRC authinfo
+#+begin_src authinfo
 machine chat.freenode.net login USERNAME password PASSWORD port PORT for irc channels emacs,org-mode
-#+END_SRC
+#+end_src
 
 The ~for irc~ bit is used so we can uniquely identify all IRC auth info. By
 omitting the =#= in channel names we can have a list of channels comma-separated
 (no space!) which the secrets API will return as a single string.
 
-#+NAME: irc-authinfo-reader
-#+BEGIN_SRC emacs-lisp :tangle no
+#+name: irc-authinfo-reader
+#+begin_src emacs-lisp :tangle no
 (defun auth-server-pass (server)
   (if-let ((secret (plist-get (car (auth-source-search :host server)) :secret)))
       (if (functionp secret)
@@ -1148,13 +1157,13 @@ omitting the =#= in channel names we can have a list of channels comma-separated
                             :sasl-username ,user :sasl-password auth-server-pass
                             :channels ,channels)))
                       accounts))))
-#+END_SRC
+#+end_src
 
 We'll just call ~(register-irc-auths)~ on a hook when we start Circe up.
 
 Now we're ready to go, let's actually wire-up Circe, with one or two
 configuration tweaks.
-#+BEGIN_SRC emacs-lisp :noweb yes
+#+begin_src emacs-lisp :noweb yes
 (after! circe
   (setq-default circe-use-tls t)
   (setq circe-notifications-alert-icon "/usr/share/icons/breeze/actions/24/network-connect.svg"
@@ -1187,12 +1196,12 @@ configuration tweaks.
 <<irc-authinfo-reader>>
 
 (add-transient-hook! #'=irc (register-irc-auths))
-#+END_SRC
+#+end_src
 
 *** Org-style emphasis
 Let's do our *bold*, /italic/, and _underline_ in org-syntax, using IRC control charachters
 #+name: org-emph-to-irc
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defun lui-org-to-irc ()
   "Examine a buffer with simple org-mode formatting, and converts the empasis:
 ,*bold*, /italic/, and _underline_ to IRC semi-standard escape codes.
@@ -1209,11 +1218,11 @@ Let's do our *bold*, /italic/, and _underline_ in org-syntax, using IRC control 
              "") nil nil)))
 
 (add-hook 'lui-pre-input-hook #'lui-org-to-irc)
-#+END_SRC
+#+end_src
 *** Emojis
 Let's setup Circe to use some emojis
 #+name: circe-emojis
-#+BEGIN_SRC emacs-lisp :tangle no
+#+begin_src emacs-lisp :tangle no
 (defun lui-ascii-to-emoji ()
   (goto-char (point-min))
   (while (re-search-forward "\\( \\)?::?\\([^[:space:]:]+\\):\\( \\)?" nil t)
@@ -1240,11 +1249,11 @@ Let's setup Circe to use some emojis
   (if lui-emojify
       (add-hook! lui-pre-input #'lui-ascii-to-emoji #'lui-emoticon-to-emoji)
     (remove-hook! lui-pre-input #'lui-ascii-to-emoji #'lui-emoticon-to-emoji)))
-#+END_SRC
+#+end_src
 
 Now, some actual emojis to use.
-#+NAME: circe-emoji-alists
-#+BEGIN_SRC emacs-lisp :tangle no
+#+name: circe-emoji-alists
+#+begin_src emacs-lisp :tangle no
 (defvar lui-emojis-alist
   '(("grinning"                      . "😀")
     ("smiley"                        . "😃")
@@ -1376,17 +1385,17 @@ Now, some actual emojis to use.
     (":-/"  . "thinking")
     (":|"   . "neutral")
     (":-|"  . "expressionless")))
-#+END_SRC
+#+end_src
 ** Elcord
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq elcord-use-major-mode-as-main-icon t)
-#+END_SRC
+#+end_src
 ** Elfeed
 RSS feeds are still a thing. Why not make use of them.
 I really like what [[https://github.com/fuxialexander/doom-emacs-private-xfu/tree/master/modules/app/rss][fuxialexander]] has going on, but I don't think I need a custom
 module. Let's just try to patch on the main things I like the look of.
 *** Keybindings
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (map! :map elfeed-search-mode-map
       :after elfeed-search
       [remap kill-this-buffer] "q"
@@ -1419,9 +1428,9 @@ module. Let's just try to patch on the main things I like the look of.
       :nm "-" #'elfeed-show-untag
       :nm "s" #'elfeed-show-new-live-search
       :nm "y" #'elfeed-show-yank)
-#+END_SRC
+#+end_src
 *** Usability enhancements
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (after! elfeed-search
   (set-evil-initial-state! 'elfeed-search-mode 'normal))
 (after! elfeed-show-mode
@@ -1430,9 +1439,9 @@ module. Let's just try to patch on the main things I like the look of.
 (after! evil-snipe
   (push 'elfeed-show-mode   evil-snipe-disabled-modes)
   (push 'elfeed-search-mode evil-snipe-disabled-modes))
-#+END_SRC
+#+end_src
 *** Visual enhancements
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (after! elfeed
 
   (elfeed-org)
@@ -1546,9 +1555,9 @@ module. Let's just try to patch on the main things I like the look of.
       (goto-char (point-min))))
 
   )
-#+END_SRC
+#+end_src
 *** Functionality enhancements
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (after! elfeed-show
   (require 'url)
 
@@ -1593,10 +1602,10 @@ module. Let's just try to patch on the main things I like the look of.
             (funcall file-view-function file))))))
 
   )
-#+END_SRC
+#+end_src
 ** [[https://github.com/zachcurry/emacs-anywhere][Emacs Anywhere]] configuration
 To start with, let's install this.
-#+BEGIN_SRC shell :tangle (if (executable-find "emacs_anywhere") "no" "setup.sh")
+#+begin_src shell :tangle (if (executable-find "emacs_anywhere") "no" "setup.sh")
 cd /tmp
 curl -fsSL https://raw.github.com/zachcurry/emacs-anywhere/master/install -o ea-install.sh
 sed -i 's/EA_PATH=$HOME\/.emacs_anywhere/EA_PATH=$HOME\/.local\/share\/emacs_anywhere/' ea-install.sh
@@ -1607,21 +1616,21 @@ sed -i 's/$HOME\/.emacs_anywhere/$HOME\/.local\/share\/emacs_anywhere/' ./bin/li
 ln -s ~/.local/share/emacs_anywhere/bin/linux ~/.local/bin/emacs_anywhere
 # Improve paste robustness --- https://github.com/zachcurry/emacs-anywhere/pull/66
 sed -i 's/xdotool key --clearmodifiers ctrl+v/xdotool key --clearmodifiers Shift+Insert/' ./bin/linux
-#+END_SRC
+#+end_src
 
 It's nice to recognise GitHub (so we can use ~GFM~), and other apps which we know
 take markdown
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defun markdown-window-p (window-title)
   "Judges from WINDOW-TITLE whether the current window likes markdown"
   (if (string-match-p (rx (or "Stack Exchange" "Stack Overflow"
                               "Pull Request" "Issue" "Discord"))
                       window-title) t nil))
-#+END_SRC
+#+end_src
 When the window opens, we generally want text so let's use a nice sans serif font,
 a position the window below and to the left. Oh, and don't forget about checking
 for ~GFM~, otherwise let's just use ~markdown~.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defvar emacs-anywhere--active-markdown nil
   "Whether the buffer started off as markdown.
 Affects behaviour of `emacs-anywhere--finalise-content'")
@@ -1630,7 +1639,7 @@ Affects behaviour of `emacs-anywhere--finalise-content'")
   (when emacs-anywhere--active-markdown
     (fundamental-mode)
     (goto-char (point-min))
-    (insert "#+OPTIONS: toc:nil\n")
+    (insert "#+options: toc:nil\n")
     (rename-buffer "*EA Pre Export*")
     (org-export-to-buffer 'gfm ea--buffer-name)
     (kill-buffer "*EA Pre Export*"))
@@ -1704,38 +1713,38 @@ Affects behaviour of `emacs-anywhere--finalise-content'")
   (emacs-anywhere-mode 1))
 
 (add-hook 'ea-popup-hook 'ea-popup-handler)
-#+END_SRC
+#+end_src
 ** Eros-eval
 This makes the result of evals with =gr= and =gR= just slightly prettier. Every bit
 counts right?
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq eros-eval-result-prefix "⟹ ")
-#+END_SRC
+#+end_src
 ** EVIL
 I don't use ~evil-escape-mode~, so I may as well turn it off, I've heard it
 contributes a typing delay. I'm not sure it's much, but it is an extra
 ~pre-command-hook~ that I don't benefit from, so...
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (after! evil
   (setq evil-ex-substitute-global t) ; I like my s/../.. to by global by default
   (evil-escape-mode nil))
-#+END_SRC
+#+end_src
 ** Flyspell
 At one point, typing became noticeably laggy, Profiling revealed
 ~flyspell-post-command-hook~ was responsible for 47% of CPU cycles by itself!
 So I'm going to make use of ~flyspell-lazy~
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (after! flyspell (require 'flyspell-lazy) (flyspell-lazy-mode 1))
-#+END_SRC
+#+end_src
 ** Info colors
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package! info-colors
   :commands (info-colors-fontify-node))
 
 (add-hook 'Info-selection-hook 'info-colors-fontify-node)
 
 (add-hook 'Info-mode-hook #'mixed-pitch-mode)
-#+END_SRC
+#+end_src
 ** Ispell
 *** Downloading dictionaries
 Let's get a nice big dictionary from [[http://app.aspell.net/create][SCOWL Custom List/Dictionary Creator]] with
@@ -1747,27 +1756,27 @@ the following configuration
 - extra lists :: hacker, roman numerals
 
 **** Hunspell
-#+BEGIN_SRC shell :tangle (if (file-exists-p "/usr/share/myspell/en-custom.dic") "no" "setup.sh")
+#+begin_src shell :tangle (if (file-exists-p "/usr/share/myspell/en-custom.dic") "no" "setup.sh")
 cd /tmp
 curl -o "hunspell-en-custom.zip" 'http://app.aspell.net/create?max_size=80&spelling=GBs&spelling=AU&max_variant=0&diacritic=keep&special=hacker&special=roman-numerals&encoding=utf-8&format=inline&download=hunspell'
 unzip "hunspell-en-custom.zip"
 
 sudo chown root:root en-custom.*
 sudo mv en-custom.{aff,dic} /usr/share/myspell/
-#+END_SRC
+#+end_src
 **** Aspell
-#+BEGIN_SRC shell :tangle (if (file-expand-wildcards "/usr/lib64/aspell*/en-custom.multi") "no" "setup.sh")
+#+begin_src shell :tangle (if (file-expand-wildcards "/usr/lib64/aspell*/en-custom.multi") "no" "setup.sh")
 cd /tmp
 curl -o "aspell6-en-custom.tar.bz2" 'http://app.aspell.net/create?max_size=80&spelling=GBs&spelling=AU&max_variant=0&diacritic=keep&special=hacker&special=roman-numerals&encoding=utf-8&format=inline&download=aspell'
 tar -xjf "aspell6-en-custom.tar.bz2"
 
 cd aspell6-en-custom
 ./configure && make && sudo make install
-#+END_SRC
+#+end_src
 *** Configuration
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq ispell-dictionary "en-custom")
-#+END_SRC
+#+end_src
 Oh, and by the way, if ~company-ispell-dictionary~ is ~nil~, then
 ~ispell-complete-word-dict~ is used instead, which once again when ~nil~ is
 ~ispell-alternate-dictionary~, which at the moment maps to a plaintext version of
@@ -1775,31 +1784,31 @@ the above.
 
 It seems reasonable to want to keep an eye on my personal dict, let's have it
 nearby (also means that if I change the 'main' dictionary I keep my addition).
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq ispell-personal-dictionary (expand-file-name ".ispell_personal" doom-private-dir))
-#+END_SRC
+#+end_src
 ** Ivy
 While in an ivy mini-buffer =C-o= shows a list of all possible actions one may take.
 By default this is ~#'ivy-read-action-by-key~ however a better interface to this
 is using Hydra.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq ivy-read-action-function #'ivy-hydra-read-action)
-#+END_SRC
+#+end_src
 
 I currently have ~40k functions. This seems like sufficient motivation to
 increase the maximum number of items ivy will sort to 40k + a bit, this way
 =SPC h f= et al. will continue to function as expected.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq ivy-sort-max-size 50000)
-#+END_SRC
+#+end_src
 ** Magit
 Magit is pretty nice by default. The diffs don't get any
 syntax-highlighting-love though which is a bit sad. Thankfully
 [[https://github.com/dandavison/magit-delta][dandavison/magit-delta]] exists, which we can put to use.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 ;; (after! magit
 ;;   (magit-delta-mode +1))
-#+END_SRC
+#+end_src
 Unfortunately this seems to mess things up, which is something I'll want to look
 into later.
 ** Mail
@@ -1818,9 +1827,9 @@ So let's use that.
 The config was straightforward, and is located at [[file:~/.mbsyncrc][~/.mbsyncrc]].
 I'm currently successfully connecting to: Gmail, office365mail, and dovecot.
 I'm also shoving passwords in my [[file:~/.authinfo.gpg][authinfo.gpg]] and fetching them using ~PassCmd~:
-#+BEGIN_SRC shell :tangle no :eval no
+#+begin_src shell :tangle no :eval no
 gpg2 -q --for-your-eyes-only --no-tty -d ~/.authinfo.gpg | awk '/machine IMAP_SERCER login EMAIL_ADDR/ {print $NF}'
-#+END_SRC
+#+end_src
 
 We can run ~mbsync -a~ in a systemd service file or something, but we can do
 better than that. [[https://github.com/vsemyonoff/easymail#usage][vsemyonoff/easymail]] seems like the sort of thing we want, but
@@ -1829,10 +1838,10 @@ Using [[https://gitlab.com/shackra/goimapnotify][goimapnotify]] we should be abl
 mail. Unfortunately this means /yet another/ config file :(
 
 We install with
-#+BEGIN_SRC shell :eval no :tangle (if (executable-find "goimapnotify") "no" "setup.sh")
+#+begin_src shell :eval no :tangle (if (executable-find "goimapnotify") "no" "setup.sh")
 go get -u gitlab.com/shackra/goimapnotify
 ln -s ~/.local/share/go/bin/goimapnotify ~/.local/bin/
-#+END_SRC
+#+end_src
 
 Here's the general plan:
 1. Use ~goimapnotify~ to monitor mailboxes
@@ -1852,7 +1861,7 @@ Here's the general plan:
 Let's start off by handling the elisp side of things
 
 **** Rebuild mail index while using mu4e
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (after! mu4e
   (defvar mu4e-reindex-request-file "/tmp/mu_reindex_now"
     "Location of the reindex request, signaled by existance")
@@ -1904,13 +1913,13 @@ Prevents a series of redisplays from being called (when set to an appropriate va
         (when new-request
           (run-at-time (* 1.1 mu4e-reindex-request-min-seperation) nil
                        #'mu4e-reindex-maybe))))))
-#+END_SRC
+#+end_src
 
 **** Config transcoding & service management
 As long as the =mbsyncrc= file exists, this is as easy as running
-#+BEGIN_SRC shell :tangle (if (file-exists-p "~/.imapnotify") "no" "setup.sh")
+#+begin_src shell :tangle (if (file-exists-p "~/.imapnotify") "no" "setup.sh")
 ~/.config/doom/misc/mbsync-imapnotify.py
-#+END_SRC
+#+end_src
 
 When run without flags this will perform the following actions
 + Read, and parse [[file:~/.mbsyncrc][~/.mbsyncrc]], specifically recognising the following properties
@@ -2277,12 +2286,12 @@ def main():
 
 if __name__ == "__main__":
     main()
-#+END_SRC
+#+end_src
 
 **** Systemd
 We then have a service file to run ~goimapnotify~ on all of these generated config files.
 We'll use a template service file so we can enable a unit per-account.
-#+BEGIN_SRC systemd :tangle ~/.config/systemd/user/goimapnotify@.service
+#+begin_src systemd :tangle ~/.config/systemd/user/goimapnotify@.service
 [Unit]
 Description=IMAP notifier using IDLE, golang version.
 ConditionPathExists=%h/.imapnotify/%I/notify.conf
@@ -2295,7 +2304,7 @@ RestartSec=30
 
 [Install]
 WantedBy=default.target
-#+END_SRC
+#+end_src
 
 Enabling the service is actually taken care of by that python script.
 
@@ -2308,7 +2317,7 @@ start, so for that I'll do the 'normal' thing and run ~mbsync -all~ every so oft
 --- let's say five minutes.
 
 We can accomplish this via a systemd timer, and service file.
-#+BEGIN_SRC systemd :tangle ~/.config/systemd/user/mbsync.timer
+#+begin_src systemd :tangle ~/.config/systemd/user/mbsync.timer
 [Unit]
 Description=call mbsync on all accounts every 5 minutes
 ConditionPathExists=%h/.mbsyncrc
@@ -2319,9 +2328,9 @@ OnUnitInactiveSec=5m
 
 [Install]
 WantedBy=default.target
-#+END_SRC
+#+end_src
 
-#+BEGIN_SRC systemd :tangle ~/.config/systemd/user/mbsync.service
+#+begin_src systemd :tangle ~/.config/systemd/user/mbsync.service
 [Unit]
 Description=mbsync service, sync all mail
 Documentation=man:mbsync(1)
@@ -2333,12 +2342,12 @@ ExecStart=/usr/bin/mbsync -c %h/.mbsyncrc --all
 
 [Install]
 WantedBy=mail.target
-#+END_SRC
+#+end_src
 
 Enabling (and starting) this is as simple as
-#+BEGIN_SRC shell :tangle (if (string= "enabled\n" (shell-command-to-string "systemctl --user is-enabled mbsync.timer")) "no" "setup.sh")
+#+begin_src shell :tangle (if (string= "enabled\n" (shell-command-to-string "systemctl --user is-enabled mbsync.timer")) "no" "setup.sh")
 systemctl --user enable mbsync.timer --now
-#+END_SRC
+#+end_src
 *** Indexing/Searching
 This is performed by [[https://www.djcbsoftware.nl/code/mu/][Mu]]. This is a tool for finding emails stored in the [[http://en.wikipedia.org/wiki/Maildir][Maildir]] format.
 According to the homepage, it's main features are
@@ -2354,24 +2363,24 @@ building it from source then. I needed to install these packages
 + =gmime-devel=
 + =xapian-core-devel=
 
-#+NAME: Install mu from source
-#+BEGIN_SRC shell :eval no :tangle (if (executable-find "mu") "no" "setup.sh")
+#+name: Install mu from source
+#+begin_src shell :eval no :tangle (if (executable-find "mu") "no" "setup.sh")
 cd ~/.local/lib/
 git clone https://github.com/djcb/mu.git
 cd ./mu
 ./autogen.sh
 make
 sudo make install
-#+END_SRC
+#+end_src
 
 To check how my version compares to the latest published:
 
-#+BEGIN_SRC shell :tangle no
+#+begin_src shell :tangle no
 curl --silent "https://api.github.com/repos/djcb/mu/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/'
 mu --version | head -n 1 | sed 's/.* version //'
-#+END_SRC
+#+end_src
 
-#+RESULTS:
+#+results:
 | 1.4.6 |
 | 1.4.6 |
 *** Sending
@@ -2393,8 +2402,8 @@ we'll just install the latest from source.
 
 For full use of the ~auth~ options, I need =GNU SASL=, which isn't packaged for me.
 I don't think I want it, but in case I do, I'll need to do this.
-#+NAME: Install gsasl from source
-#+BEGIN_SRC shell :eval no :tangle (if (executable-find "msmtp") "no" "setup.sh")
+#+name: Install gsasl from source
+#+begin_src shell :eval no :tangle (if (executable-find "msmtp") "no" "setup.sh")
 export GSASL_VERSION=1.8.1
 cd ~/.local/lib/
 curl "ftp://ftp.gnu.org/gnu/gsasl/libgsasl-$GSASL_VERSION.tar.gz" | tar xz
@@ -2409,11 +2418,11 @@ cd "./gsasl-$VERSION"
 make
 sudo make install
 cd ..
-#+END_SRC
+#+end_src
 
 Now actually compile ~msmtp~.
-#+NAME: Install msmtp from source
-#+BEGIN_SRC shell :eval no :tangle (if (executable-find "msmtp") "no" "setup.sh")
+#+name: Install msmtp from source
+#+begin_src shell :eval no :tangle (if (executable-find "msmtp") "no" "setup.sh")
 cd ~/.local/lib/
 git clone https://github.com/marlam/msmtp-mirror.git ./msmtp
 cd ./msmtp
@@ -2427,14 +2436,14 @@ autoconf
 ./configure
 make
 sudo make install
-#+END_SRC
+#+end_src
 
 If using =GSASL= (from earlier) we need to make ensure that the dynamic library in
 in the library path. We can do by adding an executable with the same name
 earlier on in my ~$PATH~.
-#+BEGIN_SRC sh :tangle no :shebang "#!/bin/sh"
+#+begin_src sh :tangle no :shebang "#!/bin/sh"
 LD_LIBRARY_PATH=/usr/local/lib exec /usr/local/bin/msmtp "$@"
-#+END_SRC
+#+end_src
 
 *** Mu4e
 Webmail clients are nice and all, but I still don't believe that SPAs in my
@@ -2457,9 +2466,9 @@ information is accessible without the database). =Mu4e= also seems to have a lar
 user base, which tends to correlate with better support and attention.
 
 As I installed mu4e from source, I need to add the =/usr/local/= loadpath so Mu4e has a chance of loading
-#+BEGIN_SRC emacs-lisp :tangle (if (file-directory-p "/usr/local/share/emacs/site-lisp/mu4e") "yes" "no")
+#+begin_src emacs-lisp :tangle (if (file-directory-p "/usr/local/share/emacs/site-lisp/mu4e") "yes" "no")
 (add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu4e")
-#+END_SRC
+#+end_src
 
 **** Viewing Mail
 There seem to be some advantages with using Gnus' article view (such as inline
@@ -2471,7 +2480,7 @@ fancy chars, and make sure they get the correct width.
 
 To account for the increase width of each flag character, and make perform a
 few more visual tweaks, we'll tweak the headers a bit
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (after! mu4e
   (setq mu4e-headers-fields
         '((:account . 12)
@@ -2511,18 +2520,18 @@ few more visual tweaks, we'll tweak the headers a bit
                                   (+ (length (mu4e-message-field msg :to))
                                      (length (mu4e-message-field msg :cc))))
                           'face 'mu4e-footer-face)))))))
-#+END_SRC
+#+end_src
 
 **** Sending Mail
 Let's send emails too.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (after! mu4e
   (setq sendmail-program "/usr/bin/msmtp"
         send-mail-function #'smtpmail-send-it
         message-sendmail-f-is-evil t
         message-sendmail-extra-arguments '("--read-envelope-from"); , "--read-recipients")
         message-send-mail-function #'message-send-mail-with-sendmail))
-#+END_SRC
+#+end_src
 
 It's also nice to avoid accidentally sending emails with the wrong account.
 If we can send from the address in the ~To~ field, let's do that. Opening an ~ivy~
@@ -2530,7 +2539,7 @@ prompt otherwise also seems sensible.
 
 We can register Emacs as a potential email client with the following desktop
 file, thanks to Etienne Deparis's [[https://etienne.depar.is/emacs.d/mu4e.html][Mu4e customization]].
-#+BEGIN_SRC conf :tangle ~/.local/share/applications/emacsmail.desktop :mkdirp yes
+#+begin_src conf :tangle ~/.local/share/applications/emacsmail.desktop :mkdirp yes
 [Desktop Entry]
 Name=Compose message in Emacs
 GenericName=Compose a new message with Mu4e in Emacs
@@ -2542,15 +2551,15 @@ Type=Application
 Terminal=false
 Categories=Network;Email;
 StartupWMClass=Emacs
-#+END_SRC
+#+end_src
 
 To register this, just call
-#+BEGIN_SRC shell
+#+begin_src shell
 update-desktop-database ~/.local/share/applications
-#+END_SRC
+#+end_src
 
 We also want to define ~mu4e-compose-from-mailto~.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defun mu4e-compose-from-mailto (mailto-string)
   (require 'mu4e)
   (unless mu4e~server-props (mu4e t) (sleep-for 0.1))
@@ -2564,7 +2573,7 @@ We also want to define ~mu4e-compose-from-mailto~.
                                  org-msg-greeting-fmt))
          (headers (-filter (lambda (spec) (not (-contains-p '("To" "Subject" "Body") (car spec)))) mailto)))
     (mu4e~compose-mail to subject headers)))
-#+END_SRC
+#+end_src
 This may not quite function as intended for now due to [[github:jeremy-compostella/org-msg/issues/52][jeremy-compostella/org-msg#52]].
 **** Process control
 Here's what I want
@@ -2573,7 +2582,7 @@ Here's what I want
 I think a file watch etc. setup similar to that in [[*Rebuild mail index while using mu4e][Rebuild mail index while
 using mu4e]] is probably the cleanest way to operate. We can put the current PID
 in the file and check for exitance too.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (after! mu4e
   (defvar mu4e-lock-file "/tmp/mu4e_lock"
     "Location of the lock file which stores the PID of the process currenty running mu4e")
@@ -2662,36 +2671,36 @@ Else, write to this process' PID to the lock file"
           (run-at-time 0.2 nil #'mu4e~start))
         ))))
 
-#+END_SRC
+#+end_src
 *** Org Msg
 Doom does a fantastic stuff with the defaults with this, so we only make a few
 minor tweaks.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq +org-msg-accent-color "#1a5fb4")
 (map! :map org-msg-edit-mode-map
       :after org-msg
       :n "G" #'org-msg-goto-body)
-#+END_SRC
+#+end_src
 ** Org Chef
 Loading after org seems a bit premature. Let's just load it when we try to use
 it, either by command or in a capture template.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package! org-chef
   :commands (org-chef-insert-recipe org-chef-get-recipe-from-url))
-#+END_SRC
+#+end_src
 ** Projectile
 Looking at documentation via =SPC h f= and =SPC h v= and looking at the source can
 add package src directories to projectile. This isn't desirable in my opinion.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq projectile-ignored-projects '("~/" "/tmp" "~/.emacs.d/.local/straight/repos/"))
 (defun projectile-ignored-project-function (filepath)
   "Return t if FILEPATH is within any of `projectile-ignored-projects'"
   (or (mapcar (lambda (p) (s-starts-with-p p filepath)) projectile-ignored-projects)))
-#+END_SRC
+#+end_src
 ** Lexic
 We start off my loading =lexic=, then we'll integrate it into pre-existing
 definition functionality (like ~+lookup/dictionary-definition~).
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package! lexic
   :commands lexic-search lexic-list-dictionary
   :config
@@ -2712,10 +2721,10 @@ definition functionality (like ~+lookup/dictionary-definition~).
         :n "C-p" #'lexic-search-history-backwards
         :n "C-n" #'lexic-search-history-forwards
         :n "/" (cmd! (call-interactively #'lexic-search))))
-#+END_SRC
+#+end_src
 
 Now let's use this instead of wordnet.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defadvice! +lookup/dictionary-definition-lexic (identifier &optional arg)
   "Look up the definition of the word at point (or selection) using `lexic-search'."
   :override #'+lookup/dictionary-definition
@@ -2724,57 +2733,58 @@ Now let's use this instead of wordnet.
              (read-string "Look up in dictionary: "))
          current-prefix-arg))
   (lexic-search identifier nil nil t))
-#+END_SRC
+#+end_src
 ** Smart Parentheses
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (sp-local-pair
  '(org-mode)
  "<<" ">>"
  :actions '(insert))
+#+end_src
 ** Spray
 Let's make this suit me slightly better.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq spray-wpm 500
       spray-height 700)
-#+END_SRC
+#+end_src
 ** Theme magic
 Let's automatically update terminals on theme change (as long as ~pywal~ is available).
-#+BEGIN_SRC emacs-lisp :tangle (if (executable-find "wal") "yes" "no")
+#+begin_src emacs-lisp :tangle (if (executable-find "wal") "yes" "no")
 (add-hook 'doom-load-theme-hook 'theme-magic-from-emacs)
-#+END_SRC
+#+end_src
 ** Tramp
 Let's try to make tramp handle prompts better
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (after! tramp
   (setenv "SHELL" "/bin/bash")
   (setq tramp-shell-prompt-pattern "\\(?:^\\|\\)[^]#$%>\n]*#?[]#$%>] *\\(\\[[0-9;]*[a-zA-Z] *\\)*")) ;; default + 
-#+END_SRC
+#+end_src
 *** Troubleshooting
 In case the remote shell is misbehaving, here are some things to try
 **** Zsh
 There are some escape code you don't want, let's make it behave more considerately.
-#+BEGIN_SRC shell :eval no :tangle no
+#+begin_src shell :eval no :tangle no
 if [[ "$TERM" == "dumb" ]]; then
     unset zle_bracketed_paste
     unset zle
     PS1='$ '
     return
 fi
-#+END_SRC
+#+end_src
 *** Guix
 [[https://guix.gnu.org/][Guix]] puts some binaries that TRAMP looks for in unexpected locations.
 That's no problem though, we just need to help TRAMP find them.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (after! tramp
   (appendq! tramp-remote-path
             '("~/.guix-profile/bin" "~/.guix-profile/sbin"
               "/run/current-system/profile/bin"
               "/run/current-system/profile/sbin")))
-#+END_SRC
+#+end_src
 ** Treemacs
 Quite often there are superfluous files I'm not that interested in. There's no
 good reason for them to take up space. Let's add a mechanism to ignore them.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (after! treemacs
   (defvar treemacs-file-ignore-extensions '()
     "File extension which `treemacs-ignore-filter' will ensure are ignored")
@@ -2793,10 +2803,10 @@ good reason for them to take up space. Let's add a mechanism to ignore them.
           (dolist (regexp treemacs-file-ignore-regexps ignore-file)
             (setq ignore-file (or ignore-file (if (string-match-p regexp full-path) t nil)))))))
   (add-to-list 'treemacs-ignored-file-predicates #'treemacs-ignore-filter))
-#+END_SRC
+#+end_src
 
 Now, we just identify the files in question.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq treemacs-file-ignore-extensions '(;; LaTeX
                                         "aux"
                                         "ptc"
@@ -2824,31 +2834,31 @@ Now, we just identify the files in question.
                                    "*/.auctex-auto"
                                    "*/_region_.log"
                                    "*/_region_.tex"))
-#+END_SRC
+#+end_src
 ** VTerm
 On my system, I want to use the ~vterm~ lib in =/usr/bin/libvterm.so=. This is not
 default behaviour. Without this I see the following error message.
-#+BEGIN_SRC
+#+begin_src
 make[2]: *** No rule to make target 'libvterm-prefix/src/libvterm/.libs/libvterm.a', needed by '../vterm-module.so'.  Stop.
 make[1]: *** [CMakeFiles/Makefile2:106: CMakeFiles/vterm-module.dir/all] Error 2
 make: *** [Makefile:84: all] Error 2
-#+END_SRC
+#+end_src
 I asked about this in a [[https://github.com/akermu/emacs-libvterm/issues/238#issuecomment-586385773][GitHub Issue]], and the fix is to use the ~cmake~ flag
 ~-DUSE_SYSTEM_LIBVTERM=yes~. This can be set for when Doom recompiles ~vterm~ on
 updating, which saves me manually compiling with the flag.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq vterm-module-cmake-args "-DUSE_SYSTEM_LIBVTERM=yes")
-#+END_SRC
+#+end_src
 I also use a 'fancy powerline setup' with [[https://github.com/romkatv/powerlevel10k][Powerlevel10k]], so I need to use a
 patched font for my terminal. Unfortunately I haven't quite figured out how to
 do this yet.
 ** Which-key
 Let's make this popup a bit faster
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq which-key-idle-delay 0.5) ;; I need the help, I really do
-#+END_SRC
+#+end_src
 I also think that having =evil-= appear in so many popups is a bit too verbose, let's change that, and do a few other similar tweaks while we're at it.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq which-key-allow-multiple-replacements t)
 (after! which-key
   (pushnew!
@@ -2856,16 +2866,16 @@ I also think that having =evil-= appear in so many popups is a bit too verbose, 
    '(("" . "\\`+?evil[-:]?\\(?:a-\\)?\\(.*\\)") . (nil . "◂\\1"))
    '(("\\`g s" . "\\`evilem--?motion-\\(.*\\)") . (nil . "◃\\1"))
    ))
-#+END_SRC
+#+end_src
 ** Writeroom
 For starters, I think Doom is a bit over-zealous when zooming in
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq +zen-text-scale 0.6)
-#+END_SRC
+#+end_src
 
 Now, I think it would also be nice to remove line numbers and org stars in
 writeroom.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (after! writeroom-mode
   (add-hook 'writeroom-mode-hook
             (defun +zen-cleaner-org ()
@@ -2891,10 +2901,10 @@ writeroom.
                   (setq-local org-superstar-headline-bullets-list -org-superstar-headline-bullets-list
                               org-superstar-remove-leading-stars -org-superstar-remove-leading-stars)
                   (org-superstar-restart))))))
-#+END_SRC
+#+end_src
 ** xkcd
 We want to set this up so it loads nicely in [[*Extra links][Extra links]].
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package! xkcd
   :commands (xkcd-get-json
              xkcd-download xkcd-get
@@ -2919,10 +2929,10 @@ We want to set this up so it loads nicely in [[*Extra links][Extra links]].
             "s"       #'+xkcd-find-and-view
             "/"       #'+xkcd-find-and-view
             "y"       #'+xkcd-copy))
-#+END_SRC
+#+end_src
 
 Let's also extend the functionality a whole bunch.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (after! xkcd
   (require 'emacsql-sqlite)
 
@@ -3170,36 +3180,36 @@ SQL can be either the emacsql vector representation, or a string."
                            (cdr (assoc 'alt        data))
                            (cdr (assoc 'img        data))
                            )))))
-#+END_SRC
+#+end_src
 ** YASnippet
 Nested snippets are good, enable that.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq yas-triggers-in-field t)
-#+END_SRC
+#+end_src
 * Language configuration
 ** General
 *** File Templates
 For some file types, we overwrite defaults in the [[file:./snippets][snippets]] directory, others
 need to have a template assigned.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (set-file-template! "\\.tex$" :trigger "__" :mode 'latex-mode)
-#+END_SRC
+#+end_src
 ** Plaintext
 It's nice to see ANSI colour codes displayed
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (after! text-mode
   (add-hook! 'text-mode-hook
-#+END_SRC
              ;; Apply ANSI color codes
              (with-silent-modifications
                (ansi-color-apply-on-region (point-min) (point-max)))))
+#+end_src
 ** Org Mode
 :PROPERTIES:
 :CUSTOM_ID: org
 :END:
 I really like org mode, I've given some thought to why, and below is the result.
 
-#+PLOT: transpose:yes type:radar min:0 max:4 file:"misc/document-format-comparison.png"
+#+plot: transpose:yes type:radar min:0 max:4 file:"misc/document-format-comparison.png"
 | Format            | Fine-grained-control | Initial Effort | Syntax simplicity | Editor Support | Integrations | Ease-of-referencing | Versatility |
 |-------------------+----------------------+----------------+-------------------+----------------+--------------+---------------------+-------------|
 | Word              |                    2 |              4 |                 4 |              2 |            3 |                   2 |           2 |
@@ -3215,7 +3225,7 @@ I really like org mode, I've given some thought to why, and below is the result.
 Org mode isn't recognised as it's own mime type by default, but that can easily
 be changed with the following file. For system-wide changes try
 ~~/usr/share/mime/packages/org.xml~.
-#+BEGIN_SRC xml :tangle ~/.local/share/mime/packages/org.xml
+#+begin_src xml :tangle ~/.local/share/mime/packages/org.xml
 <?xml version="1.0" encoding="utf-8"?>
 <mime-info xmlns='http://www.freedesktop.org/standards/shared-mime-info'>
   <mime-type type="text/org">
@@ -3224,20 +3234,20 @@ be changed with the following file. For system-wide changes try
     <alias type="text/org"/>
   </mime-type>
 </mime-info>
-#+END_SRC
+#+end_src
 What's nice is that Papirus [[https://github.com/PapirusDevelopmentTeam/papirus-icon-theme/commit/a10fb7f2423d5e30b9c4477416ccdc93c4f3849d][now]] has an icon for =text/org=.
 One simply needs to refresh their mime database
-#+BEGIN_SRC shell :results silent
+#+begin_src shell :results silent
 update-mime-database ~/.local/share/mime
-#+END_SRC
+#+end_src
 Then set Emacs as the default editor
-#+BEGIN_SRC shell :results silent
+#+begin_src shell :results silent
 xdg-mime default emacs.desktop text/org
-#+END_SRC
+#+end_src
 *** Behaviour
 [[xkcd:1319]]
 **** Tweaking defaults
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq org-directory "~/.org"                      ; let's put files here
       org-use-property-inheritance t              ; it's convenient to have properties inherited
       org-log-done 'time                          ; having the time a item is done sounds convininet
@@ -3245,9 +3255,9 @@ xdg-mime default emacs.desktop text/org
       org-export-in-background t                  ; run export processes in external emacs process
       org-catch-invisible-edits 'smart            ; try not to accidently do weird stuff in invisible regions
       org-re-reveal-root "https://cdn.jsdelivr.net/npm/reveal.js")
-#+END_SRC
+#+end_src
 I also like the ~:comments~ header-argument, so let's make that a default.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq org-babel-default-header-args '((:session . "none")
                                       (:results . "replace")
                                       (:exports . "code")
@@ -3256,30 +3266,30 @@ I also like the ~:comments~ header-argument, so let's make that a default.
                                       (:hlines . "no")
                                       (:tangle . "no")
                                       (:comments . "link")))
-#+END_SRC
+#+end_src
 
 By default, ~visual-line-mode~ is turned =on=, and ~auto-fill-mode~ =off= by a hook.
 However this messes with tables in Org-mode, and other plaintext files (e.g.
 markdown, \LaTeX) so I'll turn it off for this, and manually enable it for more
 specific modes as desired.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (remove-hook 'text-mode-hook #'visual-line-mode)
 (add-hook 'text-mode-hook #'auto-fill-mode)
-#+END_SRC
+#+end_src
 
 There also seem to be a few keybindings which use =hjkl=, but miss arrow key equivalents.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (map! :map evil-org-mode-map
       :after evil-org
       :n "g <up>" #'org-backward-heading-same-level
       :n "g <down>" #'org-forward-heading-same-level
       :n "g <left>" #'org-up-element
       :n "g <right>" #'org-down-element)
-#+END_SRC
+#+end_src
 **** Extra functionality
 ***** Org buffer creation
 Let's also make creating an org buffer just that little bit easier.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (evil-define-command evil-buffer-org-new (count file)
   "Creates a new ORG buffer replacing the current window, optionally
    editing a certain FILE"
@@ -3292,49 +3302,48 @@ Let's also make creating an org buffer just that little bit easier.
       (with-current-buffer buffer
         (org-mode)))))
 (map! :leader
-#+END_SRC
       (:prefix "b"
        :desc "New empty ORG buffer" "o" #'evil-buffer-org-new))
+#+end_src
 ***** List bullet sequence
 I think it makes sense to have list bullets change with depth
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq org-list-demote-modify-bullet '(("+" . "-") ("-" . "+") ("*" . "+") ("1." . "a.")))
-#+END_SRC
+#+end_src
 ***** Citation
 Occasionally I want to cite something.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package! org-ref
-#+END_SRC
   :after org
   :config
   (setq org-ref-completion-library 'org-ref-ivy-cite))
+#+end_src
 ***** cdlatex
 It's also nice to be able to use ~cdlatex~.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (after! org (add-hook 'org-mode-hook 'turn-on-org-cdlatex))
-#+END_SRC
+#+end_src
 
 It's handy to be able to quickly insert environments with =C-c }=. I almost always
 want to edit them afterwards though, so let's make that happen by default.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (after! org
   (defadvice! org-edit-latex-emv-after-insert ()
     :after #'org-cdlatex-environment-indent
     (org-edit-latex-environment)))
-#+END_SRC
+#+end_src
 
 At some point in the future it could be good to investigate [[https://scripter.co/splitting-an-org-block-into-two/][splitting org blocks]].
 Likewise [[https://archive.casouri.cat/note/2020/insert-math-symbol-in-emacs/][this]] looks good for symbols.
 ***** Spellcheck
 My spelling is atrocious, so let's get flycheck going.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (after! org (add-hook 'org-mode-hook 'turn-on-flyspell))
-#+END_SRC
+#+end_src
 ***** LSP support in ~src~ blocks
 Now, by default, LSPs don't really function at all in ~src~ blocks.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (cl-defmacro lsp-org-babel-enable (lang)
-#+END_SRC
   "Support LANG in org source code block."
   (setq centaur-lsp 'lsp-mode)
   (cl-check-type lang stringp)
@@ -3362,10 +3371,11 @@ Now, by default, LSPs don't really function at all in ~src~ blocks.
   '("go" "python" "ipython" "bash" "sh"))
 (dolist (lang org-babel-lang-list)
   (eval `(lsp-org-babel-enable ,lang)))
+#+end_src
 ***** View exported file
 ='localeader v= has no pre-existing binding, so I may as well use it with the same
 functionality as in LaTeX. Let's try viewing possible output files with this.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (after! org
   (map! :map org-mode-map
         :localleader
@@ -3394,9 +3404,9 @@ functionality as in LaTeX. Let's try viewing possible output files with this.
   "Search for output files with these extensions, in order, viewing the first that matches")
 (defvar org-view-external-file-extensions '("html")
   "File formats that should be opened externally.")
-#+END_SRC
+#+end_src
 **** Super agenda
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package! org-super-agenda
   :commands (org-super-agenda-mode))
 (after! org-agenda
@@ -3468,14 +3478,14 @@ functionality as in LaTeX. Let's try viewing possible output files with this.
                            :todo ("SOMEDAY" )
                            :order 90)
                           (:discard (:tag ("Chore" "Routine" "Daily")))))))))))
-#+END_SRC
+#+end_src
 **** Capture
 Let's setup some org-capture templates, and make them visually nice to access.
 
 #+attr_html: :class invertible :alt My org-capture dialouge.
 [[https://tecosaur.com/lfs/emacs-config/screenshots/org-capture.png]]
 
-#+BEGIN_SRC emacs-lisp :noweb yes
+#+begin_src emacs-lisp :noweb yes
 (use-package! doct
   :commands (doct))
 
@@ -3664,10 +3674,10 @@ Let's setup some org-capture templates, and make them visually nice to access.
                                :heading "Unreleased"
                                :file +org-capture-central-project-changelog-file))
                    ))))))
-#+END_SRC
+#+end_src
 It would also be nice to improve how the capture dialogue looks
-#+NAME: prettify-capture
-#+BEGIN_SRC emacs-lisp :tangle no
+#+name: prettify-capture
+#+begin_src emacs-lisp :tangle no
 (defun org-capture-select-template-prettier (&optional keys)
   "Select a capture template, in a prettier way than default
 Lisp programs can force the template by setting KEYS to a string."
@@ -3774,29 +3784,29 @@ is selected, only the bare key is returned."
                    (t (error "No entry available")))))))
         (when buffer (kill-buffer buffer))))))
 (advice-add 'org-mks :override #'org-mks-pretty)
-#+END_SRC
+#+end_src
 The [[file:~/.emacs.d/bin/org-capture][org-capture bin]] is rather nice, but I'd be nicer with a smaller frame, and
 no modeline.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setf (alist-get 'height +org-capture-frame-parameters) 15)
-      ;; (alist-get 'name +org-capture-frame-parameters) "❖ Capture") ;; ATM hardcoded in other places, so changing breaks stuff
+;; (alist-get 'name +org-capture-frame-parameters) "❖ Capture") ;; ATM hardcoded in other places, so changing breaks stuff
 (setq +org-capture-fn
       (lambda ()
         (interactive)
         (set-window-parameter nil 'mode-line-format 'none)
         (org-capture)))
-#+END_SRC
+#+end_src
 **** Roam
 ***** Basic settings
 I'll just set this to be within =Organisation= folder for now, in the future it
 could be worth seeing if I could hook this up to a [[https://nextcloud.com/][Nextcloud]] instance.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq org-roam-directory "~/Desktop/TEC/Organisation/Roam/")
-#+END_SRC
+#+end_src
 ***** Registering roam protocol
 The recommended method of registering a protocol is by registering a desktop
 application, which seems reasonable.
-#+BEGIN_SRC conf :tangle ~/.local/share/applications/org-protocol.desktop :mkdirp yes
+#+begin_src conf :tangle ~/.local/share/applications/org-protocol.desktop :mkdirp yes
 [Desktop Entry]
 Name=Org-Protocol
 Exec=emacsclient %u
@@ -3871,9 +3881,9 @@ Hence, we need to do a bit of overriding.
     %s
   </body>
 </html>
-#+END_SRC
+#+end_src
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (after! org-roam
   (setq org-roam-graph-node-extra-config '(("shape"      . "underline")
                                            ("style"      . "rounded,filled")
@@ -3913,11 +3923,11 @@ Hence, we need to do a bit of overriding.
                        (write-region (format +org-roam-graph--html-template (f-read-text temp-graph)) nil temp-html)
                        (when callback
                          (funcall callback temp-html)))))))))
-#+END_SRC
+#+end_src
 ***** Modeline file name
 All those numbers! It's messy. Let's adjust this in a similar way that I have in
 the[[*Window title][Window title]].
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defadvice! doom-modeline--reformat-roam (orig-fun)
   :around #'doom-modeline-buffer-file-name
   (message "Reformat?")
@@ -3928,13 +3938,13 @@ the[[*Window title][Window title]].
        "🢔(\\1-\\2-\\3) "
        (funcall orig-fun))
     (funcall orig-fun)))
-#+END_SRC
+#+end_src
 **** Nicer generated heading IDs
 Thanks to alphapapa's [[https://github.com/alphapapa/unpackaged.el#export-to-html-with-useful-anchors][unpackaged.el]].
 By default, ~url-hexify-string~ seemed to cause me some issues. Replacing that in
 ~a53899~ resolved this for me. To go one step further, I create a function for
 producing nice short links, like an inferior version of ~reftex-label~.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defvar org-heading-contraction-max-words 3
   "Maximum number of words in a heading")
 (defvar org-heading-contraction-max-length 35
@@ -3988,9 +3998,9 @@ truncated to fit within the limit"
                                         (substring word 0 max-length)))
                                     heading-words))))
     (string-join heading-words "-")))
-#+END_SRC
+#+end_src
 Now here's alphapapa's subtly tweaked mode.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (define-minor-mode unpackaged/org-export-html-with-useful-ids-mode
   "Attempt to export Org as HTML with useful link IDs.
 Instead of random IDs like \"#orga1b2c3\", use heading titles,
@@ -4098,10 +4108,10 @@ made unique when necessary."
       ref)))
 
 (add-hook 'org-load-hook #'unpackaged/org-export-html-with-useful-ids-mode)
-#+END_SRC
+#+end_src
 **** Nicer ~org-return~
 Once again, from [[https://github.com/alphapapa/unpackaged.el#org-return-dwim][unpackaged.el]]
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (after! org
   (defun unpackaged/org-element-descendant-of (type element)
     "Return non-nil if ELEMENT is a descendant of TYPE.
@@ -4204,9 +4214,9 @@ appropriate.  In tables, insert a new row or end the table."
  :after evil-org
  :map evil-org-mode-map
  :i [return] #'unpackaged/org-return-dwim)
-#+END_SRC
+#+end_src
 **** Snippet Helper
-For snippets which want to depend on the ~#+THING:~ on the current line.
+For snippets which want to depend on the ~#+thing:~ on the current line.
 This is mostly source blocks, and property args, so let's get fancy with them.
 
 One-letter snippets are super-convenient, but for them to not be a pain
@@ -4215,7 +4225,7 @@ everywhere else we'll need a nice condition function to use in yasnippet.
 By having this function give slightly more than a simple ~t~ or ~nil~, we can
 use in a second function to get the most popular language without explicit
 global header args.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defun +yas/org-src-lang ()
   "Try to find the current language of the src/header at point.
 Return nil otherwise."
@@ -4263,7 +4273,7 @@ Return nil otherwise."
                    (lambda (a b) (> (cdr a) (cdr b))))))
 
     (car (set-difference src-langs header-langs :test #'string=))))
-#+END_SRC
+#+end_src
 **** Org Plot
 There are two main bits of extra functionality I wan to add
 + the ability to transpose tables (internally)
@@ -4300,7 +4310,7 @@ Saving seconds adds up after all! (but only so much)
 
 [[xkcd:1205]]
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (after! org
   (org-link-set-parameters "xkcd"
                            :image-data-fun #'+org-xkcd-image-fn
@@ -4342,10 +4352,10 @@ Saving seconds adds up after all! (but only so much)
   (defun +org-xkcd-complete (&optional arg)
     "Complete xkcd using `+xkcd-stored-info'"
     (format "xkcd:%d" (+xkcd-select))))
-#+END_SRC
+#+end_src
 ***** Music
 First, we set up all the necessarily 'utility' functions.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (after! org
   (defvar org-music-player 'mpris
     "Music player type. Curretly only supports mpris.")
@@ -4533,10 +4543,10 @@ This action is reversed by `org-music-time-to-seconds'."
       (when (> (length tracks) 1)
         (message "Warning: multiple matches for %s by %s found" title artist))
       (car tracks))))
-#+END_SRC
+#+end_src
 
 Then we integrate this nicely with org-mode
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (after! org
   (org-link-set-parameters "music"
                            :follow #'org-music-open-fn
@@ -4617,11 +4627,11 @@ Then we integrate this nicely with org-mode
             (t text))))
 
   )
-#+END_SRC
+#+end_src
 ***** YouTube
 The ~[[yt:...]]~ links preview nicely, but don't export nicely. Thankfully, we can
 fix that.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (after! org
   (org-link-set-parameters "yt" :export #'+org-export-yt)
   (defun +org-export-yt (path desc backend _com)
@@ -4634,7 +4644,7 @@ allowfullscreen>%s</iframe>" path (or "" desc)))
           ((org-export-derived-backend-p backend 'latex)
            (format "\\href{https://youtu.be/%s}{%s}" path (or desc "youtube")))
           (t (format "https://youtu.be/%s" path)))))
-#+END_SRC
+#+end_src
 
 *** Visuals
 
@@ -4646,16 +4656,16 @@ font changes etc, and also propagate colours from the current theme.
 **** In editor
 ***** Font Display
 Mixed pitch is great. As is ~+org-pretty-mode~, let's use them.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (add-hook! 'org-mode-hook #'+org-pretty-mode #'mixed-pitch-mode)
-#+END_SRC
+#+end_src
 Earlier I loaded the ~org-pretty-table~ package, let's enable it everywhere!
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq global-org-pretty-table-mode t)
-#+END_SRC
+#+end_src
 
 Let's make headings a bit bigger
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (custom-set-faces!
   '(outline-1 :weight extra-bold :height 1.25)
   '(outline-2 :weight bold :height 1.15)
@@ -4665,20 +4675,20 @@ Let's make headings a bit bigger
   '(outline-6 :weight semi-bold :height 1.03)
   '(outline-8 :weight semi-bold)
   '(outline-9 :weight semi-bold))
-#+END_SRC
+#+end_src
 
 And the same with the title.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (after! org
   (custom-set-faces!
     '(org-document-title :height 1.2)))
-#+END_SRC
+#+end_src
 ***** Symbols
 It's also nice to change the character used for collapsed items (by default ~…~),
 I think ~▾~ is better for indicating 'collapsed section'.
 and add an extra ~org-bullet~ to the default list of four.
 I've also added some fun alternatives, just commented out.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 ;; (after! org
 ;;   (use-package org-pretty-tags
 ;;   :config
@@ -4713,9 +4723,9 @@ I've also added some fun alternatives, just commented out.
           (?C . 'all-the-icons-yellow)
           (?D . 'all-the-icons-green)
           (?E . 'all-the-icons-blue))))
-#+END_SRC
+#+end_src
 It's also nice to make use of the Unicode characters for check boxes, and other commands.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (after! org
   (appendq! +ligatures-extra-symbols
             `(:checkbox      "☐"
@@ -4750,22 +4760,22 @@ It's also nice to make use of the Unicode characters for check boxes, and other 
     :pending       "[-]"
     :checkedbox    "[X]"
     :list_property "::"
-    :results       "#+RESULTS:"
-    :property      "#+PROPERTY:"
+    :results       "#+results:"
+    :property      "#+property:"
     :property      ":PROPERTIES:"
     :end           ":END:"
-    :options       "#+OPTIONS:"
-    :title         "#+TITLE:"
-    :subtitle      "#+SUBTITLE:"
-    :author        "#+AUTHOR:"
-    :date          "#+DATE:"
-    :latex_class   "#+LATEX_CLASS:"
-    :latex_header  "#+LATEX_HEADER:"
-    :beamer_header "#+BEAMER_HEADER:"
-    :begin_quote   "#+BEGIN_QUOTE"
-    :end_quote     "#+END_QUOTE"
-    :begin_export  "#+BEGIN_EXPORT"
-    :end_export    "#+END_EXPORT"
+    :options       "#+options:"
+    :title         "#+title:"
+    :subtitle      "#+subtitle:"
+    :author        "#+author:"
+    :date          "#+date:"
+    :latex_class   "#+latex_class:"
+    :latex_header  "#+latex_header:"
+    :beamer_header "#+beamer_header:"
+    :begin_quote   "#+begin_quote"
+    :end_quote     "#+end_quote"
+    :begin_export  "#+begin_export"
+    :end_export    "#+end_export"
     :priority_a    "[#A]"
     :priority_b    "[#B]"
     :priority_c    "[#C]"
@@ -4773,20 +4783,20 @@ It's also nice to make use of the Unicode characters for check boxes, and other 
     :priority_e    "[#E]"
     :em_dash       "---"))
 (plist-put +ligatures-extra-symbols :name "⁍") ; or › could be good?
-#+END_SRC
+#+end_src
 We also like ~org-fragtog~, and that wants a hook.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (add-hook 'org-mode-hook 'org-fragtog-mode)
-#+END_SRC
+#+end_src
 ***** LaTeX Fragments
 First off, we want those fragments to look good.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (after! org
   (setq org-highlight-latex-and-related '(native script entities)))
-#+END_SRC
+#+end_src
 It's nice to customise the look of LaTeX fragments so they fit better in the
 text --- like this \(\sqrt{\beta^2+3}-\sum_{\phi=1}^\infty \frac{x^\phi-1}{\Gamma(a)}\). Let's start by adding a sans font.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq org-format-latex-header "\\documentclass{article}
 \\usepackage[usenames]{color}
 
@@ -4814,7 +4824,7 @@ text --- like this \(\sqrt{\beta^2+3}-\sum_{\phi=1}^\infty \frac{x^\phi-1}{\Gamm
 % my custom stuff
 \\usepackage{arev}
 \\usepackage{arevmath}")
-#+END_SRC
+#+end_src
 
 We can either render from a ~dvi~ or ~pdf~ file, so let's benchmark ~latex~ and
 ~pdflatex~.
@@ -4845,7 +4855,7 @@ Exporting to HTML][LaTeX Rendering]].
 
 As well as having a sans font, there are a few other tweaks which can make them
 look better. Namely making sure that the colours switch when the theme does.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (after! org
   ;; make background of fragments transparent
   ;; (let ((dvipng--plist (alist-get 'dvipng org-preview-latex-process-alist)))
@@ -4858,17 +4868,17 @@ look better. Namely making sure that the colours switch when the theme does.
                   (face-attribute (or (cadr (assq 'default face-remapping-alist))
                                       'default)
                                   :background nil t))))
-)
-#+END_SRC
+  )
+#+end_src
 It'd be nice to make ~mhchem~ equations able to be rendered.
 NB: This doesn't work at the moment.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (after! org
   (add-to-list 'org-latex-regexps '("\\ce" "^\\\\ce{\\(?:[^\000{}]\\|{[^\000}]+?}\\)}" 0 nil)))
-#+END_SRC
+#+end_src
 ***** Stolen from [[https://github.com/jkitchin/scimax][scimax]] (semi-working right now)
 I want fragment justification
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (after! org
   (defun scimax-org-latex-fragment-justify (justification)
     "Justify the latex fragment at point with JUSTIFICATION.
@@ -4919,9 +4929,9 @@ JUSTIFICATION is a symbol for 'left, 'center or 'right."
       (advice-remove 'org--format-latex-make-overlay 'scimax-org-latex-fragment-justify-advice)
       (put 'scimax-org-latex-fragment-justify-advice 'enabled nil)
       (message "Latex fragment justification disabled"))))
-#+END_SRC
+#+end_src
 There's also this lovely equation numbering stuff I'll nick
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 ;; Numbered equations all have (1) as the number for fragments with vanilla
 ;; org-mode. This code injects the correct numbers into the previews so they
 ;; look good.
@@ -4981,27 +4991,28 @@ There's also this lovely equation numbering stuff I'll nick
 
   (advice-add 'org-create-formula-image :around #'scimax-org-renumber-environment)
   (put 'scimax-org-renumber-environment 'enabled t))
-#+END_SRC
+#+end_src
+#+end_src
 **** Exporting (general)
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (after! org (setq org-export-headline-levels 5)) ; I like nesting
-#+END_SRC
+#+end_src
 I'm also going to make use of an item in =ox-extra= so that I can add an =:ignore:=
 tag to headings for the content to be kept, but the heading itself ignored
 (unlike =:noexport:= which ignored both heading and content). This is useful when
 I want to use headings to provide a structure for writing that doesn't appear in
 the final documents.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (after! org
   (require 'ox-extra)
   (ox-extras-activate '(ignore-headlines)))
-#+END_SRC
+#+end_src
 **** Exporting to HTML
 I want to tweak a whole bunch of things. While I'll want my tweaks almost all
 the time, occasionally I may want to test how something turns out using a more
 default config. With that in mind, a global minor mode seems like the most
 appropriate architecture to use.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (define-minor-mode org-fancy-html-export-mode
   "Toggle my fabulous org export tweaks. While this mode itself does a little bit,
 the vast majority of the change in behaviour comes from switch statements in:
@@ -5020,7 +5031,7 @@ the vast majority of the change in behaviour comes from switch statements in:
             org-html-checkbox-type 'html-span)
     (setq org-html-style-default org-html-style-plain
           org-html-checkbox-type 'html)))
-#+END_SRC
+#+end_src
 ***** Extra header content
 We want to tack on a few more bits to the start of the body. Unfortunately, there
 doesn't seem to be any nice variable or hook, so we'll just override the
@@ -5029,7 +5040,7 @@ relevant function.
 This is done to allow me to add the date and author to the page header,
 implement a CSS-only light/dark theme toggle, and a sprinkle of [[https://ogp.me/][Open Graph]]
 metadata.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defadvice! org-html-template-fancier (orig-fn contents info)
   "Return complete document string after HTML conversion.
 CONTENTS is the transcoded contents string.  INFO is a plist
@@ -5113,9 +5124,9 @@ compared to the default implementation."
                org-html-klipse-css "\"/>"))
      ;; Closing document.
      "</div>\n</body>\n</html>")))
-#+END_SRC
+#+end_src
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq org-html-meta-tags
       '((lambda (_title author _info)
           (when (org-string-nw-p author)
@@ -5141,13 +5152,13 @@ compared to the default implementation."
         (lambda (_title _author info)
           (when (org-string-nw-p (plist-get info :subtitle))
             (list "property" "og:description" (plist-get info :subtitle))))))
-#+END_SRC
+#+end_src
 ***** Custom CSS/JS
 The default org HTML export is ... alright, but we can really jazz it up.
 [[https://lepisma.xyz][lepisma.xyz]] has a really nice style, and from and org export too!
 Suffice to say I've snatched it, with a few of my own tweaks applied.
 
-#+BEGIN_SRC html :tangle misc/org-export-header.html :comments no
+#+begin_src html :tangle misc/org-export-header.html :comments no
 <link rel="icon" href="https://tecosaur.com/resources/org/nib.ico" type="image/ico" />
 
 <link rel="preload" as="font" crossorigin="anonymous" type="font/woff2" href="https://tecosaur.com/resources/org/etbookot-roman-webfont.woff2">
@@ -5155,9 +5166,9 @@ Suffice to say I've snatched it, with a few of my own tweaks applied.
 <link rel="preload" as="font" crossorigin="anonymous" type="font/woff2" href="https://tecosaur.com/resources/org/Merriweather-TextRegular.woff2">
 <link rel="preload" as="font" crossorigin="anonymous" type="font/woff2" href="https://tecosaur.com/resources/org/Merriweather-TextItalic.woff2">
 <link rel="preload" as="font" crossorigin="anonymous" type="font/woff2" href="https://tecosaur.com/resources/org/Merriweather-TextBold.woff2">
-#+END_SRC
+#+end_src
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (after! org
   (setq org-html-style-fancy
         (concat (f-read-text (expand-file-name "misc/org-export-header.html" doom-private-dir))
@@ -5171,7 +5182,7 @@ Suffice to say I've snatched it, with a few of my own tweaks applied.
         org-html-htmlize-output-type 'css
         org-html-doctype "html5"
         org-html-html5-fancy t))
-#+END_SRC
+#+end_src
 ***** Collapsable src and example blocks
 By wrapping the ~<pre>~ element in a ~<details>~ block, we can obtain collapsable
 blocks with no CSS, though we will toss a little in anyway to have this looking
@@ -5181,8 +5192,8 @@ We can take our modification a step further, and add a gutter on the side of the
 Src block containing both an anchor referencing the current block, and a button
 to copy the content of the block.
 
-#+NAME: Src blocks
-#+BEGIN_SRC emacs-lisp
+#+name: Src blocks
+#+begin_src emacs-lisp
 (defadvice! org-html-src-block-collapsable (orig-fn src-block contents info)
   "Wrap the usual <pre> block in a <details>"
   :around #'org-html-src-block
@@ -5298,10 +5309,10 @@ to copy the content of the block.
                      ("nxml" "XML")
                      ("conf" "Configuration File"))))
       mode))
-#+END_SRC
+#+end_src
 
-#+NAME: Example, fixed width, and property blocks
-#+BEGIN_SRC emacs-lisp
+#+name: Example, fixed width, and property blocks
+#+begin_src emacs-lisp
 (after! org
   (defun org-html-block-collapsable (orig-fn block contents info)
     "Wrap the usual block in a <details>"
@@ -5335,7 +5346,7 @@ to copy the content of the block.
   (advice-add 'org-html-example-block   :around #'org-html-block-collapsable)
   (advice-add 'org-html-fixed-width     :around #'org-html-block-collapsable)
   (advice-add 'org-html-property-drawer :around #'org-html-block-collapsable))
-#+END_SRC
+#+end_src
 ***** Handle table overflow
 In order to accommodate wide tables ---particularly on mobile devices--- we want
 to set a maximum width and scroll overflow. Unfortunately, this cannot be applied
@@ -5344,7 +5355,7 @@ directly to the ~table~ element, so we have to wrap it in a ~div~.
 While we're at it, we can a link gutter, as we did with src blocks, and show the
 ~#+name~, if one is given.
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defadvice! org-html-table-wrapped (orig-fn table contents info)
   "Wrap the usual <table> in a <div>"
   :around #'org-html-table
@@ -5363,7 +5374,7 @@ While we're at it, we can a link gutter, as we did with src blocks, and show the
                   (replace-regexp-in-string (format "<table id=\"%s\"" ref) "<table"
                                             (funcall orig-fn table contents info))
                 (funcall orig-fn table contents info))))))
-#+END_SRC
+#+end_src
 ***** TOC as a collapsable tree
 The TOC is much nicer to navigate as a collapsable tree. Unfortunately we cannot
 achieve this with CSS alone. Thankfully we can avoid JS though, by adapting the
@@ -5375,7 +5386,7 @@ To add this, we need to change one line in [[file:~/.emacs.d/.local/straight/rep
 Since we can actually accomplish the desired effect by adding advice /around/ the
 function, without overriding it --- let's do that to reduce the bug surface of
 this config a tad.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defadvice! org-html--format-toc-headline-colapseable (orig-fn headline info)
   "Add a label and checkbox to `org-html--format-toc-headline's usual output,
 to allow the TOC to be a collapseable tree."
@@ -5386,14 +5397,14 @@ to allow the TOC to be a collapseable tree."
                   (org-export-get-reference headline info))))
       (format "<input type='checkbox' id='toc--%s'/><label for='toc--%s'>%s</label>"
               id id (funcall orig-fn headline info)))))
-#+END_SRC
+#+end_src
 
 Now, leaves (headings with no children) shouldn't have the ~label~ item. The
 obvious way to achieve this is by including some /if no children.../ logic in
 ~org-html--format-toc-headline-colapseable~. Unfortunately, I can't my elisp isn't
 up to par to extract the number of child headings from the mountain of info that
 org provides.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defadvice! org-html--toc-text-stripped-leaves (orig-fn toc-entries)
   "Remove label"
   :around #'org-html--toc-text
@@ -5401,10 +5412,10 @@ org provides.
       (funcall orig-fn toc-entries)
     (replace-regexp-in-string "<input [^>]+><label [^>]+>\\(.+?\\)</label></li>" "\\1</li>"
                               (funcall orig-fn toc-entries))))
-#+END_SRC
+#+end_src
 ***** Make verbatim different to code
 Since we have =verbatim= and ~code~, let's use =verbatim= for key strokes.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq org-html-text-markup-alist
       '((bold . "<b>%s</b>")
         (code . "<code>%s</code>")
@@ -5412,23 +5423,23 @@ Since we have =verbatim= and ~code~, let's use =verbatim= for key strokes.
         (strike-through . "<del>%s</del>")
         (underline . "<span class=\"underline\">%s</span>")
         (verbatim . "<kbd>%s</kbd>")))
-#+END_SRC
+#+end_src
 ***** Change checkbox type
 We also want to use HTML checkboxes, however we want to get a bit fancier than default
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (after! org
-#+END_SRC
   (appendq! org-html-checkbox-types '((html-span .
                                              ((on . "<span class='checkbox'></span>")
                                               (off . "<span class='checkbox'></span>")
                                               (trans . "<span class='checkbox'></span>")))))
   (setq org-html-checkbox-type 'html-span))
+#+end_src
 - [ ] I'm yet to do this
 - [-] Work in progress
 - [X] This is done
 ***** Header anchors
 I want to add GitHub-style links on hover for headings.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (after! org
   (defun org-export-html-headline-anchor (text backend info)
     (when (and (org-export-derived-backend-p backend 'html)
@@ -5441,7 +5452,7 @@ I want to add GitHub-style links on hover for headings.
 
   (add-to-list 'org-export-filter-headline-functions
                'org-export-html-headline-anchor))
-#+END_SRC
+#+end_src
 It's worth noting that ~org-msg-currently-exporting~ is defined in [[*Org Msg][Org Msg]].
 ***** Acronyms
 I want to style acronyms nicely. For the sake of convenience in implementation
@@ -5451,9 +5462,9 @@ convenance in implementation (this transformation was first added there).
 ****** Pre-rendered
 I consider ~dvisvgm~ to be a rather compelling option. However this isn't scaled
 very well at the moment.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 ;; (setq-default org-html-with-latex `dvisvgm)
-#+END_SRC
+#+end_src
 
 ****** MathJax
 If MathJax is used, we want to use version 3 instead of the default version 2.
@@ -5461,7 +5472,7 @@ Looking at a [[https://www.intmath.com/cg5/katex-mathjax-comparison.php][compari
 single file instead of multiple, but seems to be a bit bigger unfortunately.
 Thankfully this can be mitigated my adding the ~async~ attribute to defer loading.
 
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (after! org
   (setq org-html-mathjax-options
         '((path "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" )
@@ -5491,7 +5502,7 @@ MathJax = {
 </script>
 <script id=\"MathJax-script\" async
         src=\"%PATH\"></script>"))
-#+END_SRC
+#+end_src
 **** Exporting to LaTeX
 ***** Acronyms
 :PROPERTIES:
@@ -5502,7 +5513,7 @@ be unaffected let's use ~;~ as a prefix to prevent the transformation --- i.e.
 ~;JFK~ (as one would want for two-letter geographic locations and names).
 
 While this is the LaTeX section, it's convenient to also provide HTML acronyms here.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (after! org
   (defun tec/org-export-latex-filter-acronym (text backend info)
     (let ((the-backend
@@ -5538,10 +5549,10 @@ While this is the LaTeX section, it's convenient to also provide HTML acronyms h
   ;; (add-to-list 'org-export-filter-headline-functions
   ;;              'tec/org-export-latex-filter-acronym)
   )
-#+END_SRC
+#+end_src
 
 ***** Nicer checkboxes
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (after! org
   (defun tec/org-export-latex-fancy-item-checkboxes (text backend info)
     (when (org-export-derived-backend-p backend 'latex)
@@ -5557,10 +5568,10 @@ While this is the LaTeX section, it's convenient to also provide HTML acronyms h
 
   (add-to-list 'org-export-filter-item-functions
                'tec/org-export-latex-fancy-item-checkboxes))
-#+END_SRC
+#+end_src
 
 ***** Class templates
-#+BEGIN_SRC emacs-lisp :noweb yes
+#+begin_src emacs-lisp :noweb yes
 (after! ox-latex
   (add-to-list 'org-latex-classes
                '("fancy-article"
@@ -5667,12 +5678,12 @@ While this is the LaTeX section, it's convenient to also provide HTML acronyms h
 \\urlstyle{same}\n")
   (setq org-latex-pdf-process
         '("latexmk -shell-escape -interaction=nonstopmode -f -pdf -output-directory=%o %f")))
-#+END_SRC
+#+end_src
 
 ***** A cleverer preamble
 We also want a particular preamble when minted is used,
-#+NAME: org-minted-preamble
-#+BEGIN_SRC LaTeX
+#+name: org-minted-preamble
+#+begin_src LaTeX
 \\usepackage{minted}
 \\usepackage[many]{tcolorbox}
 \\setminted{
@@ -5703,31 +5714,31 @@ We also want a particular preamble when minted is used,
 
 \\BeforeBeginEnvironment{minted}{
   \\begin{tcolorbox}[
-    enhanced,
-    overlay={\\fill[white!90!black] (frame.south west) rectangle ([xshift=2.8em]frame.north west);},
-    colback=white!95!black,
-    colframe=white!95!black, % make frame colour same as background
-    breakable,% Allow white breaks
-    arc=0pt,outer arc=0pt,sharp corners, % sharp corners
-    boxsep=0pt,left=0pt,right=0pt,top=0pt,bottom=0pt % no margin/paddding
+  enhanced,
+  overlay={\\fill[white!90!black] (frame.south west) rectangle ([xshift=2.8em]frame.north west);},
+  colback=white!95!black,
+  colframe=white!95!black, % make frame colour same as background
+  breakable,% Allow white breaks
+  arc=0pt,outer arc=0pt,sharp corners, % sharp corners
+  boxsep=0pt,left=0pt,right=0pt,top=0pt,bottom=0pt % no margin/paddding
   ]
 }
 \\AfterEndEnvironment{minted}{\\end{tcolorbox}}
 \\renewcommand\\theFancyVerbLine{\\color{black!60!white}\\arabic{FancyVerbLine}} % minted line numbering
-#+END_SRC
+#+end_src
 
 We also always want some particular elements in the preamble, let's call this
 the "universal preamble"
-#+NAME: org-universal-preamble
-#+BEGIN_SRC LaTeX
+#+name: org-universal-preamble
+#+begin_src LaTeX
 \\usepackage[main,include]{embedall}
 \\IfFileExists{./\\jobname.org}{\\embedfile[desc=The original file]{\\jobname.org}}{}
-#+END_SRC
+#+end_src
 
 Instead of just loading doing the 'minted stuff' all the time, we can try to be
 a bit cleverer, and handle the "universal preamble" while we're at it.
-#+NAME: org-latex-smart-minted
-#+BEGIN_SRC emacs-lisp :tangle no :noweb yes
+#+name: org-latex-smart-minted
+#+begin_src emacs-lisp :tangle no :noweb yes
 (after! org
   (defadvice! org-latex-header-smart-minted (orig-fn tpl def-pkg pkg snippets-p &optional extra)
     "Include minted config if src blocks are detected."
@@ -5751,11 +5762,11 @@ a bit cleverer, and handle the "universal preamble" while we're at it.
 <<org-universal-preamble>>
 "
     "Preamble to be included in every export."))
-#+END_SRC
+#+end_src
 ***** Chameleon --- aka. match theme
 Once the idea of having the look of the LaTeX document produced match the
 current Emacs theme, I was enraptured. The result is the pseudo-class ~chameleon~.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (after! ox
   (defvar ox-chameleon-base-class "fancy-article"
     "The base class that chameleon builds on")
@@ -5891,12 +5902,11 @@ current Emacs theme, I was enraptured. The result is the pseudo-class ~chameleon
                     (face-attribute 'org-verbatim :foreground)
                     ))))
   )
-#+END_SRC
+#+end_src
 ***** Make verbatim different to code
 Since have just gone to so much effort above let's make the most of it by making
 =verbatim= use ~verb~ instead of ~protectedtexttt~ (default).
-#+BEGIN_SRC emacs-lisp
-#+END_SRC
+#+begin_src emacs-lisp
 (setq org-latex-text-markup-alist
       '((bold . "\\textbf{%s}")
         (code . protectedtexttt)
@@ -5904,51 +5914,51 @@ Since have just gone to so much effort above let's make the most of it by making
         (strike-through . "\\sout{%s}")
         (underline . "\\uline{%s}")
         (verbatim . verb)))
+#+end_src
 **** Exporting to Beamer
 It's nice to use a different theme
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq org-beamer-theme "[progressbar=foot]metropolis")
-#+END_SRC
+#+end_src
 Then customise it a bit
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 
-#+END_SRC
+#+end_src
 And I think that it's natural to divide a presentation into sections, e.g.
 Introduction, Overview... so let's set bump up the headline level that becomes a
 frame from ~1~ to ~2~.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq org-beamer-frame-level 2)
-#+END_SRC
+#+end_src
 **** Exporting to GFM
 We just need to load ~ox-gfm~ for org-mode documents
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (eval-after-load "org"
   '(require 'ox-gfm nil t))
-#+END_SRC
+#+end_src
 *** Babel
 Doom lazy-loads babel languages, with is lovely.
 
 We need to tell babel to use python3. Who uses python2 anymore anyway? And why
 doesn't ~python~ refer to the latest version!?
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq org-babel-python-command "python3")
-#+END_SRC
+#+end_src
 We also like auto-completion here
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (defun tec-org-python ()
   (if (eq major-mode 'python-mode)
       (progn (anaconda-mode t)
              (company-mode t))))
 (add-hook 'org-src-mode-hook 'tec-org-python)
-#+END_SRC
+#+end_src
 *** ESS
 We don't want ~R~ evaluation to hang the editor, hence
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq ess-eval-visibly 'nowait)
-#+END_SRC
+#+end_src
 Syntax highlighting is nice, so let's turn all of that on
-#+BEGIN_SRC emacs-lisp
-#+END_SRC
+#+begin_src emacs-lisp
 (setq ess-R-font-lock-keywords
       '((ess-R-fl-keyword:keywords . t)
         (ess-R-fl-keyword:constants . t)
@@ -5962,6 +5972,7 @@ Syntax highlighting is nice, so let's turn all of that on
         (ess-fl-keyword:delimiters . t)
         (ess-fl-keyword:= . t)
         (ess-R-fl-keyword:F&T . t)))
+#+end_src
 ** LaTeX
 [[xkcd:1301]]
 *** To-be-implemented ideas
@@ -5969,7 +5980,7 @@ Syntax highlighting is nice, so let's turn all of that on
   + Determine first folder in ~graphicspath~ if applicable
   + Ask for file name
   + Use ~xclip~ to save file to graphics folder, or current directory (whichever applies)
-    #+BEGIN_SRC shell :eval no :tangle no
+  #+begin_src shell :eval no :tangle no
 command -v xclip >/dev/null 2>&1 || { echo >&1 "no xclip"; exit 1; }
 
 if
@@ -5980,29 +5991,29 @@ then
 else
     echo "no image"
 fi
-#+END_SRC
+  #+end_src
   + Insert figure, with filled in details as a result (activate =yasnippet= with
     filename as variable maybe?)
 *** Compilation
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq TeX-save-query nil
       TeX-show-compilation t
       TeX-command-extra-options "-shell-escape")
 (after! latex
   (add-to-list 'TeX-command-list '("XeLaTeX" "%`xelatex%(mode)%' %t" TeX-run-TeX nil t)))
-#+END_SRC
+#+end_src
 
 For viewing the PDF, I rather like the pdf-tools viewer. While auctex is trying
 to be nice in recognising that I have some PDF viewing apps installed, I'd
 rather not have it default to using them, so let's re-order the preferences.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq +latex-viewers '(pdf-tools evince zathura okular skim sumatrapdf))
-#+END_SRC
+#+end_src
 *** Snippet helpers
 **** Template
 For use in the new-file template, let's set out a nice preamble we may want to use.
-#+NAME: latex-nice-preable
-#+BEGIN_SRC latex :tangle no
+#+name: latex-nice-preable
+#+begin_src latex :tangle no
 \\usepackage[pdfa,unicode=true,hidelinks]{hyperref}
 
 \\usepackage[dvipsnames,svgnames,table,hyperref]{xcolor}
@@ -6025,9 +6036,9 @@ For use in the new-file template, let's set out a nice preamble we may want to u
 \\usepackage{grffile} % fix allowed graphicx filenames
 
 \\usepackage{booktabs} % nice table rules
-#+END_SRC
+#+end_src
 Then let's bind the content to a function, and define some nice helpers.
-#+BEGIN_SRC emacs-lisp :noweb yes
+#+begin_src emacs-lisp :noweb yes
 (setq tec/yas-latex-template-preamble "
 <<latex-nice-preable>>
 ")
@@ -6038,11 +6049,11 @@ Then let's bind the content to a function, and define some nice helpers.
 
 (defun tec/yas-latex-preamble-if ()
   "Based on class choice prompt for insertion of default preamble"
-#+END_SRC
   (if (equal tec/yas-latex-class-choice "bmc") 'nil
     (eq (read-char-choice "Include default preamble? [Type y/n]" '(?y ?n)) ?y)))
+#+end_src
 **** Deliminators
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (after! tex
   (defvar tec/tex-last-delim-char nil
     "Last open delim expanded in a tex document")
@@ -6100,15 +6111,15 @@ Then let's bind the content to a function, and define some nice helpers.
                              (?< ?>)))))
   (defun tec/tex-delim-yas-expand (&optional open-char)
     (yas-expand-snippet (yas-lookup-snippet "_deliminators" 'latex-mode) (point) (+ (point) (if (tec/tex-next-char-smart-close-delim open-char) 2 1)))))
-#+END_SRC
+#+end_src
 *** Editor visuals
 Once again, /all hail mixed pitch mode!/
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (add-hook 'LaTeX-mode-hook #'mixed-pitch-mode)
-#+END_SRC
+#+end_src
 
 Let's enhance ~TeX-fold-math~ a bit
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (after! latex
   (setcar (assoc "⋆" LaTeX-fold-math-spec-list) "★")) ;; make \star bigger
 
@@ -6197,11 +6208,11 @@ Let's enhance ~TeX-fold-math~ a bit
 
 (defun TeX-string-single-token-p (teststring)
   "Return t if TESTSTRING appears to be a single token, nil otherwise"
-#+END_SRC
   (if (string-match-p "^\\\\?\\w+$" teststring) t nil))
+#+end_src
 
 Some local keybindings to make life a bit easier
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (after! tex
   (map!
    :map LaTeX-mode-map
@@ -6211,10 +6222,10 @@ Some local keybindings to make life a bit easier
    :localleader
    :desc "View" "v" #'TeX-view)
   (setq TeX-electric-math '("\\(" . "")))
-#+END_SRC
+#+end_src
 
 Maths deliminators can be de-emphasised a bit
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 ;; Making \( \) less visible
 (defface unimportant-latex-face
   '((t
@@ -6231,20 +6242,20 @@ Maths deliminators can be de-emphasised a bit
  'latex-mode
  `((,"\\\\[[:word:]]+" 0 'font-lock-keyword-face prepend))
  'end)
-#+END_SRC
+#+end_src
 
 And enable shell escape for the preview
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq preview-LaTeX-command '("%`%l \"\\nonstopmode\\nofiles\
 \\PassOptionsToPackage{" ("," . preview-required-option-list) "}{preview}\
 \\AtBeginDocument{\\ifx\\ifPreview\\undefined"
 preview-default-preamble "\\fi}\"%' \"\\detokenize{\" %t \"}\""))
-#+END_SRC
+#+end_src
 *** CDLaTeX
 The symbols and modifies are very nice by default, but could do with a bit of
 fleshing out. Let's change the prefix to a key which is similarly rarely used,
 but more convenient, like =;=.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (after! cdlatex
   (setq ;; cdlatex-math-symbol-prefix ?\; ;; doesn't work at the moment :(
    cdlatex-math-symbol-alist
@@ -6268,29 +6279,29 @@ but more convenient, like =;=.
    '( ;; my own stuff
      (?B    "\\mathbb"        nil          t    nil  nil)
      (?a    "\\abs"           nil          t    nil  nil))))
-#+END_SRC
+#+end_src
 *** SyncTeX
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (after! tex
   (add-to-list 'TeX-view-program-list '("Evince" "evince %o"))
   (add-to-list 'TeX-view-program-selection '(output-pdf "Evince")))
-#+END_SRC
+#+end_src
 *** Fixes
 In case of Emacs28,
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (when EMACS28+
   (add-hook 'latex-mode-hook #'TeX-latex-mode))
-#+END_SRC
+#+end_src
 ** Python
 Since I'm using =mypyls=, as suggested in [[file:~/.emacs.d/modules/lang/python/README.org::*Language Server Protocol Support][:lang python LSP support]] I'll tweak the
 priority of =mypyls=
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (after! lsp-python-ms
   (set-lsp-priority! 'mspyls 1))
-#+END_SRC
+#+end_src
 ** R
 *** Editor Visuals
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (after! ess-r-mode
   (appendq! +ligatures-extra-symbols
             '(:assign "⟵"
@@ -6314,7 +6325,7 @@ priority of =mypyls=
     ;; Other
     :assign "<-"
     :multiply "%*%"))
-#+END_SRC
+#+end_src
 ** hledger
 ~ledger-mode~ is great and all, but ~hledger~ seems to be more actively maintained.
 For example, from 2018--2020, the most prolific contributor to ~ledger~ produced
@@ -6326,22 +6337,22 @@ a little slower (~haskell~ vs. ~c++~).
 Since this uses the same format, and ~ledger-mode~ is well integrated into emacs,
 and produced by John Wiegley --- author of ~ledger~ and current Emacs maintainer
 --- using this seems like a good idea. Thankfully we can, with a little modification.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (setq ledger-mode-should-check-version nil
       ledger-report-links-in-register nil
       ledger-binary-path "hledger")
-#+END_SRC
+#+end_src
 ** Markdown
 Let's use mixed pitch, because it's great
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (add-hook! (gfm-mode markdown-mode) #'mixed-pitch-mode)
-#+END_SRC
+#+end_src
 
 Most of the time when I write markdown, it's going into some app/website which
 will do it's own line wrapping, hence we /only/ want to use visual line wrapping. No hard stuff.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (add-hook! (gfm-mode markdown-mode) #'visual-line-mode #'turn-off-auto-fill)
-#+END_SRC
+#+end_src
 
 Since markdown is often seen as rendered HTML, let's try to somewhat mirror the
 style or markdown renderers.
@@ -6350,7 +6361,7 @@ Most markdown renders seem to make the first three headings levels larger than
 normal text, the first two much so. Then the fourth level tends to be the same
 as body text, while the fifth and sixth are (increasingly) smaller, with the
 sixth greyed out. Since the sixth level is so small, I'll turn up the boldness a notch.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (custom-set-faces!
   '(markdown-header-face-1 :height 1.25 :weight extra-bold :inherit markdown-header-face)
   '(markdown-header-face-2 :height 1.15 :weight bold       :inherit markdown-header-face)
@@ -6358,11 +6369,11 @@ sixth greyed out. Since the sixth level is so small, I'll turn up the boldness a
   '(markdown-header-face-4 :height 1.00 :weight bold       :inherit markdown-header-face)
   '(markdown-header-face-5 :height 0.90 :weight bold       :inherit markdown-header-face)
   '(markdown-header-face-6 :height 0.75 :weight extra-bold :inherit markdown-header-face))
-#+END_SRC
+#+end_src
 ** Beancount
 The [[https://bitbucket.org/blais/beancount/src/tip/editors/emacs/beancount.el][beancount package]] online has been put into ~./lisp~, we just need to load and
 enable it for ~.beancount~ files.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package! beancount
   :load-path "~/.config/doom/lisp"
   :mode ("\\.beancount\\'" . beancount-mode)
@@ -6377,12 +6388,12 @@ enable it for ~.beancount~ files.
   (map! :map beancount-mode-map
         :n "TAB" #'beancount-align-to-previous-number
         :i "TAB" #'beancount-tab-dwim))
-#+END_SRC
+#+end_src
 
 ** Authinfo
 I just like syntax highlighting. So, let's define a mode with some simple font
 locking.
-#+BEGIN_SRC emacs-lisp :tangle lisp/authinfo-colour-mode.el :comments no
+#+begin_src emacs-lisp :tangle lisp/authinfo-colour-mode.el :comments no
 ;;; authinfo-mode.el -*- lexical-binding: t; -*-
 (setq authinfo-colour-keywords
       '(("^#.*" . font-lock-comment-face)
@@ -6437,10 +6448,10 @@ Like `fundamental-mode', just with colour and passoword hiding."
     (reveal-mode)))
 
 (provide 'authinfo-colour-mode)
-#+END_SRC
+#+end_src
 Now we just need to load it appropriately.
-#+BEGIN_SRC emacs-lisp
+#+begin_src emacs-lisp
 (use-package! authinfo-colour-mode
   :mode ("authinfo\\.gpg\\'" . authinfo-colour-mode)
   :init (advice-add 'authinfo-mode :override #'authinfo-colour-mode))
-#+END_SRC
+#+end_src
