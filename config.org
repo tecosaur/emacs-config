@@ -2877,7 +2877,8 @@ writeroom.
                 (org-indent-mode -1)
                 (when (featurep 'org-superstar)
                   (setq-local -org-superstar-headline-bullets-list org-superstar-headline-bullets-list
-                              org-superstar-headline-bullets-list '("​")
+                              ;; org-superstar-headline-bullets-list '("🙐" "🙑" "🙒" "🙓" "🙔" "🙕" "🙖" "🙗")
+                              org-superstar-headline-bullets-list '("🙘" "🙙" "🙚" "🙛")
                               -org-superstar-remove-leading-stars org-superstar-remove-leading-stars
                               org-superstar-remove-leading-stars t)
                   (org-superstar-restart)))))
