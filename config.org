@@ -1835,19 +1835,19 @@ ln -s ~/.local/share/go/bin/goimapnotify ~/.local/bin/
 #+END_SRC
 
 Here's the general plan:
- 1. Use ~goimapnotify~ to monitor mailboxes
-    This needs it's own set of configs, and =systemd= services, which is a pain. We
-    remove this pain by writing a python script (found below) to setup these
-    config files, and systemd services by parsing the  [[file:~/.mbsyncrc][~/.mbsyncrc]] file.
- 2. On new mail, call ~mbsync --pull --new ACCOUNT:BOX~
-    We try to be as specific as possible, so ~mbsync~ returns as soon as possible,
-    and we can /get those emails as soon as possible/.
- 3. Try to call ~mu index --lazy-fetch~.
-    This fails if mu4e is already open (due to a write lock on the database), so
-    in that case we just ~touch~ a tmp file (=/tmp/mu_reindex_now=).
- 4. Separately, we set up Emacs to check for the existance of
-    =/tmp/mu_reindex_now= once a second while mu4e is
-    running, and (after deleting the file) call ~mu4e-update-index~.
+1. Use ~goimapnotify~ to monitor mailboxes
+   This needs it's own set of configs, and =systemd= services, which is a pain. We
+   remove this pain by writing a python script (found below) to setup these
+   config files, and systemd services by parsing the  [[file:~/.mbsyncrc][~/.mbsyncrc]] file.
+2. On new mail, call ~mbsync --pull --new ACCOUNT:BOX~
+   We try to be as specific as possible, so ~mbsync~ returns as soon as possible,
+   and we can /get those emails as soon as possible/.
+3. Try to call ~mu index --lazy-fetch~.
+   This fails if mu4e is already open (due to a write lock on the database), so
+   in that case we just ~touch~ a tmp file (=/tmp/mu_reindex_now=).
+4. Separately, we set up Emacs to check for the existance of
+   =/tmp/mu_reindex_now= once a second while mu4e is
+   running, and (after deleting the file) call ~mu4e-update-index~.
 
 Let's start off by handling the elisp side of things
 
