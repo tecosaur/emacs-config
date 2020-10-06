@@ -1163,7 +1163,7 @@ We'll just call ~(register-irc-auths)~ on a hook when we start Circe up.
 
 Now we're ready to go, let's actually wire-up Circe, with one or two
 configuration tweaks.
-#+begin_src emacs-lisp :noweb yes
+#+begin_src emacs-lisp :noweb no-export
 (after! circe
   (setq-default circe-use-tls t)
   (setq circe-notifications-alert-icon "/usr/share/icons/breeze/actions/24/network-connect.svg"
@@ -3485,7 +3485,7 @@ Let's setup some org-capture templates, and make them visually nice to access.
 #+attr_html: :class invertible :alt My org-capture dialouge.
 [[https://tecosaur.com/lfs/emacs-config/screenshots/org-capture.png]]
 
-#+begin_src emacs-lisp :noweb yes
+#+begin_src emacs-lisp :noweb no-export
 (use-package! doct
   :commands (doct))
 
@@ -5571,7 +5571,7 @@ While this is the LaTeX section, it's convenient to also provide HTML acronyms h
 #+end_src
 
 ***** Class templates
-#+begin_src emacs-lisp :noweb yes
+#+begin_src emacs-lisp :noweb no-export
 (after! ox-latex
   (add-to-list 'org-latex-classes
                '("fancy-article"
@@ -5738,7 +5738,7 @@ the "universal preamble"
 Instead of just loading doing the 'minted stuff' all the time, we can try to be
 a bit cleverer, and handle the "universal preamble" while we're at it.
 #+name: org-latex-smart-minted
-#+begin_src emacs-lisp :tangle no :noweb yes
+#+begin_src emacs-lisp :tangle no :noweb no-export
 (after! org
   (defadvice! org-latex-header-smart-minted (orig-fn tpl def-pkg pkg snippets-p &optional extra)
     "Include minted config if src blocks are detected."
@@ -6038,7 +6038,7 @@ For use in the new-file template, let's set out a nice preamble we may want to u
 \\usepackage{booktabs} % nice table rules
 #+end_src
 Then let's bind the content to a function, and define some nice helpers.
-#+begin_src emacs-lisp :noweb yes
+#+begin_src emacs-lisp :noweb no-export
 (setq tec/yas-latex-template-preamble "
 <<latex-nice-preable>>
 ")
