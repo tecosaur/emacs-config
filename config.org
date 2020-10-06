@@ -730,6 +730,9 @@ I'd like to have just the buffer name, then if applicable the project folder
            (unless (string= "-" project-name)
              (format (if (buffer-modified-p)  " ◉ %s" "  ●  %s") project-name))))))
 #+end_src
+
+For example when I open my config file it the window will be titled =config.org ●
+doom= then as soon as I make a change it will become =config.org ◉ doom=.
 *** Splash screen
 Emacs can render an image as the splash screen, and [[https://github.com/MarioRicalde][@MarioRicalde]] came up with a
 cracker! He's also provided me with a nice Emacs-style /E/, which is good for
@@ -1676,6 +1679,10 @@ Now, some actual emojis to use.
 RSS feeds are still a thing. Why not make use of them.
 I really like what [[https://github.com/fuxialexander/doom-emacs-private-xfu/tree/master/modules/app/rss][fuxialexander]] has going on, but I don't think I need a custom
 module. Let's just try to patch on the main things I like the look of.
+
+#+attr_html: :class invertible :alt Example elfeed entry
+[[https://tecosaur.com/lfs/emacs-config/screenshots/elfeed.png]]
+
 *** Keybindings
 #+begin_src emacs-lisp
 (map! :map elfeed-search-mode-map
@@ -3149,6 +3156,9 @@ I also think that having =evil-= appear in so many popups is a bit too verbose, 
    '(("\\`g s" . "\\`evilem--?motion-\\(.*\\)") . (nil . "◃\\1"))
    ))
 #+end_src
+
+#+attr_html: :class invertible :alt Whichkey triggered on an evil motion
+[[https://tecosaur.com/lfs/emacs-config/screenshots/whichkey-evil.png]]
 ** Writeroom
 For starters, I think Doom is a bit over-zealous when zooming in
 #+begin_src emacs-lisp
@@ -3184,6 +3194,9 @@ writeroom.
                               org-superstar-remove-leading-stars -org-superstar-remove-leading-stars)
                   (org-superstar-restart))))))
 #+end_src
+
+#+attr_html: :class invertible :alt Writeroom applied to an Org file
+[[https://tecosaur.com/lfs/emacs-config/screenshots/writeroom-and-org.png]]
 ** xkcd
 We want to set this up so it loads nicely in [[*Extra links][Extra links]].
 #+begin_src emacs-lisp
