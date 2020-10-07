@@ -427,7 +427,7 @@ template {
   --switch-icon: "🌝";
   --switch-shadow-color: #fce477;
   --switch-text: "light mode?"; }
-  #theme-switch:checked ~ #page img.invertible {
+  #theme-switch:checked ~ #page img.invertible, #theme-switch:checked ~ #page object.invertible[type="image/svg+xml"] {
     filter: invert(90%) hue-rotate(180deg) sepia(1%); }
 
 #theme-switch {
@@ -1584,7 +1584,7 @@ figure {
 img.zoomTarget:hover {
   cursor: default !important; }
 
-img {
+img, object[type="image/svg+xml"] {
   filter: invert(6%);
   max-width: 100%; }
 

@@ -14,7 +14,7 @@ img.zoomTarget:hover {
 }
 
 // make white image backgrounds match page
-img {
+img, object[type="image/svg+xml"] {
   filter: invert(6%);
   max-width: 100%;
 }

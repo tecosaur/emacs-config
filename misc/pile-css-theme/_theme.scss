@@ -69,7 +69,7 @@ $text-dark: var(--text-dark);
     --switch-icon: "🌝";
     --switch-shadow-color: #fce477;
     --switch-text: "light mode?";
-    img.invertible {
+    img.invertible, object[type="image/svg+xml"].invertible {
         filter: invert(90.0%) hue-rotate(180deg) sepia(1%);
     }
 }
