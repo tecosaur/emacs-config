@@ -189,8 +189,6 @@ If you are so bold as to wish to steal bits of my config (or if I upgrade and
 wonder why things aren't working), here's a list of sections which rely on
 external setup (i.e. outside of this config).
 
-+ libvterm :: I rely on my distro-provided =libvterm.so=, [[*VTerm][vterm]] sets a compile flag.
-  If this causes issues, just delete the ~(setq term-module-cmake-args ...)~ bit.
 + dictionary :: I've downloaded a custom [[http://app.aspell.com/create][SCOWL]] dictionary, which I use in [[*Ispell][ispell]].
   If this causes issues, just delete the ~(setq ispell-dictionary ...)~ bit.
 + uni-units file :: I've got a file in =~/.org/.uni-units= which I use in ~org-capture~
@@ -1090,11 +1088,6 @@ theme.
   (add-hook 'doom-load-theme-hook #'gif-screencast-write-colormap))
 #+end_src
 *** Improving features
-**** Flyspell-lazy
-To alleviate some [[Flyspell][issues with flyspell]]
-#+begin_src emacs-lisp
-(package! flyspell-lazy :pin "3ebf68cc9eb10c972a2de8d7861cbabbbce69570")
-#+end_src
 **** CalcTeX
 This is a nice extension to ~calc~
 
@@ -2017,13 +2010,6 @@ contributes a typing delay. I'm not sure it's much, but it is an extra
 (after! evil
   (setq evil-ex-substitute-global t) ; I like my s/../.. to by global by default
   (evil-escape-mode nil))
-#+end_src
-** Flyspell
-At one point, typing became noticeably laggy, Profiling revealed
-~flyspell-post-command-hook~ was responsible for 47% of CPU cycles by itself!
-So I'm going to make use of ~flyspell-lazy~
-#+begin_src emacs-lisp
-(after! flyspell (require 'flyspell-lazy) (flyspell-lazy-mode 1))
 #+end_src
 ** Info colors
 #+begin_src emacs-lisp
@@ -3126,23 +3112,6 @@ Now, we just identify the files in question.
         "*/_region_.log"
         "*/_region_.tex"))
 #+end_src
-** VTerm
-On my system, I want to use the ~vterm~ lib in =/usr/bin/libvterm.so=. This is not
-default behaviour. Without this I see the following error message.
-#+begin_src
-make[2]: *** No rule to make target 'libvterm-prefix/src/libvterm/.libs/libvterm.a', needed by '../vterm-module.so'.  Stop.
-make[1]: *** [CMakeFiles/Makefile2:106: CMakeFiles/vterm-module.dir/all] Error 2
-make: *** [Makefile:84: all] Error 2
-#+end_src
-I asked about this in a [[https://github.com/akermu/emacs-libvterm/issues/238#issuecomment-586385773][GitHub Issue]], and the fix is to use the ~cmake~ flag
-~-DUSE_SYSTEM_LIBVTERM=yes~. This can be set for when Doom recompiles ~vterm~ on
-updating, which saves me manually compiling with the flag.
-#+begin_src emacs-lisp
-(setq vterm-module-cmake-args "-DUSE_SYSTEM_LIBVTERM=yes")
-#+end_src
-I also use a 'fancy powerline setup' with [[https://github.com/romkatv/powerlevel10k][Powerlevel10k]], so I need to use a
-patched font for my terminal. Unfortunately I haven't quite figured out how to
-do this yet.
 ** Which-key
 Let's make this popup a bit faster
 #+begin_src emacs-lisp
