@@ -3096,33 +3096,35 @@ good reason for them to take up space. Let's add a mechanism to ignore them.
 
 Now, we just identify the files in question.
 #+begin_src emacs-lisp
-(setq treemacs-file-ignore-extensions '(;; LaTeX
-                                        "aux"
-                                        "ptc"
-                                        "fdb_latexmk"
-                                        "fls"
-                                        "synctex.gz"
-                                        "toc"
-                                        ;; LaTeX - glossary
-                                        "glg"
-                                        "glo"
-                                        "gls"
-                                        "glsdefs"
-                                        "ist"
-                                        "acn"
-                                        "acr"
-                                        "alg"
-                                        ;; LaTeX - pgfplots
-                                        "mw"
-                                        ;; LaTeX - pdfx
-                                        "pdfa.xmpi"
-                                        ))
-(setq treemacs-file-ignore-globs '(;; LaTeX
-                                   "*/_minted-*"
-                                   ;; AucTeX
-                                   "*/.auctex-auto"
-                                   "*/_region_.log"
-                                   "*/_region_.tex"))
+(setq treemacs-file-ignore-extensions
+      '(;; LaTeX
+        "aux"
+        "ptc"
+        "fdb_latexmk"
+        "fls"
+        "synctex.gz"
+        "toc"
+        ;; LaTeX - glossary
+        "glg"
+        "glo"
+        "gls"
+        "glsdefs"
+        "ist"
+        "acn"
+        "acr"
+        "alg"
+        ;; LaTeX - pgfplots
+        "mw"
+        ;; LaTeX - pdfx
+        "pdfa.xmpi"
+        ))
+(setq treemacs-file-ignore-globs
+      '(;; LaTeX
+        "*/_minted-*"
+        ;; AucTeX
+        "*/.auctex-auto"
+        "*/_region_.log"
+        "*/_region_.tex"))
 #+end_src
 ** VTerm
 On my system, I want to use the ~vterm~ lib in =/usr/bin/libvterm.so=. This is not
@@ -3553,14 +3555,15 @@ xdg-mime default emacs.desktop text/org
 #+end_src
 I also like the ~:comments~ header-argument, so let's make that a default.
 #+begin_src emacs-lisp
-(setq org-babel-default-header-args '((:session . "none")
-                                      (:results . "replace")
-                                      (:exports . "code")
-                                      (:cache . "no")
-                                      (:noweb . "no")
-                                      (:hlines . "no")
-                                      (:tangle . "no")
-                                      (:comments . "link")))
+(setq org-babel-default-header-args
+      '((:session . "none")
+        (:results . "replace")
+        (:exports . "code")
+        (:cache . "no")
+        (:noweb . "no")
+        (:hlines . "no")
+        (:tangle . "no")
+        (:comments . "link")))
 #+end_src
 
 By default, ~visual-line-mode~ is turned =on=, and ~auto-fill-mode~ =off= by a hook.
@@ -4180,12 +4183,13 @@ Hence, we need to do a bit of overriding.
 
 #+begin_src emacs-lisp
 (after! org-roam
-  (setq org-roam-graph-node-extra-config '(("shape"      . "underline")
-                                           ("style"      . "rounded,filled")
-                                           ("fillcolor"  . "#EEEEEE")
-                                           ("color"      . "#C9C9C9")
-                                           ("fontcolor"  . "#111111")
-                                           ("fontname"   . "Overpass")))
+  (setq org-roam-graph-node-extra-config
+        '(("shape"      . "underline")
+          ("style"      . "rounded,filled")
+          ("fillcolor"  . "#EEEEEE")
+          ("color"      . "#C9C9C9")
+          ("fontcolor"  . "#111111")
+          ("fontname"   . "Overpass")))
 
   (setq +org-roam-graph--html-template
         (replace-regexp-in-string "%\\([^s]\\)" "%%\\1"
@@ -4919,9 +4923,7 @@ Then we integrate this nicely with org-mode
              (format "\\begin{tabular}{@{\\hspace{0.3\\columnwidth}}r@{\\hspace{0.1\\columnwidth}}p{0.4\\columnwidth}}
   \\includegraphics[height=6em]{%s} & \\vspace{-0.12\\columnwidth}%s
 \\end{tabular}" cover-img text))
-            (t text))))
-
-  )
+            (t text)))))
 #+end_src
 ***** YouTube
 The ~[[yt:...]]~ links preview nicely, but don't export nicely. Thankfully, we can
@@ -5723,10 +5725,11 @@ Since we have =verbatim= and ~code~, let's use =verbatim= for key strokes.
 We also want to use HTML checkboxes, however we want to get a bit fancier than default
 #+begin_src emacs-lisp
 (after! org
-  (appendq! org-html-checkbox-types '((html-span .
-                                             ((on . "<span class='checkbox'></span>")
-                                              (off . "<span class='checkbox'></span>")
-                                              (trans . "<span class='checkbox'></span>")))))
+  (appendq! org-html-checkbox-types
+            '((html-span
+               ((on . "<span class='checkbox'></span>")
+                (off . "<span class='checkbox'></span>")
+                (trans . "<span class='checkbox'></span>")))))
   (setq org-html-checkbox-type 'html-span))
 #+end_src
 - [ ] I'm yet to do this
