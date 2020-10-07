@@ -86,6 +86,52 @@ good?
 + Integration between tasks previously relegated to different applications, but
   with a common subject --- e.g. linking to an email in a to-do list
 
+One can think of Emacs as a platform within which various elements of your
+workflow may settle, with the potential for rich integrations between them --- a
+/life/ IDE if you will.
+
+#+name: emacs-platform
+#+begin_src dot :cmd circo :file misc/emacs-platform.svg :exports none
+digraph {
+    graph [bgcolor="transparent"];
+    node[shape="underline" penwidth="2" style="rounded,filled" fillcolor="#efefef" color="#c9c9c9" fontcolor="#000000" fontname="overpass"];
+    edge[arrowhead=none color="#aaaaaa" penwidth="1.2"]
+    // nodes
+    "Task Managment" [color="#2ec27e"]
+    "Email" [color="#1c71d8"]
+    "Office suite" [color="#813d9c"]
+    "Code editor" [color="#f5c211"]
+    "Git client" [color="#e66100"]
+    // "News feed" [color="#c01c28"]
+    // "Personal Knowledge Base" [color="#986a44"]
+
+    "Task Managment" -> "Email"
+    "Task Managment" -> "Office suite"
+    "Task Managment" -> "Code editor"
+    "Task Managment" -> "Git client"
+    // "Task Managment" -> "News feed"
+    // "Task Managment" -> "Personal Knowledge Base"
+
+    "Email" -> "Office suite"
+    "Email" -> "Code editor"
+    "Email" -> "Git client"
+    // "Email" -> "Personal Knowledge Base"
+
+    "Office suite" -> "Code editor"
+    "Office suite" -> "Git client"
+    // "Office suite" -> "News feed"
+    // "Office suite" -> "Personal Knowledge Base"
+
+    "Code editor" -> "Git client"
+
+    // "News feed" -> "Personal Knowledge Base"
+}
+#+end_src
+
+#+caption: Some sample workflow integrations that can be used within Emacs
+#+attr_html: :class invertible :alt Graph of possible Emacs task integrations
+[[file:misc/emacs-platform.svg]]
+
 *** Some notably unique features
 + Recursive editing
 + Completely introspectable, with pervasive docstrings
