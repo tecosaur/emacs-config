@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: display math
+# key: M
+# condition: t
+# expand-env: ((yas-after-exit-snippet-hook (lambda () (org-edit-special) (evil-insert-state) (insert "\n  \n") (left-char))))
+# --
+\\[`%`$0\\]
