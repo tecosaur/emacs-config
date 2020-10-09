@@ -129,7 +129,7 @@ digraph {
 #+end_src
 
 #+caption: Some sample workflow integrations that can be used within Emacs
-#+attr_html: :class invertible :alt Graph of possible Emacs task integrations
+#+attr_html: :class invertible :alt Graph of possible Emacs task integrations :style max-width:min(24em,100%)
 [[file:misc/emacs-platform.svg]]
 
 *** Some notably unique features
@@ -3538,6 +3538,44 @@ I really like org mode, I've given some thought to why, and below is the result.
 
 #+attr_html: :class invertible :alt Radar chart comparing my opinions of document formats.
 [[https://tecosaur.com/lfs/emacs-config/document-format-comparison.png]]
+
+Beyond the elegance in the markup language, tremendously rich integrations with
+Emacs allow for some fantastic [[https://orgmode.org/features.html][features]], such as what seems to be the best
+support for [[https://en.wikipedia.org/wiki/Literate_programming][literate programming]] of any currently available technology.
+
+An =.org= file can contain blocks of code (with [[https://en.wikipedia.org/wiki/Noweb][noweb]] templating support), which
+can be [[https://orgmode.org/manual/Extracting-Source-Code.html][tangled]] to dedicated source code files, and [[https://orgmode.org/manual/Extracting-Source-Code.html][woven]] into a document
+(report, documentation, presentation, etc.) through various (/extensible/) methods.
+These source blocks may even create images or other content to be included in
+the document, or generate source code.
+
+#+name: Example Org Flowchart
+#+attr_html: :style line-height:1.13;
+#+begin_example
+                   ╭───────────────────────────────────▶ .pdf ⎫
+                  pdfLaTeX ▶╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╌╮                 ⎪
+                   ╿     ╿                  ┊                 ⎪
+                   │     ┊                  ┊                 ⎪
+                 .tex    ┊                  ┊                 ⎪
+                   ╿     ┊                  ┊                 ⎪
+                ╭──┴╌╌╮  ┊                  ┊ style.scss      ⎬ Weaving
+graphc.png ─╮   │  embedded TeX             ┊      ╽          ⎪
+image.jpeg ─┤ filters   ╿                   ┊    .css         ⎪
+            ╎     ╿     ┊                   ┊     ▾╎          ⎪
+figure.png╶─╧─▶ PROJECT.ORG ▶───╴filters╶───╧──────╪──▶ .html ⎪
+     ╿           ╿┊ ║ │ ╰╌╌╌▷╌╌ embedded html ▶╌╌╌╌╯          ⎪
+     ├╌╌╌╌╌╌╌▷╌╌╌╯┊ ║ │                                       ⎪
+    result ╌╌╌╌╌╮ ┊ ║ ├──────╴filters╶────────────────▶ .txt  ⎪
+     ┊▴         ┊ ┊ ║ │                                       ⎪
+    execution   ┊ ┊ ║ ╰──────╴filters╶────────────────▶ .md   ⎭
+     ┊▴         ┊ ┊ ║
+    code blocks◀╯ ┊ ╟─────▶ .c  ⎫
+     ╰╌╌╌╌◁╌╌╌╌╌╌╌╯ ╟────▶ .el  ⎪
+                    ╟───▶ .sh   ⎬ Tangling
+                    ╟──▶ .py    ⎪
+                    ╟─▶ .hs     ⎭
+                   etc.
+#+end_example
 
 *** System config
 Org mode isn't recognised as it's own mime type by default, but that can easily
