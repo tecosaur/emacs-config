@@ -1336,6 +1336,12 @@ For editing systemd unit files
 #+begin_src emacs-lisp
 (package! systemd :pin "51c148e09a129ddf33d95276aa0e89d4ef6f8dd2")
 #+end_src
+*** Graphviz
+Graphviz is a nice method of visualising simple graphs, based on plaintext
+=.dot= / =.gv= files.
+#+begin_src emacs-lisp
+(package! graphviz-dot-mode :pin "3642a0a5f41a80c8ecef7c6143d514200b80e194")
+#+end_src
 * Package configuration
 ** Abbrev mode
 Thanks to [[https://emacs.stackexchange.com/questions/45462/use-a-single-abbrev-table-for-multiple-modes/45476#45476][use a single abbrev-table for multiple modes? - Emacs Stack Exchange]] I
@@ -6638,6 +6644,16 @@ priority of =mypyls=
     ;; Other
     :assign "<-"
     :multiply "%*%"))
+#+end_src
+** Graphviz
+#+begin_src emacs-lisp
+(use-package! graphviz-dot-mode
+  :mode ("\\.dot\\'" "\\.gz\\'")
+  :config
+  (set-company-backend! 'graphviz-dot-mode 'company-graphviz-dot-backend))
+
+(use-package! company-graphviz-dot
+  :after graphviz-dot-mode)
 #+end_src
 ** hledger
 ~ledger-mode~ is great and all, but ~hledger~ seems to be more actively maintained.
