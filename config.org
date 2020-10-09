@@ -2,6 +2,7 @@
 #+title: Doom Emacs Configuration
 #+subtitle: The Methods, Management, and Menagerie of Madness
 #+author: tecosaur
+#+startup: fold
 #+property: header-args:emacs-lisp :tangle yes :cache yes :results silent :comments link
 #+property: header-args:shell :tangle "setup.sh"
 #+property: header-args :tangle no :results silent
