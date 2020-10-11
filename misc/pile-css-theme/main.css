@@ -399,7 +399,7 @@ template {
   --code-const: #4e3163;
   --code-regex: #655370;
   --back-white: #fff;
-  --back-light: #efefef;
+  --back-light: #f0eeed;
   --back-medium: #c8c8c8;
   --text-light: #7b7b7b;
   --text-gray: #444;
@@ -1585,7 +1585,7 @@ img.zoomTarget:hover {
   cursor: default !important; }
 
 img, object[type="image/svg+xml"] {
-  filter: invert(6%);
+  filter: invert(7%) sepia(4%);
   max-width: 100%; }
 
 .org-svg {
