@@ -4444,12 +4444,12 @@ made unique when necessary."
            (ref (concat (org-heading-contraction (substring-no-properties title))
                         (unless (or headline-p (org-element-property :name datum))
                           (concat ","
-                                  (case (car datum)
+                                  (pcase (car datum)
                                     ('src-block "code")
                                     ('example "example")
                                     ('fixed-width "mono")
                                     ('property-drawer "properties")
-                                    (t (symbol-name (car datum))))
+                                    (_ (symbol-name (car datum))))
                                   "--1"))))
            (parent (when headline-p (org-element-property :parent datum))))
       (while (--any (equal ref (car it))
@@ -4731,7 +4731,7 @@ First, we set up all the necessarily 'utility' functions.
 
   (defun org-music-get-link (full &optional include-time)
     "Generate link string for currently playing track, optionally including a time-stamp"
-    (case org-music-player ;; NOTE this could do with better generalisation
+    (pcase org-music-player ;; NOTE this could do with better generalisation
       ('mpris (let* ((track-metadata
                       (org-music-mpris-get-property "Metadata"))
                      (album-artist (caar (cadr (assoc "xesam:albumArtist" track-metadata))))
@@ -4745,7 +4745,7 @@ First, we set up all the necessarily 'utility' functions.
                 (if full
                     (format "[[music:%s][%s by %s]]" (org-music-format-link artist track start-time) track artist)
                   (org-music-format-link artist track start-time))))
-      (t (user-error! "The specified music player: %s is not supported" org-music-player))))
+      (_ (user-error! "The specified music player: %s is not supported" org-music-player))))
 
   (defun org-music-format-link (artist track &optional start-time end-time)
     (let ((artist (replace-regexp-in-string ":" "\\:" artist))
@@ -4798,9 +4798,9 @@ This action is reversed by `org-music-time-to-seconds'."
   (defun org-music-play-track (artist title &optional start-time end-time)
     "Play the track specified by ARTIST and TITLE, optionally skipping to START-TIME in, stopping at END-TIME."
     (if-let ((file (org-music-find-track-file artist title)))
-        (case org-music-player
+        (pcase org-music-player
           ('mpris (org-music-mpris-play file start-time end-time))
-          (t (user-error! "The specified music player: %s is not supported" org-music-player)))
+          (_ (user-error! "The specified music player: %s is not supported" org-music-player)))
       (user-error! "Could not find the track '%s' by '%s'" title artist)))
 
   (add-transient-hook! #'org-music-play-track
@@ -4858,10 +4858,10 @@ This action is reversed by `org-music-time-to-seconds'."
 
   (defun org-music-find-track-file (artist title)
     "Try to find the file for TRACK by ARTIST, using `org-music-track-search-method', returning nil if nothing could be found."
-    (case org-music-track-search-method
+    (pcase org-music-track-search-method
       ('file (org-music-find-file artist title))
       ('beets (org-music-beets-find-file artist title))
-      (t (user-error! "The specified music search method: %s is not supported" org-music-track-search-method))))
+      (_ (user-error! "The specified music search method: %s is not supported" org-music-track-search-method))))
 
   (defun org-music-beets-find-file (artist title)
     "Find the file correspanding to a given artist and title."
@@ -5298,32 +5298,32 @@ There's also this lovely equation numbering stuff I'll nick
     (let ((results '())
           (counter -1)
           (numberp))
-      (setq results (loop for (begin .  env) in
-                          (org-element-map (org-element-parse-buffer) 'latex-environment
-                            (lambda (env)
-                              (cons
-                               (org-element-property :begin env)
-                               (org-element-property :value env))))
-                          collect
-                          (cond
-                           ((and (string-match "\\\\begin{equation}" env)
-                                 (not (string-match "\\\\tag{" env)))
-                            (incf counter)
-                            (cons begin counter))
-                           ((string-match "\\\\begin{align}" env)
-                            (prog2
-                                (incf counter)
-                                (cons begin counter)
-                              (with-temp-buffer
-                                (insert env)
-                                (goto-char (point-min))
-                                ;; \\ is used for a new line. Each one leads to a number
-                                (incf counter (count-matches "\\\\$"))
-                                ;; unless there are nonumbers.
-                                (goto-char (point-min))
-                                (decf counter (count-matches "\\nonumber")))))
-                           (t
-                            (cons begin nil)))))
+      (setq results (cl-loop for (begin . env) in
+                             (org-element-map (org-element-parse-buffer) 'latex-environment
+                               (lambda (env)
+                                 (cons
+                                  (org-element-property :begin env)
+                                  (org-element-property :value env))))
+                             collect
+                             (cond
+                              ((and (string-match "\\\\begin{equation}" env)
+                                    (not (string-match "\\\\tag{" env)))
+                               (incf counter)
+                               (cons begin counter))
+                              ((string-match "\\\\begin{align}" env)
+                               (prog2
+                                   (incf counter)
+                                   (cons begin counter)
+                                 (with-temp-buffer
+                                   (insert env)
+                                   (goto-char (point-min))
+                                   ;; \\ is used for a new line. Each one leads to a number
+                                   (incf counter (count-matches "\\\\$"))
+                                   ;; unless there are nonumbers.
+                                   (goto-char (point-min))
+                                   (decf counter (count-matches "\\nonumber")))))
+                              (t
+                               (cons begin nil)))))
 
       (when (setq numberp (cdr (assoc (point) results)))
         (setf (car args)
@@ -5682,11 +5682,11 @@ to copy the content of the block.
     (if (or (not org-fancy-html-export-mode) (bound-and-true-p org-msg-currently-exporting))
         (funcall orig-fn block contents info)
       (let ((ref (org-export-get-reference block info))
-            (type (case (car block)
+            (type (pcase (car block)
                     ('property-drawer "Properties")))
-            (collapsed-default (case (car block)
+            (collapsed-default (pcase (car block)
                                  ('property-drawer t)
-                                 (t nil)))
+                                 (_ nil)))
             (collapsed-value (org-export-read-attribute :attr_html block :collapsed)))
         (format
          "<details id='%s' class='code'%s>
@@ -5893,14 +5893,14 @@ While this is the LaTeX section, it's convenient to also provide HTML acronyms h
            (cond ((equal (aref all-caps-str 0) ?\;) (substring all-caps-str 1))
                  ((equal (aref all-caps-str 0) ?\\) all-caps-str)
                  ((equal (aref all-caps-str (- (length all-caps-str) 1)) ?s)
-                  (case the-backend
+                  (pcase the-backend
                     ('latex
                      (concat "\\textls*[70]{\\textsc{" (s-downcase (substring all-caps-str 0 -1))
                              "}\\protect\\scalebox{.91}[.84]{s}}"))
                     ('html
                      (concat "<span class='acr'>" (substring all-caps-str 0 -1)
                              "</span><small>s</small>"))))
-                 (t (case the-backend
+                 (t (pcase the-backend
                       ('latex
                        (concat "\\textls*[70]{\\textsc{" (s-downcase all-caps-str) "}}"))
                       ('html (concat "<span class='acr'>" all-caps-str "</span>"))))))
@@ -6434,26 +6434,26 @@ Then let's bind the content to a function, and define some nice helpers.
     (unless open-char (setq open-char (if (eql ?. tec/tex-last-delim-char)
                                           tec/tex-delim-dot-second
                                         tec/tex-last-delim-char)))
-    (case open-char
+    (pcase open-char
       (?\( "(")
       (?9  "(")
       (?\[ "[")
       (?\{ "\\{")
       (?<  "<")
       (?|  (if tec/tex-delim-dot-second "." "|"))
-      (t   ".")))
+      (_   ".")))
   (defun tec/tex-close-delim-from-char (&optional open-char)
     "Find the associated closing delim as string"
     (if tec/tex-delim-dot-second
-        (case tec/tex-delim-dot-second
+        (pcase tec/tex-delim-dot-second
           (?\) ")")
           (?0  ")")
           (?\] "]")
           (?\} "\\}")
           (?\> ">")
           (?|  "|")
-          (t   "."))
-      (case (or open-char tec/tex-last-delim-char)
+          (_   "."))
+      (pcase (or open-char tec/tex-last-delim-char)
         (?\( ")")
         (?9  ")")
         (?\[ "]")
@@ -6465,10 +6465,10 @@ Then let's bind the content to a function, and define some nice helpers.
         (?\} "\\}")
         (?\> ">")
         (?|  "|")
-        (t   "."))))
+        (_   "."))))
   (defun tec/tex-next-char-smart-close-delim (&optional open-char)
     (and (bound-and-true-p smartparens-mode)
-         (eql (char-after) (case (or open-char tec/tex-last-delim-char)
+         (eql (char-after) (pcase (or open-char tec/tex-last-delim-char)
                              (?\( ?\))
                              (?\[ ?\])
                              (?{ ?})
