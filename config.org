@@ -945,19 +945,19 @@ issues when started in a non-graphical session.
 
 #+begin_src emacs-lisp
 (defun greedily-do-daemon-setup ()
-  (when (daemonp)
-    (require 'org)
-    (when (require 'mu4e nil t)
-      (setq mu4e-confirm-quit t)
-      (setq mu4e-lock-greedy t)
-      (setq mu4e-lock-relaxed t)
-      (mu4e-lock-add-watcher)
-      (when (mu4e-lock-avalible t)
-        (mu4e~start)))
-    (when (require 'elfeed nil t)
-      (run-at-time nil (* 8 60 60) #'elfeed-update))))
+  (require 'org)
+  (when (require 'mu4e nil t)
+    (setq mu4e-confirm-quit t)
+    (setq +mu4e-lock-greedy t)
+    (setq +mu4e-lock-relaxed t)
+    (+mu4e-lock-add-watcher)
+    (when (+mu4e-lock-avalible t)
+      (mu4e~start)))
+  (when (require 'elfeed nil t)
+    (run-at-time nil (* 8 60 60) #'elfeed-update)))
 
-(add-hook 'emacs-startup-hook #'greedily-do-daemon-setup)
+(when (daemonp)
+  (add-hook 'emacs-startup-hook #'greedily-do-daemon-setup))
 #+end_src
 * Package loading
 :PROPERTIES:
@@ -2828,7 +2828,7 @@ few more visual tweaks, we'll tweak the headers a bit
             (lambda (msg)
               (let ((maildir
                      (mu4e-message-field msg :maildir)))
-                (mu4e-header-colourise (replace-regexp-in-string "^gmail" (propertize "g" 'face 'bold-italic)
+                (+mu4e-header-colourise (replace-regexp-in-string "^gmail" (propertize "g" 'face 'bold-italic)
                                                                  (format "%s"
                                                                          (substring maildir 1
                                                                                     (string-match-p "/" maildir 1)))))))))
@@ -2837,7 +2837,7 @@ few more visual tweaks, we'll tweak the headers a bit
             (lambda (msg)
               (let ((maildir
                      (mu4e-message-field msg :maildir)))
-                (mu4e-header-colourise (replace-regexp-in-string "\\`.*/" "" maildir))))))
+                (+mu4e-header-colourise (replace-regexp-in-string "\\`.*/" "" maildir))))))
           (:recipnum .
            (:name "Number of recipients"
             :shortname " ⭷"
@@ -2903,103 +2903,6 @@ We also want to define ~mu4e-compose-from-mailto~.
     (mu4e~compose-mail to subject headers)))
 #+end_src
 This may not quite function as intended for now due to [[github:jeremy-compostella/org-msg/issues/52][jeremy-compostella/org-msg#52]].
-**** Process control
-Here's what I want
-+ An instance of Mu4e to be active all the time, for notifications
-+ No crufty timers on loops et. al
-I think a file watch etc. setup similar to that in [[*Rebuild mail index while using mu4e][Rebuild mail index while
-using mu4e]] is probably the cleanest way to operate. We can put the current PID
-in the file and check for exitance too.
-#+begin_src emacs-lisp
-(after! mu4e
-  (defvar mu4e-lock-file "/tmp/mu4e_lock"
-    "Location of the lock file which stores the PID of the process currenty running mu4e")
-  (defvar mu4e-lock-request-file "/tmp/mu4e_lock_request"
-    "Location of the lock file for which creating indicated that another process wants the lock to be released")
-
-  (defvar mu4e-lock-greedy nil
-    "Whether to 'grab' the `mu4e-lock-file' if nobody else has it, i.e. start Mu4e")
-  (defvar mu4e-lock-relaxed nil
-    "Whether if someone else wants the lock (signaled via `mu4e-lock-request-file'), we should stop Mu4e and let go of it")
-
-  (defun mu4e-lock-pid-info ()
-    "Get info on the PID refered to in `mu4e-lock-file' in the form (pid . process-attributes)
- If the file or process do not exist, the lock file is deleted an nil returned."
-    (when (file-exists-p mu4e-lock-file)
-      (let* ((pid (string-to-number (f-read-text mu4e-lock-file 'utf-8)))
-             (process (process-attributes pid)))
-        (if process (cons pid process)
-          (delete-file mu4e-lock-file) nil))))
-
-  (defun mu4e-lock-avalible (&optional strict)
-    "If the `mu4e-lock-file' is avalible (unset or owned by this emacs) return t.
-If STRICT only accept an unset lock file."
-    (not (when-let* ((lock-info (mu4e-lock-pid-info))
-                     (pid (car lock-info)))
-           (when (or strict (/= (emacs-pid) pid)) t))))
-
-  (defadvice! mu4e-lock-file-delete-maybe ()
-    "Check `mu4e-lock-file', and delete it if this process is responsible for it."
-    :after #'mu4e-quit
-    (when (mu4e-lock-avalible)
-      (delete-file mu4e-lock-file)
-      (file-notify-rm-watch mu4e-lock--request-watcher)))
-
-  (add-hook 'kill-emacs-hook #'mu4e-lock-file-delete-maybe)
-
-  (defadvice! mu4e-lock-start (orig-fun &optional callback)
-    "Check `mu4e-lock-file', and if another process is responsible for it, abort starting.
-Else, write to this process' PID to the lock file"
-    :around #'mu4e~start
-    (unless (mu4e-lock-avalible)
-      (shell-command (format "touch %s" mu4e-lock-request-file))
-      (message "Lock file exists, requesting that it be given up")
-      (sleep-for 0.1)
-      (delete-file mu4e-lock-request-file))
-    (if (not (mu4e-lock-avalible))
-        (user-error "Unfortunately another Emacs is already doing stuff with Mu4e, and you can only have one at a time")
-      (f-write-text (number-to-string (emacs-pid)) 'utf-8 mu4e-lock-file)
-      (delete-file mu4e-lock-request-file)
-      (funcall orig-fun callback)
-      (setq mu4e-lock--request-watcher
-            (file-notify-add-watch mu4e-lock-request-file
-                                   '(change)
-                                   #'mu4e-lock-request))))
-
-  (defvar mu4e-lock--file-watcher nil)
-  (defvar mu4e-lock--file-just-deleted nil)
-  (defvar mu4e-lock--request-watcher nil)
-
-  (defun mu4e-lock-add-watcher ()
-    (setq mu4e-lock--file-just-deleted nil)
-    (file-notify-rm-watch mu4e-lock--file-watcher)
-    (setq mu4e-lock--file-watcher
-          (file-notify-add-watch mu4e-lock-file
-                                 '(change)
-                                 #'mu4e-lock-file-updated)))
-
-  (defun mu4e-lock-request (event)
-    "Handle another process requesting the Mu4e lock."
-    (when (equal (nth 1 event) 'created)
-      (when mu4e-lock-relaxed
-        (mu4e~stop)
-        (file-notify-rm-watch mu4e-lock--file-watcher)
-        (message "Someone else wants to use Mu4e, releasing lock")
-        (delete-file mu4e-lock-file)
-        (run-at-time 0.2 nil #'mu4e-lock-add-watcher))
-      (delete-file mu4e-lock-request-file)))
-
-  (defun mu4e-lock-file-updated (event)
-    (if mu4e-lock--file-just-deleted
-        (mu4e-lock-add-watcher)
-      (when (equal (nth 1 event) 'deleted)
-        (setq mu4e-lock--file-just-deleted t)
-        (when (and mu4e-lock-greedy (mu4e-lock-avalible t))
-          (message "Noticed Mu4e lock was avalible, grabbed it")
-          (run-at-time 0.2 nil #'mu4e~start))
-        ))))
-
-#+end_src
 *** Org Msg
 Doom does a fantastic stuff with the defaults with this, so we only make a few
 minor tweaks.
