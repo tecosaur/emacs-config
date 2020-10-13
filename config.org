@@ -2060,9 +2060,13 @@ I don't use ~evil-escape-mode~, so I may as well turn it off, I've heard it
 contributes a typing delay. I'm not sure it's much, but it is an extra
 ~pre-command-hook~ that I don't benefit from, so...
 #+begin_src emacs-lisp
-(after! evil
-  (setq evil-ex-substitute-global t) ; I like my s/../.. to by global by default
-  (evil-escape-mode nil))
+(after! evil-escape (evil-escape-mode -1))
+#+end_src
+
+When I want to make a substitution, I want it to be global more often than not
+--- so let's make that the default.
+#+begin_src emacs-lisp
+(after! evil (setq evil-ex-substitute-global t)) ; I like my s/../.. to by global by default
 #+end_src
 ** Info colors
 #+begin_src emacs-lisp
