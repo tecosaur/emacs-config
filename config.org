@@ -3447,6 +3447,14 @@ Beyond the elegance in the markup language, tremendously rich integrations with
 Emacs allow for some fantastic [[https://orgmode.org/features.html][features]], such as what seems to be the best
 support for [[https://en.wikipedia.org/wiki/Literate_programming][literate programming]] of any currently available technology.
 
+#+name: Literate programming workflow
+#+attr_html: :style line-height:1.13;
+#+begin_example
+      ╭─╴Code╶─╮            ╭─╴Raw Code╶─▶ Computer
+Ideas╺┥        ┝━▶ Org Mode╺┥
+      ╰─╴Text╶─╯            ╰─╴Document╶─▶ People
+#+end_example
+
 An =.org= file can contain blocks of code (with [[https://en.wikipedia.org/wiki/Noweb][noweb]] templating support), which
 can be [[https://orgmode.org/manual/Extracting-Source-Code.html][tangled]] to dedicated source code files, and [[https://orgmode.org/manual/Extracting-Source-Code.html][woven]] into a document
 (report, documentation, presentation, etc.) through various (/extensible/) methods.
@@ -3463,22 +3471,20 @@ the document, or generate source code.
                  .tex    ┊                  ┊                 ⎪
                    ╿     ┊                  ┊                 ⎪
                 ╭──┴╌╌╮  ┊                  ┊ style.scss      ⎬ Weaving
-graphc.png ─╮   │  embedded TeX             ┊      ╽          ⎪
+graphc.png ─╮   │  embedded TeX             ┊      ╽          ⎪ (Documents)
 image.jpeg ─┤ filters   ╿                   ┊    .css         ⎪
             ╎     ╿     ┊                   ┊     ▾╎          ⎪
 figure.png╶─╧─▶ PROJECT.ORG ▶───╴filters╶───╧──────╪──▶ .html ⎪
      ╿           ╿┊ ║ │ ╰╌╌╌▷╌╌ embedded html ▶╌╌╌╌╯          ⎪
      ├╌╌╌╌╌╌╌▷╌╌╌╯┊ ║ │                                       ⎪
-    result ╌╌╌╌╌╮ ┊ ║ ├──────╴filters╶────────────────▶ .txt  ⎪
+    result╶╌╌╌╌╌╮ ┊ ║ ├──────╴filters╶────────────────▶ .txt  ⎪
      ┊▴         ┊ ┊ ║ │                                       ⎪
     execution   ┊ ┊ ║ ╰──────╴filters╶────────────────▶ .md   ⎭
      ┊▴         ┊ ┊ ║
-    code blocks◀╯ ┊ ╟─────▶ .c  ⎫
-     ╰╌╌╌╌◁╌╌╌╌╌╌╌╯ ╟────▶ .el  ⎪
-                    ╟───▶ .sh   ⎬ Tangling
-                    ╟──▶ .py    ⎪
-                    ╟─▶ .hs     ⎭
-                   etc.
+    code blocks◀╯ ┊ ╟─────────────────────────────────▶ .c    ⎫
+     ╰╌╌╌╌◁╌╌╌╌╌╌╌╯ ╟─────────────────────────────────▶ .sh   ⎬ Tangling
+                    ╟─────────────────────────────────▶ .hs   ⎪ (Code)
+                    ╙─────────────────────────────────▶ .el   ⎭
 #+end_example
 
 *** System config
