@@ -4240,7 +4240,7 @@ truncated to fit within the limit"
     (when (> (length heading-words)
              org-heading-contraction-max-words)
       (setq heading-words
-            (subseq heading-words 0 org-heading-contraction-max-words)))
+            (cl-subseq heading-words 0 org-heading-contraction-max-words)))
 
     (when (> (+ (-sum (mapcar #'length heading-words))
                 (1- (length heading-words)))
