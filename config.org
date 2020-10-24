@@ -501,7 +501,7 @@ doom-quit                    ; DOOM quit-message prompts when you quit Emacs
 hl-todo                      ; highlight TODO/FIXME/NOTE/DEPRECATED/HACK/REVIEW
 ;;hydra                      ; quick documentation for related commands
 ;;indent-guides              ; highlighted indent columns, notoriously slow
-ligatures                    ; ligatures and symbols to make your code pretty again
+(ligatures +extra)           ; ligatures and symbols to make your code pretty again
 ;;minimap                    ; show a map of the code on the side
 modeline                     ; snazzy, Atom-inspired modeline, plus API
 nav-flash                    ; blink the current line after jumping
@@ -510,7 +510,6 @@ ophints                      ; highlight the region an operation acts on
 (popup                       ; tame sudden yet inevitable temporary windows
  +all                        ; catch all popups that start with an asterix
  +defaults)                  ; default popup rules
-pretty-code                  ; replace bits of code with pretty symbols
 ;;(tabs                      ; an tab bar for Emacs
 ;;  +centaur-tabs)           ; ... with prettier tabs
 treemacs                     ; a project drawer, like neotree but cooler
@@ -5006,57 +5005,67 @@ It's also nice to make use of the Unicode characters for check boxes, and other 
               :pending       "◼"
               :checkedbox    "☑"
               :list_property "∷"
-              :results       "🠶"
-              :property      "☸"
-              :properties    "⚙"
-              :end           "∎"
-              :options       "⌥"
+              :em_dash       "—"
+              :ellipses      "…"
               :title         "𝙏"
               :subtitle      "𝙩"
               :author        "𝘼"
               :date          "𝘿"
-              :latex_header  "⇥"
+              :property      "☸"
+              :options       "⌥"
               :latex_class   "🄲"
+              :latex_header  "⇥"
               :beamer_header "↠"
+              :attr_latex    "🄛"
+              :attr_html     "🄗"
               :begin_quote   "❮"
               :end_quote     "❯"
+              :caption       "☰"
+              :header        "›"
+              :results       "🠶"
               :begin_export  "⯮"
               :end_export    "⯬"
+              :properties    "⚙"
+              :end           "∎"
               :priority_a   ,(propertize "⚑" 'face 'all-the-icons-red)
               :priority_b   ,(propertize "⬆" 'face 'all-the-icons-orange)
               :priority_c   ,(propertize "■" 'face 'all-the-icons-yellow)
               :priority_d   ,(propertize "⬇" 'face 'all-the-icons-green)
-              :priority_e   ,(propertize "❓" 'face 'all-the-icons-blue)
-              :em_dash       "—"))
+              :priority_e   ,(propertize "❓" 'face 'all-the-icons-blue)))
   (set-ligatures! 'org-mode
     :merge t
     :checkbox      "[ ]"
     :pending       "[-]"
     :checkedbox    "[X]"
     :list_property "::"
-    :results       "#+results:"
-    :property      "#+property:"
-    :property      ":PROPERTIES:"
-    :end           ":END:"
-    :options       "#+options:"
+    :em_dash       "---"
+    :ellipsis      "..."
     :title         "#+title:"
     :subtitle      "#+subtitle:"
     :author        "#+author:"
     :date          "#+date:"
+    :property      "#+property:"
+    :options       "#+options:"
     :latex_class   "#+latex_class:"
     :latex_header  "#+latex_header:"
     :beamer_header "#+beamer_header:"
+    :attr_latex    "#+attr_latex:"
+    :attr_html     "#+attr_latex:"
     :begin_quote   "#+begin_quote"
     :end_quote     "#+end_quote"
+    :caption       "#+caption:"
+    :header        "#+header:"
     :begin_export  "#+begin_export"
     :end_export    "#+end_export"
+    :results       "#+RESULTS:"
+    :property      ":PROPERTIES:"
+    :end           ":END:"
     :priority_a    "[#A]"
     :priority_b    "[#B]"
     :priority_c    "[#C]"
     :priority_d    "[#D]"
-    :priority_e    "[#E]"
-    :em_dash       "---"))
-(plist-put +ligatures-extra-symbols :name "⁍") ; or › could be good?
+    :priority_e    "[#E]"))
+(plist-put +ligatures-extra-symbols :name "⁍")
 #+end_src
 We also like ~org-fragtog~, and that wants a hook.
 #+begin_src emacs-lisp
