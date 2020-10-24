@@ -677,7 +677,7 @@ I couldn't resist the Email and Feed modules.
 
 #+name: doom-email
 #+begin_src emacs-lisp
-(mu4e +gmail)
+(mu4e +org +gmail)
 ;;notmuch
 ;;(wanderlust +gmail)
 #+end_src
@@ -2829,45 +2829,33 @@ few more visual tweaks, we'll tweak the headers a bit
 #+begin_src emacs-lisp
 (after! mu4e
   (setq mu4e-headers-fields
-        '((:account . 12)
-          (:human-date . 8)
-          (:flags . 6)
-          (:from . 25)
+        '((:flags . 6)
+          (:account-stripe . 2)
+          (:from-or-to . 25)
           (:folder . 10)
           (:recipnum . 2)
-          (:subject))
+          (:subject . 80)
+          (:human-date . 8))
+        +mu4e-min-header-frame-width 142
         mu4e-headers-date-format "%d/%m/%y"
-        mu4e-headers-time-format "%T")
+        mu4e-headers-time-format "⧖ %H:%M"
+        mu4e-headers-results-limit 1000
+        mu4e-index-cleanup t)
 
-  (plist-put (cdr (assoc :flags mu4e-header-info)) :shortname " Flags") ; default=Flgs
-  (setq mu4e-header-info-custom
-        '((:account .
-           (:name "Account" :shortname "Account" :help "Which account this email belongs to" :function
-            (lambda (msg)
-              (let ((maildir
-                     (mu4e-message-field msg :maildir)))
-                (+mu4e-header-colourise (replace-regexp-in-string "^gmail" (propertize "g" 'face 'bold-italic)
-                                                                 (format "%s"
-                                                                         (substring maildir 1
-                                                                                    (string-match-p "/" maildir 1)))))))))
-          (:folder .
-           (:name "Folder" :shortname "Folder" :help "Lowest level folder" :function
-            (lambda (msg)
-              (let ((maildir
-                     (mu4e-message-field msg :maildir)))
-                (+mu4e-header-colourise (replace-regexp-in-string "\\`.*/" "" maildir))))))
-          (:recipnum .
-           (:name "Number of recipients"
-            :shortname " ⭷"
-            :help "Number of recipients for this message"
-            :function
-            (lambda (msg)
-              (propertize (format "%2d"
-                                  (+ (length (mu4e-message-field msg :to))
-                                     (length (mu4e-message-field msg :cc))))
-                          'face 'mu4e-footer-face)))))))
+  (defvar +mu4e-header--folder-colors nil)
+  (appendq! mu4e-header-info-custom
+            '((:folder .
+               (:name "Folder" :shortname "Folder" :help "Lowest level folder" :function
+                (lambda (msg)
+                  (+mu4e-colorize-str
+                   (replace-regexp-in-string "\\`.*/" "" (mu4e-message-field msg :maildir))
+                   '+mu4e-header--folder-colors)))))))
 #+end_src
 
+We'll also use a nicer alert icon
+#+begin_src emacs-lisp
+(setq mu4e-alert-icon "/usr/share/icons/Papirus/64x64/apps/evolution.svg")
+#+end_src
 **** Sending Mail
 Let's send emails too.
 #+begin_src emacs-lisp
@@ -2925,7 +2913,9 @@ This may not quite function as intended for now due to [[github:jeremy-compostel
 Doom does a fantastic stuff with the defaults with this, so we only make a few
 minor tweaks.
 #+begin_src emacs-lisp
-(setq +org-msg-accent-color "#1a5fb4")
+(setq +org-msg-accent-color "#1a5fb4"
+      org-msg-greeting-fmt "\nHi %s,\n\n"
+      org-msg-signature "\n\n#+begin_signature\nAll the best,\\\\\n*Timothy*\n#+end_signature")
 (map! :map org-msg-edit-mode-map
       :after org-msg
       :n "G" #'org-msg-goto-body)
@@ -3143,6 +3133,7 @@ writeroom.
 #+attr_html: :class invertible :alt Writeroom applied to an Org file
 [[https://tecosaur.com/lfs/emacs-config/screenshots/writeroom-and-org.png]]
 ** xkcd
+
 We want to set this up so it loads nicely in [[*Extra links][Extra links]].
 #+begin_src emacs-lisp
 (use-package! xkcd
@@ -5343,7 +5334,7 @@ CONTENTS is the transcoded contents string.  INFO is a plist
 holding export options. Adds a few extra things to the body
 compared to the default implementation."
   :around #'org-html-template
-  (if (or (not org-fancy-html-export-mode) (bound-and-true-p org-msg-currently-exporting))
+  (if (or (not org-fancy-html-export-mode) (bound-and-true-p +org-msg-currently-exporting))
       (funcall orig-fn contents info)
     (concat
      (when (and (not (org-html-html5-p info)) (org-html-xhtml-p info))
@@ -5497,7 +5488,7 @@ to copy the content of the block.
 (defadvice! org-html-src-block-collapsable (orig-fn src-block contents info)
   "Wrap the usual <pre> block in a <details>"
   :around #'org-html-src-block
-  (if (or (not org-fancy-html-export-mode) (bound-and-true-p org-msg-currently-exporting))
+  (if (or (not org-fancy-html-export-mode) (bound-and-true-p +org-msg-currently-exporting))
       (funcall orig-fn src-block contents info)
     (let* ((properties (cadr src-block))
            (lang (mode-name-to-lang-name
@@ -5616,7 +5607,7 @@ to copy the content of the block.
 (after! org
   (defun org-html-block-collapsable (orig-fn block contents info)
     "Wrap the usual block in a <details>"
-    (if (or (not org-fancy-html-export-mode) (bound-and-true-p org-msg-currently-exporting))
+    (if (or (not org-fancy-html-export-mode) (bound-and-true-p +org-msg-currently-exporting))
         (funcall orig-fn block contents info)
       (let ((ref (org-export-get-reference block info))
             (type (pcase (car block)
@@ -5659,7 +5650,7 @@ While we're at it, we can a link gutter, as we did with src blocks, and show the
 (defadvice! org-html-table-wrapped (orig-fn table contents info)
   "Wrap the usual <table> in a <div>"
   :around #'org-html-table
-  (if (or (not org-fancy-html-export-mode) (bound-and-true-p org-msg-currently-exporting))
+  (if (or (not org-fancy-html-export-mode) (bound-and-true-p +org-msg-currently-exporting))
       (funcall orig-fn table contents info)
     (let* ((name (plist-get (cadr table) :name))
            (ref (org-export-get-reference table info)))
@@ -5691,7 +5682,7 @@ this config a tad.
   "Add a label and checkbox to `org-html--format-toc-headline's usual output,
 to allow the TOC to be a collapseable tree."
   :around #'org-html--format-toc-headline
-  (if (or (not org-fancy-html-export-mode) (bound-and-true-p org-msg-currently-exporting))
+  (if (or (not org-fancy-html-export-mode) (bound-and-true-p +org-msg-currently-exporting))
       (funcall orig-fn headline info)
     (let ((id (or (org-element-property :CUSTOM_ID headline)
                   (org-export-get-reference headline info))))
@@ -5708,7 +5699,7 @@ org provides.
 (defadvice! org-html--toc-text-stripped-leaves (orig-fn toc-entries)
   "Remove label"
   :around #'org-html--toc-text
-  (if (or (not org-fancy-html-export-mode) (bound-and-true-p org-msg-currently-exporting))
+  (if (or (not org-fancy-html-export-mode) (bound-and-true-p +org-msg-currently-exporting))
       (funcall orig-fn toc-entries)
     (replace-regexp-in-string "<input [^>]+><label [^>]+>\\(.+?\\)</label></li>" "\\1</li>"
                               (funcall orig-fn toc-entries))))
@@ -5745,7 +5736,7 @@ I want to add GitHub-style links on hover for headings.
   (defun org-export-html-headline-anchor (text backend info)
     (when (and (org-export-derived-backend-p backend 'html)
                org-fancy-html-export-mode)
-      (unless (bound-and-true-p org-msg-currently-exporting)
+      (unless (bound-and-true-p +org-msg-currently-exporting)
         (replace-regexp-in-string
          "<h\\([0-9]\\) id=\"\\([a-z0-9-]+\\)\">\\(.*[^ ]\\)<\\/h[0-9]>" ; this is quite restrictive, but due to `org-heading-contraction' I can do this
          "<h\\1 id=\"\\2\">\\3<a aria-hidden=\"true\" href=\"#\\2\">#</a> </h\\1>"
@@ -5754,7 +5745,7 @@ I want to add GitHub-style links on hover for headings.
   (add-to-list 'org-export-filter-headline-functions
                'org-export-html-headline-anchor))
 #+end_src
-It's worth noting that ~org-msg-currently-exporting~ is defined in [[*Org Msg][Org Msg]].
+It's worth noting that ~+org-msg-currently-exporting~ is defined in [[*Org Msg][Org Msg]].
 ***** Acronyms
 I want to style acronyms nicely. For the sake of convenience in implementation
 I've actually done this under the [[#org-latex-acronyms][LaTeX export section]], for the sake of
