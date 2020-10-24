@@ -5086,9 +5086,6 @@ text --- like this \(\sqrt{\beta^2+3}-\sum_{\phi=1}^\infty \frac{x^\phi-1}{\Gamm
 \\usepackage[usenames]{color}
 
 \\usepackage[T1]{fontenc}
-\\usepackage{mathtools}
-\\usepackage{textcomp,amssymb}
-\\usepackage[makeroom]{cancel}
 
 \\usepackage{booktabs}
 
@@ -5107,8 +5104,9 @@ text --- like this \(\sqrt{\beta^2+3}-\sum_{\phi=1}^\infty \frac{x^\phi-1}{\Gamm
 \\setlength{\\topmargin}{1.5cm}
 \\addtolength{\\topmargin}{-2.54cm}
 % my custom stuff
+\\usepackage[nofont,plaindd]{bmc-maths}
 \\usepackage{arev}
-\\usepackage{arevmath}")
+")
 #+end_src
 
 We can either render from a ~dvi~ or ~pdf~ file, so let's benchmark ~latex~ and
@@ -5871,7 +5869,7 @@ While this is the LaTeX section, it's convenient to also provide HTML acronyms h
 \\usepackage[T1]{fontenc}\n\
 \\usepackage[osf,largesc,helvratio=0.9]{newpxtext}\n\
 \\usepackage[scale=0.92]{sourcecodepro}\n\
-\\usepackage[varbb]{newpxmath}\n\
+\\usepackage{bmc-maths}\n\
 
 \\usepackage[activate={true,nocompatibility},final,tracking=true,kerning=true,spacing=true,factor=2000]{microtype}\n\
 \\usepackage{xcolor}\n\
