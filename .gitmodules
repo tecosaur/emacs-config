@@ -7,3 +7,6 @@
 [submodule "org-pandoc-import"]
 	path = lisp/org-pandoc-import
 	url = https://github.com/tecosaur/org-pandoc-import.git
+[submodule "authinfo-color-mode"]
+	path = lisp/authinfo-color-mode
+	url = https://github.com/tecosaur/authinfo-color-mode.git
