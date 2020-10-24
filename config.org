@@ -1035,7 +1035,7 @@ XKCD comics are fun.
 Every so often, you want everyone else to /know/ that you're typing, or just to
 amuse oneself. Introducing: typewriter sounds!
 #+begin_src emacs-lisp
-(package! selectric-mode :pin "bb9e66678f34e9bc23624ff6292cf5e7857e8e5f")
+(package! selectric-mode :pin "1840de71f7414b7cd6ce425747c8e26a413233aa")
 #+end_src
 
 Hey, let's get the weather in here while we're at it.
@@ -1095,7 +1095,7 @@ let's just make sure this is lazy-loaded appropriately.
 
 In a similar manner, [[https://gitlab.com/ambrevar/emacs-gif-screencast][gif-screencast]] may come in handy.
 #+begin_src emacs-lisp
-(package! gif-screencast)
+(package! gif-screencast :pin "e39786458fb30e2e9683094c75c6c2cef537d9c4")
 #+end_src
 
 We can lazy load this using the start/stop commands.
@@ -1200,25 +1200,13 @@ GoldenDict, it's likely we'll be able to switch from ~sdcv~ to that in the futur
 Since GoldenDict supports StarDict files, I expect this will be a relatively
 painless switch.
 
-*** Email
-It's nice to send out fancy HTML emails. The =org-msg= package allows to write
-emails in org mode, and send as an HTML multipart email. We can setup some CSS
-to be inlined, render LaTeX fragments, and all those goodies!
-#+begin_src emacs-lisp
-(package! org-msg)
-#+end_src
-
-To actually get notifications, we can use =mu4e-alert=.
-#+begin_src emacs-lisp
-(package! mu4e-alert)
-#+end_src
 ** Language packages
 *** LaTeX
 For mathematical convenience, WIP
 #+begin_src emacs-lisp
 (package! auto-activating-snippets :recipe
   (:host github :repo "ymarco/auto-activating-snippets")
-  :pin "0927bb5e853c9a5524b46e438c2efe2022b36ac2")
+  :pin "8a3ef550027700afa328e77a43e5bc3765838293")
 (package! latex-auto-activating-snippets
   :recipe (:local-repo "lisp/LaTeX-auto-activating-snippets"))
 #+end_src
@@ -1284,7 +1272,7 @@ features that GitHub has. Initialised in [[Exporting to GFM]].
 
 Now and then citations need to happen
 #+begin_src emacs-lisp
-(package! org-ref :pin "f582e9c53e8e4c5dcc1d3889f1b5c536c9a9b524")
+(package! org-ref :pin "2a91b6f67dc3116b0b688c1242ce67d90d833326")
 #+end_src
 
 Came across this and ... it's cool
@@ -1312,7 +1300,7 @@ to make that right again, and this package makes that even easier to do.
 Org-roam is nice by itself, but there are so /extra/ nice packages which integrate
 with it.
 #+begin_src emacs-lisp
-(package! org-roam-server :pin "8d1d143f5db415864c008b8e42e4d92279df9a81")
+(package! org-roam-server :pin "1dc94e102d60e53bb9929b1cdc55d4d8c2b0d64f")
 #+end_src
 #+begin_src emacs-lisp :tangle yes
 (use-package org-roam-server
