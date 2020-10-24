@@ -1170,7 +1170,7 @@ The /very large files/ mode loads large files in chunks, allowing one to open
 ridiculously large files.
 #+begin_src emacs-lisp
 (package! vlf :recipe (:host github :repo "m00natic/vlfi" :files ("*.el"))
-  :pin "cc02f2533782d6b9b628cec7e2dcf25b2d05a27c")
+  :pin "cc02f2533782d6b9b628cec7e2dcf25b2d05a27c" :disable t)
 #+end_src
 To make VLF available without delaying startup, we'll just load it in quiet moments.
 #+begin_src emacs-lisp :tangle yes
