@@ -263,12 +263,6 @@ few extras.
   - It's slightly quirky. Look at the diagonal cut on stems for example.
     Helvetica is a masterful design, but I like a bit more pizzazz now and then.
 + A few LSP servers. Take a look at [[file:init.el][init.el]] to see which modules have the ~+lsp~ flag.
-+ The =cargo-script= rust crate is required for evaluation of rust blocks by babel.
-  As described in the README for [[https://github.com/micanzhang/ob-rust][ob-rust]]. Like ~delta~, this can just be installed
-  using cargo.
-  #+begin_src shell :eval no :tangle (if (executable-find "cargo-script") "no" "setup.sh")
-cargo install cargo-script
-  #+end_src
 + The [[https://github.com/dandavison/delta/][Delta]] binary. It's packaged for some distributions but I installed it with
   #+begin_src shell :eval no :tangle (if (executable-find "delta") "no" "setup.sh")
 cargo install git-delta
