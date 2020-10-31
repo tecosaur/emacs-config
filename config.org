@@ -6531,11 +6531,7 @@ Some local keybindings to make life a bit easier
 (after! tex
   (map!
    :map LaTeX-mode-map
-   :ei [C-return] #'LaTeX-insert-item
-
-   ;; normal stuff here
-   :localleader
-   :desc "View" "v" #'TeX-view)
+   :ei [C-return] #'LaTeX-insert-item)
   (setq TeX-electric-math '("\\(" . "")))
 #+end_src
 
