@@ -5398,7 +5398,7 @@ compared to the default implementation."
 
 #+begin_src emacs-lisp
 (after! ox-html
-  (setq org-html-meta-tags-plain org-html-meta-tags
+  (setq org-html-meta-tags-plain (bound-and-true-p org-html-meta-tags)
         org-html-meta-tags-fancy
         '((lambda (_title author _info)
             (when (org-string-nw-p author)
