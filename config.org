@@ -3750,8 +3750,10 @@ Let's setup some org-capture templates, and make them visually nice to access.
 
 (after! org-capture
   <<prettify-capture>>
-  (setq +org-capture-uni-units (split-string (f-read-text "~/.org/.uni-units")))
-  (setq +org-capture-recipies  "~/Desktop/TEC/Organisation/recipies.org")
+  (setq +org-capture-uni-units (condition-case nil
+                                   (split-string (f-read-text "~/.org/.uni-units"))
+                                 (error nil))
+        +org-capture-recipies  "~/Desktop/TEC/Organisation/recipies.org")
 
   (defun +doct-icon-declaration-to-icon (declaration)
     "Convert :icon declaration to icon"
