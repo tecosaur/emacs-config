@@ -1,0 +1,73 @@
+name: "Publish"
+on:
+  pull_request:
+  push:
+    branches: master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-20.04 # change to -latest when possible
+
+    steps:
+    - uses: purcell/setup-emacs@master
+      with:
+        version: 27.1
+
+    - name: Checkout config
+      uses: actions/checkout@v2
+      with:
+        submodules: recursive
+
+    - name: Symlink config to expected location
+      # I could just set DOOMDIR ... but this is also easy
+      run: |
+        mkdir -p ~/.config
+        ln -s $GITHUB_WORKSPACE ~/.config/doom
+        mkdir -p ~/.org/roam
+
+    - name: Generate init.el et. al from config.org
+      run: |
+        cd ~/.config/doom
+        emacs --batch --eval "(require 'org)" --eval '(org-babel-tangle-file "config.org")'
+
+    - name: Clone Doom to ~/.emacs.d
+      run: git clone --depth 1 https://github.com/hlissner/doom-emacs ~/.emacs.d
+
+    - name: Get Doom's version
+      id: doom-version
+      run: |
+        cd ~/.emacs.d
+        echo ::set-output name=hash::$(git log -1 | head -1 | awk '{print substr($2,1,7)}')
+      shell: bash
+
+    - name: Cache Doom's install
+      uses: actions/cache@v2
+      with:
+        path: ~/.emacs.d
+        key: ${{ runner.os }}-doom@${{ steps.doom-version.outputs.hash }}
+
+    - name: Doom dependencies
+      run: sudo apt-get install git ripgrep
+
+    - name: Install Doom
+      run: ~/.emacs.d/bin/doom install --no-env --no-fonts
+
+    - name: Export config
+      run: |
+        cd ~/.config/doom/misc
+        ./config-exporter.sh
+        cp ../config.html ../index.html
+
+    - name: Ensure all html files tracked
+      run: |
+        if grep -q '!*.html' ~/.config/doom/.gitignore; then
+          echo "!*.html" >> ~/.config/doom/.gitignore
+        fi
+      
+    - name: Deploy
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        deploy_key: ${{ secrets.ACTIONS_DEPLOY_KEY }}
+        publish_dir: ./
+        force_orphan: true
+        exclude_assets: '.github,lisp/LaTeX-auto-activating-snippets,lisp/authinfo-color-mode,lisp/lexic,lisp/org-pandoc-import'
