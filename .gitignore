@@ -1,0 +1,6 @@
+.*
+_minted-config
+abbrev.el
+config.*
+!config.org
+setup.sh
