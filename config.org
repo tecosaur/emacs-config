@@ -954,7 +954,7 @@ issues when started in a non-graphical session.
 #+end_src
 * Package loading
 :PROPERTIES:
-:header-args:emacs-lisp: :tangle "packages.el" :comments link
+:header-args:emacs-lisp: :tangle "packages.el" :comments no
 :END:
 This file shouldn't be byte compiled.
 #+begin_src emacs-lisp :tangle "packages.el" :comments no
