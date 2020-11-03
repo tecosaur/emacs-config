@@ -4,3 +4,6 @@ abbrev.el
 config.*
 !config.org
 setup.sh
+
+!publish
+!publish/config.html

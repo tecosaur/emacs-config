@@ -58,16 +58,16 @@ jobs:
         ./config-exporter.sh
         cp ../config.html ../index.html
 
-    - name: Ensure all html files tracked
+    - name: Move files of interest to the publish subdir
       run: |
-        if grep -q '!*.html' ~/.config/doom/.gitignore; then
-          echo "!*.html" >> ~/.config/doom/.gitignore
-        fi
+        cd ~/.config/doom
+        mkdir -p ./publish
+        mv *.html ./publish
       
     - name: Deploy
       uses: peaceiris/actions-gh-pages@v3
       with:
         deploy_key: ${{ secrets.ACTIONS_DEPLOY_KEY }}
-        publish_dir: ./
+        publish_dir: ./publish
         force_orphan: true
         exclude_assets: '.github,lisp/LaTeX-auto-activating-snippets,lisp/authinfo-color-mode,lisp/lexic,lisp/org-pandoc-import'
