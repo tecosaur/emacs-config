@@ -3125,7 +3125,8 @@ We want to set this up so it loads nicely in [[*Extra links][Extra links]].
              +xkcd-find-and-copy +xkcd-find-and-view
              +xkcd-fetch-info +xkcd-select)
   :config
-  (add-to-list 'evil-snipe-disabled-modes 'xkcd-mode)
+  (after! evil-snipe
+    (add-to-list 'evil-snipe-disabled-modes 'xkcd-mode))
   :general (:states 'normal
             :keymaps 'xkcd-mode-map
             "<right>" #'xkcd-next
