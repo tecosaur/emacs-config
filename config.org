@@ -3777,7 +3777,7 @@ Let's setup some org-capture templates, and make them visually nice to access.
 
   (setq doct-after-conversion-functions '(+doct-iconify-capture-templates))
 
-  (add-transient-hook! 'org-capture-select-template
+  (defun set-org-capture-templates ()
     (setq org-capture-templates
           (doct `(("Personal todo" :keys "t"
                    :icon ("checklist" :set "octicon" :color "green")
@@ -3934,7 +3934,16 @@ Let's setup some org-capture templates, and make them visually nice to access.
                                :time-or-todo "%U"
                                :heading "Unreleased"
                                :file +org-capture-central-project-changelog-file))
-                   ))))))
+                   )))))
+
+  (set-org-capture-templates)
+  (unless (display-graphic-p)
+    (add-hook 'server-after-make-frame-hook
+      (defun org-capture-reinitialise-hook ()
+        (when (display-graphic-p)
+          (set-org-capture-templates)
+          (remove-hook 'server-after-make-frame-hook
+                       #'org-capture-reinitialise-hook))))))
 #+end_src
 It would also be nice to improve how the capture dialogue looks
 #+name: prettify-capture
