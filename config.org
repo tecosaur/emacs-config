@@ -3483,7 +3483,7 @@ figure.png╶─╧─▶ PROJECT.ORG ▶───╴filters╶───╧─�
 Org mode isn't recognised as it's own mime type by default, but that can easily
 be changed with the following file. For system-wide changes try
 ~~/usr/share/mime/packages/org.xml~.
-#+begin_src xml :tangle ~/.local/share/mime/packages/org.xml
+#+begin_src xml :tangle ~/.local/share/mime/packages/org.xml :mkdirp yes
 <?xml version="1.0" encoding="utf-8"?>
 <mime-info xmlns='http://www.freedesktop.org/standards/shared-mime-info'>
   <mime-type type="text/org">
@@ -4061,7 +4061,7 @@ no modeline.
 ***** Basic settings
 I'll just set this to be within =Organisation= folder for now, in the future it
 could be worth seeing if I could hook this up to a [[https://nextcloud.com/][Nextcloud]] instance.
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle (if (file-exists-p "~/Desktop/TEC/Organisation/Roam/") "yes" "no")
 (setq org-roam-directory "~/Desktop/TEC/Organisation/Roam/")
 #+end_src
 ***** Registering roam protocol
