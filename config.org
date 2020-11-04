@@ -4952,6 +4952,20 @@ And the same with the title.
   (custom-set-faces!
     '(org-document-title :height 1.2)))
 #+end_src
+
+It seems reasonable to have deadlines in the error face when they're passed.
+#+begin_src emacs-lisp
+(setq org-agenda-deadline-faces
+      '((1.001 . error)
+        (1.0 . org-warning)
+        (0.5 . org-upcoming-deadline)
+        (0.0 . org-upcoming-distant-deadline)))
+#+end_src
+
+We can then have quote blocks stand out a bit more by making them /italic/.
+#+begin_src emacs-lisp
+(setq org-fontify-quote-and-verse-blocks t)
+#+end_src
 ***** Symbols
 It's also nice to change the character used for collapsed items (by default ~…~),
 I think ~▾~ is better for indicating 'collapsed section'.
@@ -4984,6 +4998,7 @@ I've also added some fun alternatives, just commented out.
         org-superstar-prettify-item-bullets t ))
 (after! org
   (setq org-ellipsis " ▾ "
+        org-hide-leading-stars t
         org-priority-highest ?A
         org-priority-lowest ?E
         org-priority-faces
