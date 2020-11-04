@@ -3407,6 +3407,8 @@ For some file types, we overwrite defaults in the [[file:./snippets][snippets]] 
 need to have a template assigned.
 #+begin_src emacs-lisp
 (set-file-template! "\\.tex$" :trigger "__" :mode 'latex-mode)
+(set-file-template! "\\.org$" :trigger "__" :mode 'org-mode)
+(set-file-template! "/LICEN[CS]E$" :trigger '+file-templates/insert-license)
 #+end_src
 ** Plaintext
 It's nice to see ANSI colour codes displayed
