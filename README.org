@@ -3,7 +3,11 @@
 Here you may find my config. There is only one significant file:
  - [[file:config.org][config.org]], my configuration file
 
-Other than that, snippets are (currently) sourced from the =./snippets= folder.
-
 What you *really* want is the =M-x org-html-export-to-html= version of ~config.org~
 (linked in the title).
+
+ In addition to the =html= export, this /produces/ the [[https://tecosaur.github.io/emacs-config/config.el.html][config.el]] file
+
+Other than that, snippets are (currently) sourced from the [[file:snippets/][snippets]] folder,
+resources are put in [[file:misc/][misc]], and you may find submodules for packages of mine in
+[[file:lisp/][lisp]], along with extra major modes.
