@@ -199,6 +199,9 @@ $code-warning: $orange;
     &:hover {
       color: $text-gray;
     }
+    &:active {
+      font-weight: bold;
+    }
   }
   a {
     text-decoration: none;

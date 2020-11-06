@@ -1290,6 +1290,8 @@ li p + details.code {
     color: var(--text-light); }
     .gutter *:hover {
       color: var(--text-gray); }
+    .gutter *:active {
+      font-weight: bold; }
   .gutter a {
     text-decoration: none;
     font-size: 110%; }
