@@ -627,7 +627,7 @@ ess                          ; emacs speaks statistics
  +fold)                      ; fold the clutter away nicities
 ;;lean                       ; proof that mathematicians need help
 ;;factor                     ; for when scripts are stacked against you
-ledger                       ; an accounting system in Emacs
+;;ledger                     ; an accounting system in Emacs
 lua                          ; one-based indices? one-based indices
 markdown                     ; writing docs for people to ignore
 ;;nim                        ; python + lisp at the speed of c
@@ -6669,28 +6669,11 @@ priority of =mypyls=
 ** Graphviz
 #+begin_src emacs-lisp
 (use-package! graphviz-dot-mode
-  :mode ("\\.dot\\'" "\\.gz\\'")
-  :config
-  (set-company-backend! 'graphviz-dot-mode 'company-graphviz-dot-backend))
+  :commands graphviz-dot-mode
+  :mode ("\\.dot\\'" "\\.gz\\'"))
 
 (use-package! company-graphviz-dot
   :after graphviz-dot-mode)
-#+end_src
-** hledger
-~ledger-mode~ is great and all, but ~hledger~ seems to be more actively maintained.
-For example, from 2018--2020, the most prolific contributor to ~ledger~ produced
-31 commits. For ~hledger~ this statistic is 1800 commits. In addition, over the
-last decade, ~ledger~ seems to have lost steam, while ~hledger~ seems as actively
-developed as ever. From this basic comparison ~hledger~ looks to have a more
-promising outlook. It also has a few extra niceties that ~ledger~ doesn't, but is
-a little slower (~haskell~ vs. ~c++~).
-Since this uses the same format, and ~ledger-mode~ is well integrated into emacs,
-and produced by John Wiegley --- author of ~ledger~ and current Emacs maintainer
---- using this seems like a good idea. Thankfully we can, with a little modification.
-#+begin_src emacs-lisp
-(setq ledger-mode-should-check-version nil
-      ledger-report-links-in-register nil
-      ledger-binary-path "hledger")
 #+end_src
 ** Markdown
 Let's use mixed pitch, because it's great
