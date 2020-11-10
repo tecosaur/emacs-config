@@ -303,6 +303,10 @@ for more info).
 #+begin_src emacs-lisp :comments no
 ;;; config.el -*- lexical-binding: t; -*-
 #+end_src
+
+#+begin_src shell :exports none :comments no :tangle-mode (identity #o755)
+#!/bin/bash
+#+end_src
 ** Personal Information
 It's useful to have some basic personal information
 #+begin_src emacs-lisp
