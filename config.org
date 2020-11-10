@@ -4573,35 +4573,6 @@ It likely misses some edged cases, but should mostly work.
         (setq count (1+ count)))
       (message "Replaced %d occurances" count))))
 #+end_src
-**** Org Plot
-There are two main bits of extra functionality I wan to add
-+ the ability to transpose tables (internally)
-+ a radar type
-
-To accomplish this, overriding the ~org-plot/gnuplot~ function seems to be the
-clear way. I tried this, and overrode so much that it seemed to make sense
-just to modify =org-plot.el= instead, as it was only ~350 lines and I functions
-that encompassed most of that line count.
-
-Given that my [[file:lisp/org-plot.el][org-plot.el]] is now ~700 lines, this seems to have been a good call.
-
-For transposition, I've added the following (equivalent) keys
-+ ~[transpose|t]~
-+ ~t~
-When set to ~yes~, ~y~, or ~t~ the table is internally transposed (i.e. the =elisp= data
-form of the table only).
-
-The radar chart is a lot more involved, and I've added the following keys
-+ ~type:radar~
-  This uses the radar template, the result of which can be seen in [[#org][Org Mode]].
-+ ~[min|ymin]:0..n~
-  This sets the start value of /every/ axis.
-+ ~[max|ymax]:0..n~
-  This sets the end value of /every/ axis.
-  If both ~ymin~ and ~ymax~ are set, only the first axis gets tick labels.
-+ ~ticks:0..n~
-  This sets the number of ticks. Only works for \(n>2\), or \(n=0\) in which
-  case no ticks are shown.
 **** Extra links
 ***** xkcd
 Because xkcd is cool, let's make it as easy and fun as possible to insert them.
