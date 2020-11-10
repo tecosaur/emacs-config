@@ -1224,7 +1224,7 @@ And some basic config
 *** Org Mode
 Use HEAD for development.
 #+begin_src emacs-lisp
-(unpin! org)
+(unpin! org-mode)
 #+end_src
 
 **** Improve agenda/capture
