@@ -4551,6 +4551,28 @@ Return nil otherwise."
 
     (car (set-difference src-langs header-langs :test #'string=))))
 #+end_src
+**** Translate capital keywords (old) to lower case (new)
+Everyone used to use ~#+CAPITAL~ keywords. Then people realised that ~#+lowercase~
+is actually both marginally easier and visually nicer, so now the capital
+version is just used in the manual.
+
+To avoid sometimes having to choose between the hassle out of updating old
+documents and using mixed syntax, I'll whip up a basic transcode-y function.
+It likely misses some edged cases, but should mostly work.
+
+#+begin_src emacs-lisp
+(defun org-syntax-convert-case-to-lower ()
+  "Convert all #+KEYWORDS to #+keywords."
+  (interactive)
+  (save-excursion
+    (goto-char (point-min))
+    (let ((count 0)
+          (case-fold-search nil))
+      (while (re-search-forward "#\\+[A-Z]+" nil t)
+        (replace-match (downcase (match-string 0)) t)
+        (setq count (1+ count)))
+      (message "Replaced %d occurances" count))))
+#+end_src
 **** Org Plot
 There are two main bits of extra functionality I wan to add
 + the ability to transpose tables (internally)
