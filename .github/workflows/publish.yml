@@ -47,7 +47,7 @@ jobs:
         key: ${{ runner.os }}-doom@${{ steps.doom-version.outputs.hash }}
 
     - name: Doom dependencies
-      run: sudo apt-get install git ripgrep
+      run: sudo apt-get install git ripgrep xclip
 
     - name: Install Doom
       run: ~/.emacs.d/bin/doom install --no-env --no-fonts
