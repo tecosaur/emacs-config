@@ -4557,7 +4557,7 @@ is actually both marginally easier and visually nicer, so now the capital
 version is just used in the manual.
 #+begin_quote
 Org is standardized on lower case. Uppercase is used in the manual as a poor
-man's bold, and supported for historical reasons. --- [[mu4e:msgid:87tuuw3n15.fsf@nicolasgoaziou.fr][Nicolas Goaziou on the Org ML]]
+man's bold, and supported for historical reasons. --- [[https://orgmode.org/list/87tuuw3n15.fsf@nicolasgoaziou.fr][Nicolas Goaziou on the Org ML]]
 #+end_quote
 
 To avoid sometimes having to choose between the hassle out of updating old
