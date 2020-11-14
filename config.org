@@ -1298,11 +1298,11 @@ to make that right again, and this package makes that even easier to do.
 Org-roam is nice by itself, but there are so /extra/ nice packages which integrate
 with it.
 #+begin_src emacs-lisp
-(package! org-roam-server :pin "1dc94e102d60e53bb9929b1cdc55d4d8c2b0d64f")
+(package! org-roam-server :pin "fde2636d794f020ed5810fa38fe57a264932f661")
 #+end_src
 #+begin_src emacs-lisp :tangle yes
 (use-package org-roam-server
-  :after org-roam
+  :after (org-roam server)
   :config
   (setq org-roam-server-host "127.0.0.1"
         org-roam-server-port 8078
@@ -4555,6 +4555,10 @@ Return nil otherwise."
 Everyone used to use ~#+CAPITAL~ keywords. Then people realised that ~#+lowercase~
 is actually both marginally easier and visually nicer, so now the capital
 version is just used in the manual.
+#+begin_quote
+Org is standardized on lower case. Uppercase is used in the manual as a poor
+man's bold, and supported for historical reasons. --- [[mu4e:msgid:87tuuw3n15.fsf@nicolasgoaziou.fr][Nicolas Goaziou on the Org ML]]
+#+end_quote
 
 To avoid sometimes having to choose between the hassle out of updating old
 documents and using mixed syntax, I'll whip up a basic transcode-y function.
