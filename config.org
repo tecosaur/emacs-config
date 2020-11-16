@@ -2874,7 +2874,7 @@ StartupWMClass=Emacs
 #+end_src
 
 To register this, just call
-#+begin_src shell
+#+begin_src shell :tangle (if (string= (shell-command-to-string "xdg-mime query default x-scheme-handler/mailto") "emacsmail.desktop\n") "no" "setup.sh")
 update-desktop-database ~/.local/share/applications
 #+end_src
 
@@ -3501,11 +3501,11 @@ be changed with the following file. For system-wide changes try
 #+end_src
 What's nice is that Papirus [[https://github.com/PapirusDevelopmentTeam/papirus-icon-theme/commit/a10fb7f2423d5e30b9c4477416ccdc93c4f3849d][now]] has an icon for =text/org=.
 One simply needs to refresh their mime database
-#+begin_src shell :results silent
+#+begin_src shell :tangle (if (string= (shell-command-to-string "xdg-mime query default text/org") "\n") "setup.sh" "no")
 update-mime-database ~/.local/share/mime
 #+end_src
 Then set Emacs as the default editor
-#+begin_src shell :results silent
+#+begin_src shell :tangle (if (string= (shell-command-to-string "xdg-mime query default text/org") "emacs-client.desktop\n") "no" "setup.sh")
 xdg-mime default emacs.desktop text/org
 #+end_src
 *** Behaviour
@@ -4092,7 +4092,7 @@ Terminal=false
 MimeType=x-scheme-handler/org-protocol
 #+end_src
 To associate ~org-protocol://~ links with the desktop file,
-#+begin_src shell
+#+begin_src shell :tangle (if (string= (shell-command-to-string "xdg-mime query default x-scheme-handler/org-protocol") "org-protocol.desktop\n") "no" "setup.sh")
 xdg-mime default org-protocol.desktop x-scheme-handler/org-protocol
 #+end_src
 ***** Graph Behaviour
