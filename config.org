@@ -948,7 +948,7 @@ issues when started in a non-graphical session.
     (setq +mu4e-lock-greedy t)
     (setq +mu4e-lock-relaxed t)
     (+mu4e-lock-add-watcher)
-    (when (+mu4e-lock-avalible t)
+    (when (+mu4e-lock-available t)
       (mu4e~start)))
   (when (require 'elfeed nil t)
     (run-at-time nil (* 8 60 60) #'elfeed-update)))
