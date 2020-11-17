@@ -4572,7 +4572,7 @@ It likely misses some edged cases, but should mostly work.
     (goto-char (point-min))
     (let ((count 0)
           (case-fold-search nil))
-      (while (re-search-forward "#\\+[A-Z]+" nil t)
+      (while (re-search-forward "#\\+[A-Z_]+" nil t)
         (replace-match (downcase (match-string 0)) t)
         (setq count (1+ count)))
       (message "Replaced %d occurances" count))))
