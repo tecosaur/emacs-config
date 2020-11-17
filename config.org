@@ -1047,7 +1047,7 @@ roll our [[file:lisp/wttrin.el][own version]].
 
 Why not flash words on the screen. Why not --- hey, it could be fun.
 #+begin_src emacs-lisp
-(package! spray :pin "00638bc916227f2f961013543d10e85a43a32e29")
+(package! spray :pin "65002a15b0c74081ac51a41134b9846e05bc2cd5")
 #+end_src
 
 With all our fancy Emacs themes, my terminal is missing out!
@@ -1069,7 +1069,7 @@ having something that doesn't cover up screen content is nice.
 [[https://tecosaur.com/lfs/emacs-config/screenshots/keycast.png]]
 
 #+begin_src emacs-lisp
-(package! keycast :pin "038475c178e90c7bad64d113db26d42cad60e149")
+(package! keycast :pin "16d9961d15536054632be1eff75fd0fb1a4420f8")
 #+end_src
 let's just make sure this is lazy-loaded appropriately.
 #+begin_src emacs-lisp :tangle yes
@@ -1095,7 +1095,7 @@ let's just make sure this is lazy-loaded appropriately.
 
 In a similar manner, [[https://gitlab.com/ambrevar/emacs-gif-screencast][gif-screencast]] may come in handy.
 #+begin_src emacs-lisp
-(package! gif-screencast :pin "e39786458fb30e2e9683094c75c6c2cef537d9c4")
+(package! gif-screencast :pin "1145e676b160e7b1e5756f5b0f30dd31de252e1f")
 #+end_src
 
 We can lazy load this using the start/stop commands.
@@ -1153,7 +1153,7 @@ View data frames better with
 [[https://github.com/dandavison/delta/][Delta]] is a git diff syntax highlighter written in rust. The author also wrote a
 package to hook this into the magit diff view. This requires the ~delta~ binary.
 #+begin_src emacs-lisp
-;; (package! magit-delta :recipe (:host github :repo "dandavison/magit-delta") :pin "0c7d8b2359")
+;; (package! magit-delta :recipe (:host github :repo "dandavison/magit-delta") :pin "b8526f890415374822514e488341d2b706d6bc2f")
 #+end_src
 **** Info colours
 This makes manual pages nicer to look at :)
@@ -1206,7 +1206,7 @@ For mathematical convenience, WIP
 #+begin_src emacs-lisp
 (package! auto-activating-snippets :recipe
   (:host github :repo "ymarco/auto-activating-snippets")
-  :pin "8a3ef550027700afa328e77a43e5bc3765838293")
+  :pin "a6386b062cacbbea30c6d239a771d69859839f1d")
 (package! latex-auto-activating-snippets
   :recipe (:local-repo "lisp/LaTeX-auto-activating-snippets"))
 #+end_src
@@ -1232,7 +1232,7 @@ Use HEAD for development.
 **** Improve agenda/capture
 The agenda is nice, but a souped up version is nicer.
 #+begin_src emacs-lisp
-(package! org-super-agenda :pin "3264255989021b8563ea42b5d26acbc2a024f14d")
+(package! org-super-agenda :pin "7fa6e210d7d6356f376ed35b62896a2670e26665")
 #+end_src
 
 Similarly ~doct~ (Declarative Org Capture Templates) seems to be a nicer way to
@@ -1248,7 +1248,7 @@ redraw them in the buffer with box-drawing characters. Sounds like an
 improvement to me! Just need to get it working...
 #+begin_src emacs-lisp
 (package! org-pretty-table-mode
-  :recipe (:host github :repo "Fuco1/org-pretty-table") :pin "88380f865a79bba49e4f501b7fe73a7bfb03bd1a")
+  :recipe (:host github :repo "Fuco1/org-pretty-table") :pin "474ad84a8fe5377d67ab7e491e8e68dac6e37a11")
 #+end_src
 
 For automatically toggling LaTeX fragment previews there's this nice package
@@ -1258,7 +1258,7 @@ For automatically toggling LaTeX fragment previews there's this nice package
 
 ~org-superstar-mode~ is great. While we're at it we may as well make tags prettier as well :)
 #+begin_src emacs-lisp
-(package! org-pretty-tags :pin "40fd72f3e701e31813f383fb429d30bb88cee769")
+(package! org-pretty-tags :pin "5c7521651b35ae9a7d3add4a66ae8cc176ae1c76")
 #+end_src
 **** Extra functionality
 Because of the /[[https://github.com/commonmark/commonmark-spec/wiki/markdown-flavors][lovely variety in markdown implementations]]/ there isn't actually
