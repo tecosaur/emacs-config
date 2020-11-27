@@ -6316,7 +6316,7 @@ rather not have it default to using them, so let's re-order the preferences.
 *** Snippet helpers
 **** Template
 For use in the new-file template, let's set out a nice preamble we may want to use.
-#+name: latex-nice-preable
+#+name: latex-nice-preamble
 #+begin_src latex :tangle no
 \\usepackage[pdfa,unicode=true,hidelinks]{hyperref}
 
@@ -6344,7 +6344,7 @@ For use in the new-file template, let's set out a nice preamble we may want to u
 Then let's bind the content to a function, and define some nice helpers.
 #+begin_src emacs-lisp :noweb no-export
 (setq tec/yas-latex-template-preamble "
-<<latex-nice-preable>>
+<<latex-nice-preamble>>
 ")
 
 (defun tec/yas-latex-get-class-choice ()
