@@ -33,6 +33,8 @@
          (- (float-time) start-time)
          (expand-file-name "../config.org"))
 
+(require 'vc) ; need this for modification-time macro
+
 (with-current-buffer (find-file (expand-file-name  "../config.org"))
   (message "\033[0;33m[%.1fs] Exporting %s\033[0m"
            (- (float-time) start-time)
