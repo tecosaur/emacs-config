@@ -4551,7 +4551,7 @@ Return nil otherwise."
                             collect (cons n (length m)))
                    (lambda (a b) (> (cdr a) (cdr b))))))
 
-    (car (set-difference src-langs header-langs :test #'string=))))
+    (car (cl-set-difference src-langs header-langs :test #'string=))))
 #+end_src
 **** Translate capital keywords (old) to lower case (new)
 Everyone used to use ~#+CAPITAL~ keywords. Then people realised that ~#+lowercase~
