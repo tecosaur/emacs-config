@@ -2830,6 +2830,9 @@ few more visual tweaks, we'll tweak the headers a bit
         mu4e-headers-results-limit 1000
         mu4e-index-cleanup t)
 
+  (add-to-list 'mu4e-bookmarks
+               '(:name "Yesterday's messages" :query "date:2d..1d" :key ?y) t)
+
   (defvar +mu4e-header--folder-colors nil)
   (appendq! mu4e-header-info-custom
             '((:folder .
