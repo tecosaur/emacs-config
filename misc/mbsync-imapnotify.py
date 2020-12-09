@@ -10,7 +10,7 @@ import fnmatch
 
 mbsyncFile = Path("~/.mbsyncrc").expanduser()
 
-imapnotifyConfigFolder = Path("~/.imapnotify/").expanduser()
+imapnotifyConfigFolder = Path("~/.config/imapnotify/").expanduser()
 imapnotifyConfigFolder.mkdir(exist_ok=True)
 imapnotifyConfigFilename = "notify.conf"
 
@@ -58,7 +58,7 @@ def processLine(line):
     if parameter == "IMAPAccount":
         if currentAccountNumber > 0:
             finaliseAccount()
-            newAccount(value)
+        newAccount(value)
     elif parameter in mbsyncInotifyMapping.keys():
         parser, key = mbsyncInotifyMapping[parameter]
         currentAccountData[key] = parser(value)
@@ -286,29 +286,33 @@ def getAccountServiceStates(accounts):
 
 
 if len(sys.argv) > 1:
-    if sys.argv[1] == "--enable":
+    if sys.argv[1]   in ["-e", "--enable"]:
         enableAccountSystemdServices(oldAccounts)
         exit()
-    elif sys.argv[1] == "--disable":
+    elif sys.argv[1] in ["-d", "--disable"]:
         disableAccountSystemdServices(oldAccounts)
         exit()
-    elif sys.argv[1] == "--status":
+    elif sys.argv[1] in ["-r", "--restart"]:
+        restartAccountSystemdServices(oldAccounts)
+        exit()
+    elif sys.argv[1] in ["-s", "--status"]:
         getAccountServiceStates(oldAccounts)
         exit()
-    elif sys.argv[1] == "--help":
+    elif sys.argv[1] in ["-h", "--help"]:
         print("""\033[1;37mMbsync to IMAP Notify config generator.\033[0;37m
 
 Usage: mbsync-imapnotify [options]
 
 Options:
-    --enable       enable all services
-    --disable      disable all services
-    --status       fetch the status for all services
-    --help         show this help
+    -e, --enable       enable all services
+    -d, --disable      disable all services
+    -r, --restart      restart all services
+    -s, --status       fetch the status for all services
+    -h, --help         show this help
 """, end='')
         exit()
     else:
-        print(f"\033[0;31mFlag {sys.argv[1]} not recognised\033[0;37m")
+        print(f"\033[0;31mFlag {sys.argv[1]} not recognised, try --help\033[0;37m")
         exit()
 
 
