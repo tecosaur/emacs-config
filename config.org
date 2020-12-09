@@ -1232,7 +1232,7 @@ Use HEAD for development.
 **** Improve agenda/capture
 The agenda is nice, but a souped up version is nicer.
 #+begin_src emacs-lisp
-(package! org-super-agenda :pin "7fa6e210d7d6356f376ed35b62896a2670e26665")
+(package! org-super-agenda :pin "ac7f2ef05c161b10390141b6863b431dc9360edc")
 #+end_src
 
 Similarly ~doct~ (Declarative Org Capture Templates) seems to be a nicer way to
@@ -1272,7 +1272,7 @@ features that GitHub has. Initialised in [[Exporting to GFM]].
 
 Now and then citations need to happen
 #+begin_src emacs-lisp
-(package! org-ref :pin "2a91b6f67dc3116b0b688c1242ce67d90d833326")
+(package! org-ref :pin "120509c38929cc25d814e9a42092c44cb34ec34e")
 #+end_src
 
 Came across this and ... it's cool
@@ -1300,7 +1300,7 @@ to make that right again, and this package makes that even easier to do.
 Org-roam is nice by itself, but there are so /extra/ nice packages which integrate
 with it.
 #+begin_src emacs-lisp
-(package! org-roam-server :pin "fde2636d794f020ed5810fa38fe57a264932f661")
+(package! org-roam-server :pin "6cfb8d60abfecd985975f683e48e87d03a0f0212")
 #+end_src
 #+begin_src emacs-lisp :tangle yes
 (use-package org-roam-server
