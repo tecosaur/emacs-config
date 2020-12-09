@@ -5402,7 +5402,7 @@ compared to the default implementation."
          (when title
            (format
             "<div class='page-header'><div class='page-meta'>%s, %s</div><h1 class=\"title\">%s%s</h1></div>\n"
-            (format-time-string "%Y-%m-%d %A %-I:%M%p")
+            (org-export-data (plist-get info :date) info)
             (org-export-data (plist-get info :author) info)
             (org-export-data title info)
             (if subtitle
