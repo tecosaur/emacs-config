@@ -4385,7 +4385,7 @@ made unique when necessary."
                                                       (org-element-property :parent
                                                                             (org-element-property :parent datum)))))))
            ;; get ascii-only form of title without needing percent-encoding
-           (ref (concat (org-heading-contraction (substring-no-properties title))
+           (ref (concat (org-reference-contraction (substring-no-properties title))
                         (unless (or headline-p (org-element-property :name datum))
                           (concat ","
                                   (pcase (car datum)
@@ -4404,7 +4404,7 @@ made unique when necessary."
             (setf title (concat (org-element-property :raw-value parent)
                                 "--" title)
                   ;; get ascii-only form of title without needing percent-encoding
-                  ref (org-heading-contraction (substring-no-properties title))
+                  ref (org-reference-contraction (substring-no-properties title))
                   parent (when headline-p (org-element-property :parent parent)))
           ;; No more ancestors: add and increment a number.
           (inc-suffixf ref)))
@@ -5774,7 +5774,7 @@ I want to add GitHub-style links on hover for headings.
                org-fancy-html-export-mode)
       (unless (bound-and-true-p +org-msg-currently-exporting)
         (replace-regexp-in-string
-         "<h\\([0-9]\\) id=\"\\([a-z0-9-]+\\)\">\\(.*[^ ]\\)<\\/h[0-9]>" ; this is quite restrictive, but due to `org-heading-contraction' I can do this
+         "<h\\([0-9]\\) id=\"\\([a-z0-9-]+\\)\">\\(.*[^ ]\\)<\\/h[0-9]>" ; this is quite restrictive, but due to `org-reference-contraction' I can do this
          "<h\\1 id=\"\\2\">\\3<a aria-hidden=\"true\" href=\"#\\2\">#</a> </h\\1>"
          text))))
 
