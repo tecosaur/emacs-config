@@ -4225,63 +4225,82 @@ the[[*Window title][Window title]].
 #+end_src
 **** Nicer generated heading IDs
 Thanks to alphapapa's [[https://github.com/alphapapa/unpackaged.el#export-to-html-with-useful-anchors][unpackaged.el]].
+
 By default, ~url-hexify-string~ seemed to cause me some issues. Replacing that in
 ~a53899~ resolved this for me. To go one step further, I create a function for
 producing nice short links, like an inferior version of ~reftex-label~.
-#+begin_src emacs-lisp
-(defvar org-heading-contraction-max-words 3
-  "Maximum number of words in a heading")
-(defvar org-heading-contraction-max-length 35
-  "Maximum length of resulting string")
-(defvar org-heading-contraction-stripped-words
-  '("the" "on" "in" "off" "a" "for" "by" "of" "and" "is" "to")
-  "Unnecesary words to be removed from a heading")
 
-(defun org-heading-contraction (heading-string)
-  "Get a contracted form of HEADING-STRING that is onlu contains alphanumeric charachters.
-Strips 'joining' words in `org-heading-contraction-stripped-words',
-and then limits the result to the first `org-heading-contraction-max-words' words.
-If the total length is > `org-heading-contraction-max-length' then individual words are
-truncated to fit within the limit"
-  (let ((heading-words
+#+begin_src emacs-lisp
+(defvar org-reference-contraction-max-words 3
+  "Maximum number of words in a reference reference.")
+(defvar org-reference-contraction-max-length 35
+  "Maximum length of resulting reference reference, including joining characters.")
+(defvar org-reference-contraction-stripped-words
+  '("the" "on" "in" "off" "a" "for" "by" "of" "and" "is" "to")
+  "Superfluous words to be removed from a reference.")
+(defvar org-reference-contraction-joining-char "-"
+  "Character used to join words in the reference reference.")
+
+(defun org-reference-contraction-truncate-words (words)
+  "Using `org-reference-contraction-max-length' as the total character 'budget' for the WORDS
+and truncate individual words to conform to this budget.
+
+To arrive at a budget that accounts for words undershooting their requisite average length,
+the number of charachters in the budget freed by short words is distributed among the words
+exceeding the average length.  This adjusts the per-word budget to be the maximum feasable for
+this particular situation, rather than the universal maximum average.
+
+This budget-adjusted per-word maximum length is given by the mathematical expression below:
+
+max length = \\floor{ \\frac{total length - chars for seperators - \\sum_{word \\leq average length} length(word) }{num(words) > average length} }"
+      ;; trucate each word to a max word length determined by
+      ;;
+  (let* ((total-length-budget (- org-reference-contraction-max-length  ; how many non-separator chars we can use
+                                 (1- (length words))))
+         (word-length-budget (/ total-length-budget                      ; max length of each word to keep within budget
+                                org-reference-contraction-max-words))
+         (num-overlong (-count (lambda (word)                            ; how many words exceed that budget
+                                 (> (length word) word-length-budget))
+                               words))
+         (total-short-length (-sum (mapcar (lambda (word)                ; total length of words under that budget
+                                             (if (<= (length word) word-length-budget)
+                                                 (length word) 0))
+                                           words)))
+         (max-length (/ (- total-length-budget total-short-length)       ; max(max-length) that we can have to fit within the budget
+                        num-overlong)))
+    (mapcar (lambda (word)
+              (if (<= (length word) max-length)
+                  word
+                (substring word 0 max-length)))
+            words)))
+
+(defun org-reference-contraction (reference-string)
+  "Give a contracted form of REFERENCE-STRING that is only contains alphanumeric characters.
+Strips 'joining' words present in `org-reference-contraction-stripped-words',
+and then limits the result to the first `org-reference-contraction-max-words' words.
+If the total length is > `org-reference-contraction-max-length' then individual words are
+truncated to fit within the limit using `org-reference-contraction-truncate-words'."
+  (let ((reference-words
          (-filter (lambda (word)
-                    (not (member word org-heading-contraction-stripped-words)))
+                    (not (member word org-reference-contraction-stripped-words)))
                   (split-string
-                   (->> heading-string
-                        s-downcase
+                   (->> reference-string
+                        downcase
                         (replace-regexp-in-string "\\[\\[[^]]+\\]\\[\\([^]]+\\)\\]\\]" "\\1") ; get description from org-link
                         (replace-regexp-in-string "[-/ ]+" " ") ; replace seperator-type chars with space
                         (replace-regexp-in-string "[^a-z0-9 ]" "") ; strip chars which need %-encoding in a uri
                         ) " "))))
-    (when (> (length heading-words)
-             org-heading-contraction-max-words)
-      (setq heading-words
-            (cl-subseq heading-words 0 org-heading-contraction-max-words)))
+    (when (> (length reference-words)
+             org-reference-contraction-max-words)
+      (setq reference-words
+            (cl-subseq reference-words 0 org-reference-contraction-max-words)))
 
-    (when (> (+ (-sum (mapcar #'length heading-words))
-                (1- (length heading-words)))
-             org-heading-contraction-max-length)
-      ;; trucate each word to a max word length determined by
-      ;;   max length = \floor{ \frac{total length - chars for seperators - \sum_{word \leq average length} length(word) }{num(words) > average length} }
-      (setq heading-words (let* ((total-length-budget (- org-heading-contraction-max-length  ; how many non-separator chars we can use
-                                                         (1- (length heading-words))))
-                                 (word-length-budget (/ total-length-budget                  ; max length of each word to keep within budget
-                                                        org-heading-contraction-max-words))
-                                 (num-overlong (-count (lambda (word)                             ; how many words exceed that budget
-                                                         (> (length word) word-length-budget))
-                                                       heading-words))
-                                 (total-short-length (-sum (mapcar (lambda (word)                 ; total length of words under that budget
-                                                                     (if (<= (length word) word-length-budget)
-                                                                         (length word) 0))
-                                                                   heading-words)))
-                                 (max-length (/ (- total-length-budget total-short-length)   ; max(max-length) that we can have to fit within the budget
-                                                num-overlong)))
-                            (mapcar (lambda (word)
-                                      (if (<= (length word) max-length)
-                                          word
-                                        (substring word 0 max-length)))
-                                    heading-words))))
-    (string-join heading-words "-")))
+    (when (> (apply #'+ (1- (length reference-words))
+                   (mapcar #'length reference-words))
+             org-reference-contraction-max-length)
+      (setq reference-words (org-reference-contraction-truncate-words reference-words)))
+
+    (string-join reference-words org-reference-contraction-joining-char)))
 #+end_src
 Now here's alphapapa's subtly tweaked mode.
 #+begin_src emacs-lisp
