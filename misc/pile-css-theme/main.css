@@ -532,7 +532,8 @@ body {
   color: var(--text-dark);
   background-color: var(--back-light);
   transition-property: color, background-color;
-  transition-duration: 100ms; }
+  transition-duration: 100ms;
+  min-height: 100vh; }
 
 #content, header, .page-header {
   margin: 32px;
