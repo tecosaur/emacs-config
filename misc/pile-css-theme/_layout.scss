@@ -16,7 +16,6 @@ body {
   background-color: $back-light;
   transition-property: color, background-color;
   transition-duration: 100ms;
-  min-height: 100vh;
 }
 
 #content, header, .page-header {
@@ -26,6 +25,7 @@ body {
 
 #content {
   margin-top: 4rem;
+  min-height: calc(100vh - 4rem - 48px);
 }
 
 .clearfix::after {

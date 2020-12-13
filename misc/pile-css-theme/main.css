@@ -532,15 +532,15 @@ body {
   color: var(--text-dark);
   background-color: var(--back-light);
   transition-property: color, background-color;
-  transition-duration: 100ms;
-  min-height: 100vh; }
+  transition-duration: 100ms; }
 
 #content, header, .page-header {
   margin: 32px;
   flex: 1 0 auto; }
 
 #content {
-  margin-top: 4rem; }
+  margin-top: 4rem;
+  min-height: calc(100vh - 4rem - 48px); }
 
 .clearfix::after {
   clear: both; }
