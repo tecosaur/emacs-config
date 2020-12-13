@@ -4210,9 +4210,9 @@ Hence, we need to do a bit of overriding.
 #+end_src
 ***** Modeline file name
 All those numbers! It's messy. Let's adjust this in a similar way that I have in
-the[[*Window title][Window title]].
+the [[*Window title][Window title]].
 #+begin_src emacs-lisp
-(defadvice! doom-modeline--buffer-file-name-roam-aware-a ()
+(defadvice! doom-modeline--buffer-file-name-roam-aware-a (orig-fn)
   :around #'doom-modeline-buffer-file-name
   (message "Reformat?")
   (message (buffer-file-name))
