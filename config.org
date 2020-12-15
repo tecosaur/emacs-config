@@ -4541,17 +4541,28 @@ Return nil otherwise."
        (when (re-search-forward "header-args:")
          (buffer-substring-no-properties
           (point)
-          (or (and (forward-word) (point))
+          (or (and (forward-symbol 1) (point))
               (1+ (point))))))
       ("#+begin_src"
        (buffer-substring-no-properties
         (point)
-        (or (and (forward-word) (point))
+        (or (and (forward-symbol 1) (point))
             (1+ (point)))))
       ("#+header:"
        (search-forward "#+begin_src")
        (+yas/org-src-lang))
       (_ nil))))
+
+(defun +yas/org-src-header-p ()
+  (or
+   (looking-back "^#\\+property:[ \t]+header-args:.*" (line-beginning-position))
+   (looking-back "^#\\+header:.*" (line-beginning-position))))
+
+(defun +yas/org-last-src-lang ()
+  (save-excursion
+    (beginning-of-line)
+    (when (search-backward "#+begin_src" nil t)
+      (+yas/org-src-lang))))
 
 (defun +yas/org-most-common-no-property-lang ()
   "Find the lang with the most source blocks that has no global header-args, else nil."

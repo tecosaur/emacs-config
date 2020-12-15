@@ -1,6 +1,6 @@
 # -*- mode: snippet -*-
 # name: Property - header arg
 # key: h
-# condition: (or (looking-back "#\\+PROPERTY:.*" (line-beginning-position)) ((looking-back "#\\+property:.*" (line-beginning-position))))
+# condition: (or (looking-back "^#\\+PROPERTY:.*" (line-beginning-position)) (looking-back "^#\\+property:.*" (line-beginning-position)))
 # --
 header-args:${1:`(or (+yas/org-most-common-no-property-lang) "?")`} $0
