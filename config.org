@@ -5535,34 +5535,31 @@ compared to the default implementation."
 
 #+begin_src emacs-lisp
 (after! ox-html
+  (defun org-html-meta-tags-fancy (title author info)
+    "Use the TITLE, AUTHOR, and INFO plist to generate info used to construct
+the meta tags, as described in `org-html-meta-tags'."
+    (list
+     (when (org-string-nw-p author)
+       (list "name" "author" author))
+     (when (org-string-nw-p (plist-get info :description))
+       (list "name" "description"
+             (plist-get info :description)))
+     '("name" "generator" "org mode")
+     '("name" "theme-color" "#77aa99")
+     '("property" "og:type" "article")
+     (list "property" "og:title" title)
+     (let ((subtitle (org-export-data (plist-get info :subtitle) info)))
+       (when (org-string-nw-p subtitle)
+         (list "property" "og:description" subtitle)))
+     '("property" "og:image" "https://tecosaur.com/resources/org/nib.png")
+     (when (org-string-nw-p author)
+       (list "property" "og:article:author:first_name" (car (s-split-up-to " " author 2))))
+     (when (and (org-string-nw-p author) (s-contains-p " " author))
+       (list "property" "og:article:author:last_name" (cadr (s-split-up-to " " author 2))))
+     (list "property" "og:article:published_time" (format-time-string "%FT%T%z"))))
+
   (setq org-html-meta-tags-plain (bound-and-true-p org-html-meta-tags)
-        org-html-meta-tags-fancy
-        '((lambda (_title author _info)
-            (when (org-string-nw-p author)
-              (list "name" "author" author)))
-          (lambda (_title _author info)
-            (when (org-string-nw-p (plist-get info :description))
-              (list "name" "description"
-                    (plist-get info :description))))
-          ("name" "generator" "org mode")
-          ("name" "theme-color" "#77aa99")
-          ("property" "og:type" "article")
-          (lambda (title _author _info)
-            (list "property" "og:title" title))
-          (lambda (_title _author info)
-            (let ((subtitle (org-export-data (plist-get info :subtitle) info)))
-              (when (org-string-nw-p subtitle)
-                (list "property" "og:description" subtitle))))
-          ("property" "og:image" "https://tecosaur.com/resources/org/nib.png")
-          (lambda (_title author _info)
-            (when (org-string-nw-p author)
-              (list "property" "og:article:author:first_name" (car (s-split-up-to " " author 2)))))
-          (lambda (_title author _info)
-            (when (and (org-string-nw-p author) (s-contains-p " " author))
-              (list "property" "og:article:author:last_name" (cadr (s-split-up-to " " author 2)))))
-          (lambda (&rest _)
-            (list "property" "og:article:published_time" (format-time-string "%FT%T%z"))))
-        org-html-meta-tags org-html-meta-tags-fancy))
+        org-html-meta-tags #'org-html-meta-tags-fancy))
 #+end_src
 ***** Custom CSS/JS
 The default org HTML export is ... alright, but we can really jazz it up.
