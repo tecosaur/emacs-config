@@ -3493,6 +3493,7 @@ figure.png╶─╧─▶ PROJECT.ORG ▶───╴filters╶───╧─�
 #+end_example
 
 *** System config
+**** Mime types
 Org mode isn't recognised as it's own mime type by default, but that can easily
 be changed with the following file. For system-wide changes try
 ~~/usr/share/mime/packages/org.xml~.
@@ -3514,6 +3515,68 @@ update-mime-database ~/.local/share/mime
 Then set Emacs as the default editor
 #+begin_src shell :tangle (if (string= (shell-command-to-string "xdg-mime query default text/org") "emacs-client.desktop\n") "no" "setup.sh")
 xdg-mime default emacs.desktop text/org
+#+end_src
+**** Development
+Testing patches from the ML is currently more hassle than it needs to be. Let's
+change that.
+#+begin_src emacs-lisp
+(defvar org-ml-target-dir "~/.emacs.d/.local/straight/repos/org-mode/")
+(defvar org-ml-max-age 600
+  "Maximum permissible age in seconds.")
+(defvar org-ml--cache-timestamp 0)
+(defvar org-ml--cache nil)
+
+(defun org-ml-current-patches ()
+  "Get the currently open patches, as a list of alists.
+Entries of the form (subject . id)."
+  (mapcar
+   (lambda (entry)
+     (cons
+      (format "%-8s  %s"
+              (propertize
+               (replace-regexp-in-string "T.*" ""
+                                         (plist-get entry :date))
+               'face 'font-lock-doc-face)
+              (propertize
+               (replace-regexp-in-string "\\[PATCH\\] ?" ""
+                                         (plist-get entry :summary))
+               'face 'font-lock-keyword-face))
+      (plist-get entry :id)))
+   (with-current-buffer (url-retrieve-synchronously "https://updates.orgmode.org/data/patches")
+     (json-parse-buffer :object-type 'plist))))
+
+(defun org-ml-select-patch-thread ()
+  "Find and apply a proposed Org patch."
+  (interactive)
+  (let ((current-workspace (+workspace-current))
+        (patches (progn
+                   (when (or (not org-ml--cache)
+                             (> (- (float-time) org-ml--cache-timestamp)
+                                org-ml-max-age))
+                     (setq org-ml--cache (org-ml-current-patches)
+                           org-ml--cache-timestamp (float-time)))
+                   org-ml--cache))
+        msg-id)
+    (ivy-read "Thread: "
+              patches
+              :action (lambda (m) (setq msg-id (cdr m))))
+    (+workspace-switch +mu4e-workspace-name)
+    (mu4e-view-message-with-message-id msg-id)
+    (add-to-list 'mu4e-view-actions
+                 (cons "apply patch to org" #'org-ml-transient-mu4e-action))))
+
+(defun org-ml-transient-mu4e-action (msg)
+  (setq mu4e-view-actions
+        (delete (cons "apply patch to org" #'org-ml-transient-mu4e-action)
+                mu4e-view-actions))
+  (let ((default-directory org-ml-target-dir))
+    (shell-command
+     (format "git apply %s"
+             (shell-quote-argument (mu4e-message-field msg :path)))))
+  (+workspace/other)
+  (magit-status org-ml-target-dir)
+  (with-current-buffer (get-buffer "*Shell Command Output*")
+    (+popup/buffer)))
 #+end_src
 *** Behaviour
 [[xkcd:1319]]
