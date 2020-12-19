@@ -1,0 +1,34 @@
+@media print {
+    h2 {
+        page-break-before: always;
+    }
+    h1, h2, h3, h4, h5 {
+        page-break-after: avoid;
+    }
+    #switch-label {
+        display: none;
+    }
+    #content, #page-header {
+        margin-top: 0;
+    }
+    #table-of-contents #text-table-of-contents {
+        &> ul ul {
+            display: inline-block;
+        }
+        &> ul a::after {
+            content: leader('.') target-counter(attr(href), page);
+        }
+        li label::after {
+            display: none;
+        }
+    }
+    img {
+        filter: none;
+    }
+}
+
+@page {
+    size: auto;
+    margin-top: 4mm;
+    margin-bottom: 4mm;
+}
