@@ -5596,6 +5596,43 @@ compared to the default implementation."
      "</div>\n</body>\n</html>")))
 #+end_src
 
+I think it would be nice if "Table of Contents" brought you back to the top of
+the page. Well, since we've done this much advising already...
+#+begin_src emacs-lisp
+(defadvice! org-html-toc-linked (depth info &optional scope)
+  "Build a table of contents.
+
+Just like `org-html-toc', except the header is a link to \"#\".
+
+DEPTH is an integer specifying the depth of the table.  INFO is
+a plist used as a communication channel.  Optional argument SCOPE
+is an element defining the scope of the table.  Return the table
+of contents as a string, or nil if it is empty."
+  :override org-html-toc
+  (let ((toc-entries
+	 (mapcar (lambda (headline)
+		   (cons (org-html--format-toc-headline headline info)
+			 (org-export-get-relative-level headline info)))
+		 (org-export-collect-headlines info depth scope))))
+    (when toc-entries
+      (let ((toc (concat "<div id=\"text-table-of-contents\">"
+			 (org-html--toc-text toc-entries)
+			 "</div>\n")))
+	(if scope toc
+	  (let ((outer-tag (if (org-html--html5-fancy-p info)
+			       "nav"
+			     "div")))
+	    (concat (format "<%s id=\"table-of-contents\">\n" outer-tag)
+		    (let ((top-level (plist-get info :html-toplevel-hlevel)))
+		      (format "<h%d><a href=\"#\" style=\"color:inherit; text-decoration: none;\">%s</a></h%d>\n"
+			      top-level
+			      (org-html--translate "Table of Contents" info)
+			      top-level))
+		    toc
+		    (format "</%s>\n" outer-tag))))))))
+#+end_src
+
+Lastly, let's pile on some metadata. This gives my pages nice embeds.
 #+begin_src emacs-lisp
 (after! ox-html
   (defun org-html-meta-tags-fancy (title author info)
