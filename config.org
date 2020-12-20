@@ -1430,8 +1430,691 @@ We then configure the dictionary we're using in [[*Ispell][Ispell]].
 #+begin_src emacs-lisp
 (set-company-backend! 'ess-r-mode '(company-R-args company-R-objects company-dabbrev-code :separate))
 #+end_src
-** Circe
-Circe is a client for IRC in Emacs (hey, isn't that a nice project
+** Elcord
+#+begin_src emacs-lisp
+(setq elcord-use-major-mode-as-main-icon t)
+#+end_src
+** [[https://github.com/zachcurry/emacs-anywhere][Emacs Anywhere]] configuration
+To start with, let's install this.
+#+begin_src shell :tangle (if (executable-find "emacs_anywhere") "no" "setup.sh")
+cd /tmp
+curl -fsSL https://raw.github.com/zachcurry/emacs-anywhere/master/install -o ea-install.sh
+sed -i 's/EA_PATH=$HOME\/.emacs_anywhere/EA_PATH=$HOME\/.local\/share\/emacs_anywhere/' ea-install.sh
+bash ea-install.sh || exit
+cd ~/.local/share/emacs_anywhere
+# Install in ~/.local not ~/.emacs_anywhere
+sed -i 's/$HOME\/.emacs_anywhere/$HOME\/.local\/share\/emacs_anywhere/' ./bin/linux ./bin/emacstask
+ln -s ~/.local/share/emacs_anywhere/bin/linux ~/.local/bin/emacs_anywhere
+# Improve paste robustness --- https://github.com/zachcurry/emacs-anywhere/pull/66
+sed -i 's/xdotool key --clearmodifiers ctrl+v/xdotool key --clearmodifiers Shift+Insert/' ./bin/linux
+#+end_src
+
+It's nice to recognise GitHub (so we can use ~GFM~), and other apps which we know
+take markdown
+#+begin_src emacs-lisp
+(defun markdown-window-p (window-title)
+  "Judges from WINDOW-TITLE whether the current window likes markdown"
+  (if (string-match-p (rx (or "Stack Exchange" "Stack Overflow"
+                              "Pull Request" "Issue" "Discord"))
+                      window-title) t nil))
+#+end_src
+When the window opens, we generally want text so let's use a nice sans serif font,
+a position the window below and to the left. Oh, and don't forget about checking
+for ~GFM~, otherwise let's just use ~markdown~.
+#+begin_src emacs-lisp
+(defvar emacs-anywhere--active-markdown nil
+  "Whether the buffer started off as markdown.
+Affects behaviour of `emacs-anywhere--finalise-content'")
+
+(defun emacs-anywhere--finalise-content (&optional _frame)
+  (when emacs-anywhere--active-markdown
+    (fundamental-mode)
+    (goto-char (point-min))
+    (insert "#+options: toc:nil\n")
+    (rename-buffer "*EA Pre Export*")
+    (org-export-to-buffer 'gfm ea--buffer-name)
+    (kill-buffer "*EA Pre Export*"))
+  (gui-select-text (buffer-string)))
+
+(define-minor-mode emacs-anywhere-mode
+  "To tweak the current buffer for some emacs-anywhere considerations"
+  :init-value nil
+  :keymap (list
+           ;; Finish edit, but be smart in org mode
+           (cons (kbd "C-c C-c")
+                 (cmd! (if (and (eq major-mode 'org-mode)
+                                (org-in-src-block-p))
+                           (org-ctrl-c-ctrl-c)
+                         (delete-frame))))
+           ;; Abort edit. emacs-anywhere saves the current edit for next time.
+           (cons (kbd "C-c C-k")
+                 (cmd! (setq ea-on nil)
+                       (delete-frame))))
+  (when emacs-anywhere-mode
+    ;; line breaking
+    (turn-off-auto-fill)
+    (visual-line-mode t)
+    ;; DEL/C-SPC to clear (first keystroke only)
+    (set-transient-map (let ((keymap (make-sparse-keymap)))
+                         (define-key keymap (kbd "DEL")   (cmd! (delete-region (point-min) (point-max))))
+                         (define-key keymap (kbd "C-SPC") (cmd! (delete-region (point-min) (point-max))))
+                         keymap))
+    ;; disable tabs
+    (when (bound-and-true-p centaur-tabs-mode)
+      (centaur-tabs-local-mode t))))
+
+(defun ea-popup-handler (app-name window-title x y w h)
+  (interactive)
+  (set-frame-size (selected-frame) 80 12)
+  ;; position the frame near the mouse
+  (let* ((mousepos (split-string (shell-command-to-string "xdotool getmouselocation | sed -E \"s/ screen:0 window:[^ ]*|x:|y://g\"")))
+         (mouse-x (- (string-to-number (nth 0 mousepos)) 100))
+         (mouse-y (- (string-to-number (nth 1 mousepos)) 50)))
+    (set-frame-position (selected-frame) mouse-x mouse-y))
+
+  (set-frame-name (concat "Quick Edit ∷ " ea-app-name " — "
+                          (truncate-string-to-width
+                           (string-trim
+                            (string-trim-right window-title
+                                               (format "-[A-Za-z0-9 ]*%s" ea-app-name))
+                            "[\s-]+" "[\s-]+")
+                           45 nil nil "…")))
+  (message "window-title: %s" window-title)
+
+  (when-let ((selection (gui-get-selection 'PRIMARY)))
+    (insert selection))
+
+  (setq emacs-anywhere--active-markdown (markdown-window-p window-title))
+
+  ;; convert buffer to org mode if markdown
+  (when emacs-anywhere--active-markdown
+    (shell-command-on-region (point-min) (point-max)
+                             "pandoc -f markdown -t org" nil t)
+    (deactivate-mark) (goto-char (point-max)))
+
+  ;; set major mode
+  (org-mode)
+
+  (advice-add 'ea--delete-frame-handler :before #'emacs-anywhere--finalise-content)
+
+  ;; I'll be honest with myself, I /need/ spellcheck
+  (flyspell-buffer)
+
+  (evil-insert-state) ; start in insert
+  (emacs-anywhere-mode 1))
+
+(add-hook 'ea-popup-hook 'ea-popup-handler)
+#+end_src
+
+#+end_src
+
+This new minor mode of ours will be nice for messages, so let's hook it in for
+Email and IRC.
+#+begin_src emacs-lisp
+(add-hook! '(mu4e-compose-mode org-msg-edit-mode circe-channel-mode) (emoticon-to-emoji 1))
+#+end_src
+
+** Eros-eval
+This makes the result of evals with =gr= and =gR= just slightly prettier. Every bit
+counts right?
+#+begin_src emacs-lisp
+(setq eros-eval-result-prefix "⟹ ")
+#+end_src
+** EVIL
+I don't use ~evil-escape-mode~, so I may as well turn it off, I've heard it
+contributes a typing delay. I'm not sure it's much, but it is an extra
+~pre-command-hook~ that I don't benefit from, so...
+#+begin_src emacs-lisp
+(after! evil-escape (evil-escape-mode -1))
+#+end_src
+
+When I want to make a substitution, I want it to be global more often than not
+--- so let's make that the default.
+#+begin_src emacs-lisp
+(after! evil (setq evil-ex-substitute-global t)) ; I like my s/../.. to by global by default
+#+end_src
+** Info colours
+#+begin_src emacs-lisp
+(use-package! info-colors
+  :commands (info-colors-fontify-node))
+
+(add-hook 'Info-selection-hook 'info-colors-fontify-node)
+
+(add-hook 'Info-mode-hook #'mixed-pitch-mode)
+#+end_src
+
+#+attr_html: :class invertible :alt Example colourised info page
+[[https://tecosaur.com/lfs/emacs-config/screenshots/info-coloured.png]]
+** Ispell
+*** Downloading dictionaries
+Let's get a nice big dictionary from [[http://app.aspell.net/create][SCOWL Custom List/Dictionary Creator]] with
+the following configuration
+- size :: 80 (huge)
+- spellings :: British(-ise) and Australian
+- spelling variants level :: 0
+- diacritics :: keep
+- extra lists :: hacker, roman numerals
+
+**** Hunspell
+#+begin_src shell :tangle (if (file-exists-p "/usr/share/myspell/en-custom.dic") "no" "setup.sh")
+cd /tmp
+curl -o "hunspell-en-custom.zip" 'http://app.aspell.net/create?max_size=80&spelling=GBs&spelling=AU&max_variant=0&diacritic=keep&special=hacker&special=roman-numerals&encoding=utf-8&format=inline&download=hunspell'
+unzip "hunspell-en-custom.zip"
+
+sudo chown root:root en-custom.*
+sudo mv en-custom.{aff,dic} /usr/share/myspell/
+#+end_src
+**** Aspell
+#+begin_src shell :tangle (if (file-expand-wildcards "/usr/lib64/aspell*/en-custom.multi") "no" "setup.sh")
+cd /tmp
+curl -o "aspell6-en-custom.tar.bz2" 'http://app.aspell.net/create?max_size=80&spelling=GBs&spelling=AU&max_variant=0&diacritic=keep&special=hacker&special=roman-numerals&encoding=utf-8&format=inline&download=aspell'
+tar -xjf "aspell6-en-custom.tar.bz2"
+
+cd aspell6-en-custom
+./configure && make && sudo make install
+#+end_src
+*** Configuration
+#+begin_src emacs-lisp
+(setq ispell-dictionary "en-custom")
+#+end_src
+Oh, and by the way, if ~company-ispell-dictionary~ is ~nil~, then
+~ispell-complete-word-dict~ is used instead, which once again when ~nil~ is
+~ispell-alternate-dictionary~, which at the moment maps to a plaintext version of
+the above.
+
+It seems reasonable to want to keep an eye on my personal dict, let's have it
+nearby (also means that if I change the 'main' dictionary I keep my addition).
+#+begin_src emacs-lisp
+(setq ispell-personal-dictionary (expand-file-name ".ispell_personal" doom-private-dir))
+#+end_src
+** Ivy
+While in an ivy mini-buffer =C-o= shows a list of all possible actions one may take.
+By default this is ~#'ivy-read-action-by-key~ however a better interface to this
+is using Hydra.
+#+begin_src emacs-lisp
+(setq ivy-read-action-function #'ivy-hydra-read-action)
+#+end_src
+
+I currently have ~40k functions. This seems like sufficient motivation to
+increase the maximum number of items ivy will sort to 40k + a bit, this way
+=SPC h f= et al. will continue to function as expected.
+#+begin_src emacs-lisp
+(setq ivy-sort-max-size 50000)
+#+end_src
+** Magit
+Magit is pretty nice by default. The diffs don't get any
+syntax-highlighting-love though which is a bit sad. Thankfully
+[[https://github.com/dandavison/magit-delta][dandavison/magit-delta]] exists, which we can put to use.
+#+begin_src emacs-lisp
+;; (after! magit
+;;   (magit-delta-mode +1))
+#+end_src
+Unfortunately this seems to mess things up, which is something I'll want to look
+into later.
+** Org Chef
+Loading after org seems a bit premature. Let's just load it when we try to use
+it, either by command or in a capture template.
+#+begin_src emacs-lisp
+(use-package! org-chef
+  :commands (org-chef-insert-recipe org-chef-get-recipe-from-url))
+#+end_src
+** Projectile
+Looking at documentation via =SPC h f= and =SPC h v= and looking at the source can
+add package src directories to projectile. This isn't desirable in my opinion.
+#+begin_src emacs-lisp
+(setq projectile-ignored-projects '("~/" "/tmp" "~/.emacs.d/.local/straight/repos/"))
+(defun projectile-ignored-project-function (filepath)
+  "Return t if FILEPATH is within any of `projectile-ignored-projects'"
+  (or (mapcar (lambda (p) (s-starts-with-p p filepath)) projectile-ignored-projects)))
+#+end_src
+** Smart Parentheses
+#+begin_src emacs-lisp
+(sp-local-pair
+ '(org-mode)
+ "<<" ">>"
+ :actions '(insert))
+#+end_src
+** Spray
+Let's make this suit me slightly better.
+#+begin_src emacs-lisp
+(setq spray-wpm 500
+      spray-height 700)
+#+end_src
+** Theme magic
+Let's automatically update terminals on theme change (as long as ~pywal~ is available).
+#+begin_src emacs-lisp :tangle (if (executable-find "wal") "yes" "no")
+(add-hook 'doom-load-theme-hook 'theme-magic-from-emacs)
+#+end_src
+** Tramp
+Let's try to make tramp handle prompts better
+#+begin_src emacs-lisp
+(after! tramp
+  (setenv "SHELL" "/bin/bash")
+  (setq tramp-shell-prompt-pattern "\\(?:^\\|\\)[^]#$%>\n]*#?[]#$%>] *\\(\\[[0-9;]*[a-zA-Z] *\\)*")) ;; default + 
+#+end_src
+*** Troubleshooting
+In case the remote shell is misbehaving, here are some things to try
+**** Zsh
+There are some escape code you don't want, let's make it behave more considerately.
+#+begin_src shell :eval no :tangle no
+if [[ "$TERM" == "dumb" ]]; then
+    unset zle_bracketed_paste
+    unset zle
+    PS1='$ '
+    return
+fi
+#+end_src
+*** Guix
+[[https://guix.gnu.org/][Guix]] puts some binaries that TRAMP looks for in unexpected locations.
+That's no problem though, we just need to help TRAMP find them.
+#+begin_src emacs-lisp
+(after! tramp
+  (appendq! tramp-remote-path
+            '("~/.guix-profile/bin" "~/.guix-profile/sbin"
+              "/run/current-system/profile/bin"
+              "/run/current-system/profile/sbin")))
+#+end_src
+** Treemacs
+Quite often there are superfluous files I'm not that interested in. There's no
+good reason for them to take up space. Let's add a mechanism to ignore them.
+#+begin_src emacs-lisp
+(after! treemacs
+  (defvar treemacs-file-ignore-extensions '()
+    "File extension which `treemacs-ignore-filter' will ensure are ignored")
+  (defvar treemacs-file-ignore-globs '()
+    "Globs which will are transformed to `treemacs-file-ignore-regexps' which `treemacs-ignore-filter' will ensure are ignored")
+  (defvar treemacs-file-ignore-regexps '()
+    "RegExps to be tested to ignore files, generated from `treeemacs-file-ignore-globs'")
+  (defun treemacs-file-ignore-generate-regexps ()
+    "Generate `treemacs-file-ignore-regexps' from `treemacs-file-ignore-globs'"
+    (setq treemacs-file-ignore-regexps (mapcar 'dired-glob-regexp treemacs-file-ignore-globs)))
+  (if (equal treemacs-file-ignore-globs '()) nil (treemacs-file-ignore-generate-regexps))
+  (defun treemacs-ignore-filter (file full-path)
+    "Ignore files specified by `treemacs-file-ignore-extensions', and `treemacs-file-ignore-regexps'"
+    (or (member (file-name-extension file) treemacs-file-ignore-extensions)
+        (let ((ignore-file nil))
+          (dolist (regexp treemacs-file-ignore-regexps ignore-file)
+            (setq ignore-file (or ignore-file (if (string-match-p regexp full-path) t nil)))))))
+  (add-to-list 'treemacs-ignored-file-predicates #'treemacs-ignore-filter))
+#+end_src
+
+Now, we just identify the files in question.
+#+begin_src emacs-lisp
+(setq treemacs-file-ignore-extensions
+      '(;; LaTeX
+        "aux"
+        "ptc"
+        "fdb_latexmk"
+        "fls"
+        "synctex.gz"
+        "toc"
+        ;; LaTeX - glossary
+        "glg"
+        "glo"
+        "gls"
+        "glsdefs"
+        "ist"
+        "acn"
+        "acr"
+        "alg"
+        ;; LaTeX - pgfplots
+        "mw"
+        ;; LaTeX - pdfx
+        "pdfa.xmpi"
+        ))
+(setq treemacs-file-ignore-globs
+      '(;; LaTeX
+        "*/_minted-*"
+        ;; AucTeX
+        "*/.auctex-auto"
+        "*/_region_.log"
+        "*/_region_.tex"))
+#+end_src
+** Which-key
+Let's make this popup a bit faster
+#+begin_src emacs-lisp
+(setq which-key-idle-delay 0.5) ;; I need the help, I really do
+#+end_src
+I also think that having =evil-= appear in so many popups is a bit too verbose, let's change that, and do a few other similar tweaks while we're at it.
+#+begin_src emacs-lisp
+(setq which-key-allow-multiple-replacements t)
+(after! which-key
+  (pushnew!
+   which-key-replacement-alist
+   '(("" . "\\`+?evil[-:]?\\(?:a-\\)?\\(.*\\)") . (nil . "◂\\1"))
+   '(("\\`g s" . "\\`evilem--?motion-\\(.*\\)") . (nil . "◃\\1"))
+   ))
+#+end_src
+
+#+attr_html: :class invertible :alt Whichkey triggered on an evil motion
+[[https://tecosaur.com/lfs/emacs-config/screenshots/whichkey-evil.png]]
+** Writeroom
+For starters, I think Doom is a bit over-zealous when zooming in
+#+begin_src emacs-lisp
+(setq +zen-text-scale 0.6)
+#+end_src
+
+Now, I think it would also be nice to remove line numbers and org stars in
+writeroom.
+#+begin_src emacs-lisp
+(after! writeroom-mode
+  (add-hook 'writeroom-mode-hook
+            (defun +zen-cleaner-org ()
+              (when (and (eq major-mode 'org-mode) writeroom-mode)
+                (setq-local -display-line-numbers display-line-numbers
+                            display-line-numbers nil)
+                (setq-local -org-indent-mode org-indent-mode)
+                (org-indent-mode -1)
+                (when (featurep 'org-superstar)
+                  (setq-local -org-superstar-headline-bullets-list org-superstar-headline-bullets-list
+                              ;; org-superstar-headline-bullets-list '("🙐" "🙑" "🙒" "🙓" "🙔" "🙕" "🙖" "🙗")
+                              org-superstar-headline-bullets-list '("🙘" "🙙" "🙚" "🙛")
+                              -org-superstar-remove-leading-stars org-superstar-remove-leading-stars
+                              org-superstar-remove-leading-stars t)
+                  (org-superstar-restart)))))
+  (add-hook 'writeroom-mode-disable-hook
+            (defun +zen-dirty-org ()
+              (when (eq major-mode 'org-mode)
+                (setq-local display-line-numbers -display-line-numbers)
+                (when -org-indent-mode
+                  (org-indent-mode 1))
+                (when (featurep 'org-superstar)
+                  (setq-local org-superstar-headline-bullets-list -org-superstar-headline-bullets-list
+                              org-superstar-remove-leading-stars -org-superstar-remove-leading-stars)
+                  (org-superstar-restart))))))
+#+end_src
+
+#+attr_html: :class invertible :alt Writeroom applied to an Org file
+[[https://tecosaur.com/lfs/emacs-config/screenshots/writeroom-and-org.png]]
+** xkcd
+
+We want to set this up so it loads nicely in [[*Extra links][Extra links]].
+#+begin_src emacs-lisp
+(use-package! xkcd
+  :commands (xkcd-get-json
+             xkcd-download xkcd-get
+             ;; now for funcs from my extension of this pkg
+             +xkcd-find-and-copy +xkcd-find-and-view
+             +xkcd-fetch-info +xkcd-select)
+  :config
+  (after! evil-snipe
+    (add-to-list 'evil-snipe-disabled-modes 'xkcd-mode))
+  :general (:states 'normal
+            :keymaps 'xkcd-mode-map
+            "<right>" #'xkcd-next
+            "n"       #'xkcd-next ; evil-ish
+            "<left>"  #'xkcd-prev
+            "N"       #'xkcd-prev ; evil-ish
+            "r"       #'xkcd-rand
+            "a"       #'xkcd-rand ; because image-rotate can interfere
+            "t"       #'xkcd-alt-text
+            "q"       #'xkcd-kill-buffer
+            "o"       #'xkcd-open-browser
+            "e"       #'xkcd-open-explanation-browser
+            ;; extras
+            "s"       #'+xkcd-find-and-view
+            "/"       #'+xkcd-find-and-view
+            "y"       #'+xkcd-copy))
+#+end_src
+
+Let's also extend the functionality a whole bunch.
+#+begin_src emacs-lisp
+(after! xkcd
+  (require 'emacsql-sqlite)
+
+  (defun +xkcd-select ()
+    "Prompt the user for an xkcd using `ivy-read' and `+xkcd-select-format'. Return the xkcd number or nil"
+    (let* (prompt-lines
+           (-dummy (maphash (lambda (key xkcd-info)
+                              (push (+xkcd-select-format xkcd-info) prompt-lines))
+                            +xkcd-stored-info))
+           (num (ivy-read (format "xkcd (%s): " xkcd-latest) prompt-lines)))
+      (if (equal "" num) xkcd-latest
+        (string-to-number (replace-regexp-in-string "\\([0-9]+\\).*" "\\1" num)))))
+
+  (defun +xkcd-select-format (xkcd-info)
+    "Creates each ivy-read line from an xkcd info plist. Must start with the xkcd number"
+    (format "%-4s  %-30s %s"
+            (propertize (number-to-string (plist-get xkcd-info :num))
+                        'face 'counsel-key-binding)
+            (plist-get xkcd-info :title)
+            (propertize (plist-get xkcd-info :alt)
+                        'face '(variable-pitch font-lock-comment-face))))
+
+  (defun +xkcd-fetch-info (&optional num)
+    "Fetch the parsed json info for comic NUM. Fetches latest when omitted or 0"
+    (require 'xkcd)
+    (when (or (not num) (= num 0))
+      (+xkcd-check-latest)
+      (setq num xkcd-latest))
+    (let ((res (or (gethash num +xkcd-stored-info)
+                   (puthash num (+xkcd-db-read num) +xkcd-stored-info))))
+      (unless res
+        (+xkcd-db-write
+         (let* ((url (format "https://xkcd.com/%d/info.0.json" num))
+                (json-assoc
+                 (if (gethash num +xkcd-stored-info)
+                     (gethash num +xkcd-stored-info)
+                   (json-read-from-string (xkcd-get-json url num)))))
+           json-assoc))
+        (setq res (+xkcd-db-read num)))
+      res))
+
+  ;; since we've done this, we may as well go one little step further
+  (defun +xkcd-find-and-copy ()
+    "Prompt for an xkcd using `+xkcd-select' and copy url to clipboard"
+    (interactive)
+    (+xkcd-copy (+xkcd-select)))
+
+  (defun +xkcd-copy (&optional num)
+    "Copy a url to xkcd NUM to the clipboard"
+    (interactive "i")
+    (let ((num (or num xkcd-cur)))
+      (gui-select-text (format "https://xkcd.com/%d" num))
+      (message "xkcd.com/%d copied to clipboard" num)))
+
+  (defun +xkcd-find-and-view ()
+    "Prompt for an xkcd using `+xkcd-select' and view it"
+    (interactive)
+    (xkcd-get (+xkcd-select))
+    (switch-to-buffer "*xkcd*"))
+
+  (defvar +xkcd-latest-max-age (* 60 60) ; 1 hour
+    "Time after which xkcd-latest should be refreshed, in seconds")
+
+  ;; initialise `xkcd-latest' and `+xkcd-stored-info' with latest xkcd
+  (add-transient-hook! '+xkcd-select
+    (require 'xkcd)
+    (+xkcd-fetch-info xkcd-latest)
+    (setq +xkcd-stored-info (+xkcd-db-read-all)))
+
+  (add-transient-hook! '+xkcd-fetch-info
+    (xkcd-update-latest))
+
+  (defun +xkcd-check-latest ()
+    "Use value in `xkcd-cache-latest' as long as it isn't older thabn `+xkcd-latest-max-age'"
+    (unless (and (file-exists-p xkcd-cache-latest)
+                 (< (- (time-to-seconds (current-time))
+                       (time-to-seconds (file-attribute-modification-time (file-attributes xkcd-cache-latest))))
+                    +xkcd-latest-max-age))
+      (let* ((out (xkcd-get-json "http://xkcd.com/info.0.json" 0))
+             (json-assoc (json-read-from-string out))
+             (latest (cdr (assoc 'num json-assoc))))
+        (when (/= xkcd-latest latest)
+          (+xkcd-db-write json-assoc)
+          (with-current-buffer (find-file xkcd-cache-latest)
+            (setq xkcd-latest latest)
+            (erase-buffer)
+            (insert (number-to-string latest))
+            (save-buffer)
+            (kill-buffer (current-buffer)))))
+      (shell-command (format "touch %s" xkcd-cache-latest))))
+
+  (defvar +xkcd-stored-info (make-hash-table :test 'eql)
+    "Basic info on downloaded xkcds, in the form of a hashtable")
+
+  (defadvice! xkcd-get-json--and-cache (url &optional num)
+    "Fetch the Json coming from URL.
+If the file NUM.json exists, use it instead.
+If NUM is 0, always download from URL.
+The return value is a string."
+    :override #'xkcd-get-json
+    (let* ((file (format "%s%d.json" xkcd-cache-dir num))
+           (cached (and (file-exists-p file) (not (eq num 0))))
+           (out (with-current-buffer (if cached
+                                         (find-file file)
+                                       (url-retrieve-synchronously url))
+                  (goto-char (point-min))
+                  (unless cached (re-search-forward "^$"))
+                  (prog1
+                      (buffer-substring-no-properties (point) (point-max))
+                    (kill-buffer (current-buffer))))))
+      (unless (or cached (eq num 0))
+        (xkcd-cache-json num out))
+      out))
+
+  (defadvice! +xkcd-get (num)
+    "Get the xkcd number NUM."
+    :override 'xkcd-get
+    (interactive "nEnter comic number: ")
+    (xkcd-update-latest)
+    (get-buffer-create "*xkcd*")
+    (switch-to-buffer "*xkcd*")
+    (xkcd-mode)
+    (let (buffer-read-only)
+      (erase-buffer)
+      (setq xkcd-cur num)
+      (let* ((xkcd-data (+xkcd-fetch-info num))
+             (num (plist-get xkcd-data :num))
+             (img (plist-get xkcd-data :img))
+             (safe-title (plist-get xkcd-data :safe-title))
+             (alt (plist-get xkcd-data :alt))
+             title file)
+        (message "Getting comic...")
+        (setq file (xkcd-download img num))
+        (setq title (format "%d: %s" num safe-title))
+        (insert (propertize title
+                            'face 'outline-1))
+        (center-line)
+        (insert "\n")
+        (xkcd-insert-image file num)
+        (if (eq xkcd-cur 0)
+            (setq xkcd-cur num))
+        (setq xkcd-alt alt)
+        (message "%s" title))))
+
+  (defconst +xkcd-db--sqlite-available-p
+    (with-demoted-errors "+org-xkcd initialization: %S"
+      (emacsql-sqlite-ensure-binary)
+      t))
+
+  (defvar +xkcd-db--connection (make-hash-table :test #'equal)
+    "Database connection to +org-xkcd database.")
+
+  (defun +xkcd-db--get ()
+    "Return the sqlite db file."
+    (expand-file-name "xkcd.db" xkcd-cache-dir))
+
+  (defun +xkcd-db--get-connection ()
+    "Return the database connection, if any."
+    (gethash (file-truename xkcd-cache-dir)
+             +xkcd-db--connection))
+
+  (defconst +xkcd-db--table-schema
+    '((xkcds
+       [(num integer :unique :primary-key)
+        (year        :not-null)
+        (month       :not-null)
+        (link        :not-null)
+        (news        :not-null)
+        (safe_title  :not-null)
+        (title       :not-null)
+        (transcript  :not-null)
+        (alt         :not-null)
+        (img         :not-null)])))
+
+  (defun +xkcd-db--init (db)
+    "Initialize database DB with the correct schema and user version."
+    (emacsql-with-transaction db
+      (pcase-dolist (`(,table . ,schema) +xkcd-db--table-schema)
+        (emacsql db [:create-table $i1 $S2] table schema))))
+
+  (defun +xkcd-db ()
+    "Entrypoint to the +org-xkcd sqlite database.
+Initializes and stores the database, and the database connection.
+Performs a database upgrade when required."
+    (unless (and (+xkcd-db--get-connection)
+                 (emacsql-live-p (+xkcd-db--get-connection)))
+      (let* ((db-file (+xkcd-db--get))
+             (init-db (not (file-exists-p db-file))))
+        (make-directory (file-name-directory db-file) t)
+        (let ((conn (emacsql-sqlite db-file)))
+          (set-process-query-on-exit-flag (emacsql-process conn) nil)
+          (puthash (file-truename xkcd-cache-dir)
+                   conn
+                   +xkcd-db--connection)
+          (when init-db
+            (+xkcd-db--init conn)))))
+    (+xkcd-db--get-connection))
+
+  (defun +xkcd-db-query (sql &rest args)
+    "Run SQL query on +org-xkcd database with ARGS.
+SQL can be either the emacsql vector representation, or a string."
+    (if  (stringp sql)
+        (emacsql (+xkcd-db) (apply #'format sql args))
+      (apply #'emacsql (+xkcd-db) sql args)))
+
+  (defun +xkcd-db-read (num)
+    (when-let ((res
+                (car (+xkcd-db-query [:select * :from xkcds
+                                      :where (= num $s1)]
+                                     num
+                                     :limit 1))))
+      (+xkcd-db-list-to-plist res)))
+
+  (defun +xkcd-db-read-all ()
+    (let ((xkcd-table (make-hash-table :test 'eql :size 4000)))
+      (mapcar (lambda (xkcd-info-list)
+                (puthash (car xkcd-info-list) (+xkcd-db-list-to-plist xkcd-info-list) xkcd-table))
+              (+xkcd-db-query [:select * :from xkcds]))
+      xkcd-table))
+
+  (defun +xkcd-db-list-to-plist (xkcd-datalist)
+    `(:num ,(nth 0 xkcd-datalist)
+      :year ,(nth 1 xkcd-datalist)
+      :month ,(nth 2 xkcd-datalist)
+      :link ,(nth 3 xkcd-datalist)
+      :news ,(nth 4 xkcd-datalist)
+      :safe-title ,(nth 5 xkcd-datalist)
+      :title ,(nth 6 xkcd-datalist)
+      :transcript ,(nth 7 xkcd-datalist)
+      :alt ,(nth 8 xkcd-datalist)
+      :img ,(nth 9 xkcd-datalist)))
+
+  (defun +xkcd-db-write (data)
+    (+xkcd-db-query [:insert-into xkcds
+                     :values $v1]
+                    (list (vector
+                           (cdr (assoc 'num        data))
+                           (cdr (assoc 'year       data))
+                           (cdr (assoc 'month      data))
+                           (cdr (assoc 'link       data))
+                           (cdr (assoc 'news       data))
+                           (cdr (assoc 'safe_title data))
+                           (cdr (assoc 'title      data))
+                           (cdr (assoc 'transcript data))
+                           (cdr (assoc 'alt        data))
+                           (cdr (assoc 'img        data))
+                           )))))
+#+end_src
+** YASnippet
+Nested snippets are good, enable that.
+#+begin_src emacs-lisp
+(setq yas-triggers-in-field t)
+#+end_src
+* Applications
+** IRC
+=circe= is a client for IRC in Emacs (hey, isn't that a nice project
 name+acronym), and a greek enchantress who turned humans into animals.
 
 Let's use the former to chat to +recluses+ discerning individuals online.
@@ -1717,12 +2400,8 @@ Now, some actual emojis to use.
     (":|"   . "neutral")
     (":-|"  . "expressionless")))
 #+end_src
-** Elcord
-#+begin_src emacs-lisp
-(setq elcord-use-major-mode-as-main-icon t)
-#+end_src
-** Elfeed
-RSS feeds are still a thing. Why not make use of them.
+** Newsfeed
+RSS feeds are still a thing. Why not make use of them with =elfeed=.
 I really like what [[https://github.com/fuxialexander/doom-emacs-private-xfu/tree/master/modules/app/rss][fuxialexander]] has going on, but I don't think I need a custom
 module. Let's just try to patch on the main things I like the look of.
 
@@ -1938,211 +2617,43 @@ module. Let's just try to patch on the main things I like the look of.
 
   )
 #+end_src
-** [[https://github.com/zachcurry/emacs-anywhere][Emacs Anywhere]] configuration
-To start with, let's install this.
-#+begin_src shell :tangle (if (executable-find "emacs_anywhere") "no" "setup.sh")
-cd /tmp
-curl -fsSL https://raw.github.com/zachcurry/emacs-anywhere/master/install -o ea-install.sh
-sed -i 's/EA_PATH=$HOME\/.emacs_anywhere/EA_PATH=$HOME\/.local\/share\/emacs_anywhere/' ea-install.sh
-bash ea-install.sh || exit
-cd ~/.local/share/emacs_anywhere
-# Install in ~/.local not ~/.emacs_anywhere
-sed -i 's/$HOME\/.emacs_anywhere/$HOME\/.local\/share\/emacs_anywhere/' ./bin/linux ./bin/emacstask
-ln -s ~/.local/share/emacs_anywhere/bin/linux ~/.local/bin/emacs_anywhere
-# Improve paste robustness --- https://github.com/zachcurry/emacs-anywhere/pull/66
-sed -i 's/xdotool key --clearmodifiers ctrl+v/xdotool key --clearmodifiers Shift+Insert/' ./bin/linux
-#+end_src
-
-It's nice to recognise GitHub (so we can use ~GFM~), and other apps which we know
-take markdown
+** Dictionary
+We start off by loading =lexic=, then we'll integrate it into pre-existing
+definition functionality (like ~+lookup/dictionary-definition~).
 #+begin_src emacs-lisp
-(defun markdown-window-p (window-title)
-  "Judges from WINDOW-TITLE whether the current window likes markdown"
-  (if (string-match-p (rx (or "Stack Exchange" "Stack Overflow"
-                              "Pull Request" "Issue" "Discord"))
-                      window-title) t nil))
+(use-package! lexic
+  :commands lexic-search lexic-list-dictionary
+  :config
+  (map! :map lexic-mode-map
+        :n "q" #'lexic-return-from-lexic
+        :nv "RET" #'lexic-search-word-at-point
+        :n "a" #'outline-show-all
+        :n "h" (cmd! (outline-hide-sublevels 3))
+        :n "o" #'lexic-toggle-entry
+        :n "n" #'lexic-next-entry
+        :n "N" (cmd! (lexic-next-entry t))
+        :n "p" #'lexic-previous-entry
+        :n "P" (cmd! (lexic-previous-entry t))
+        :n "E" (cmd! (lexic-return-from-lexic) ; expand
+                     (switch-to-buffer (lexic-get-buffer)))
+        :n "M" (cmd! (lexic-return-from-lexic) ; minimise
+                     (lexic-goto-lexic))
+        :n "C-p" #'lexic-search-history-backwards
+        :n "C-n" #'lexic-search-history-forwards
+        :n "/" (cmd! (call-interactively #'lexic-search))))
 #+end_src
-When the window opens, we generally want text so let's use a nice sans serif font,
-a position the window below and to the left. Oh, and don't forget about checking
-for ~GFM~, otherwise let's just use ~markdown~.
+
+Now let's use this instead of wordnet.
 #+begin_src emacs-lisp
-(defvar emacs-anywhere--active-markdown nil
-  "Whether the buffer started off as markdown.
-Affects behaviour of `emacs-anywhere--finalise-content'")
-
-(defun emacs-anywhere--finalise-content (&optional _frame)
-  (when emacs-anywhere--active-markdown
-    (fundamental-mode)
-    (goto-char (point-min))
-    (insert "#+options: toc:nil\n")
-    (rename-buffer "*EA Pre Export*")
-    (org-export-to-buffer 'gfm ea--buffer-name)
-    (kill-buffer "*EA Pre Export*"))
-  (gui-select-text (buffer-string)))
-
-(define-minor-mode emacs-anywhere-mode
-  "To tweak the current buffer for some emacs-anywhere considerations"
-  :init-value nil
-  :keymap (list
-           ;; Finish edit, but be smart in org mode
-           (cons (kbd "C-c C-c")
-                 (cmd! (if (and (eq major-mode 'org-mode)
-                                (org-in-src-block-p))
-                           (org-ctrl-c-ctrl-c)
-                         (delete-frame))))
-           ;; Abort edit. emacs-anywhere saves the current edit for next time.
-           (cons (kbd "C-c C-k")
-                 (cmd! (setq ea-on nil)
-                       (delete-frame))))
-  (when emacs-anywhere-mode
-    ;; line breaking
-    (turn-off-auto-fill)
-    (visual-line-mode t)
-    ;; DEL/C-SPC to clear (first keystroke only)
-    (set-transient-map (let ((keymap (make-sparse-keymap)))
-                         (define-key keymap (kbd "DEL")   (cmd! (delete-region (point-min) (point-max))))
-                         (define-key keymap (kbd "C-SPC") (cmd! (delete-region (point-min) (point-max))))
-                         keymap))
-    ;; disable tabs
-    (when (bound-and-true-p centaur-tabs-mode)
-      (centaur-tabs-local-mode t))))
-
-(defun ea-popup-handler (app-name window-title x y w h)
-  (interactive)
-  (set-frame-size (selected-frame) 80 12)
-  ;; position the frame near the mouse
-  (let* ((mousepos (split-string (shell-command-to-string "xdotool getmouselocation | sed -E \"s/ screen:0 window:[^ ]*|x:|y://g\"")))
-         (mouse-x (- (string-to-number (nth 0 mousepos)) 100))
-         (mouse-y (- (string-to-number (nth 1 mousepos)) 50)))
-    (set-frame-position (selected-frame) mouse-x mouse-y))
-
-  (set-frame-name (concat "Quick Edit ∷ " ea-app-name " — "
-                          (truncate-string-to-width
-                           (string-trim
-                            (string-trim-right window-title
-                                               (format "-[A-Za-z0-9 ]*%s" ea-app-name))
-                            "[\s-]+" "[\s-]+")
-                           45 nil nil "…")))
-  (message "window-title: %s" window-title)
-
-  (when-let ((selection (gui-get-selection 'PRIMARY)))
-    (insert selection))
-
-  (setq emacs-anywhere--active-markdown (markdown-window-p window-title))
-
-  ;; convert buffer to org mode if markdown
-  (when emacs-anywhere--active-markdown
-    (shell-command-on-region (point-min) (point-max)
-                             "pandoc -f markdown -t org" nil t)
-    (deactivate-mark) (goto-char (point-max)))
-
-  ;; set major mode
-  (org-mode)
-
-  (advice-add 'ea--delete-frame-handler :before #'emacs-anywhere--finalise-content)
-
-  ;; I'll be honest with myself, I /need/ spellcheck
-  (flyspell-buffer)
-
-  (evil-insert-state) ; start in insert
-  (emacs-anywhere-mode 1))
-
-(add-hook 'ea-popup-hook 'ea-popup-handler)
+(defadvice! +lookup/dictionary-definition-lexic (identifier &optional arg)
+  "Look up the definition of the word at point (or selection) using `lexic-search'."
+  :override #'+lookup/dictionary-definition
+  (interactive
+   (list (or (doom-thing-at-point-or-region 'word)
+             (read-string "Look up in dictionary: "))
+         current-prefix-arg))
+  (lexic-search identifier nil nil t))
 #+end_src
-** Eros-eval
-This makes the result of evals with =gr= and =gR= just slightly prettier. Every bit
-counts right?
-#+begin_src emacs-lisp
-(setq eros-eval-result-prefix "⟹ ")
-#+end_src
-** EVIL
-I don't use ~evil-escape-mode~, so I may as well turn it off, I've heard it
-contributes a typing delay. I'm not sure it's much, but it is an extra
-~pre-command-hook~ that I don't benefit from, so...
-#+begin_src emacs-lisp
-(after! evil-escape (evil-escape-mode -1))
-#+end_src
-
-When I want to make a substitution, I want it to be global more often than not
---- so let's make that the default.
-#+begin_src emacs-lisp
-(after! evil (setq evil-ex-substitute-global t)) ; I like my s/../.. to by global by default
-#+end_src
-** Info colors
-#+begin_src emacs-lisp
-(use-package! info-colors
-  :commands (info-colors-fontify-node))
-
-(add-hook 'Info-selection-hook 'info-colors-fontify-node)
-
-(add-hook 'Info-mode-hook #'mixed-pitch-mode)
-#+end_src
-** Ispell
-*** Downloading dictionaries
-Let's get a nice big dictionary from [[http://app.aspell.net/create][SCOWL Custom List/Dictionary Creator]] with
-the following configuration
-- size :: 80 (huge)
-- spellings :: British(-ise) and Australian
-- spelling variants level :: 0
-- diacritics :: keep
-- extra lists :: hacker, roman numerals
-
-**** Hunspell
-#+begin_src shell :tangle (if (file-exists-p "/usr/share/myspell/en-custom.dic") "no" "setup.sh")
-cd /tmp
-curl -o "hunspell-en-custom.zip" 'http://app.aspell.net/create?max_size=80&spelling=GBs&spelling=AU&max_variant=0&diacritic=keep&special=hacker&special=roman-numerals&encoding=utf-8&format=inline&download=hunspell'
-unzip "hunspell-en-custom.zip"
-
-sudo chown root:root en-custom.*
-sudo mv en-custom.{aff,dic} /usr/share/myspell/
-#+end_src
-**** Aspell
-#+begin_src shell :tangle (if (file-expand-wildcards "/usr/lib64/aspell*/en-custom.multi") "no" "setup.sh")
-cd /tmp
-curl -o "aspell6-en-custom.tar.bz2" 'http://app.aspell.net/create?max_size=80&spelling=GBs&spelling=AU&max_variant=0&diacritic=keep&special=hacker&special=roman-numerals&encoding=utf-8&format=inline&download=aspell'
-tar -xjf "aspell6-en-custom.tar.bz2"
-
-cd aspell6-en-custom
-./configure && make && sudo make install
-#+end_src
-*** Configuration
-#+begin_src emacs-lisp
-(setq ispell-dictionary "en-custom")
-#+end_src
-Oh, and by the way, if ~company-ispell-dictionary~ is ~nil~, then
-~ispell-complete-word-dict~ is used instead, which once again when ~nil~ is
-~ispell-alternate-dictionary~, which at the moment maps to a plaintext version of
-the above.
-
-It seems reasonable to want to keep an eye on my personal dict, let's have it
-nearby (also means that if I change the 'main' dictionary I keep my addition).
-#+begin_src emacs-lisp
-(setq ispell-personal-dictionary (expand-file-name ".ispell_personal" doom-private-dir))
-#+end_src
-** Ivy
-While in an ivy mini-buffer =C-o= shows a list of all possible actions one may take.
-By default this is ~#'ivy-read-action-by-key~ however a better interface to this
-is using Hydra.
-#+begin_src emacs-lisp
-(setq ivy-read-action-function #'ivy-hydra-read-action)
-#+end_src
-
-I currently have ~40k functions. This seems like sufficient motivation to
-increase the maximum number of items ivy will sort to 40k + a bit, this way
-=SPC h f= et al. will continue to function as expected.
-#+begin_src emacs-lisp
-(setq ivy-sort-max-size 50000)
-#+end_src
-** Magit
-Magit is pretty nice by default. The diffs don't get any
-syntax-highlighting-love though which is a bit sad. Thankfully
-[[https://github.com/dandavison/magit-delta][dandavison/magit-delta]] exists, which we can put to use.
-#+begin_src emacs-lisp
-;; (after! magit
-;;   (magit-delta-mode +1))
-#+end_src
-Unfortunately this seems to mess things up, which is something I'll want to look
-into later.
 ** Mail
 [[xkcd:1467]]
 
@@ -2912,504 +3423,6 @@ minor tweaks.
 (map! :map org-msg-edit-mode-map
       :after org-msg
       :n "G" #'org-msg-goto-body)
-#+end_src
-** Org Chef
-Loading after org seems a bit premature. Let's just load it when we try to use
-it, either by command or in a capture template.
-#+begin_src emacs-lisp
-(use-package! org-chef
-  :commands (org-chef-insert-recipe org-chef-get-recipe-from-url))
-#+end_src
-** Projectile
-Looking at documentation via =SPC h f= and =SPC h v= and looking at the source can
-add package src directories to projectile. This isn't desirable in my opinion.
-#+begin_src emacs-lisp
-(setq projectile-ignored-projects '("~/" "/tmp" "~/.emacs.d/.local/straight/repos/"))
-(defun projectile-ignored-project-function (filepath)
-  "Return t if FILEPATH is within any of `projectile-ignored-projects'"
-  (or (mapcar (lambda (p) (s-starts-with-p p filepath)) projectile-ignored-projects)))
-#+end_src
-** Lexic
-We start off my loading =lexic=, then we'll integrate it into pre-existing
-definition functionality (like ~+lookup/dictionary-definition~).
-#+begin_src emacs-lisp
-(use-package! lexic
-  :commands lexic-search lexic-list-dictionary
-  :config
-  (map! :map lexic-mode-map
-        :n "q" #'lexic-return-from-lexic
-        :nv "RET" #'lexic-search-word-at-point
-        :n "a" #'outline-show-all
-        :n "h" (cmd! (outline-hide-sublevels 3))
-        :n "o" #'lexic-toggle-entry
-        :n "n" #'lexic-next-entry
-        :n "N" (cmd! (lexic-next-entry t))
-        :n "p" #'lexic-previous-entry
-        :n "P" (cmd! (lexic-previous-entry t))
-        :n "E" (cmd! (lexic-return-from-lexic) ; expand
-                     (switch-to-buffer (lexic-get-buffer)))
-        :n "M" (cmd! (lexic-return-from-lexic) ; minimise
-                     (lexic-goto-lexic))
-        :n "C-p" #'lexic-search-history-backwards
-        :n "C-n" #'lexic-search-history-forwards
-        :n "/" (cmd! (call-interactively #'lexic-search))))
-#+end_src
-
-Now let's use this instead of wordnet.
-#+begin_src emacs-lisp
-(defadvice! +lookup/dictionary-definition-lexic (identifier &optional arg)
-  "Look up the definition of the word at point (or selection) using `lexic-search'."
-  :override #'+lookup/dictionary-definition
-  (interactive
-   (list (or (doom-thing-at-point-or-region 'word)
-             (read-string "Look up in dictionary: "))
-         current-prefix-arg))
-  (lexic-search identifier nil nil t))
-#+end_src
-** Smart Parentheses
-#+begin_src emacs-lisp
-(sp-local-pair
- '(org-mode)
- "<<" ">>"
- :actions '(insert))
-#+end_src
-** Spray
-Let's make this suit me slightly better.
-#+begin_src emacs-lisp
-(setq spray-wpm 500
-      spray-height 700)
-#+end_src
-** Theme magic
-Let's automatically update terminals on theme change (as long as ~pywal~ is available).
-#+begin_src emacs-lisp :tangle (if (executable-find "wal") "yes" "no")
-(add-hook 'doom-load-theme-hook 'theme-magic-from-emacs)
-#+end_src
-** Tramp
-Let's try to make tramp handle prompts better
-#+begin_src emacs-lisp
-(after! tramp
-  (setenv "SHELL" "/bin/bash")
-  (setq tramp-shell-prompt-pattern "\\(?:^\\|\\)[^]#$%>\n]*#?[]#$%>] *\\(\\[[0-9;]*[a-zA-Z] *\\)*")) ;; default + 
-#+end_src
-*** Troubleshooting
-In case the remote shell is misbehaving, here are some things to try
-**** Zsh
-There are some escape code you don't want, let's make it behave more considerately.
-#+begin_src shell :eval no :tangle no
-if [[ "$TERM" == "dumb" ]]; then
-    unset zle_bracketed_paste
-    unset zle
-    PS1='$ '
-    return
-fi
-#+end_src
-*** Guix
-[[https://guix.gnu.org/][Guix]] puts some binaries that TRAMP looks for in unexpected locations.
-That's no problem though, we just need to help TRAMP find them.
-#+begin_src emacs-lisp
-(after! tramp
-  (appendq! tramp-remote-path
-            '("~/.guix-profile/bin" "~/.guix-profile/sbin"
-              "/run/current-system/profile/bin"
-              "/run/current-system/profile/sbin")))
-#+end_src
-** Treemacs
-Quite often there are superfluous files I'm not that interested in. There's no
-good reason for them to take up space. Let's add a mechanism to ignore them.
-#+begin_src emacs-lisp
-(after! treemacs
-  (defvar treemacs-file-ignore-extensions '()
-    "File extension which `treemacs-ignore-filter' will ensure are ignored")
-  (defvar treemacs-file-ignore-globs '()
-    "Globs which will are transformed to `treemacs-file-ignore-regexps' which `treemacs-ignore-filter' will ensure are ignored")
-  (defvar treemacs-file-ignore-regexps '()
-    "RegExps to be tested to ignore files, generated from `treeemacs-file-ignore-globs'")
-  (defun treemacs-file-ignore-generate-regexps ()
-    "Generate `treemacs-file-ignore-regexps' from `treemacs-file-ignore-globs'"
-    (setq treemacs-file-ignore-regexps (mapcar 'dired-glob-regexp treemacs-file-ignore-globs)))
-  (if (equal treemacs-file-ignore-globs '()) nil (treemacs-file-ignore-generate-regexps))
-  (defun treemacs-ignore-filter (file full-path)
-    "Ignore files specified by `treemacs-file-ignore-extensions', and `treemacs-file-ignore-regexps'"
-    (or (member (file-name-extension file) treemacs-file-ignore-extensions)
-        (let ((ignore-file nil))
-          (dolist (regexp treemacs-file-ignore-regexps ignore-file)
-            (setq ignore-file (or ignore-file (if (string-match-p regexp full-path) t nil)))))))
-  (add-to-list 'treemacs-ignored-file-predicates #'treemacs-ignore-filter))
-#+end_src
-
-Now, we just identify the files in question.
-#+begin_src emacs-lisp
-(setq treemacs-file-ignore-extensions
-      '(;; LaTeX
-        "aux"
-        "ptc"
-        "fdb_latexmk"
-        "fls"
-        "synctex.gz"
-        "toc"
-        ;; LaTeX - glossary
-        "glg"
-        "glo"
-        "gls"
-        "glsdefs"
-        "ist"
-        "acn"
-        "acr"
-        "alg"
-        ;; LaTeX - pgfplots
-        "mw"
-        ;; LaTeX - pdfx
-        "pdfa.xmpi"
-        ))
-(setq treemacs-file-ignore-globs
-      '(;; LaTeX
-        "*/_minted-*"
-        ;; AucTeX
-        "*/.auctex-auto"
-        "*/_region_.log"
-        "*/_region_.tex"))
-#+end_src
-** Which-key
-Let's make this popup a bit faster
-#+begin_src emacs-lisp
-(setq which-key-idle-delay 0.5) ;; I need the help, I really do
-#+end_src
-I also think that having =evil-= appear in so many popups is a bit too verbose, let's change that, and do a few other similar tweaks while we're at it.
-#+begin_src emacs-lisp
-(setq which-key-allow-multiple-replacements t)
-(after! which-key
-  (pushnew!
-   which-key-replacement-alist
-   '(("" . "\\`+?evil[-:]?\\(?:a-\\)?\\(.*\\)") . (nil . "◂\\1"))
-   '(("\\`g s" . "\\`evilem--?motion-\\(.*\\)") . (nil . "◃\\1"))
-   ))
-#+end_src
-
-#+attr_html: :class invertible :alt Whichkey triggered on an evil motion
-[[https://tecosaur.com/lfs/emacs-config/screenshots/whichkey-evil.png]]
-** Writeroom
-For starters, I think Doom is a bit over-zealous when zooming in
-#+begin_src emacs-lisp
-(setq +zen-text-scale 0.6)
-#+end_src
-
-Now, I think it would also be nice to remove line numbers and org stars in
-writeroom.
-#+begin_src emacs-lisp
-(after! writeroom-mode
-  (add-hook 'writeroom-mode-hook
-            (defun +zen-cleaner-org ()
-              (when (and (eq major-mode 'org-mode) writeroom-mode)
-                (setq-local -display-line-numbers display-line-numbers
-                            display-line-numbers nil)
-                (setq-local -org-indent-mode org-indent-mode)
-                (org-indent-mode -1)
-                (when (featurep 'org-superstar)
-                  (setq-local -org-superstar-headline-bullets-list org-superstar-headline-bullets-list
-                              ;; org-superstar-headline-bullets-list '("🙐" "🙑" "🙒" "🙓" "🙔" "🙕" "🙖" "🙗")
-                              org-superstar-headline-bullets-list '("🙘" "🙙" "🙚" "🙛")
-                              -org-superstar-remove-leading-stars org-superstar-remove-leading-stars
-                              org-superstar-remove-leading-stars t)
-                  (org-superstar-restart)))))
-  (add-hook 'writeroom-mode-disable-hook
-            (defun +zen-dirty-org ()
-              (when (eq major-mode 'org-mode)
-                (setq-local display-line-numbers -display-line-numbers)
-                (when -org-indent-mode
-                  (org-indent-mode 1))
-                (when (featurep 'org-superstar)
-                  (setq-local org-superstar-headline-bullets-list -org-superstar-headline-bullets-list
-                              org-superstar-remove-leading-stars -org-superstar-remove-leading-stars)
-                  (org-superstar-restart))))))
-#+end_src
-
-#+attr_html: :class invertible :alt Writeroom applied to an Org file
-[[https://tecosaur.com/lfs/emacs-config/screenshots/writeroom-and-org.png]]
-** xkcd
-
-We want to set this up so it loads nicely in [[*Extra links][Extra links]].
-#+begin_src emacs-lisp
-(use-package! xkcd
-  :commands (xkcd-get-json
-             xkcd-download xkcd-get
-             ;; now for funcs from my extension of this pkg
-             +xkcd-find-and-copy +xkcd-find-and-view
-             +xkcd-fetch-info +xkcd-select)
-  :config
-  (after! evil-snipe
-    (add-to-list 'evil-snipe-disabled-modes 'xkcd-mode))
-  :general (:states 'normal
-            :keymaps 'xkcd-mode-map
-            "<right>" #'xkcd-next
-            "n"       #'xkcd-next ; evil-ish
-            "<left>"  #'xkcd-prev
-            "N"       #'xkcd-prev ; evil-ish
-            "r"       #'xkcd-rand
-            "a"       #'xkcd-rand ; because image-rotate can interfere
-            "t"       #'xkcd-alt-text
-            "q"       #'xkcd-kill-buffer
-            "o"       #'xkcd-open-browser
-            "e"       #'xkcd-open-explanation-browser
-            ;; extras
-            "s"       #'+xkcd-find-and-view
-            "/"       #'+xkcd-find-and-view
-            "y"       #'+xkcd-copy))
-#+end_src
-
-Let's also extend the functionality a whole bunch.
-#+begin_src emacs-lisp
-(after! xkcd
-  (require 'emacsql-sqlite)
-
-  (defun +xkcd-select ()
-    "Prompt the user for an xkcd using `ivy-read' and `+xkcd-select-format'. Return the xkcd number or nil"
-    (let* (prompt-lines
-           (-dummy (maphash (lambda (key xkcd-info)
-                              (push (+xkcd-select-format xkcd-info) prompt-lines))
-                            +xkcd-stored-info))
-           (num (ivy-read (format "xkcd (%s): " xkcd-latest) prompt-lines)))
-      (if (equal "" num) xkcd-latest
-        (string-to-number (replace-regexp-in-string "\\([0-9]+\\).*" "\\1" num)))))
-
-  (defun +xkcd-select-format (xkcd-info)
-    "Creates each ivy-read line from an xkcd info plist. Must start with the xkcd number"
-    (format "%-4s  %-30s %s"
-            (propertize (number-to-string (plist-get xkcd-info :num))
-                        'face 'counsel-key-binding)
-            (plist-get xkcd-info :title)
-            (propertize (plist-get xkcd-info :alt)
-                        'face '(variable-pitch font-lock-comment-face))))
-
-  (defun +xkcd-fetch-info (&optional num)
-    "Fetch the parsed json info for comic NUM. Fetches latest when omitted or 0"
-    (require 'xkcd)
-    (when (or (not num) (= num 0))
-      (+xkcd-check-latest)
-      (setq num xkcd-latest))
-    (let ((res (or (gethash num +xkcd-stored-info)
-                   (puthash num (+xkcd-db-read num) +xkcd-stored-info))))
-      (unless res
-        (+xkcd-db-write
-         (let* ((url (format "https://xkcd.com/%d/info.0.json" num))
-                (json-assoc
-                 (if (gethash num +xkcd-stored-info)
-                     (gethash num +xkcd-stored-info)
-                   (json-read-from-string (xkcd-get-json url num)))))
-           json-assoc))
-        (setq res (+xkcd-db-read num)))
-      res))
-
-  ;; since we've done this, we may as well go one little step further
-  (defun +xkcd-find-and-copy ()
-    "Prompt for an xkcd using `+xkcd-select' and copy url to clipboard"
-    (interactive)
-    (+xkcd-copy (+xkcd-select)))
-
-  (defun +xkcd-copy (&optional num)
-    "Copy a url to xkcd NUM to the clipboard"
-    (interactive "i")
-    (let ((num (or num xkcd-cur)))
-      (gui-select-text (format "https://xkcd.com/%d" num))
-      (message "xkcd.com/%d copied to clipboard" num)))
-
-  (defun +xkcd-find-and-view ()
-    "Prompt for an xkcd using `+xkcd-select' and view it"
-    (interactive)
-    (xkcd-get (+xkcd-select))
-    (switch-to-buffer "*xkcd*"))
-
-  (defvar +xkcd-latest-max-age (* 60 60) ; 1 hour
-    "Time after which xkcd-latest should be refreshed, in seconds")
-
-  ;; initialise `xkcd-latest' and `+xkcd-stored-info' with latest xkcd
-  (add-transient-hook! '+xkcd-select
-    (require 'xkcd)
-    (+xkcd-fetch-info xkcd-latest)
-    (setq +xkcd-stored-info (+xkcd-db-read-all)))
-
-  (add-transient-hook! '+xkcd-fetch-info
-    (xkcd-update-latest))
-
-  (defun +xkcd-check-latest ()
-    "Use value in `xkcd-cache-latest' as long as it isn't older thabn `+xkcd-latest-max-age'"
-    (unless (and (file-exists-p xkcd-cache-latest)
-                 (< (- (time-to-seconds (current-time))
-                       (time-to-seconds (file-attribute-modification-time (file-attributes xkcd-cache-latest))))
-                    +xkcd-latest-max-age))
-      (let* ((out (xkcd-get-json "http://xkcd.com/info.0.json" 0))
-             (json-assoc (json-read-from-string out))
-             (latest (cdr (assoc 'num json-assoc))))
-        (when (/= xkcd-latest latest)
-          (+xkcd-db-write json-assoc)
-          (with-current-buffer (find-file xkcd-cache-latest)
-            (setq xkcd-latest latest)
-            (erase-buffer)
-            (insert (number-to-string latest))
-            (save-buffer)
-            (kill-buffer (current-buffer)))))
-      (shell-command (format "touch %s" xkcd-cache-latest))))
-
-  (defvar +xkcd-stored-info (make-hash-table :test 'eql)
-    "Basic info on downloaded xkcds, in the form of a hashtable")
-
-  (defadvice! xkcd-get-json--and-cache (url &optional num)
-    "Fetch the Json coming from URL.
-If the file NUM.json exists, use it instead.
-If NUM is 0, always download from URL.
-The return value is a string."
-    :override #'xkcd-get-json
-    (let* ((file (format "%s%d.json" xkcd-cache-dir num))
-           (cached (and (file-exists-p file) (not (eq num 0))))
-           (out (with-current-buffer (if cached
-                                         (find-file file)
-                                       (url-retrieve-synchronously url))
-                  (goto-char (point-min))
-                  (unless cached (re-search-forward "^$"))
-                  (prog1
-                      (buffer-substring-no-properties (point) (point-max))
-                    (kill-buffer (current-buffer))))))
-      (unless (or cached (eq num 0))
-        (xkcd-cache-json num out))
-      out))
-
-  (defadvice! +xkcd-get (num)
-    "Get the xkcd number NUM."
-    :override 'xkcd-get
-    (interactive "nEnter comic number: ")
-    (xkcd-update-latest)
-    (get-buffer-create "*xkcd*")
-    (switch-to-buffer "*xkcd*")
-    (xkcd-mode)
-    (let (buffer-read-only)
-      (erase-buffer)
-      (setq xkcd-cur num)
-      (let* ((xkcd-data (+xkcd-fetch-info num))
-             (num (plist-get xkcd-data :num))
-             (img (plist-get xkcd-data :img))
-             (safe-title (plist-get xkcd-data :safe-title))
-             (alt (plist-get xkcd-data :alt))
-             title file)
-        (message "Getting comic...")
-        (setq file (xkcd-download img num))
-        (setq title (format "%d: %s" num safe-title))
-        (insert (propertize title
-                            'face 'outline-1))
-        (center-line)
-        (insert "\n")
-        (xkcd-insert-image file num)
-        (if (eq xkcd-cur 0)
-            (setq xkcd-cur num))
-        (setq xkcd-alt alt)
-        (message "%s" title))))
-
-  (defconst +xkcd-db--sqlite-available-p
-    (with-demoted-errors "+org-xkcd initialization: %S"
-      (emacsql-sqlite-ensure-binary)
-      t))
-
-  (defvar +xkcd-db--connection (make-hash-table :test #'equal)
-    "Database connection to +org-xkcd database.")
-
-  (defun +xkcd-db--get ()
-    "Return the sqlite db file."
-    (expand-file-name "xkcd.db" xkcd-cache-dir))
-
-  (defun +xkcd-db--get-connection ()
-    "Return the database connection, if any."
-    (gethash (file-truename xkcd-cache-dir)
-             +xkcd-db--connection))
-
-  (defconst +xkcd-db--table-schema
-    '((xkcds
-       [(num integer :unique :primary-key)
-        (year        :not-null)
-        (month       :not-null)
-        (link        :not-null)
-        (news        :not-null)
-        (safe_title  :not-null)
-        (title       :not-null)
-        (transcript  :not-null)
-        (alt         :not-null)
-        (img         :not-null)])))
-
-  (defun +xkcd-db--init (db)
-    "Initialize database DB with the correct schema and user version."
-    (emacsql-with-transaction db
-      (pcase-dolist (`(,table . ,schema) +xkcd-db--table-schema)
-        (emacsql db [:create-table $i1 $S2] table schema))))
-
-  (defun +xkcd-db ()
-    "Entrypoint to the +org-xkcd sqlite database.
-Initializes and stores the database, and the database connection.
-Performs a database upgrade when required."
-    (unless (and (+xkcd-db--get-connection)
-                 (emacsql-live-p (+xkcd-db--get-connection)))
-      (let* ((db-file (+xkcd-db--get))
-             (init-db (not (file-exists-p db-file))))
-        (make-directory (file-name-directory db-file) t)
-        (let ((conn (emacsql-sqlite db-file)))
-          (set-process-query-on-exit-flag (emacsql-process conn) nil)
-          (puthash (file-truename xkcd-cache-dir)
-                   conn
-                   +xkcd-db--connection)
-          (when init-db
-            (+xkcd-db--init conn)))))
-    (+xkcd-db--get-connection))
-
-  (defun +xkcd-db-query (sql &rest args)
-    "Run SQL query on +org-xkcd database with ARGS.
-SQL can be either the emacsql vector representation, or a string."
-    (if  (stringp sql)
-        (emacsql (+xkcd-db) (apply #'format sql args))
-      (apply #'emacsql (+xkcd-db) sql args)))
-
-  (defun +xkcd-db-read (num)
-    (when-let ((res
-                (car (+xkcd-db-query [:select * :from xkcds
-                                      :where (= num $s1)]
-                                     num
-                                     :limit 1))))
-      (+xkcd-db-list-to-plist res)))
-
-  (defun +xkcd-db-read-all ()
-    (let ((xkcd-table (make-hash-table :test 'eql :size 4000)))
-      (mapcar (lambda (xkcd-info-list)
-                (puthash (car xkcd-info-list) (+xkcd-db-list-to-plist xkcd-info-list) xkcd-table))
-              (+xkcd-db-query [:select * :from xkcds]))
-      xkcd-table))
-
-  (defun +xkcd-db-list-to-plist (xkcd-datalist)
-    `(:num ,(nth 0 xkcd-datalist)
-      :year ,(nth 1 xkcd-datalist)
-      :month ,(nth 2 xkcd-datalist)
-      :link ,(nth 3 xkcd-datalist)
-      :news ,(nth 4 xkcd-datalist)
-      :safe-title ,(nth 5 xkcd-datalist)
-      :title ,(nth 6 xkcd-datalist)
-      :transcript ,(nth 7 xkcd-datalist)
-      :alt ,(nth 8 xkcd-datalist)
-      :img ,(nth 9 xkcd-datalist)))
-
-  (defun +xkcd-db-write (data)
-    (+xkcd-db-query [:insert-into xkcds
-                     :values $v1]
-                    (list (vector
-                           (cdr (assoc 'num        data))
-                           (cdr (assoc 'year       data))
-                           (cdr (assoc 'month      data))
-                           (cdr (assoc 'link       data))
-                           (cdr (assoc 'news       data))
-                           (cdr (assoc 'safe_title data))
-                           (cdr (assoc 'title      data))
-                           (cdr (assoc 'transcript data))
-                           (cdr (assoc 'alt        data))
-                           (cdr (assoc 'img        data))
-                           )))))
-#+end_src
-** YASnippet
-Nested snippets are good, enable that.
-#+begin_src emacs-lisp
-(setq yas-triggers-in-field t)
 #+end_src
 * Language configuration
 ** General
