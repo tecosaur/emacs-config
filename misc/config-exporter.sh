@@ -28,7 +28,6 @@
   (setq exit-code 1))
 (advice-add 'debug :around #'red-error)
 
-
 (message "\033[0;34m[%.1fs] Opening config file: %s\033[90m"
          (- (float-time) start-time)
          (expand-file-name "../config.org"))
@@ -44,7 +43,9 @@
 (message "\033[0;33m[%.1fs] Htmlizing %s\033[0m"
          (- (float-time) start-time)
          (buffer-file-name))
+(htmlize-file (expand-file-name  "../init.el"))
 (htmlize-file (expand-file-name  "../config.el"))
+(htmlize-file (expand-file-name  "../packages.el"))
 
 (message "\033[1;32m[%.1fs] Config export complete!\033[0m"
          (- (float-time) start-time))

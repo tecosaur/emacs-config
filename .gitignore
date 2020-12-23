@@ -3,6 +3,8 @@ _minted-config
 abbrev.el
 config.*
 !config.org
+init.el
+packages.el
 setup.sh
 
 !publish

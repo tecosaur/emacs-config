@@ -6,7 +6,7 @@ Here you may find my config. There is only one significant file:
 What you *really* want is the =M-x org-html-export-to-html= version of ~config.org~
 (linked in the title).
 
- In addition to the =html= export, this /produces/ the [[https://tecosaur.github.io/emacs-config/config.el.html][config.el]] file
+ In addition to the =html= export, this /produces/ the [[https://tecosaur.github.io/emacs-config/init.el.html][init.el]], [[https://tecosaur.github.io/emacs-config/config.el.html][config.el]], and [[https://tecosaur.github.io/emacs-config/packages.el.html][packages.el]] files.
 
 Other than that, snippets are (currently) sourced from the [[file:snippets/][snippets]] folder,
 resources are put in [[file:misc/][misc]], and you may find submodules for packages of mine in
