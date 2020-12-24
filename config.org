@@ -97,8 +97,8 @@ workflow may settle, with the potential for rich integrations between them --- a
 #+begin_src dot :cmd circo :file misc/emacs-platform.svg :exports none
 digraph {
     graph [bgcolor="transparent"];
-    node[shape="underline" penwidth="2" style="rounded,filled" fillcolor="#efefef" color="#c9c9c9" fontcolor="#000000" fontname="overpass"];
-    edge[arrowhead=none color="#aaaaaa" penwidth="1.2"]
+    node  [shape="underline" penwidth="2" style="rounded,filled" fillcolor="#efefef" color="#c9c9c9" fontcolor="#000000" fontname="overpass"];
+    edge  [arrowhead=none color="#aaaaaa" penwidth="1.2"]
     // nodes
     "Task Managment" [color="#2ec27e"]
     "Email" [color="#1c71d8"]
@@ -4035,11 +4035,11 @@ Let's setup some org-capture templates, and make them visually nice to access.
   (set-org-capture-templates)
   (unless (display-graphic-p)
     (add-hook 'server-after-make-frame-hook
-      (defun org-capture-reinitialise-hook ()
-        (when (display-graphic-p)
-          (set-org-capture-templates)
-          (remove-hook 'server-after-make-frame-hook
-                       #'org-capture-reinitialise-hook))))))
+              (defun org-capture-reinitialise-hook ()
+                (when (display-graphic-p)
+                  (set-org-capture-templates)
+                  (remove-hook 'server-after-make-frame-hook
+                               #'org-capture-reinitialise-hook))))))
 #+end_src
 It would also be nice to improve how the capture dialogue looks
 #+name: prettify-capture
@@ -4334,8 +4334,8 @@ this particular situation, rather than the universal maximum average.
 This budget-adjusted per-word maximum length is given by the mathematical expression below:
 
 max length = \\floor{ \\frac{total length - chars for seperators - \\sum_{word \\leq average length} length(word) }{num(words) > average length} }"
-      ;; trucate each word to a max word length determined by
-      ;;
+  ;; trucate each word to a max word length determined by
+  ;;
   (let* ((total-length-budget (- org-reference-contraction-max-length  ; how many non-separator chars we can use
                                  (1- (length words))))
          (word-length-budget (/ total-length-budget                      ; max length of each word to keep within budget
@@ -4377,7 +4377,7 @@ truncated to fit within the limit using `org-reference-contraction-truncate-word
             (cl-subseq reference-words 0 org-reference-contraction-max-words)))
 
     (when (> (apply #'+ (1- (length reference-words))
-                   (mapcar #'length reference-words))
+                    (mapcar #'length reference-words))
              org-reference-contraction-max-length)
       (setq reference-words (org-reference-contraction-truncate-words reference-words)))
 
@@ -5630,26 +5630,26 @@ is an element defining the scope of the table.  Return the table
 of contents as a string, or nil if it is empty."
   :override #'org-html-toc
   (let ((toc-entries
-	 (mapcar (lambda (headline)
-		   (cons (org-html--format-toc-headline headline info)
-			 (org-export-get-relative-level headline info)))
-		 (org-export-collect-headlines info depth scope))))
+     (mapcar (lambda (headline)
+           (cons (org-html--format-toc-headline headline info)
+             (org-export-get-relative-level headline info)))
+         (org-export-collect-headlines info depth scope))))
     (when toc-entries
       (let ((toc (concat "<div id=\"text-table-of-contents\">"
-			 (org-html--toc-text toc-entries)
-			 "</div>\n")))
-	(if scope toc
-	  (let ((outer-tag (if (org-html--html5-fancy-p info)
-			       "nav"
-			     "div")))
-	    (concat (format "<%s id=\"table-of-contents\">\n" outer-tag)
-		    (let ((top-level (plist-get info :html-toplevel-hlevel)))
-		      (format "<h%d><a href=\"#\" style=\"color:inherit; text-decoration: none;\">%s</a></h%d>\n"
-			      top-level
-			      (org-html--translate "Table of Contents" info)
-			      top-level))
-		    toc
-		    (format "</%s>\n" outer-tag))))))))
+             (org-html--toc-text toc-entries)
+             "</div>\n")))
+    (if scope toc
+      (let ((outer-tag (if (org-html--html5-fancy-p info)
+                   "nav"
+                 "div")))
+        (concat (format "<%s id=\"table-of-contents\">\n" outer-tag)
+            (let ((top-level (plist-get info :html-toplevel-hlevel)))
+              (format "<h%d><a href=\"#\" style=\"color:inherit; text-decoration: none;\">%s</a></h%d>\n"
+                  top-level
+                  (org-html--translate "Table of Contents" info)
+                  top-level))
+            toc
+            (format "</%s>\n" outer-tag))))))))
 #+end_src
 
 Lastly, let's pile on some metadata. This gives my pages nice embeds.
