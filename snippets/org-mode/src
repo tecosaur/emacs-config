@@ -1,0 +1,8 @@
+# -*- mode: snippet -*-
+# name: #+begin_src
+# uuid: src
+# key: src
+# --
+#+begin_src ${1:`(+yas/org-last-src-lang)`}
+`%`$0
+#+end_src
