@@ -1049,7 +1049,7 @@ roll our [[file:lisp/wttrin.el][own version]].
 
 Why not flash words on the screen. Why not --- hey, it could be fun.
 #+begin_src emacs-lisp
-(package! spray :pin "65002a15b0c74081ac51a41134b9846e05bc2cd5")
+(package! spray :pin "74d9dcfa2e8b38f96a43de9ab0eb13364300cb46")
 #+end_src
 
 With all our fancy Emacs themes, my terminal is missing out!
@@ -1234,7 +1234,7 @@ Use HEAD for development.
 **** Improve agenda/capture
 The agenda is nice, but a souped up version is nicer.
 #+begin_src emacs-lisp
-(package! org-super-agenda :pin "ac7f2ef05c161b10390141b6863b431dc9360edc")
+(package! org-super-agenda :pin "f5e80e4d0da6b2eeda9ba21e021838fa6a495376")
 #+end_src
 
 Similarly ~doct~ (Declarative Org Capture Templates) seems to be a nicer way to
@@ -1255,7 +1255,7 @@ improvement to me! Just need to get it working...
 
 For automatically toggling LaTeX fragment previews there's this nice package
 #+begin_src emacs-lisp
-(package! org-fragtog :pin "92119e3ae7c9a0ae2b5c9d9e4801b5fdc4804ad7")
+(package! org-fragtog :pin "f8e2300acd14724c280e9d12da3f4f03f4193467")
 #+end_src
 
 ~org-superstar-mode~ is great. While we're at it we may as well make tags prettier as well :)
@@ -1302,7 +1302,7 @@ to make that right again, and this package makes that even easier to do.
 Org-roam is nice by itself, but there are so /extra/ nice packages which integrate
 with it.
 #+begin_src emacs-lisp
-(package! org-roam-server :pin "6cfb8d60abfecd985975f683e48e87d03a0f0212")
+(package! org-roam-server :pin "93b673209d141953547fc0732506bb0efa68f804")
 #+end_src
 #+begin_src emacs-lisp :tangle yes
 (use-package org-roam-server
