@@ -1201,7 +1201,22 @@ GoldenDict, it's likely we'll be able to switch from ~sdcv~ to that in the futur
 
 Since GoldenDict supports StarDict files, I expect this will be a relatively
 painless switch.
+**** Screenshots
+This makes it a breeze to take lovely screenshots.
+#+begin_src emacs-lisp
+(package! screenshot :recipe (:local-repo "lisp/screenshot"))
+#+end_src
 
+#+attr_html: :class invertible :alt Example screenshot.el screenshot
+[[https://tecosaur.com/lfs/emacs-config/screenshots/screenshot.png]]
+
+Some light configuring is all we need, so we can make use of the [[https://github.com/Calinou/0x0][0x0]] wrapper
+file uploading script (which I've renamed to ~upload~).
+#+begin_src emacs-lisp :tangle yes
+(use-package! screenshot
+  :defer t
+  :config (setq screenshot-upload-fn "upload %s 2>/dev/null"))
+#+end_src
 ** Language packages
 *** LaTeX
 For mathematical convenience, WIP

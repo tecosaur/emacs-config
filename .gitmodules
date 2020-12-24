@@ -10,3 +10,6 @@
 [submodule "authinfo-color-mode"]
 	path = lisp/authinfo-color-mode
 	url = https://github.com/tecosaur/authinfo-color-mode.git
+[submodule "screenshot"]
+	path = lisp/screenshot
+	url = https://github.com/tecosaur/screenshot.git
