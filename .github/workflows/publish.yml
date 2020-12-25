@@ -70,4 +70,3 @@ jobs:
         deploy_key: ${{ secrets.ACTIONS_DEPLOY_KEY }}
         publish_dir: ./publish
         force_orphan: true
-        exclude_assets: '.github,lisp/LaTeX-auto-activating-snippets,lisp/authinfo-color-mode,lisp/lexic,lisp/org-pandoc-import'
