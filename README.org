@@ -1,13 +1,27 @@
-#+TITLE:  Doom Emacs Configuration --- [[https://tecosaur.github.io/emacs-config/config.html][HTML Version]]
+#+title: Doom Emacs Configuration --- [[https://tecosaur.github.io/emacs-config/config.html][HTML Version]]
+#+author: tecosaur
 
 Here you may find my config. There is only one significant file:
- - [[file:config.org][config.org]], my configuration file
+- [[file:config.org][config.org]], my configuration file
 
 What you *really* want is the =M-x org-html-export-to-html= version of ~config.org~
 (linked in the title).
 
- In addition to the =html= export, this /produces/ the [[https://tecosaur.github.io/emacs-config/init.el.html][init.el]], [[https://tecosaur.github.io/emacs-config/config.el.html][config.el]], and [[https://tecosaur.github.io/emacs-config/packages.el.html][packages.el]] files.
+In addition to the =html= export, this /produces/ the [[https://tecosaur.github.io/emacs-config/init.el.html][init.el]], [[https://tecosaur.github.io/emacs-config/config.el.html][config.el]], and [[https://tecosaur.github.io/emacs-config/packages.el.html][packages.el]] files.
 
 Other than that, snippets are (currently) sourced from the [[file:snippets/][snippets]] folder,
 resources are put in [[file:misc/][misc]], and you may find submodules for packages of mine in
 [[file:lisp/][lisp]], along with extra major modes.
+
+* Installation
+
+This is mostly a personal note, see the [[https://tecosaur.github.io/emacs-config/config.html#notes-unwary-adventurer][warning]] in my config.
+
+In order to have Doom load the config, we need to initialise the submodules, and
+generate the =init.el= once.
+
+#+begin_src shell :eval query
+git submodule init
+git submodule update
+emacs --batch --eval "(require 'org)" --eval '(org-babel-tangle-file "config.org")'
+#+end_src
