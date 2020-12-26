@@ -61,8 +61,10 @@ jobs:
     - name: Move files of interest to the publish subdir
       run: |
         cd ~/.config/doom
-        mkdir -p ./publish
+        mkdir ./publish
         mv *.html ./publish
+        mkdir ./publish/misc
+        mv ./misc/*.svg ./publish/misc/
       
     - name: Deploy
       uses: peaceiris/actions-gh-pages@v3
