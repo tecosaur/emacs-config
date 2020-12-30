@@ -970,6 +970,7 @@ to add a few bells and whistles.
 
 #+begin_src shell :tangle ~/.local/bin/e :mkdirp yes :shebang "#!/usr/bin/env sh" :comments none
 force_tty=false
+force_wait=false
 stdin_mode=""
 
 args=()
@@ -978,6 +979,9 @@ while :; do
     case "$1" in
         -t | -nw | --tty)
             force_tty=true
+            shift ;;
+        -w | --wait)
+            force_wait=true
             shift ;;
         -m | --mode)
             stdin_mode=" ($2-mode)"
@@ -990,6 +994,7 @@ Emacs client convenience wrapper.
 \033[1mOptions:\033[0m
 \033[0;34m-h, --help\033[0m            Show this message
 \033[0;34m-t, -nw, --tty\033[0m        Force terminal mode
+\033[0;34m-w, --wait\033[0m            Don't supply \033[0;34m--no-wait\033[0m to graphical emacsclient
 \033[0;34m-\033[0m                     Take \033[0;33mstdin\033[0m (when last argument)
 \033[0;34m-m MODE, --mode MODE\033[0m  Mode to open \033[0;33mstdin\033[0m with
 
@@ -1018,7 +1023,10 @@ if [ ! "$DISPLAY" = ":0" ] || $force_tty; then
         TERM="alacritty-direct"; fi
     emacsclient --tty -create-frame --alternate-editor="" "${args[@]}"
 else
-    emacsclient -create-frame --alternate-editor="" --no-wait "${args[@]}"
+    if ! $force_wait; then
+        args+=(--no-wait)
+    fi
+    emacsclient -create-frame --alternate-editor="" "${args[@]}"
 fi
 #+end_src
 
