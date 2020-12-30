@@ -968,7 +968,7 @@ However, a little convenience script in =~/.local/bin= can have the same effect,
 be available beyond the specific shell I plop the alias in, then also allow me
 to add a few bells and whistles.
 
-#+begin_src shell :tangle ~/.local/bin/e :shebang "#!/usr/bin/env sh" :comments none
+#+begin_src shell :tangle ~/.local/bin/e :mkdirp yes :shebang "#!/usr/bin/env sh" :comments none
 force_tty=false
 stdin_mode=""
 
