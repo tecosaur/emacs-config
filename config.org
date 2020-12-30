@@ -960,6 +960,76 @@ issues when started in a non-graphical session.
 (when (daemonp)
   (add-hook 'emacs-startup-hook #'greedily-do-daemon-setup))
 #+end_src
+*** Emacs client wrapper
+I frequently want to make use of Emacs while in a terminal emulator. To make
+this easier, I can construct a few handy aliases.
+
+However, a little convenience script in =~/.local/bin= can have the same effect,
+be available beyond the specific shell I plop the alias in, then also allow me
+to add a few bells and whistles.
+
+#+begin_src shell :tangle ~/.local/bin/e :shebang "#!/usr/bin/env sh" :comments none
+force_tty=false
+stdin_mode=""
+
+args=()
+
+while :; do
+    case "$1" in
+        -t | -nw | --tty)
+            force_tty=true
+            shift ;;
+        -m | --mode)
+            stdin_mode=" ($2-mode)"
+            shift 2 ;;
+        -h | --help)
+            echo -e "\033[1mUsage: e [-t] [-m MODE] [OPTIONS] FILE [-]\033[0m
+
+Emacs client convenience wrapper.
+
+\033[1mOptions:\033[0m
+\033[0;34m-h, --help\033[0m            Show this message
+\033[0;34m-t, -nw, --tty\033[0m        Force terminal mode
+\033[0;34m-\033[0m                     Take \033[0;33mstdin\033[0m (when last argument)
+\033[0;34m-m MODE, --mode MODE\033[0m  Mode to open \033[0;33mstdin\033[0m with
+
+Run \033[0;32memacsclient --help\033[0m to see help for the emacsclient."
+            exit 0 ;;
+        --*=*)
+            set -- "$@" "${1%%=*}" "${1#*=}"
+            shift ;;
+        ,*)
+            if [ "$#" = 0 ]; then
+                break; fi
+            args+=("$1")
+            shift ;;
+    esac
+done
+
+if [ ! "${#args[*]}" = 0 ] && [ "${args[-1]}" = "-" ]; then
+    unset 'args[-1]'
+    TMP="$(mktemp /tmp/emacsstdin-XXX)"
+    cat > "$TMP"
+    args+=(--eval "(let ((b (generate-new-buffer \"*stdin*\"))) (switch-to-buffer b) (insert-file-contents \"$TMP\") (delete-file \"$TMP\")${stdin_mode})")
+fi
+
+if [ ! "$DISPLAY" = ":0" ] || $force_tty; then
+    if [ "$TERM" = "alacritty" ]; then
+        TERM="alacritty-direct"; fi
+    emacsclient --tty -create-frame --alternate-editor="" "${args[@]}"
+else
+    emacsclient -create-frame --alternate-editor="" --no-wait "${args[@]}"
+fi
+#+end_src
+
+Now, to set an alias to use =e= with magit, and then for maximum laziness we can
+set aliases for the terminal-forced variants.
+#+begin_src shell :tangle no
+alias m='e --eval "(progn (magit-status) (delete-other-windows))"'
+alias mt="m -t"
+alias et="e -t"
+#+end_src
+
 * Package loading
 :PROPERTIES:
 :header-args:emacs-lisp: :tangle "packages.el" :comments no
