@@ -6212,7 +6212,16 @@ org provides.
                               (funcall orig-fn toc-entries))))
 #+end_src
 ***** Make verbatim different to code
-Since we have =verbatim= and ~code~, let's use =verbatim= for key strokes.
+Since we have =verbatim= and ~code~, let's make use of the difference.
+
+We can use ~code~ exclusively for code snippets and commands like: "calling ~(message
+"Hello")~ in batch-mode Emacs prints to stdout like ~echo~".
+Then we can use =verbatim= for miscellaneous 'other monospace' like keyboard
+shortcuts: "either =C-c C-c= or =C-g= is likely the most useful keybinding in Emacs",
+or file names: "I keep my configuration in =~/.config/doom/=", among other things.
+
+Then, styling these two cases differently can help improve clarity in a document.
+
 #+begin_src emacs-lisp
 (setq org-html-text-markup-alist
       '((bold . "<b>%s</b>")
@@ -6705,6 +6714,9 @@ current Emacs theme, I was enraptured. The result is the pseudo-class ~chameleon
 ***** Make verbatim different to code
 Since have just gone to so much effort above let's make the most of it by making
 =verbatim= use ~verb~ instead of ~protectedtexttt~ (default).
+
+This gives the same advantages as mentioned in the [[*Make verbatim different to code][HTML export section]].
+
 #+begin_src emacs-lisp
 (setq org-latex-text-markup-alist
       '((bold . "\\textbf{%s}")
