@@ -1027,7 +1027,7 @@ if [ ! "${#args[*]}" = 0 ] && [ "${args[-1]}" = "-" ]; then
     args+=(--eval "(let ((b (generate-new-buffer \"*stdin*\"))) (switch-to-buffer b) (insert-file-contents \"$TMP\") (delete-file \"$TMP\")${stdin_mode})")
 fi
 
-if [ ! -z "$DISPLAY" ] || $force_tty; then
+if [ -z "$DISPLAY" ] || $force_tty; then
     # detect terminals with sneaky 24-bit support
     if { [ "$COLORTERM" = truecolor ] || [ "$COLORTERM" = 24bit ]; } && [ $(tput colors 2>/dev/null) -lt 257 ]; then
         if echo "$TERM" | grep -q "^\w\+-[0-9]"; then
