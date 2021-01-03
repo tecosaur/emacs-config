@@ -3843,14 +3843,18 @@ Entries of the form (subject . id)."
   (setq mu4e-view-actions
         (delete (cons "apply patch to org" #'org-ml-transient-mu4e-action)
                 mu4e-view-actions))
-  (let ((default-directory org-ml-target-dir))
-    (shell-command
-     (format "git apply %s"
-             (shell-quote-argument (mu4e-message-field msg :path)))))
   (+workspace/other)
   (magit-status org-ml-target-dir)
-  (with-current-buffer (get-buffer "*Shell Command Output*")
-    (+popup/buffer)))
+  (with-current-buffer (get-buffer-create "*Shell: Org apply patches*")
+    (erase-buffer)
+    (let ((default-directory org-ml-target-dir))
+      (shell-command
+       (format "git am %s"
+               (shell-quote-argument (mu4e-message-field msg :path)))
+       (current-buffer))
+      (magit-refresh))
+    (when (string-match-p "Error\\|failed" (buffer-string))
+      (+popup/buffer))))
 #+end_src
 *** Behaviour
 [[xkcd:1319]]
