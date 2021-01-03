@@ -1018,9 +1018,20 @@ if [ ! "${#args[*]}" = 0 ] && [ "${args[-1]}" = "-" ]; then
     args+=(--eval "(let ((b (generate-new-buffer \"*stdin*\"))) (switch-to-buffer b) (insert-file-contents \"$TMP\") (delete-file \"$TMP\")${stdin_mode})")
 fi
 
-if [ ! "$DISPLAY" = ":0" ] || $force_tty; then
-    if [ "$TERM" = "alacritty" ]; then
-        TERM="alacritty-direct"; fi
+if [ ! -z "$DISPLAY" ] || $force_tty; then
+    # detect terminals with sneaky 24-bit support
+    if { [ "$COLORTERM" = truecolor ] || [ "$COLORTERM" = 24bit ]; } && [ $(tput colors 2>/dev/null) -lt 257 ]; then
+        if echo "$TERM" | grep -q "^\w\+-[0-9]"; then
+            termstub="${TERM%%-*}"
+        else
+            termstub="${TERM#*-}"
+        fi
+        if infocmp "$termstub-direct" >/dev/null 2>&1; then
+            TERM="$termstub-direct"
+        else
+            TERM="xterm-direct" # should be fairly safe
+        fi
+    fi
     emacsclient --tty -create-frame --alternate-editor="" "${args[@]}"
 else
     if ! $force_wait; then
