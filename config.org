@@ -966,9 +966,18 @@ this easier, I can construct a few handy aliases.
 
 However, a little convenience script in =~/.local/bin= can have the same effect,
 be available beyond the specific shell I plop the alias in, then also allow me
-to add a few bells and whistles.
+to add a few bells and whistles. Namely:
++ Accepting stdin by putting it in a temporary file and immediately opening it.
++ Guessing that the =tty= is a good idea when ~$DISPLAY~ is unset (relevant with SSH
+  sessions, among other things).
++ With a whiff of 24-bit color support, sets ~TERM~ variable to a =terminfo= that
+  (probably) announces 24-bit color support.
++ Changes GUI =emacsclient= instances to be non-blocking by default (~--no-wait~),
+  and instead take a flag to suppress this behaviour (~-w~).
 
-#+begin_src shell :tangle ~/.local/bin/e :mkdirp yes :shebang "#!/usr/bin/env sh" :comments none
+#+name: e
+#+begin_src shell :tangle ~/.local/bin/e :mkdirp yes :tangle-mode (identity #o755) :comments none
+#!/usr/bin/env sh
 force_tty=false
 force_wait=false
 stdin_mode=""
