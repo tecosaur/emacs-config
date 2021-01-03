@@ -3801,21 +3801,23 @@ change that.
 (defun org-ml-current-patches ()
   "Get the currently open patches, as a list of alists.
 Entries of the form (subject . id)."
-  (mapcar
-   (lambda (entry)
-     (cons
-      (format "%-8s  %s"
-              (propertize
-               (replace-regexp-in-string "T.*" ""
-                                         (plist-get entry :date))
-               'face 'font-lock-doc-face)
-              (propertize
-               (replace-regexp-in-string "\\[PATCH\\] ?" ""
-                                         (plist-get entry :summary))
-               'face 'font-lock-keyword-face))
-      (plist-get entry :id)))
-   (with-current-buffer (url-retrieve-synchronously "https://updates.orgmode.org/data/patches")
-     (json-parse-buffer :object-type 'plist))))
+  (delq nil
+        (mapcar
+         (lambda (entry)
+           (unless (plist-get entry :fixed)
+             (cons
+              (format "%-8s  %s"
+                      (propertize
+                       (replace-regexp-in-string "T.*" ""
+                                                 (plist-get entry :date))
+                       'face 'font-lock-doc-face)
+                      (propertize
+                       (replace-regexp-in-string "\\[PATCH\\] ?" ""
+                                                 (plist-get entry :summary))
+                       'face 'font-lock-keyword-face))
+              (plist-get entry :id))))
+         (with-current-buffer (url-retrieve-synchronously "https://updates.orgmode.org/data/patches")
+           (json-parse-buffer :object-type 'plist)))))
 
 (defun org-ml-select-patch-thread ()
   "Find and apply a proposed Org patch."
