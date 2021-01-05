@@ -969,7 +969,7 @@ this easier, I can construct a few handy aliases.
 
 However, a little convenience script in =~/.local/bin= can have the same effect,
 be available beyond the specific shell I plop the alias in, then also allow me
-to add a few bells and whistles. Namely:
+to add a few bells and whistles --- namely:
 + Accepting stdin by putting it in a temporary file and immediately opening it.
 + Guessing that the =tty= is a good idea when ~$DISPLAY~ is unset (relevant with SSH
   sessions, among other things).
@@ -978,9 +978,13 @@ to add a few bells and whistles. Namely:
 + Changes GUI =emacsclient= instances to be non-blocking by default (~--no-wait~),
   and instead take a flag to suppress this behaviour (~-w~).
 
+I would use =sh=, but using arrays for argument manipulation is just too
+convenient, so I'll raise the requirement to =bash=. Since arrays are the only
+'extra' compared to =sh=, other shells like =csh= etc. should work too.
+
 #+name: e
 #+begin_src shell :tangle ~/.local/bin/e :mkdirp yes :tangle-mode (identity #o755) :comments none
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 force_tty=false
 force_wait=false
 stdin_mode=""
@@ -1032,7 +1036,8 @@ fi
 
 if [ -z "$DISPLAY" ] || $force_tty; then
     # detect terminals with sneaky 24-bit support
-    if { [ "$COLORTERM" = truecolor ] || [ "$COLORTERM" = 24bit ]; } && [ $(tput colors 2>/dev/null) -lt 257 ]; then
+    if { [ "$COLORTERM" = truecolor ] || [ "$COLORTERM" = 24bit ]; } \
+        && [ "$(tput colors 2>/dev/null)" -lt 257 ]; then
         if echo "$TERM" | grep -q "^\w\+-[0-9]"; then
             termstub="${TERM%%-*}"; else
             termstub="${TERM#*-}"; fi
