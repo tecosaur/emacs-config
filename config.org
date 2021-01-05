@@ -901,6 +901,7 @@ quite a nice resizing effect.
 
 *** Systemd daemon
 For running a systemd service for a Emacs server I have the following
+#+name: emacsclient service
 #+begin_src systemd :tangle ~/.config/systemd/user/emacs.service :mkdirp yes
 [Unit]
 Description=Emacs server daemon
@@ -908,7 +909,7 @@ Documentation=info:emacs man:emacs(1) https://gnu.org/software/emacs/
 
 [Service]
 Type=forking
-ExecStart=/usr/bin/emacs --daemon
+ExecStart=sh -c 'emacs --daemon && emacsclient -c --eval "(delete-frame)"'
 ExecStop=/usr/bin/emacsclient --no-wait --eval "(progn (setq kill-emacs-hook nil) (kill emacs))"
 Environment=SSH_AUTH_SOCK=%t/keyring/ssh
 Restart=on-failure
@@ -916,10 +917,15 @@ Restart=on-failure
 [Install]
 WantedBy=default.target
 #+end_src
+
 which is then enabled by
 #+begin_src shell :tangle (if (string= "enabled\n" (shell-command-to-string "systemctl --user is-enabled emacs.service")) "no" "setup.sh")
 systemctl --user enable emacs.service
 #+end_src
+
+For some reason if a frame isn't opened early in the initialisation process, the
+daemon doesn't seem to like opening frames later --- hence the ~&& emacsclient~
+part of the =ExecStart= value.
 
 It can now be nice to use this as a 'default app' for opening files. If we add
 an appropriate desktop entry, and enable it in the desktop environment.
