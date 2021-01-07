@@ -2367,6 +2367,9 @@ td.org-left {
 td.org-center {
   text-align: center; }
 
+div.org-center {
+  text-align: center; }
+
 span.acr {
   font-variant-caps: all-small-caps;
   letter-spacing: 0.1em; }
