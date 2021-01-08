@@ -5998,9 +5998,9 @@ Suffice to say I've snatched it, with a few of my own tweaks applied.
   (setq org-html-style-fancy
         (concat (f-read-text (expand-file-name "misc/org-export-header.html" doom-private-dir))
                 "<script>\n"
-                (f-read-text (expand-file-name "misc/pile-css-theme/main.js" doom-private-dir))
+                (f-read-text (expand-file-name "misc/org-css/main.js" doom-private-dir))
                 "</script>\n<style>\n"
-                (f-read-text (expand-file-name "misc/pile-css-theme/main.css" doom-private-dir))
+                (f-read-text (expand-file-name "misc/org-css/main.css" doom-private-dir))
                 "</style>")
         org-html-style-plain org-html-style-default
         org-html-style-default  org-html-style-fancy
