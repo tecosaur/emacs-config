@@ -198,9 +198,6 @@ summary {
 *::selection {
   background: var(--back-medium); }
 
-*::-moz-selection {
-  background: var(--back-medium); }
-
 .pace .pace-progress {
   background-color: var(--accent) !important; }
 
@@ -1195,30 +1192,19 @@ p a,
 table a,
 li a,
 dl a {
-  text-shadow: 0.03em 0 var(--back-white), -0.03em 0 var(--back-white), 0 0.03em var(--back-white), 0 -0.03em var(--back-white), 0.06em 0 var(--back-white), -0.06em 0 var(--back-white), 0.09em 0 var(--back-white), -0.09em 0 var(--back-white), 0.12em 0 var(--back-white), -0.12em 0 var(--back-white), 0.15em 0 var(--back-white), -0.15em 0 var(--back-white);
   background-image: linear-gradient(var(--text-dark), var(--text-dark));
   background-size: 1px 1px;
   background-repeat: repeat-x;
   background-position: 0% 95%;
   border-radius: 1px;
   color: var(--text-dark);
-  text-decoration: none;
-  text-shadow: none; }
+  text-decoration: none; }
   figcaption a::selection,
   p a::selection,
   .page-tags a::selection,
   table a::selection,
   li a::selection,
   dl a::selection {
-    text-shadow: 0.03em 0 var(--back-medium), -0.03em 0 var(--back-medium), 0 0.03em var(--back-medium), 0 -0.03em var(--back-medium), 0.06em 0 var(--back-medium), -0.06em 0 var(--back-medium), 0.09em 0 var(--back-medium), -0.09em 0 var(--back-medium), 0.12em 0 var(--back-medium), -0.12em 0 var(--back-medium), 0.15em 0 var(--back-medium), -0.15em 0 var(--back-medium);
-    background: var(--back-medium); }
-  figcaption a::-moz-selection,
-  p a::-moz-selection,
-  .page-tags a::-moz-selection,
-  table a::-moz-selection,
-  li a::-moz-selection,
-  dl a::-moz-selection {
-    text-shadow: 0.03em 0 var(--back-medium), -0.03em 0 var(--back-medium), 0 0.03em var(--back-medium), 0 -0.03em var(--back-medium), 0.06em 0 var(--back-medium), -0.06em 0 var(--back-medium), 0.09em 0 var(--back-medium), -0.09em 0 var(--back-medium), 0.12em 0 var(--back-medium), -0.12em 0 var(--back-medium), 0.15em 0 var(--back-medium), -0.15em 0 var(--back-medium);
     background: var(--back-medium); }
   figcaption a *,
   figcaption a *:after, figcaption a:after,
@@ -1262,7 +1248,8 @@ dl a {
   table a:hover,
   li a:hover,
   dl a:hover {
-    text-shadow: 0.03em 0 var(--back-white), -0.03em 0 var(--back-white), 0 0.03em var(--back-white), 0 -0.03em var(--back-white), 0.06em 0 var(--back-white), -0.06em 0 var(--back-white), 0.09em 0 var(--back-white), -0.09em 0 var(--back-white), 0.12em 0 var(--back-white), -0.12em 0 var(--back-white), 0.15em 0 var(--back-white), -0.15em 0 var(--back-white);
+    opacity: 0.9;
+    filter: drop-shadow(1px 1px 1px var(--back-white));
     background-image: linear-gradient(var(--text-dark), var(--text-dark));
     background-size: 1px 1px;
     background-repeat: repeat-x;
@@ -1277,15 +1264,6 @@ dl a {
     table a:hover::selection,
     li a:hover::selection,
     dl a:hover::selection {
-      text-shadow: 0.03em 0 var(--back-white), -0.03em 0 var(--back-white), 0 0.03em var(--back-white), 0 -0.03em var(--back-white), 0.06em 0 var(--back-white), -0.06em 0 var(--back-white), 0.09em 0 var(--back-white), -0.09em 0 var(--back-white), 0.12em 0 var(--back-white), -0.12em 0 var(--back-white), 0.15em 0 var(--back-white), -0.15em 0 var(--back-white);
-      background: var(--back-white); }
-    figcaption a:hover::-moz-selection,
-    p a:hover::-moz-selection,
-    .page-tags a:hover::-moz-selection,
-    table a:hover::-moz-selection,
-    li a:hover::-moz-selection,
-    dl a:hover::-moz-selection {
-      text-shadow: 0.03em 0 var(--back-white), -0.03em 0 var(--back-white), 0 0.03em var(--back-white), 0 -0.03em var(--back-white), 0.06em 0 var(--back-white), -0.06em 0 var(--back-white), 0.09em 0 var(--back-white), -0.09em 0 var(--back-white), 0.12em 0 var(--back-white), -0.12em 0 var(--back-white), 0.15em 0 var(--back-white), -0.15em 0 var(--back-white);
       background: var(--back-white); }
   figcaption a[href^="#"],
   p a[href^="#"],
@@ -1293,27 +1271,16 @@ dl a {
   table a[href^="#"],
   li a[href^="#"],
   dl a[href^="#"] {
-    text-shadow: 0.03em 0 var(--back-white), -0.03em 0 var(--back-white), 0 0.03em var(--back-white), 0 -0.03em var(--back-white), 0.06em 0 var(--back-white), -0.06em 0 var(--back-white), 0.09em 0 var(--back-white), -0.09em 0 var(--back-white), 0.12em 0 var(--back-white), -0.12em 0 var(--back-white), 0.15em 0 var(--back-white), -0.15em 0 var(--back-white);
     background-image: linear-gradient(var(--text-gray), var(--text-gray));
     background-size: 1px 1px;
     background-repeat: repeat-x;
-    background-position: 0% 95%;
-    text-shadow: none; }
+    background-position: 0% 95%; }
     figcaption a[href^="#"]::selection,
     p a[href^="#"]::selection,
     .page-tags a[href^="#"]::selection,
     table a[href^="#"]::selection,
     li a[href^="#"]::selection,
     dl a[href^="#"]::selection {
-      text-shadow: 0.03em 0 var(--back-white), -0.03em 0 var(--back-white), 0 0.03em var(--back-white), 0 -0.03em var(--back-white), 0.06em 0 var(--back-white), -0.06em 0 var(--back-white), 0.09em 0 var(--back-white), -0.09em 0 var(--back-white), 0.12em 0 var(--back-white), -0.12em 0 var(--back-white), 0.15em 0 var(--back-white), -0.15em 0 var(--back-white);
-      background: var(--back-white); }
-    figcaption a[href^="#"]::-moz-selection,
-    p a[href^="#"]::-moz-selection,
-    .page-tags a[href^="#"]::-moz-selection,
-    table a[href^="#"]::-moz-selection,
-    li a[href^="#"]::-moz-selection,
-    dl a[href^="#"]::-moz-selection {
-      text-shadow: 0.03em 0 var(--back-white), -0.03em 0 var(--back-white), 0 0.03em var(--back-white), 0 -0.03em var(--back-white), 0.06em 0 var(--back-white), -0.06em 0 var(--back-white), 0.09em 0 var(--back-white), -0.09em 0 var(--back-white), 0.12em 0 var(--back-white), -0.12em 0 var(--back-white), 0.15em 0 var(--back-white), -0.15em 0 var(--back-white);
       background: var(--back-white); }
     figcaption a[href^="#"]:hover,
     p a[href^="#"]:hover,
@@ -1321,7 +1288,8 @@ dl a {
     table a[href^="#"]:hover,
     li a[href^="#"]:hover,
     dl a[href^="#"]:hover {
-      text-shadow: 0.03em 0 var(--back-white), -0.03em 0 var(--back-white), 0 0.03em var(--back-white), 0 -0.03em var(--back-white), 0.06em 0 var(--back-white), -0.06em 0 var(--back-white), 0.09em 0 var(--back-white), -0.09em 0 var(--back-white), 0.12em 0 var(--back-white), -0.12em 0 var(--back-white), 0.15em 0 var(--back-white), -0.15em 0 var(--back-white);
+      opacity: 0.9;
+      filter: drop-shadow(1px 1px 1px var(--back-white));
       background-image: linear-gradient(var(--text-medium), var(--text-medium));
       background-size: 1px 1px;
       background-repeat: repeat-x;
@@ -1332,15 +1300,6 @@ dl a {
       table a[href^="#"]:hover::selection,
       li a[href^="#"]:hover::selection,
       dl a[href^="#"]:hover::selection {
-        text-shadow: 0.03em 0 var(--back-white), -0.03em 0 var(--back-white), 0 0.03em var(--back-white), 0 -0.03em var(--back-white), 0.06em 0 var(--back-white), -0.06em 0 var(--back-white), 0.09em 0 var(--back-white), -0.09em 0 var(--back-white), 0.12em 0 var(--back-white), -0.12em 0 var(--back-white), 0.15em 0 var(--back-white), -0.15em 0 var(--back-white);
-        background: var(--back-white); }
-      figcaption a[href^="#"]:hover::-moz-selection,
-      p a[href^="#"]:hover::-moz-selection,
-      .page-tags a[href^="#"]:hover::-moz-selection,
-      table a[href^="#"]:hover::-moz-selection,
-      li a[href^="#"]:hover::-moz-selection,
-      dl a[href^="#"]:hover::-moz-selection {
-        text-shadow: 0.03em 0 var(--back-white), -0.03em 0 var(--back-white), 0 0.03em var(--back-white), 0 -0.03em var(--back-white), 0.06em 0 var(--back-white), -0.06em 0 var(--back-white), 0.09em 0 var(--back-white), -0.09em 0 var(--back-white), 0.12em 0 var(--back-white), -0.12em 0 var(--back-white), 0.15em 0 var(--back-white), -0.15em 0 var(--back-white);
         background: var(--back-white); }
 
 #theme-switch:checked ~ #page #breadcrumbs a:hover,
@@ -1369,7 +1328,6 @@ dl a {
       right: 0; } }
 #content .page-intro p a,
 #footnotes a {
-  text-shadow: 0.03em 0 var(--back-white), -0.03em 0 var(--back-white), 0 0.03em var(--back-white), 0 -0.03em var(--back-white), 0.06em 0 var(--back-white), -0.06em 0 var(--back-white), 0.09em 0 var(--back-white), -0.09em 0 var(--back-white), 0.12em 0 var(--back-white), -0.12em 0 var(--back-white), 0.15em 0 var(--back-white), -0.15em 0 var(--back-white);
   background-image: linear-gradient(var(--text-gray), var(--text-gray));
   background-size: 1px 1px;
   background-repeat: repeat-x;
@@ -1379,11 +1337,6 @@ dl a {
   text-decoration: none; }
   #content .page-intro p a::selection,
   #footnotes a::selection {
-    text-shadow: 0.03em 0 var(--back-medium), -0.03em 0 var(--back-medium), 0 0.03em var(--back-medium), 0 -0.03em var(--back-medium), 0.06em 0 var(--back-medium), -0.06em 0 var(--back-medium), 0.09em 0 var(--back-medium), -0.09em 0 var(--back-medium), 0.12em 0 var(--back-medium), -0.12em 0 var(--back-medium), 0.15em 0 var(--back-medium), -0.15em 0 var(--back-medium);
-    background: var(--back-medium); }
-  #content .page-intro p a::-moz-selection,
-  #footnotes a::-moz-selection {
-    text-shadow: 0.03em 0 var(--back-medium), -0.03em 0 var(--back-medium), 0 0.03em var(--back-medium), 0 -0.03em var(--back-medium), 0.06em 0 var(--back-medium), -0.06em 0 var(--back-medium), 0.09em 0 var(--back-medium), -0.09em 0 var(--back-medium), 0.12em 0 var(--back-medium), -0.12em 0 var(--back-medium), 0.15em 0 var(--back-medium), -0.15em 0 var(--back-medium);
     background: var(--back-medium); }
   #content .page-intro p a *,
   #content .page-intro p a *:after, #content .page-intro p a:after,
@@ -1399,7 +1352,6 @@ dl a {
     color: var(--text-gray); }
   #content .page-intro p a:hover,
   #footnotes a:hover {
-    text-shadow: 0.03em 0 var(--back-light), -0.03em 0 var(--back-light), 0 0.03em var(--back-light), 0 -0.03em var(--back-light), 0.06em 0 var(--back-light), -0.06em 0 var(--back-light), 0.09em 0 var(--back-light), -0.09em 0 var(--back-light), 0.12em 0 var(--back-light), -0.12em 0 var(--back-light), 0.15em 0 var(--back-light), -0.15em 0 var(--back-light);
     background-image: linear-gradient(var(--text-gray), var(--text-gray));
     background-size: 1px 1px;
     background-repeat: repeat-x;
@@ -1409,11 +1361,6 @@ dl a {
     text-decoration: none; }
     #content .page-intro p a:hover::selection,
     #footnotes a:hover::selection {
-      text-shadow: 0.03em 0 var(--back-medium), -0.03em 0 var(--back-medium), 0 0.03em var(--back-medium), 0 -0.03em var(--back-medium), 0.06em 0 var(--back-medium), -0.06em 0 var(--back-medium), 0.09em 0 var(--back-medium), -0.09em 0 var(--back-medium), 0.12em 0 var(--back-medium), -0.12em 0 var(--back-medium), 0.15em 0 var(--back-medium), -0.15em 0 var(--back-medium);
-      background: var(--back-medium); }
-    #content .page-intro p a:hover::-moz-selection,
-    #footnotes a:hover::-moz-selection {
-      text-shadow: 0.03em 0 var(--back-medium), -0.03em 0 var(--back-medium), 0 0.03em var(--back-medium), 0 -0.03em var(--back-medium), 0.06em 0 var(--back-medium), -0.06em 0 var(--back-medium), 0.09em 0 var(--back-medium), -0.09em 0 var(--back-medium), 0.12em 0 var(--back-medium), -0.12em 0 var(--back-medium), 0.15em 0 var(--back-medium), -0.15em 0 var(--back-medium);
       background: var(--back-medium); }
     #content .page-intro p a:hover *,
     #content .page-intro p a:hover *:after, #content .page-intro p a:hover:after,

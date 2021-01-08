@@ -28,21 +28,6 @@ $body-font: 'Merriweather';
 $title-font: 'et-book';
 $code-font: SFMono-Regular,Consolas,Liberation Mono,Menlo,monospace;
 
-@mixin text-underline-crop($background) {
-  text-shadow: .03em 0 $background,
-  -.03em 0 $background,
-  0 .03em $background,
-  0 -.03em $background,
-  .06em 0 $background,
-  -.06em 0 $background,
-  .09em 0 $background,
-  -.09em 0 $background,
-  .12em 0 $background,
-  -.12em 0 $background,
-  .15em 0 $background,
-  -.15em 0 $background;
-}
-
 @mixin text-background($color-bg, $color-text) {
   background-image: linear-gradient($color-text, $color-text);
   background-size: 1px 1px;
@@ -52,18 +37,11 @@ $code-font: SFMono-Regular,Consolas,Liberation Mono,Menlo,monospace;
 
 @mixin text-selection($selection) {
   &::selection {
-    @include text-underline-crop($selection);
-    background: $selection;
-  }
-
-  &::-moz-selection {
-    @include text-underline-crop($selection);
     background: $selection;
   }
 }
 
 @mixin link-underline($background, $text) {
-  @include text-underline-crop($background);
   @include text-background($background, $text);
   @include text-selection($back-medium);
 
@@ -167,10 +145,6 @@ $code-font: SFMono-Regular,Consolas,Liberation Mono,Menlo,monospace;
 
 // Selection colors:
 *::selection {
-  background: $back-medium;
-}
-
-*::-moz-selection {
   background: $back-medium;
 }
 
