@@ -1,4 +1,4 @@
-function copyPreToClipdord(btn) {
+function copyPreToClipbord(btn) {
     const pre = btn.parentElement.parentElement.getElementsByTagName("PRE")[0];
     const range = document.createRange();
     range.selectNodeContents(pre);

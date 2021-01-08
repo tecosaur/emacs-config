@@ -6033,7 +6033,7 @@ to copy the content of the block.
        "<details id='%s' class='code'%s><summary%s>%s</summary>
 <div class='gutter'>
 <a href='#%s'>#</a>
-<button title='Copy to clipboard' onclick='copyPreToClipdord(this)'>⎘</button>\
+<button title='Copy to clipboard' onclick='copyPreToClipbord(this)'>⎘</button>\
 </div>
 %s
 </details>"
