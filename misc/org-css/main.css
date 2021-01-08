@@ -354,7 +354,7 @@ header > div {
 #postamble {
   display: none; }
 
-aside, .aside {
+aside {
   background-color: var(--code-background);
   border-radius: 5px;
   font-family: "Open Sans";
@@ -366,262 +366,26 @@ aside, .aside {
   padding: 20px;
   padding-bottom: 10px;
   line-height: 1.6 !important; }
-  aside figcaption a,
-  aside li a,
-  aside p a, .aside figcaption a,
-  .aside li a,
-  .aside p a {
-    text-shadow: 0.03em 0 var(--code-background), -0.03em 0 var(--code-background), 0 0.03em var(--code-background), 0 -0.03em var(--code-background), 0.06em 0 var(--code-background), -0.06em 0 var(--code-background), 0.09em 0 var(--code-background), -0.09em 0 var(--code-background), 0.12em 0 var(--code-background), -0.12em 0 var(--code-background), 0.15em 0 var(--code-background), -0.15em 0 var(--code-background);
-    background-image: linear-gradient(var(--text-gray), var(--text-gray));
-    background-size: 1px 1px;
-    background-repeat: repeat-x;
-    background-position: 0% 95%;
-    border-radius: 1px;
-    color: var(--text-gray);
-    text-decoration: none; }
-    aside figcaption a::selection,
-    aside li a::selection,
-    aside p a::selection, .aside figcaption a::selection,
-    .aside li a::selection,
-    .aside p a::selection {
-      text-shadow: 0.03em 0 var(--back-medium), -0.03em 0 var(--back-medium), 0 0.03em var(--back-medium), 0 -0.03em var(--back-medium), 0.06em 0 var(--back-medium), -0.06em 0 var(--back-medium), 0.09em 0 var(--back-medium), -0.09em 0 var(--back-medium), 0.12em 0 var(--back-medium), -0.12em 0 var(--back-medium), 0.15em 0 var(--back-medium), -0.15em 0 var(--back-medium);
-      background: var(--back-medium); }
-    aside figcaption a::-moz-selection,
-    aside li a::-moz-selection,
-    aside p a::-moz-selection, .aside figcaption a::-moz-selection,
-    .aside li a::-moz-selection,
-    .aside p a::-moz-selection {
-      text-shadow: 0.03em 0 var(--back-medium), -0.03em 0 var(--back-medium), 0 0.03em var(--back-medium), 0 -0.03em var(--back-medium), 0.06em 0 var(--back-medium), -0.06em 0 var(--back-medium), 0.09em 0 var(--back-medium), -0.09em 0 var(--back-medium), 0.12em 0 var(--back-medium), -0.12em 0 var(--back-medium), 0.15em 0 var(--back-medium), -0.15em 0 var(--back-medium);
-      background: var(--back-medium); }
-    aside figcaption a *,
-    aside figcaption a *:after, aside figcaption a:after,
-    aside figcaption a *:before, aside figcaption a:before,
-    aside li a *,
-    aside li a *:after,
-    aside li a:after,
-    aside li a *:before,
-    aside li a:before,
-    aside p a *,
-    aside p a *:after,
-    aside p a:after,
-    aside p a *:before,
-    aside p a:before, .aside figcaption a *,
-    .aside figcaption a *:after, .aside figcaption a:after,
-    .aside figcaption a *:before, .aside figcaption a:before,
-    .aside li a *,
-    .aside li a *:after,
-    .aside li a:after,
-    .aside li a *:before,
-    .aside li a:before,
-    .aside p a *,
-    .aside p a *:after,
-    .aside p a:after,
-    .aside p a *:before,
-    .aside p a:before {
-      text-shadow: none; }
-    aside figcaption a:visited,
-    aside li a:visited,
-    aside p a:visited, .aside figcaption a:visited,
-    .aside li a:visited,
-    .aside p a:visited {
-      color: var(--text-gray); }
-    aside figcaption a:hover,
-    aside li a:hover,
-    aside p a:hover, .aside figcaption a:hover,
-    .aside li a:hover,
-    .aside p a:hover {
-      text-shadow: 0.03em 0 var(--code-background), -0.03em 0 var(--code-background), 0 0.03em var(--code-background), 0 -0.03em var(--code-background), 0.06em 0 var(--code-background), -0.06em 0 var(--code-background), 0.09em 0 var(--code-background), -0.09em 0 var(--code-background), 0.12em 0 var(--code-background), -0.12em 0 var(--code-background), 0.15em 0 var(--code-background), -0.15em 0 var(--code-background);
-      background-image: linear-gradient(var(--text-gray), var(--text-gray));
-      background-size: 1px 1px;
-      background-repeat: repeat-x;
-      background-position: 0% 95%;
-      border-radius: 1px;
-      color: var(--text-gray);
-      text-decoration: none; }
-      aside figcaption a:hover::selection,
-      aside li a:hover::selection,
-      aside p a:hover::selection, .aside figcaption a:hover::selection,
-      .aside li a:hover::selection,
-      .aside p a:hover::selection {
-        text-shadow: 0.03em 0 var(--back-medium), -0.03em 0 var(--back-medium), 0 0.03em var(--back-medium), 0 -0.03em var(--back-medium), 0.06em 0 var(--back-medium), -0.06em 0 var(--back-medium), 0.09em 0 var(--back-medium), -0.09em 0 var(--back-medium), 0.12em 0 var(--back-medium), -0.12em 0 var(--back-medium), 0.15em 0 var(--back-medium), -0.15em 0 var(--back-medium);
-        background: var(--back-medium); }
-      aside figcaption a:hover::-moz-selection,
-      aside li a:hover::-moz-selection,
-      aside p a:hover::-moz-selection, .aside figcaption a:hover::-moz-selection,
-      .aside li a:hover::-moz-selection,
-      .aside p a:hover::-moz-selection {
-        text-shadow: 0.03em 0 var(--back-medium), -0.03em 0 var(--back-medium), 0 0.03em var(--back-medium), 0 -0.03em var(--back-medium), 0.06em 0 var(--back-medium), -0.06em 0 var(--back-medium), 0.09em 0 var(--back-medium), -0.09em 0 var(--back-medium), 0.12em 0 var(--back-medium), -0.12em 0 var(--back-medium), 0.15em 0 var(--back-medium), -0.15em 0 var(--back-medium);
-        background: var(--back-medium); }
-      aside figcaption a:hover *,
-      aside figcaption a:hover *:after, aside figcaption a:hover:after,
-      aside figcaption a:hover *:before, aside figcaption a:hover:before,
-      aside li a:hover *,
-      aside li a:hover *:after,
-      aside li a:hover:after,
-      aside li a:hover *:before,
-      aside li a:hover:before,
-      aside p a:hover *,
-      aside p a:hover *:after,
-      aside p a:hover:after,
-      aside p a:hover *:before,
-      aside p a:hover:before, .aside figcaption a:hover *,
-      .aside figcaption a:hover *:after, .aside figcaption a:hover:after,
-      .aside figcaption a:hover *:before, .aside figcaption a:hover:before,
-      .aside li a:hover *,
-      .aside li a:hover *:after,
-      .aside li a:hover:after,
-      .aside li a:hover *:before,
-      .aside li a:hover:before,
-      .aside p a:hover *,
-      .aside p a:hover *:after,
-      .aside p a:hover:after,
-      .aside p a:hover *:before,
-      .aside p a:hover:before {
-        text-shadow: none; }
-      aside figcaption a:hover:visited,
-      aside li a:hover:visited,
-      aside p a:hover:visited, .aside figcaption a:hover:visited,
-      .aside li a:hover:visited,
-      .aside p a:hover:visited {
-        color: var(--text-gray); }
-  aside p, .aside p {
+  aside p {
     font-family: "Open Sans";
     font-weight: normal;
     font-size: 15px;
     line-height: 1.6;
     color: var(--text-gray);
     line-height: 1.6 !important; }
-  aside pre, .aside pre {
+  aside pre {
     font-size: 12px;
     border: none;
     padding-left: 0; }
 
 @media (min-width: 1280px) {
-  aside, .aside {
+  aside {
     float: right;
     clear: right;
     background-color: var(--back-white);
     max-width: 45% !important;
     margin-right: -52%; }
-    aside figcaption a,
-    aside li a,
-    aside p a, .aside figcaption a,
-    .aside li a,
-    .aside p a {
-      text-shadow: 0.03em 0 var(--back-white), -0.03em 0 var(--back-white), 0 0.03em var(--back-white), 0 -0.03em var(--back-white), 0.06em 0 var(--back-white), -0.06em 0 var(--back-white), 0.09em 0 var(--back-white), -0.09em 0 var(--back-white), 0.12em 0 var(--back-white), -0.12em 0 var(--back-white), 0.15em 0 var(--back-white), -0.15em 0 var(--back-white);
-      background-image: linear-gradient(var(--text-gray), var(--text-gray));
-      background-size: 1px 1px;
-      background-repeat: repeat-x;
-      background-position: 0% 95%;
-      border-radius: 1px;
-      color: var(--text-gray);
-      text-decoration: none; }
-      aside figcaption a::selection,
-      aside li a::selection,
-      aside p a::selection, .aside figcaption a::selection,
-      .aside li a::selection,
-      .aside p a::selection {
-        text-shadow: 0.03em 0 var(--back-medium), -0.03em 0 var(--back-medium), 0 0.03em var(--back-medium), 0 -0.03em var(--back-medium), 0.06em 0 var(--back-medium), -0.06em 0 var(--back-medium), 0.09em 0 var(--back-medium), -0.09em 0 var(--back-medium), 0.12em 0 var(--back-medium), -0.12em 0 var(--back-medium), 0.15em 0 var(--back-medium), -0.15em 0 var(--back-medium);
-        background: var(--back-medium); }
-      aside figcaption a::-moz-selection,
-      aside li a::-moz-selection,
-      aside p a::-moz-selection, .aside figcaption a::-moz-selection,
-      .aside li a::-moz-selection,
-      .aside p a::-moz-selection {
-        text-shadow: 0.03em 0 var(--back-medium), -0.03em 0 var(--back-medium), 0 0.03em var(--back-medium), 0 -0.03em var(--back-medium), 0.06em 0 var(--back-medium), -0.06em 0 var(--back-medium), 0.09em 0 var(--back-medium), -0.09em 0 var(--back-medium), 0.12em 0 var(--back-medium), -0.12em 0 var(--back-medium), 0.15em 0 var(--back-medium), -0.15em 0 var(--back-medium);
-        background: var(--back-medium); }
-      aside figcaption a *,
-      aside figcaption a *:after, aside figcaption a:after,
-      aside figcaption a *:before, aside figcaption a:before,
-      aside li a *,
-      aside li a *:after,
-      aside li a:after,
-      aside li a *:before,
-      aside li a:before,
-      aside p a *,
-      aside p a *:after,
-      aside p a:after,
-      aside p a *:before,
-      aside p a:before, .aside figcaption a *,
-      .aside figcaption a *:after, .aside figcaption a:after,
-      .aside figcaption a *:before, .aside figcaption a:before,
-      .aside li a *,
-      .aside li a *:after,
-      .aside li a:after,
-      .aside li a *:before,
-      .aside li a:before,
-      .aside p a *,
-      .aside p a *:after,
-      .aside p a:after,
-      .aside p a *:before,
-      .aside p a:before {
-        text-shadow: none; }
-      aside figcaption a:visited,
-      aside li a:visited,
-      aside p a:visited, .aside figcaption a:visited,
-      .aside li a:visited,
-      .aside p a:visited {
-        color: var(--text-gray); }
-      aside figcaption a:hover,
-      aside li a:hover,
-      aside p a:hover, .aside figcaption a:hover,
-      .aside li a:hover,
-      .aside p a:hover {
-        text-shadow: 0.03em 0 var(--back-light), -0.03em 0 var(--back-light), 0 0.03em var(--back-light), 0 -0.03em var(--back-light), 0.06em 0 var(--back-light), -0.06em 0 var(--back-light), 0.09em 0 var(--back-light), -0.09em 0 var(--back-light), 0.12em 0 var(--back-light), -0.12em 0 var(--back-light), 0.15em 0 var(--back-light), -0.15em 0 var(--back-light);
-        background-image: linear-gradient(var(--text-gray), var(--text-gray));
-        background-size: 1px 1px;
-        background-repeat: repeat-x;
-        background-position: 0% 95%;
-        border-radius: 1px;
-        color: var(--text-gray);
-        text-decoration: none; }
-        aside figcaption a:hover::selection,
-        aside li a:hover::selection,
-        aside p a:hover::selection, .aside figcaption a:hover::selection,
-        .aside li a:hover::selection,
-        .aside p a:hover::selection {
-          text-shadow: 0.03em 0 var(--back-medium), -0.03em 0 var(--back-medium), 0 0.03em var(--back-medium), 0 -0.03em var(--back-medium), 0.06em 0 var(--back-medium), -0.06em 0 var(--back-medium), 0.09em 0 var(--back-medium), -0.09em 0 var(--back-medium), 0.12em 0 var(--back-medium), -0.12em 0 var(--back-medium), 0.15em 0 var(--back-medium), -0.15em 0 var(--back-medium);
-          background: var(--back-medium); }
-        aside figcaption a:hover::-moz-selection,
-        aside li a:hover::-moz-selection,
-        aside p a:hover::-moz-selection, .aside figcaption a:hover::-moz-selection,
-        .aside li a:hover::-moz-selection,
-        .aside p a:hover::-moz-selection {
-          text-shadow: 0.03em 0 var(--back-medium), -0.03em 0 var(--back-medium), 0 0.03em var(--back-medium), 0 -0.03em var(--back-medium), 0.06em 0 var(--back-medium), -0.06em 0 var(--back-medium), 0.09em 0 var(--back-medium), -0.09em 0 var(--back-medium), 0.12em 0 var(--back-medium), -0.12em 0 var(--back-medium), 0.15em 0 var(--back-medium), -0.15em 0 var(--back-medium);
-          background: var(--back-medium); }
-        aside figcaption a:hover *,
-        aside figcaption a:hover *:after, aside figcaption a:hover:after,
-        aside figcaption a:hover *:before, aside figcaption a:hover:before,
-        aside li a:hover *,
-        aside li a:hover *:after,
-        aside li a:hover:after,
-        aside li a:hover *:before,
-        aside li a:hover:before,
-        aside p a:hover *,
-        aside p a:hover *:after,
-        aside p a:hover:after,
-        aside p a:hover *:before,
-        aside p a:hover:before, .aside figcaption a:hover *,
-        .aside figcaption a:hover *:after, .aside figcaption a:hover:after,
-        .aside figcaption a:hover *:before, .aside figcaption a:hover:before,
-        .aside li a:hover *,
-        .aside li a:hover *:after,
-        .aside li a:hover:after,
-        .aside li a:hover *:before,
-        .aside li a:hover:before,
-        .aside p a:hover *,
-        .aside p a:hover *:after,
-        .aside p a:hover:after,
-        .aside p a:hover *:before,
-        .aside p a:hover:before {
-          text-shadow: none; }
-        aside figcaption a:hover:visited,
-        aside li a:hover:visited,
-        aside p a:hover:visited, .aside figcaption a:hover:visited,
-        .aside li a:hover:visited,
-        .aside p a:hover:visited {
-          color: var(--text-gray); }
-    aside::before, .aside::before {
+    aside::before {
       content: ''; } }
 
 blockquote {
@@ -1425,12 +1189,10 @@ hr {
   margin-bottom: 30px;
   margin-top: 40px; }
 
-#breadcrumbs a,
 figcaption a,
 p a,
 .page-tags a,
 table a,
-#crosslinks a:not(.highlight),
 li a,
 dl a {
   text-shadow: 0.03em 0 var(--back-white), -0.03em 0 var(--back-white), 0 0.03em var(--back-white), 0 -0.03em var(--back-white), 0.06em 0 var(--back-white), -0.06em 0 var(--back-white), 0.09em 0 var(--back-white), -0.09em 0 var(--back-white), 0.12em 0 var(--back-white), -0.12em 0 var(--back-white), 0.15em 0 var(--back-white), -0.15em 0 var(--back-white);
@@ -1442,34 +1204,25 @@ dl a {
   color: var(--text-dark);
   text-decoration: none;
   text-shadow: none; }
-  #breadcrumbs a::selection,
   figcaption a::selection,
   p a::selection,
   .page-tags a::selection,
   table a::selection,
-  #crosslinks a:not(.highlight)::selection,
   li a::selection,
   dl a::selection {
     text-shadow: 0.03em 0 var(--back-medium), -0.03em 0 var(--back-medium), 0 0.03em var(--back-medium), 0 -0.03em var(--back-medium), 0.06em 0 var(--back-medium), -0.06em 0 var(--back-medium), 0.09em 0 var(--back-medium), -0.09em 0 var(--back-medium), 0.12em 0 var(--back-medium), -0.12em 0 var(--back-medium), 0.15em 0 var(--back-medium), -0.15em 0 var(--back-medium);
     background: var(--back-medium); }
-  #breadcrumbs a::-moz-selection,
   figcaption a::-moz-selection,
   p a::-moz-selection,
   .page-tags a::-moz-selection,
   table a::-moz-selection,
-  #crosslinks a:not(.highlight)::-moz-selection,
   li a::-moz-selection,
   dl a::-moz-selection {
     text-shadow: 0.03em 0 var(--back-medium), -0.03em 0 var(--back-medium), 0 0.03em var(--back-medium), 0 -0.03em var(--back-medium), 0.06em 0 var(--back-medium), -0.06em 0 var(--back-medium), 0.09em 0 var(--back-medium), -0.09em 0 var(--back-medium), 0.12em 0 var(--back-medium), -0.12em 0 var(--back-medium), 0.15em 0 var(--back-medium), -0.15em 0 var(--back-medium);
     background: var(--back-medium); }
-  #breadcrumbs a *,
-  #breadcrumbs a *:after, #breadcrumbs a:after,
-  #breadcrumbs a *:before, #breadcrumbs a:before,
   figcaption a *,
-  figcaption a *:after,
-  figcaption a:after,
-  figcaption a *:before,
-  figcaption a:before,
+  figcaption a *:after, figcaption a:after,
+  figcaption a *:before, figcaption a:before,
   p a *,
   p a *:after,
   p a:after,
@@ -1485,11 +1238,6 @@ dl a {
   table a:after,
   table a *:before,
   table a:before,
-  #crosslinks a:not(.highlight) *,
-  #crosslinks a:not(.highlight) *:after,
-  #crosslinks a:not(.highlight):after,
-  #crosslinks a:not(.highlight) *:before,
-  #crosslinks a:not(.highlight):before,
   li a *,
   li a *:after,
   li a:after,
@@ -1501,21 +1249,17 @@ dl a {
   dl a *:before,
   dl a:before {
     text-shadow: none; }
-  #breadcrumbs a:visited,
   figcaption a:visited,
   p a:visited,
   .page-tags a:visited,
   table a:visited,
-  #crosslinks a:not(.highlight):visited,
   li a:visited,
   dl a:visited {
     color: var(--text-dark); }
-  #breadcrumbs a:hover,
   figcaption a:hover,
   p a:hover,
   .page-tags a:hover,
   table a:hover,
-  #crosslinks a:not(.highlight):hover,
   li a:hover,
   dl a:hover {
     text-shadow: 0.03em 0 var(--back-white), -0.03em 0 var(--back-white), 0 0.03em var(--back-white), 0 -0.03em var(--back-white), 0.06em 0 var(--back-white), -0.06em 0 var(--back-white), 0.09em 0 var(--back-white), -0.09em 0 var(--back-white), 0.12em 0 var(--back-white), -0.12em 0 var(--back-white), 0.15em 0 var(--back-white), -0.15em 0 var(--back-white);
@@ -1527,32 +1271,26 @@ dl a {
     background-position: 0% 100%;
     background-size: 0.8em auto;
     text-decoration: none; }
-    #breadcrumbs a:hover::selection,
     figcaption a:hover::selection,
     p a:hover::selection,
     .page-tags a:hover::selection,
     table a:hover::selection,
-    #crosslinks a:not(.highlight):hover::selection,
     li a:hover::selection,
     dl a:hover::selection {
       text-shadow: 0.03em 0 var(--back-white), -0.03em 0 var(--back-white), 0 0.03em var(--back-white), 0 -0.03em var(--back-white), 0.06em 0 var(--back-white), -0.06em 0 var(--back-white), 0.09em 0 var(--back-white), -0.09em 0 var(--back-white), 0.12em 0 var(--back-white), -0.12em 0 var(--back-white), 0.15em 0 var(--back-white), -0.15em 0 var(--back-white);
       background: var(--back-white); }
-    #breadcrumbs a:hover::-moz-selection,
     figcaption a:hover::-moz-selection,
     p a:hover::-moz-selection,
     .page-tags a:hover::-moz-selection,
     table a:hover::-moz-selection,
-    #crosslinks a:not(.highlight):hover::-moz-selection,
     li a:hover::-moz-selection,
     dl a:hover::-moz-selection {
       text-shadow: 0.03em 0 var(--back-white), -0.03em 0 var(--back-white), 0 0.03em var(--back-white), 0 -0.03em var(--back-white), 0.06em 0 var(--back-white), -0.06em 0 var(--back-white), 0.09em 0 var(--back-white), -0.09em 0 var(--back-white), 0.12em 0 var(--back-white), -0.12em 0 var(--back-white), 0.15em 0 var(--back-white), -0.15em 0 var(--back-white);
       background: var(--back-white); }
-  #breadcrumbs a[href^="#"],
   figcaption a[href^="#"],
   p a[href^="#"],
   .page-tags a[href^="#"],
   table a[href^="#"],
-  #crosslinks a[href^="#"]:not(.highlight),
   li a[href^="#"],
   dl a[href^="#"] {
     text-shadow: 0.03em 0 var(--back-white), -0.03em 0 var(--back-white), 0 0.03em var(--back-white), 0 -0.03em var(--back-white), 0.06em 0 var(--back-white), -0.06em 0 var(--back-white), 0.09em 0 var(--back-white), -0.09em 0 var(--back-white), 0.12em 0 var(--back-white), -0.12em 0 var(--back-white), 0.15em 0 var(--back-white), -0.15em 0 var(--back-white);
@@ -1561,32 +1299,26 @@ dl a {
     background-repeat: repeat-x;
     background-position: 0% 95%;
     text-shadow: none; }
-    #breadcrumbs a[href^="#"]::selection,
     figcaption a[href^="#"]::selection,
     p a[href^="#"]::selection,
     .page-tags a[href^="#"]::selection,
     table a[href^="#"]::selection,
-    #crosslinks a[href^="#"]:not(.highlight)::selection,
     li a[href^="#"]::selection,
     dl a[href^="#"]::selection {
       text-shadow: 0.03em 0 var(--back-white), -0.03em 0 var(--back-white), 0 0.03em var(--back-white), 0 -0.03em var(--back-white), 0.06em 0 var(--back-white), -0.06em 0 var(--back-white), 0.09em 0 var(--back-white), -0.09em 0 var(--back-white), 0.12em 0 var(--back-white), -0.12em 0 var(--back-white), 0.15em 0 var(--back-white), -0.15em 0 var(--back-white);
       background: var(--back-white); }
-    #breadcrumbs a[href^="#"]::-moz-selection,
     figcaption a[href^="#"]::-moz-selection,
     p a[href^="#"]::-moz-selection,
     .page-tags a[href^="#"]::-moz-selection,
     table a[href^="#"]::-moz-selection,
-    #crosslinks a[href^="#"]:not(.highlight)::-moz-selection,
     li a[href^="#"]::-moz-selection,
     dl a[href^="#"]::-moz-selection {
       text-shadow: 0.03em 0 var(--back-white), -0.03em 0 var(--back-white), 0 0.03em var(--back-white), 0 -0.03em var(--back-white), 0.06em 0 var(--back-white), -0.06em 0 var(--back-white), 0.09em 0 var(--back-white), -0.09em 0 var(--back-white), 0.12em 0 var(--back-white), -0.12em 0 var(--back-white), 0.15em 0 var(--back-white), -0.15em 0 var(--back-white);
       background: var(--back-white); }
-    #breadcrumbs a[href^="#"]:hover,
     figcaption a[href^="#"]:hover,
     p a[href^="#"]:hover,
     .page-tags a[href^="#"]:hover,
     table a[href^="#"]:hover,
-    #crosslinks a[href^="#"]:not(.highlight):hover,
     li a[href^="#"]:hover,
     dl a[href^="#"]:hover {
       text-shadow: 0.03em 0 var(--back-white), -0.03em 0 var(--back-white), 0 0.03em var(--back-white), 0 -0.03em var(--back-white), 0.06em 0 var(--back-white), -0.06em 0 var(--back-white), 0.09em 0 var(--back-white), -0.09em 0 var(--back-white), 0.12em 0 var(--back-white), -0.12em 0 var(--back-white), 0.15em 0 var(--back-white), -0.15em 0 var(--back-white);
@@ -1594,22 +1326,18 @@ dl a {
       background-size: 1px 1px;
       background-repeat: repeat-x;
       background-position: 0% 95%; }
-      #breadcrumbs a[href^="#"]:hover::selection,
       figcaption a[href^="#"]:hover::selection,
       p a[href^="#"]:hover::selection,
       .page-tags a[href^="#"]:hover::selection,
       table a[href^="#"]:hover::selection,
-      #crosslinks a[href^="#"]:not(.highlight):hover::selection,
       li a[href^="#"]:hover::selection,
       dl a[href^="#"]:hover::selection {
         text-shadow: 0.03em 0 var(--back-white), -0.03em 0 var(--back-white), 0 0.03em var(--back-white), 0 -0.03em var(--back-white), 0.06em 0 var(--back-white), -0.06em 0 var(--back-white), 0.09em 0 var(--back-white), -0.09em 0 var(--back-white), 0.12em 0 var(--back-white), -0.12em 0 var(--back-white), 0.15em 0 var(--back-white), -0.15em 0 var(--back-white);
         background: var(--back-white); }
-      #breadcrumbs a[href^="#"]:hover::-moz-selection,
       figcaption a[href^="#"]:hover::-moz-selection,
       p a[href^="#"]:hover::-moz-selection,
       .page-tags a[href^="#"]:hover::-moz-selection,
       table a[href^="#"]:hover::-moz-selection,
-      #crosslinks a[href^="#"]:not(.highlight):hover::-moz-selection,
       li a[href^="#"]:hover::-moz-selection,
       dl a[href^="#"]:hover::-moz-selection {
         text-shadow: 0.03em 0 var(--back-white), -0.03em 0 var(--back-white), 0 0.03em var(--back-white), 0 -0.03em var(--back-white), 0.06em 0 var(--back-white), -0.06em 0 var(--back-white), 0.09em 0 var(--back-white), -0.09em 0 var(--back-white), 0.12em 0 var(--back-white), -0.12em 0 var(--back-white), 0.15em 0 var(--back-white), -0.15em 0 var(--back-white);
@@ -1699,48 +1427,6 @@ dl a {
     #content .page-intro p a:hover:visited,
     #footnotes a:hover:visited {
       color: var(--text-gray); }
-
-.pile-link::before {
-  background-color: var(--back-white);
-  content: "‹\00a0"; }
-
-.pile-link::after {
-  background-color: var(--back-white);
-  content: "\00a0›"; }
-
-#crosslinks {
-  margin-top: 20px; }
-  #crosslinks a:not(.highlight) {
-    padding: 0.1em 0.2em;
-    border-style: solid;
-    border-width: 1px;
-    border-color: var(--back-light);
-    border-radius: 1px;
-    font-family: "Open Sans";
-    font-variant: all-small-caps;
-    font-size: max(0.4em, 10px);
-    font-style: normal;
-    letter-spacing: 2px;
-    background-image: none;
-    line-height: 1;
-    white-space: nowrap;
-    vertical-align: middle;
-    padding: 0.1em 0.5em;
-    background-color: var(--back-white); }
-    #crosslinks a:not(.highlight):hover {
-      background-color: var(--back-light);
-      background-image: none; }
-    #crosslinks a:not(.highlight):not(.active) {
-      border-color: var(--back-white); }
-    #crosslinks a.active:not(.highlight) {
-      text-shadow: none;
-      text-decoration: none;
-      color: var(--back-white);
-      background-color: var(--code-foreground); }
-      #crosslinks a.active:not(.highlight):hover {
-        background-color: var(--back-light);
-        background-image: none;
-        color: var(--text-dark); }
 
 .btn {
   padding: 7px 14px;
@@ -2247,43 +1933,6 @@ table {
 
 #table-of-contents #text-table-of-contents li::before {
   content: "" !important; }
-
-#breadcrumbs {
-  font-family: "Open Sans";
-  font-weight: normal;
-  font-style: normal;
-  font-size: 12px;
-  line-height: 1.9;
-  color: var(--text-light); }
-  #breadcrumbs a {
-    background-image: none; }
-
-.edits {
-  margin-top: 70px;
-  border-width: 0;
-  border-top-style: solid;
-  border-top-width: 1px;
-  border-color: var(--back-light);
-  padding-top: 30px;
-  font-family: "Open Sans";
-  font-weight: normal;
-  font-size: 15px;
-  line-height: 1.6;
-  color: var(--text-gray); }
-  .edits p, .edits li {
-    font-family: "Open Sans";
-    font-weight: normal;
-    font-size: 15px;
-    line-height: 1.6;
-    color: var(--text-gray); }
-  .edits li {
-    margin-bottom: 16px; }
-
-.edits::before {
-  content: 'EDITS';
-  font-family: 'Open Sans';
-  font-size: 18px;
-  letter-spacing: 5px; }
 
 .page-tags a {
   padding: 0.1em 0.2em;

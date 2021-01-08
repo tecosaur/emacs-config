@@ -1,11 +1,11 @@
 // Link and buttons
 
-#breadcrumbs a,
+// #breadcrumbs a,
 figcaption a,
 p a,
 .page-tags a,
 table a,
-#crosslinks a:not(.highlight),
+// #crosslinks a:not(.highlight),
 li a,
 dl a {
   @include link-underline($back-white, $text-dark);
@@ -73,22 +73,22 @@ dl a {
   }
 }
 
-.pile-link::before {
-  background-color: $back-white;
-  content: "‹\00a0";
-}
+// .pile-link::before {
+//   background-color: $back-white;
+//   content: "‹\00a0";
+// }
 
-.pile-link::after {
-  background-color: $back-white;
-  content: "\00a0›";
-}
+// .pile-link::after {
+//   background-color: $back-white;
+//   content: "\00a0›";
+// }
 
-#crosslinks {
-  margin-top: 20px;
-  a:not(.highlight) {
-    @include tag;
-  }
-}
+// #crosslinks {
+//   margin-top: 20px;
+//   a:not(.highlight) {
+//     @include tag;
+//   }
+// }
 
 .btn {
   @include button(1px, 14px, 7px);

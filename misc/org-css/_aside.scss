@@ -1,5 +1,4 @@
-// Aside divs
-aside, .aside {
+aside {
   background-color: $code-background;
   border-radius: 5px;
   @include light-para(15px);
@@ -7,17 +6,6 @@ aside, .aside {
   padding: 20px;
   padding-bottom: 10px;
   line-height: 1.6 !important;
-
-  // Link overrides
-  figcaption a,
-  li a,
-  p a {
-    @include link-underline($code-background, $text-gray);
-
-    &:hover {
-      @include link-underline($code-background, $text-gray);
-    }
-  }
 
   p {
     @include light-para(15px);
@@ -32,23 +20,12 @@ aside, .aside {
 }
 
 @media (min-width: 1280px) {
-  aside, .aside {
+  aside {
     float: right;
     clear: right;
     background-color: $back-white;
     max-width: 45% !important;
     margin-right: -52%;
-
-    // Link overrides
-    figcaption a,
-    li a,
-    p a {
-      @include link-underline($back-white, $text-gray);
-
-      &:hover {
-        @include link-underline($back-light, $text-gray);
-      }
-    }
 
     &::before {
       content: '';
