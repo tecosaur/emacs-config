@@ -2374,6 +2374,20 @@ span.acr {
   font-variant-caps: all-small-caps;
   letter-spacing: 0.1em; }
 
+.music-track {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap; }
+  .music-track > img {
+    height: 6rem; }
+  .music-track > span {
+    margin-left: 2rem;
+    min-width: 30%; }
+    .music-track > span > a {
+      color: inherit;
+      text-decoration: none; }
+
 div.table {
   position: relative; }
   div.table .gutter {
