@@ -1,17 +1,24 @@
-#+TITLE: pile-theme
+#+title: Pile Theme
 
-Sass files for my org exporting. Taken from [[github:lepisma/pile-theme][lepisma/pile-theme]].
+A sass-based set of styles to be used by Org when exporting to HTML.
+=main.scss= is compiled to =main.css= which is then inserted into the ~<head>~ of
+generated HTML documents.
 
-#+NAME: om-sass
-#+BEGIN_SRC shell :exports none :results output
+This is a modified version of [[https://lepisma.xyz/][lepisma]]'s lovely [[https://github.com/lepisma/pile-theme][pile-theme]].
+
+A little non-essential JS has been added to provide:
++ Functionality for copy-to-clipboard buttons
++ Have the table of contents auto-expand based on the current scroll position
+
+* Development
+To build =main.css= and =main.js=, I simply run
+
+#+begin_src shell
 sassc main.scss main.css
-#+END_SRC
+#+end_src
 
-#+RESULTS: om-sass
+Then for combining the JS
 
-#+NAME: make-js
-#+BEGIN_SRC shell :exports none :results output
+#+begin_src shell
 cat _*.js > main.js
-#+END_SRC
-
-#+RESULTS: make-js
+#+end_src
