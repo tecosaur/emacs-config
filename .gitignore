@@ -1,4 +1,5 @@
 .*
+!.dir-locals.el
 _minted-config
 abbrev.el
 config.*
