@@ -1581,8 +1581,6 @@ cd ~/.local/share/emacs_anywhere
 # Install in ~/.local not ~/.emacs_anywhere
 sed -i 's/$HOME\/.emacs_anywhere/$HOME\/.local\/share\/emacs_anywhere/' ./bin/linux ./bin/emacstask
 ln -s ~/.local/share/emacs_anywhere/bin/linux ~/.local/bin/emacs_anywhere
-# Improve paste robustness --- https://github.com/zachcurry/emacs-anywhere/pull/66
-sed -i 's/xdotool key --clearmodifiers ctrl+v/xdotool key --clearmodifiers Shift+Insert/' ./bin/linux
 #+end_src
 
 It's nice to recognise GitHub (so we can use ~GFM~), and other apps which we know
@@ -1660,7 +1658,7 @@ Affects behaviour of `emacs-anywhere--finalise-content'")
   (when-let ((selection (gui-get-selection 'PRIMARY)))
     (insert selection))
 
-  (setq emacs-anywhere--active-markdown (markdown-window-p window-title))
+  (setq-local emacs-anywhere--active-markdown (markdown-window-p window-title))
 
   ;; convert buffer to org mode if markdown
   (when emacs-anywhere--active-markdown
@@ -1668,13 +1666,17 @@ Affects behaviour of `emacs-anywhere--finalise-content'")
                              "pandoc -f markdown -t org" nil t)
     (deactivate-mark) (goto-char (point-max)))
 
+  ;; remove any blank newline at end
+  (delete-trailing-whitespace)
+  (delete-char (- (skip-chars-backward "\n")))
+
   ;; set major mode
   (org-mode)
 
   (advice-add 'ea--delete-frame-handler :before #'emacs-anywhere--finalise-content)
 
   ;; I'll be honest with myself, I /need/ spellcheck
-  (flyspell-buffer)
+  (spell-fu-buffer)
 
   (evil-insert-state) ; start in insert
   (emacs-anywhere-mode 1))
