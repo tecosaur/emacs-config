@@ -6280,9 +6280,9 @@ We also want to use HTML checkboxes, however we want to get a bit fancier than d
 (after! org
   (appendq! org-html-checkbox-types
             '((html-span
-               ((on . "<span class='checkbox'></span>")
+               (on . "<span class='checkbox'></span>")
                 (off . "<span class='checkbox'></span>")
-                (trans . "<span class='checkbox'></span>")))))
+                (trans . "<span class='checkbox'></span>"))))
   (setq org-html-checkbox-type 'html-span))
 #+end_src
 - [ ] I'm yet to do this
