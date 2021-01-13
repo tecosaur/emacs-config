@@ -6355,6 +6355,28 @@ MathJax = {
         src=\"%PATH\"></script>"))
 #+end_src
 **** Exporting to LaTeX
+***** Compiling
+By default Org uses ~pdflatex~ \times 3 + ~bibtex~. This simply won't do in our
+modern world. ~latexmk~ + ~biber~ (which is used automatically with ~latexmk~) is a
+simply superior combination.
+
+#+begin_src emacs-lisp
+;; org-latex-compilers = ("pdflatex" "xelatex" "lualatex"), which are the possible values for %latex
+(setq org-latex-pdf-process '("latexmk -%latex -shell-escape -interaction=nonstopmode -f -pdf -output-directory=%o %f"))
+#+end_src
+
+While ~org-latex-pdf-process~ does support a function, and we could use that
+instead, this would no longer use the log buffer --- it's a bit blind, you give
+it the file name and expect it to do its thing.
+
+The default values of ~org-latex-compilers~ is given in commented form to see how
+~org-latex-pdf-process~ works with them.
+
+While the ~-%latex~ above is slightly hacky (~-pdflatex~ expects to be given a
+value) it allows us to leave ~org-latex-compilers~ unmodified.
+This is nice in case I open an org file that uses =#+LATEX_COMPILER= for example,
+it should still work.
+
 ***** Acronyms
 :PROPERTIES:
 :CUSTOM_ID: org-latex-acronyms
