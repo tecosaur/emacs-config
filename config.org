@@ -1984,6 +1984,8 @@ We want to set this up so it loads nicely in [[*Extra links][Extra links]].
   :config
   (setq xkcd-cache-dir (expand-file-name "xkcd/" doom-cache-dir)
         xkcd-cache-latest (concat xkcd-cache-dir "latest"))
+  (unless (file-exists-p xkcd-cache-dir)
+    (make-directory xkcd-cache-dir))
   (after! evil-snipe
     (add-to-list 'evil-snipe-disabled-modes 'xkcd-mode))
   :general (:states 'normal
