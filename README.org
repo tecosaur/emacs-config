@@ -21,8 +21,7 @@ In order to have Doom load the config, we need to initialise the submodules, and
 generate the =init.el= once.
 
 #+begin_src shell :eval query
-git clone git@github.com:tecosaur/emacs-config.git ~/.config/doom
-git submodule update
+git clone --recurse-submodules git@github.com:tecosaur/emacs-config.git ~/.config/doom
 emacs --batch --eval "(require 'org)" --eval '(org-babel-tangle-file "config.org")'
 git clone --depth 1 https://github.com/hlissner/doom-emacs ~/.emacs.d
 ~/.emacs.d/bin/doom install
