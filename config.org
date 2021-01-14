@@ -1982,6 +1982,8 @@ We want to set this up so it loads nicely in [[*Extra links][Extra links]].
              +xkcd-find-and-copy +xkcd-find-and-view
              +xkcd-fetch-info +xkcd-select)
   :config
+  (setq xkcd-cache-dir (expand-file-name "xkcd/" doom-cache-dir)
+        xkcd-cache-latest (concat xkcd-cache-dir "latest"))
   (after! evil-snipe
     (add-to-list 'evil-snipe-disabled-modes 'xkcd-mode))
   :general (:states 'normal
