@@ -1403,9 +1403,13 @@ Because of the /[[https://github.com/commonmark/commonmark-spec/wiki/markdown-fl
 such a thing a standard table spec ... or standard anything really. Because
 ~org-md~ is a goody-two-shoes, it just uses HTML for all these non-standardised
 elements (a lot of them). So ~ox-gfm~ is handy for exporting markdown with all the
-features that GitHub has. Initialised in [[Exporting to GFM]].
+features that GitHub has.
 #+begin_src emacs-lisp
 (package! ox-gfm :pin "99f93011b069e02b37c9660b8fcb45dab086a07f")
+#+end_src
+#+begin_src emacs-lisp :tangle yes
+(use-package! ox-gfm
+  :after org)
 #+end_src
 
 Now and then citations need to happen
@@ -6810,12 +6814,6 @@ Introduction, Overview... so let's set bump up the headline level that becomes a
 frame from ~1~ to ~2~.
 #+begin_src emacs-lisp
 (setq org-beamer-frame-level 2)
-#+end_src
-**** Exporting to GFM
-We just need to load ~ox-gfm~ for org-mode documents
-#+begin_src emacs-lisp
-(eval-after-load "org"
-  '(require 'ox-gfm nil t))
 #+end_src
 *** Babel
 Doom lazy-loads babel languages, with is lovely.
