@@ -1604,7 +1604,7 @@ Affects behaviour of `emacs-anywhere--finalise-content'")
   (when emacs-anywhere--active-markdown
     (fundamental-mode)
     (goto-char (point-min))
-    (insert "#+options: toc:nil\n")
+    (insert "#+property: header-args :exports both\n#+options: toc:nil\n")
     (rename-buffer "*EA Pre Export*")
     (org-export-to-buffer 'gfm ea--buffer-name)
     (kill-buffer "*EA Pre Export*"))
