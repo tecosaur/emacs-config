@@ -1658,10 +1658,8 @@ Affects behaviour of `emacs-anywhere--finalise-content'")
   (when-let ((selection (gui-get-selection 'PRIMARY)))
     (insert selection))
 
-  (setq-local emacs-anywhere--active-markdown (markdown-window-p window-title))
-
   ;; convert buffer to org mode if markdown
-  (when emacs-anywhere--active-markdown
+  (when (markdown-window-p window-title)
     (shell-command-on-region (point-min) (point-max)
                              "pandoc -f markdown -t org" nil t)
     (deactivate-mark) (goto-char (point-max)))
@@ -1672,6 +1670,9 @@ Affects behaviour of `emacs-anywhere--finalise-content'")
 
   ;; set major mode
   (org-mode)
+
+  ;; set markdown status
+  (setq-local emacs-anywhere--active-markdown (markdown-window-p window-title))
 
   (advice-add 'ea--delete-frame-handler :before #'emacs-anywhere--finalise-content)
 
