@@ -6815,6 +6815,29 @@ frame from ~1~ to ~2~.
 #+begin_src emacs-lisp
 (setq org-beamer-frame-level 2)
 #+end_src
+**** Exporting to Markdown
+When I want to paste exported markdown somewhere (for example when using [[*\[\[https://github.com/zachcurry/emacs-anywhere\]\[Emacs Anywhere\]\] configuration][Emacs
+Anywhere]]), it can be preferable to have unicode charachters for =---= etc. instead
+of =&#x2014;=.
+
+To accomplish this, we just need to locally rebind the alist which provides
+these substitution.
+
+#+begin_src emacs-lisp
+(defadvice! org-md-plain-text-unicode-a (orig-fn text info)
+  "Locally rebind `org-html-special-string-regexps'"
+  :around #'org-md-plain-text
+  (let ((org-html-special-string-regexps
+         '(("\\\\-" . "-")
+           ("---\\([^-]\\)" . "—\\1")
+           ("--\\([^-]\\)" . "–\\1")
+           ("\\.\\.\\." . "…"))))
+    (funcall orig-fn text info)))
+#+end_src
+
+In the future, I may want to check =info= to only have this active when =ox-gfm= is
+being used.
+
 *** Babel
 Doom lazy-loads babel languages, with is lovely.
 
