@@ -6540,7 +6540,7 @@ While this is the LaTeX section, it's convenient to also provide HTML acronyms h
                  ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
   (setq org-latex-default-class "fancy-article")
 
-  <<org-latex-smart-minted>>
+  <<org-latex-conditional-preamble>>
 
   (setq org-latex-listings 'minted
         org-latex-minted-options
@@ -6626,33 +6626,48 @@ the "universal preamble"
 \\IfFileExists{./\\jobname.org}{\\embedfile[desc=The original file]{\\jobname.org}}{}
 #+end_src
 
-Instead of just loading doing the 'minted stuff' all the time, we can try to be
-a bit cleverer, and handle the "universal preamble" while we're at it.
-#+name: org-latex-smart-minted
-#+begin_src emacs-lisp :tangle no :noweb no-export
-(after! org
-  (defadvice! org-latex-header-smart-minted (orig-fn tpl def-pkg pkg snippets-p &optional extra)
-    "Include minted config if src blocks are detected."
-    :around #'org-splice-latex-header
-    (let ((header (funcall orig-fn tpl def-pkg pkg snippets-p extra))
-          (src-p (when (save-excursion
-                         (goto-char (point-min))
-                         (search-forward-regexp "#\\+BEGIN_SRC\\|#\\+begin_src" nil t))
-                   t)))
-      (if snippets-p header
-        (concat header
-                org-latex-universal-preamble
-                (when src-p org-latex-minted-preamble)))))
+We could have every package we could possibly need in every one of
+~org-latex-classes~, but that's /horribly/ inefficient and I don't want to think
+about maintaining that.
 
-  (defvar org-latex-minted-preamble "
+Instead, we can have a "universal preamble" which contains a snippet which we
+want to /always/ appear, and then conditional preamble snippets, which are only
+included when a certain regex is successfully found in the Org buffer.
+
+#+name: org-latex-conditional-preamble
+#+begin_src emacs-lisp :tangle no :noweb no-export
+(defvar org-latex-minted-preamble "
 <<org-minted-preamble>>
 "
-    "Preamble to be inserted when minted is used.")
+  "Preamble to be inserted when minted is used.")
 
-  (defvar org-latex-universal-preamble "
+(defvar org-latex-universal-preamble "
 <<org-universal-preamble>>
 "
-    "Preamble to be included in every export."))
+  "Preamble to be included in every export.")
+
+(defvar org-latex-conditional-preambles
+  `(("\\[\\[file:.*\\.svg\\]\\]" . "\\usepackage{svg}")
+    ("#\\+BEGIN_SRC\\|#\\+begin_src" . ,org-latex-minted-preamble))
+  "Snippets which are conditionally included in the preamble of a LaTeX export.
+
+Alist where each car is a regexp which will be searched for in the Org buffer being exported,
+and the cdr is a string which will be included in the LaTeX preamble.")
+
+(defadvice! org-latex-header-smart-preamble (orig-fn tpl def-pkg pkg snippets-p &optional extra)
+  "Include certain config if a need is detected."
+  :around #'org-splice-latex-header
+  (let ((header (funcall orig-fn tpl def-pkg pkg snippets-p extra)))
+    (if snippets-p header
+      (concat header
+              org-latex-universal-preamble
+              (mapconcat (lambda (term-preamble)
+                           (when (save-excursion
+                                   (goto-char (point-min))
+                                   (search-forward-regexp (car term-preamble) nil t))
+                             (cdr term-preamble)))
+                         org-latex-conditional-preambles
+                         "\n")))))
 #+end_src
 ***** Chameleon --- aka. match theme
 Once the idea of having the look of the LaTeX document produced match the
