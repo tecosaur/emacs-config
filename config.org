@@ -6565,9 +6565,7 @@ While this is the LaTeX section, it's convenient to also provide HTML acronyms h
   linkcolor=,
   urlcolor=link,
   citecolor=cite\n}
-\\urlstyle{same}\n")
-  (setq org-latex-pdf-process
-        '("latexmk -shell-escape -interaction=nonstopmode -f -pdf -output-directory=%o %f")))
+\\urlstyle{same}\n"))
 #+end_src
 
 ***** A cleverer preamble
