@@ -6478,18 +6478,27 @@ While this is the LaTeX section, it's convenient to also provide HTML acronyms h
 
 \\usepackage{pifont}
 \\newcommand{\\checkboxUnchecked}{$\\square$}
-\\newcommand{\\checkboxTransitive}{\\rlap{\\raisebox{0.0ex}{\\hspace{0.35ex}\\Large\\textbf -}}$\\square$}
-\\newcommand{\\checkboxChecked}{\\rlap{\\raisebox{0.2ex}{\\hspace{0.35ex}\\scriptsize \\ding{56}}}$\\square$}
+\\newcommand{\\checkboxTransitive}{\\rlap{\\raisebox{-0.1ex}{\\hspace{0.35ex}\\Large\\textbf -}}$\\square$}
+\\newcommand{\\checkboxChecked}{\\rlap{\\raisebox{0.2ex}{\\hspace{0.35ex}\\scriptsize \\ding{52}}}$\\square$}
 
-\\newenvironment{warning}
-    {\\begin{center}
-    \\begin{tabular}{rp{0.9\\textwidth}}
-    \\ding{82} & \\textbf{Warning} \\\\ &
-    }
-    {
-    \\end{tabular}
-    \\end{center}
-    }
+% args = #1 Name, #2 Colour, #3 Ding, #4 Label
+\\newcommand{\\defsimplebox}[4]{%
+  \\definecolor{#1}{HTML}{#2}
+  \\newenvironment{#1}
+  {%
+    \\par \\vspace{-0.7\\baselineskip}%
+    \\textcolor{#1}{#3} \\textcolor{#1}{\\textbf{#4}}%
+    \\vspace{-0.8\\baselineskip}
+    \\begin{addmargin}[1em]{1em}
+  }{%
+    \\end{addmargin}
+    \\vspace{-0.5\\baselineskip}
+  }%
+}
+\\defsimplebox{warning}{e66100}{\\ding{68}}{Warning}
+\\defsimplebox{info}{3584e4}{\\ding{68}}{Information}
+\\defsimplebox{success}{26a269}{\\ding{68}}{\\vspace{-\\baselineskip}}
+\\defsimplebox{error}{c01c28}{\\ding{68}}{Important}
 "
                  ("\\section{%s}" . "\\section*{%s}")
                  ("\\subsection{%s}" . "\\subsection*{%s}")
