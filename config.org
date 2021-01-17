@@ -6603,15 +6603,16 @@ We also want a particular preamble when minted is used,
 }
 
 \\BeforeBeginEnvironment{minted}{
-  \\begin{tcolorbox}[
+  \\begin{tcolorbox}[%
   enhanced,
-  overlay={\\fill[white!90!black] (frame.south west) rectangle ([xshift=2.8em]frame.north west);},
-  colback=white!95!black,
-  colframe=white!95!black, % make frame colour same as background
-  breakable,% Allow white breaks
-  arc=0pt,outer arc=0pt,sharp corners, % sharp corners
-  boxsep=0pt,left=0pt,right=0pt,top=0pt,bottom=0pt % no margin/paddding
-  ]
+  overlay={\\fill[white!95!black] ([xshift=2.8em]frame.north west) {[rounded corners=3pt] --
+      (frame.north west) -- (frame.south west) } -- ([xshift=2.8em]frame.south west) -- cycle;},
+  colback=white!98!black,
+  colframe=white!98!black,
+  breakable,
+  arc=3pt,outer arc=3pt,
+  boxsep=0pt,left=0pt,right=0pt,top=0pt,bottom=0pt%
+  ]%
 }
 \\AfterEndEnvironment{minted}{\\end{tcolorbox}}
 \\renewcommand\\theFancyVerbLine{\\color{black!60!white}\\arabic{FancyVerbLine}} % minted line numbering
