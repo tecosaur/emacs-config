@@ -18,6 +18,19 @@
 
 (setq log-file (expand-file-name "exporter-log.txt" (file-name-directory load-file-name)))
 
+(defun initialise ()
+  (advice-add 'theme-magic-from-emacs :override #'ignore)
+  (advice-add 'format-all-buffer :override #'ignore)
+
+  ;; Avoid error: file-missing "Opening directory" "No such file or directory" "~/org/roam"
+  (setq org-roam-directory "~")
+
+  (load (expand-file-name "~/.emacs.d/init.el"))
+
+  (when (and (featurep 'undo-tree) global-undo-tree-mode)
+    (global-undo-tree-mode -1)
+    (advice-add 'undo-tree-save-history :override #'ignore)))
+
 ;;; If running just to to htmlization (i.e., in a terminal)
 
 (unless noninteractive
@@ -33,10 +46,7 @@
         (append-to-file "\n" nil log-file))))
   (advice-add 'message :around #'logged-message)
 
-  (advice-add 'theme-magic-from-emacs :override #'ignore)
-  (advice-add 'format-all-buffer :override #'ignore)
-
-  (load (expand-file-name "~/.emacs.d/init.el"))
+  (initialise)
 
   (require 'htmlize)
 
@@ -130,14 +140,7 @@
 
 ;;; Setup
 
-(advice-add 'theme-magic-from-emacs :override #'ignore)
-(advice-add 'format-all-buffer :override #'ignore)
-
-(load (expand-file-name "~/.emacs.d/init.el"))
-
-(when (and (featurep 'undo-tree) global-undo-tree-mode)
-  (global-undo-tree-mode -1)
-  (advice-add 'undo-tree-save-history :override #'ignore))
+(initialise)
 
 ;;; Actually do the exporting now
 
