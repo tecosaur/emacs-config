@@ -350,12 +350,20 @@ shown by =SPC h v= and selecting what I thought looks good, I've ended up adding
 
 (global-subword-mode 1)                           ; Iterate through CamelCase words
 #+end_src
-*** Fullscreen
-I also like the idea of fullscreen-ing when opened by ~Emacs~ or the ~.desktop~ file.
+*** Frame sizing
+It's nice to control the size of new frames, when launching Emacs that can be
+done with ~emacs -geometry 160x48~. After the font size adjustment during
+initialisation this works out to be ~102x31~.
+
+Thanks to hotkeys, it's easy for me to expand a frame to half/full-screen, so it
+makes sense to be conservative with the sizing of new frames.
+
+Then, for creating new frames within the same Emacs instance, we'll just set the
+default to be something roughly 80% of that size.
+
 #+begin_src emacs-lisp
-(if (eq initial-window-system 'x)                 ; if started by emacs command or desktop file
-    (toggle-frame-maximized)
-  (toggle-frame-fullscreen))
+(add-to-list 'default-frame-alist '(height . 24))
+(add-to-list 'default-frame-alist '(width . 80))
 #+end_src
 *** Auto-customisations
 By default changes made via a customisation interface are added to =init.el=.
