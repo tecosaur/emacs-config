@@ -5786,6 +5786,9 @@ the final documents.
 (ox-extras-activate '(ignore-headlines))
 #+end_src
 **** Exporting to HTML
+:PROPERTIES:
+:header-args:emacs-lisp: :noweb-ref ox-html-conf
+:END:
 I want to tweak a whole bunch of things. While I'll want my tweaks almost all
 the time, occasionally I may want to test how something turns out using a more
 default config. With that in mind, a global minor mode seems like the most
@@ -5811,6 +5814,15 @@ the vast majority of the change in behaviour comes from switch statements in:
     (setq org-html-style-default org-html-style-plain
           org-html-meta-tags #'org-html-meta-tags-default
           org-html-checkbox-type 'html)))
+#+end_src
+
+There are quite a few instances where I want to modify variables defined in
+=ox-html=, so we'll wrap the contents of this section in an ~(after! ox-html ...)~
+block.
+#+begin_src emacs-lisp :noweb yes :noweb-ref org-conf
+(after! ox-html
+  <<ox-html-conf>>
+)
 #+end_src
 ***** Extra header content
 We want to tack on a few more bits to the start of the body. Unfortunately, there
@@ -5944,43 +5956,42 @@ of contents as a string, or nil if it is empty."
 
 Lastly, let's pile on some metadata. This gives my pages nice embeds.
 #+begin_src emacs-lisp
-(after! ox-html
-  (defun org-html-meta-tags-fancy (info)
-    "Use the INFO plist to construct the meta tags, as described in `org-html-meta-tags'."
-    (let ((title (org-html-plain-text
-                  (org-element-interpret-data (plist-get info :title)) info))
-          (author (and (plist-get info :with-author)
-                       (let ((auth (plist-get info :author)))
-                         ;; Return raw Org syntax.
-                         (and auth (org-html-plain-text
-                                    (org-element-interpret-data auth) info))))))
-      (list
-       (when (org-string-nw-p author)
-         (list "name" "author" author))
-       (when (org-string-nw-p (plist-get info :description))
-         (list "name" "description"
-               (plist-get info :description)))
-       '("name" "generator" "org mode")
-       '("name" "theme-color" "#77aa99")
-       '("property" "og:type" "article")
-       (list "property" "og:title" title)
-       (let ((subtitle (org-export-data (plist-get info :subtitle) info)))
-         (when (org-string-nw-p subtitle)
-           (list "property" "og:description" subtitle)))
-       '("property" "og:image" "https://tecosaur.com/resources/org/nib.png")
-       '("property" "og:image:type" "image/png")
-       '("property" "og:image:width" "200")
-       '("property" "og:image:height" "200")
-       '("property" "og:image:alt" "Green fountain pen nib")
-       (when (org-string-nw-p author)
-         (list "property" "og:article:author:first_name" (car (s-split-up-to " " author 2))))
-       (when (and (org-string-nw-p author) (s-contains-p " " author))
-         (list "property" "og:article:author:last_name" (cadr (s-split-up-to " " author 2))))
-       (list "property" "og:article:published_time" (format-time-string "%FT%T%z")))))
+(defun org-html-meta-tags-fancy (info)
+  "Use the INFO plist to construct the meta tags, as described in `org-html-meta-tags'."
+  (let ((title (org-html-plain-text
+                (org-element-interpret-data (plist-get info :title)) info))
+        (author (and (plist-get info :with-author)
+                     (let ((auth (plist-get info :author)))
+                       ;; Return raw Org syntax.
+                       (and auth (org-html-plain-text
+                                  (org-element-interpret-data auth) info))))))
+    (list
+     (when (org-string-nw-p author)
+       (list "name" "author" author))
+     (when (org-string-nw-p (plist-get info :description))
+       (list "name" "description"
+             (plist-get info :description)))
+     '("name" "generator" "org mode")
+     '("name" "theme-color" "#77aa99")
+     '("property" "og:type" "article")
+     (list "property" "og:title" title)
+     (let ((subtitle (org-export-data (plist-get info :subtitle) info)))
+       (when (org-string-nw-p subtitle)
+         (list "property" "og:description" subtitle)))
+     '("property" "og:image" "https://tecosaur.com/resources/org/nib.png")
+     '("property" "og:image:type" "image/png")
+     '("property" "og:image:width" "200")
+     '("property" "og:image:height" "200")
+     '("property" "og:image:alt" "Green fountain pen nib")
+     (when (org-string-nw-p author)
+       (list "property" "og:article:author:first_name" (car (s-split-up-to " " author 2))))
+     (when (and (org-string-nw-p author) (s-contains-p " " author))
+       (list "property" "og:article:author:last_name" (cadr (s-split-up-to " " author 2))))
+     (list "property" "og:article:published_time" (format-time-string "%FT%T%z")))))
 
-  (unless (functionp #'org-html-meta-tags-default)
-    (defalias 'org-html-meta-tags-default #'ignore))
-  (setq org-html-meta-tags #'org-html-meta-tags-fancy))
+(unless (functionp #'org-html-meta-tags-default)
+  (defalias 'org-html-meta-tags-default #'ignore))
+(setq org-html-meta-tags #'org-html-meta-tags-fancy)
 #+end_src
 ***** Custom CSS/JS
 The default org HTML export is ... alright, but we can really jazz it up.
