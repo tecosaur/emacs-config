@@ -5806,10 +5806,10 @@ the vast majority of the change in behaviour comes from switch statements in:
   :init-value t
   (if org-fancy-html-export-mode
       (setq org-html-style-default org-html-style-fancy
-            org-html-meta-tags org-html-meta-tags-fancy
+            org-html-meta-tags #'org-html-meta-tags-fancy
             org-html-checkbox-type 'html-span)
     (setq org-html-style-default org-html-style-plain
-          org-html-meta-tags org-html-meta-tags-plain
+          org-html-meta-tags #'org-html-meta-tags-default
           org-html-checkbox-type 'html)))
 #+end_src
 ***** Extra header content
@@ -5978,8 +5978,9 @@ Lastly, let's pile on some metadata. This gives my pages nice embeds.
          (list "property" "og:article:author:last_name" (cadr (s-split-up-to " " author 2))))
        (list "property" "og:article:published_time" (format-time-string "%FT%T%z")))))
 
-    (setq org-html-meta-tags-plain (bound-and-true-p org-html-meta-tags)
-          org-html-meta-tags #'org-html-meta-tags-fancy))
+  (unless (functionp #'org-html-meta-tags-default)
+    (defalias 'org-html-meta-tags-default #'ignore))
+  (setq org-html-meta-tags #'org-html-meta-tags-fancy))
 #+end_src
 ***** Custom CSS/JS
 The default org HTML export is ... alright, but we can really jazz it up.
