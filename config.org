@@ -423,6 +423,7 @@ install (on ~doom sync~) and configuration to be applied. The modules can also
 have flags applied to tweak their behaviour.
 
 #+name: init.el
+#+attr_html: :collapsed t
 #+begin_src emacs-lisp :tangle "init.el" :noweb no-export :comments none
 ;;; init.el -*- lexical-binding: t; -*-
 
@@ -6032,9 +6033,22 @@ By wrapping the ~<pre>~ element in a ~<details>~ block, we can obtain collapsabl
 blocks with no CSS, though we will toss a little in anyway to have this looking
 somewhat spiffy.
 
-We can take our modification a step further, and add a gutter on the side of the
-Src block containing both an anchor referencing the current block, and a button
-to copy the content of the block.
+Since this collapsability seems useful to have on by default for certain chunks
+of code, it would be nice if you could set it with =#+attr_html: :collapsed t=.
+
+It would be nice to also have a corresponding global / session-local way of
+setting this, but I haven't quite been able to get that working (yet).
+
+#+begin_src emacs-lisp
+(defvar org-html-export-collapsed nil)
+(eval '(cl-pushnew '(:collapsed "COLLAPSED" "collapsed" org-html-export-collapsed t)
+                   (org-export-backend-options (org-export-get-backend 'html))))
+(add-to-list 'org-default-properties "EXPORT_COLLAPSED")
+#+end_src
+
+We can take our src block modification a step further, and add a gutter on the
+side of the src block containing both an anchor referencing the current block,
+and a button to copy the content of the block.
 
 #+name: Src blocks
 #+begin_src emacs-lisp
@@ -6047,7 +6061,10 @@ to copy the content of the block.
            (lang (mode-name-to-lang-name
                   (plist-get properties :language)))
            (name (plist-get properties :name))
-           (ref (org-export-get-reference src-block info)))
+           (ref (org-export-get-reference src-block info))
+           (collapsed-p (member (or (org-export-read-attribute :attr_html src-block :collapsed)
+                                    (plist-get info :collapsed))
+                                '("y" "yes" "t" t "true" "all"))))
       (format
        "<details id='%s' class='code'%s><summary%s>%s</summary>
 <div class='gutter'>
@@ -6057,9 +6074,7 @@ to copy the content of the block.
 %s
 </details>"
        ref
-       (if (member (org-export-read-attribute :attr_html src-block :collapsed)
-                   '("y" "yes" "t" "true"))
-           "" " open")
+       (if collapsed-p "" " open")
        (if name " class='named'" "")
        (if (not name) (concat "<span class='lang'>" lang "</span>")
          (format "<span class='name'>%s</span><span class='lang'>%s</span>" name lang))
@@ -6180,18 +6195,16 @@ to copy the content of the block.
 </div>
 %s\n
 </details>"
-         ref
-         (if (or (and collapsed-value (member collapsed-value '("y" "yes" "t" "true")))
-                 collapsed-default)
-             "" " open")
-         (if type " class='named'" "")
-         (if type (format "<span class='type'>%s</span>" type) "")
-         ref
-         (funcall orig-fn block contents info)))))
+       ref
+       (if (or collapsed-p collapsed-default) "" " open")
+       (if type " class='named'" "")
+       (if type (format "<span class='type'>%s</span>" type) "")
+       ref
+       (funcall orig-fn block contents info)))))
 
-  (advice-add 'org-html-example-block   :around #'org-html-block-collapsable)
-  (advice-add 'org-html-fixed-width     :around #'org-html-block-collapsable)
-  (advice-add 'org-html-property-drawer :around #'org-html-block-collapsable))
+(advice-add 'org-html-example-block   :around #'org-html-block-collapsable)
+(advice-add 'org-html-fixed-width     :around #'org-html-block-collapsable)
+(advice-add 'org-html-property-drawer :around #'org-html-block-collapsable)
 #+end_src
 
 ***** Include extra font-locking in htmlize
