@@ -6009,19 +6009,23 @@ Suffice to say I've snatched it, with a few of my own tweaks applied.
 #+end_src
 
 #+begin_src emacs-lisp
-(after! org
+(setq org-html-style-plain org-html-style-default
+      org-html-htmlize-output-type 'css
+      org-html-doctype "html5"
+      org-html-html5-fancy t)
+
+(defun org-html-reload-fancy-style ()
+  (interactive)
   (setq org-html-style-fancy
         (concat (f-read-text (expand-file-name "misc/org-export-header.html" doom-private-dir))
                 "<script>\n"
                 (f-read-text (expand-file-name "misc/org-css/main.js" doom-private-dir))
                 "</script>\n<style>\n"
                 (f-read-text (expand-file-name "misc/org-css/main.css" doom-private-dir))
-                "</style>")
-        org-html-style-plain org-html-style-default
-        org-html-style-default  org-html-style-fancy
-        org-html-htmlize-output-type 'css
-        org-html-doctype "html5"
-        org-html-html5-fancy t))
+                "</style>"))
+  (when org-fancy-html-export-mode
+    (setq org-html-style-default org-html-style-fancy)))
+(org-html-reload-fancy-style)
 #+end_src
 ***** Collapsable src and example blocks
 By wrapping the ~<pre>~ element in a ~<details>~ block, we can obtain collapsable
