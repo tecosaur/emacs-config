@@ -3744,6 +3744,7 @@ It's nice to see ANSI colour codes displayed
 ** Org Mode
 :PROPERTIES:
 :CUSTOM_ID: org
+:header-args:emacs-lisp: :tangle no :noweb-ref org-conf
 :END:
 I really like org mode, I've given some thought to why, and below is the result.
 
@@ -3803,6 +3804,13 @@ figure.png╶─╧─▶ PROJECT.ORG ▶───╴filters╶───╧─�
                     ╙─────────────────────────────────▶ .el   ⎭
 #+end_example
 
+Finally, because this section is fairly expensive to initialise, we'll wrap it
+in an ~(after! ...)~ block.
+#+begin_src emacs-lisp :noweb no-export :tangle yes :noweb-ref nil
+(after! org
+  <<org-conf>>
+)
+#+end_src
 *** System config
 **** Mime types
 Org mode isn't recognised as it's own mime type by default, but that can easily
@@ -3973,16 +3981,15 @@ Occasionally I want to cite something.
 ***** cdlatex
 It's also nice to be able to use ~cdlatex~.
 #+begin_src emacs-lisp
-(after! org (add-hook 'org-mode-hook 'turn-on-org-cdlatex))
+(add-hook 'org-mode-hook 'turn-on-org-cdlatex)
 #+end_src
 
 It's handy to be able to quickly insert environments with =C-c }=. I almost always
 want to edit them afterwards though, so let's make that happen by default.
 #+begin_src emacs-lisp
-(after! org
-  (defadvice! org-edit-latex-emv-after-insert ()
-    :after #'org-cdlatex-environment-indent
-    (org-edit-latex-environment)))
+(defadvice! org-edit-latex-emv-after-insert ()
+  :after #'org-cdlatex-environment-indent
+  (org-edit-latex-environment))
 #+end_src
 
 At some point in the future it could be good to investigate [[https://scripter.co/splitting-an-org-block-into-two/][splitting org blocks]].
@@ -3990,7 +3997,7 @@ Likewise [[https://archive.casouri.cat/note/2020/insert-math-symbol-in-emacs/][t
 ***** Spellcheck
 My spelling is atrocious, so let's get flycheck going.
 #+begin_src emacs-lisp
-(after! org (add-hook 'org-mode-hook 'turn-on-flyspell))
+(add-hook 'org-mode-hook 'turn-on-flyspell)
 #+end_src
 ***** LSP support in ~src~ blocks
 Now, by default, LSPs don't really function at all in ~src~ blocks.
@@ -4028,29 +4035,28 @@ Now, by default, LSPs don't really function at all in ~src~ blocks.
 ='localeader v= has no pre-existing binding, so I may as well use it with the same
 functionality as in LaTeX. Let's try viewing possible output files with this.
 #+begin_src emacs-lisp
-(after! org
-  (map! :map org-mode-map
-        :localleader
-        :desc "View exported file" "v" #'org-view-output-file)
+(map! :map org-mode-map
+      :localleader
+      :desc "View exported file" "v" #'org-view-output-file)
 
-  (defun org-view-output-file (&optional org-file-path)
-    "Visit buffer open on the first output file (if any) found, using `org-view-output-file-extensions'"
-    (interactive)
-    (let* ((org-file-path (or org-file-path (buffer-file-name) ""))
-           (dir (file-name-directory org-file-path))
-           (basename (file-name-base org-file-path))
-           (output-file nil))
-      (dolist (ext org-view-output-file-extensions)
-        (unless output-file
-          (when (file-exists-p
-                 (concat dir basename "." ext))
-            (setq output-file (concat dir basename "." ext)))))
-      (if output-file
-          (if (member (file-name-extension output-file) org-view-external-file-extensions)
-              (browse-url-xdg-open output-file)
-            (pop-to-buffer (or (find-buffer-visiting output-file)
-                               (find-file-noselect output-file))))
-        (message "No exported file found")))))
+(defun org-view-output-file (&optional org-file-path)
+  "Visit buffer open on the first output file (if any) found, using `org-view-output-file-extensions'"
+  (interactive)
+  (let* ((org-file-path (or org-file-path (buffer-file-name) ""))
+         (dir (file-name-directory org-file-path))
+         (basename (file-name-base org-file-path))
+         (output-file nil))
+    (dolist (ext org-view-output-file-extensions)
+      (unless output-file
+        (when (file-exists-p
+               (concat dir basename "." ext))
+          (setq output-file (concat dir basename "." ext)))))
+    (if output-file
+        (if (member (file-name-extension output-file) org-view-external-file-extensions)
+            (browse-url-xdg-open output-file)
+          (pop-to-buffer (or (find-buffer-visiting output-file)
+                             (find-file-noselect output-file))))
+      (message "No exported file found"))))
 
 (defvar org-view-output-file-extensions '("pdf" "md" "rst" "txt" "tex" "html")
   "Search for output files with these extensions, in order, viewing the first that matches")
@@ -4793,103 +4799,102 @@ made unique when necessary."
 **** Nicer ~org-return~
 Once again, from [[https://github.com/alphapapa/unpackaged.el#org-return-dwim][unpackaged.el]]
 #+begin_src emacs-lisp
-(after! org
-  (defun unpackaged/org-element-descendant-of (type element)
-    "Return non-nil if ELEMENT is a descendant of TYPE.
+(defun unpackaged/org-element-descendant-of (type element)
+  "Return non-nil if ELEMENT is a descendant of TYPE.
 TYPE should be an element type, like `item' or `paragraph'.
 ELEMENT should be a list like that returned by `org-element-context'."
-    ;; MAYBE: Use `org-element-lineage'.
-    (when-let* ((parent (org-element-property :parent element)))
-      (or (eq type (car parent))
-          (unpackaged/org-element-descendant-of type parent))))
+  ;; MAYBE: Use `org-element-lineage'.
+  (when-let* ((parent (org-element-property :parent element)))
+    (or (eq type (car parent))
+        (unpackaged/org-element-descendant-of type parent))))
 
 ;;;###autoload
-  (defun unpackaged/org-return-dwim (&optional default)
-    "A helpful replacement for `org-return-indent'.  With prefix, call `org-return-indent'.
+(defun unpackaged/org-return-dwim (&optional default)
+  "A helpful replacement for `org-return-indent'.  With prefix, call `org-return-indent'.
 
 On headings, move point to position after entry content.  In
 lists, insert a new item or end the list, with checkbox if
 appropriate.  In tables, insert a new row or end the table."
-    ;; Inspired by John Kitchin: http://kitchingroup.cheme.cmu.edu/blog/2017/04/09/A-better-return-in-org-mode/
-    (interactive "P")
-    (if default
-        (org-return t)
-      (cond
-       ;; Act depending on context around point.
+  ;; Inspired by John Kitchin: http://kitchingroup.cheme.cmu.edu/blog/2017/04/09/A-better-return-in-org-mode/
+  (interactive "P")
+  (if default
+      (org-return t)
+    (cond
+     ;; Act depending on context around point.
 
-       ;; NOTE: I prefer RET to not follow links, but by uncommenting this block, links will be
-       ;; followed.
+     ;; NOTE: I prefer RET to not follow links, but by uncommenting this block, links will be
+     ;; followed.
 
-       ;; ((eq 'link (car (org-element-context)))
-       ;;  ;; Link: Open it.
-       ;;  (org-open-at-point-global))
+     ;; ((eq 'link (car (org-element-context)))
+     ;;  ;; Link: Open it.
+     ;;  (org-open-at-point-global))
 
-       ((org-at-heading-p)
-        ;; Heading: Move to position after entry content.
-        ;; NOTE: This is probably the most interesting feature of this function.
-        (let ((heading-start (org-entry-beginning-position)))
-          (goto-char (org-entry-end-position))
-          (cond ((and (org-at-heading-p)
-                      (= heading-start (org-entry-beginning-position)))
-                 ;; Entry ends on its heading; add newline after
-                 (end-of-line)
-                 (insert "\n\n"))
-                (t
-                 ;; Entry ends after its heading; back up
-                 (forward-line -1)
-                 (end-of-line)
-                 (when (org-at-heading-p)
-                   ;; At the same heading
-                   (forward-line)
-                   (insert "\n")
-                   (forward-line -1))
-                 ;; FIXME: looking-back is supposed to be called with more arguments.
-                 (while (not (looking-back (rx (repeat 3 (seq (optional blank) "\n")))))
-                   (insert "\n"))
-                 (forward-line -1)))))
-
-       ((org-at-item-checkbox-p)
-        ;; Checkbox: Insert new item with checkbox.
-        (org-insert-todo-heading nil))
-
-       ((org-in-item-p)
-        ;; Plain list.  Yes, this gets a little complicated...
-        (let ((context (org-element-context)))
-          (if (or (eq 'plain-list (car context))  ; First item in list
-                  (and (eq 'item (car context))
-                       (not (eq (org-element-property :contents-begin context)
-                                (org-element-property :contents-end context))))
-                  (unpackaged/org-element-descendant-of 'item context))  ; Element in list item, e.g. a link
-              ;; Non-empty item: Add new item.
-              (org-insert-item)
-            ;; Empty item: Close the list.
-            ;; TODO: Do this with org functions rather than operating on the text. Can't seem to find the right function.
-            (delete-region (line-beginning-position) (line-end-position))
-            (insert "\n"))))
-
-       ((when (fboundp 'org-inlinetask-in-task-p)
-          (org-inlinetask-in-task-p))
-        ;; Inline task: Don't insert a new heading.
-        (org-return t))
-
-       ((org-at-table-p)
-        (cond ((save-excursion
-                 (beginning-of-line)
-                 ;; See `org-table-next-field'.
-                 (cl-loop with end = (line-end-position)
-                          for cell = (org-element-table-cell-parser)
-                          always (equal (org-element-property :contents-begin cell)
-                                        (org-element-property :contents-end cell))
-                          while (re-search-forward "|" end t)))
-               ;; Empty row: end the table.
-               (delete-region (line-beginning-position) (line-end-position))
-               (org-return t))
+     ((org-at-heading-p)
+      ;; Heading: Move to position after entry content.
+      ;; NOTE: This is probably the most interesting feature of this function.
+      (let ((heading-start (org-entry-beginning-position)))
+        (goto-char (org-entry-end-position))
+        (cond ((and (org-at-heading-p)
+                    (= heading-start (org-entry-beginning-position)))
+               ;; Entry ends on its heading; add newline after
+               (end-of-line)
+               (insert "\n\n"))
               (t
-               ;; Non-empty row: call `org-return-indent'.
-               (org-return t))))
-       (t
-        ;; All other cases: call `org-return-indent'.
-        (org-return t))))))
+               ;; Entry ends after its heading; back up
+               (forward-line -1)
+               (end-of-line)
+               (when (org-at-heading-p)
+                 ;; At the same heading
+                 (forward-line)
+                 (insert "\n")
+                 (forward-line -1))
+               ;; FIXME: looking-back is supposed to be called with more arguments.
+               (while (not (looking-back (rx (repeat 3 (seq (optional blank) "\n")))))
+                 (insert "\n"))
+               (forward-line -1)))))
+
+     ((org-at-item-checkbox-p)
+      ;; Checkbox: Insert new item with checkbox.
+      (org-insert-todo-heading nil))
+
+     ((org-in-item-p)
+      ;; Plain list.  Yes, this gets a little complicated...
+      (let ((context (org-element-context)))
+        (if (or (eq 'plain-list (car context))  ; First item in list
+                (and (eq 'item (car context))
+                     (not (eq (org-element-property :contents-begin context)
+                              (org-element-property :contents-end context))))
+                (unpackaged/org-element-descendant-of 'item context))  ; Element in list item, e.g. a link
+            ;; Non-empty item: Add new item.
+            (org-insert-item)
+          ;; Empty item: Close the list.
+          ;; TODO: Do this with org functions rather than operating on the text. Can't seem to find the right function.
+          (delete-region (line-beginning-position) (line-end-position))
+          (insert "\n"))))
+
+     ((when (fboundp 'org-inlinetask-in-task-p)
+        (org-inlinetask-in-task-p))
+      ;; Inline task: Don't insert a new heading.
+      (org-return t))
+
+     ((org-at-table-p)
+      (cond ((save-excursion
+               (beginning-of-line)
+               ;; See `org-table-next-field'.
+               (cl-loop with end = (line-end-position)
+                        for cell = (org-element-table-cell-parser)
+                        always (equal (org-element-property :contents-begin cell)
+                                      (org-element-property :contents-end cell))
+                        while (re-search-forward "|" end t)))
+             ;; Empty row: end the table.
+             (delete-region (line-beginning-position) (line-end-position))
+             (org-return t))
+            (t
+             ;; Non-empty row: call `org-return-indent'.
+             (org-return t))))
+     (t
+      ;; All other cases: call `org-return-indent'.
+      (org-return t)))))
 
 (map!
  :after evil-org
@@ -5000,35 +5005,34 @@ Saving seconds adds up after all! (but only so much)
 [[xkcd:1205]]
 
 #+begin_src emacs-lisp
-(after! org
-  (org-link-set-parameters "xkcd"
-                           :image-data-fun #'+org-xkcd-image-fn
-                           :follow #'+org-xkcd-open-fn
-                           :export #'+org-xkcd-export
-                           :complete #'+org-xkcd-complete)
+(org-link-set-parameters "xkcd"
+                         :image-data-fun #'+org-xkcd-image-fn
+                         :follow #'+org-xkcd-open-fn
+                         :export #'+org-xkcd-export
+                         :complete #'+org-xkcd-complete)
 
-  (defun +org-xkcd-open-fn (link)
-    (+org-xkcd-image-fn nil link nil))
+(defun +org-xkcd-open-fn (link)
+  (+org-xkcd-image-fn nil link nil))
 
-  (defun +org-xkcd-image-fn (protocol link description)
-    "Get image data for xkcd num LINK"
-    (let* ((xkcd-info (+xkcd-fetch-info (string-to-number link)))
-           (img (plist-get xkcd-info :img))
-           (alt (plist-get xkcd-info :alt)))
-      (message alt)
-      (+org-image-file-data-fn protocol (xkcd-download img (string-to-number link)) description)))
+(defun +org-xkcd-image-fn (protocol link description)
+  "Get image data for xkcd num LINK"
+  (let* ((xkcd-info (+xkcd-fetch-info (string-to-number link)))
+         (img (plist-get xkcd-info :img))
+         (alt (plist-get xkcd-info :alt)))
+    (message alt)
+    (+org-image-file-data-fn protocol (xkcd-download img (string-to-number link)) description)))
 
-  (defun +org-xkcd-export (num desc backend _com)
-    "Convert xkcd to html/LaTeX form"
-    (let* ((xkcd-info (+xkcd-fetch-info (string-to-number num)))
-           (img (plist-get xkcd-info :img))
-           (alt (plist-get xkcd-info :alt))
-           (title (plist-get xkcd-info :title))
-           (file (xkcd-download img (string-to-number num))))
-      (cond ((org-export-derived-backend-p backend 'html)
-             (format "<img class='invertible' src='%s' title=\"%s\" alt='%s'>" img (subst-char-in-string ?\" ?“ alt) title))
-            ((org-export-derived-backend-p backend 'latex)
-             (format "\\begin{figure}[!htb]
+(defun +org-xkcd-export (num desc backend _com)
+  "Convert xkcd to html/LaTeX form"
+  (let* ((xkcd-info (+xkcd-fetch-info (string-to-number num)))
+         (img (plist-get xkcd-info :img))
+         (alt (plist-get xkcd-info :alt))
+         (title (plist-get xkcd-info :title))
+         (file (xkcd-download img (string-to-number num))))
+    (cond ((org-export-derived-backend-p backend 'html)
+           (format "<img class='invertible' src='%s' title=\"%s\" alt='%s'>" img (subst-char-in-string ?\" ?“ alt) title))
+          ((org-export-derived-backend-p backend 'latex)
+           (format "\\begin{figure}[!htb]
   \\centering
   \\includegraphics[scale=0.4]{%s}%s
 \\end{figure}" file (if (equal desc (format "xkcd:%s" num)) ""
@@ -5036,11 +5040,11 @@ Saving seconds adds up after all! (but only so much)
                               num
                               (or desc
                                   (format "\\textbf{%s} %s" title alt))))))
-            (t (format "https://xkcd.com/%s" num)))))
+          (t (format "https://xkcd.com/%s" num)))))
 
-  (defun +org-xkcd-complete (&optional arg)
-    "Complete xkcd using `+xkcd-stored-info'"
-    (format "xkcd:%d" (+xkcd-select))))
+(defun +org-xkcd-complete (&optional arg)
+  "Complete xkcd using `+xkcd-stored-info'"
+  (format "xkcd:%d" (+xkcd-select)))
 #+end_src
 ***** Music
 First, we set up all the necessarily 'utility' functions.
@@ -5319,18 +5323,17 @@ Then we integrate this nicely with org-mode
 The ~[[yt:...]]~ links preview nicely, but don't export nicely. Thankfully, we can
 fix that.
 #+begin_src emacs-lisp
-(after! org
-  (org-link-set-parameters "yt" :export #'+org-export-yt)
-  (defun +org-export-yt (path desc backend _com)
-    (cond ((org-export-derived-backend-p backend 'html)
-           (format "<iframe width='440' \
+(org-link-set-parameters "yt" :export #'+org-export-yt)
+(defun +org-export-yt (path desc backend _com)
+  (cond ((org-export-derived-backend-p backend 'html)
+         (format "<iframe width='440' \
 height='335' \
 src='https://www.youtube.com/embed/%s' \
 frameborder='0' \
 allowfullscreen>%s</iframe>" path (or "" desc)))
-          ((org-export-derived-backend-p backend 'latex)
-           (format "\\href{https://youtu.be/%s}{%s}" path (or desc "youtube")))
-          (t (format "https://youtu.be/%s" path)))))
+        ((org-export-derived-backend-p backend 'latex)
+         (format "\\href{https://youtu.be/%s}{%s}" path (or desc "youtube")))
+        (t (format "https://youtu.be/%s" path))))
 #+end_src
 
 *** Visuals
@@ -5366,9 +5369,8 @@ Let's make headings a bit bigger
 
 And the same with the title.
 #+begin_src emacs-lisp
-(after! org
-  (custom-set-faces!
-    '(org-document-title :height 1.2)))
+(custom-set-faces!
+  '(org-document-title :height 1.2))
 #+end_src
 
 It seems reasonable to have deadlines in the error face when they're passed.
@@ -5390,110 +5392,108 @@ I think ~▾~ is better for indicating 'collapsed section'.
 and add an extra ~org-bullet~ to the default list of four.
 I've also added some fun alternatives, just commented out.
 #+begin_src emacs-lisp
-;; (after! org
-;;   (use-package org-pretty-tags
-;;   :config
-;;    (setq org-pretty-tags-surrogate-strings
-;;          `(("uni"        . ,(all-the-icons-faicon   "graduation-cap" :face 'all-the-icons-purple  :v-adjust 0.01))
-;;            ("ucc"        . ,(all-the-icons-material "computer"       :face 'all-the-icons-silver  :v-adjust 0.01))
-;;            ("assignment" . ,(all-the-icons-material "library_books"  :face 'all-the-icons-orange  :v-adjust 0.01))
-;;            ("test"       . ,(all-the-icons-material "timer"          :face 'all-the-icons-red     :v-adjust 0.01))
-;;            ("lecture"    . ,(all-the-icons-fileicon "keynote"        :face 'all-the-icons-orange  :v-adjust 0.01))
-;;            ("email"      . ,(all-the-icons-faicon   "envelope"       :face 'all-the-icons-blue    :v-adjust 0.01))
-;;            ("read"       . ,(all-the-icons-octicon  "book"           :face 'all-the-icons-lblue   :v-adjust 0.01))
-;;            ("article"    . ,(all-the-icons-octicon  "file-text"      :face 'all-the-icons-yellow  :v-adjust 0.01))
-;;            ("web"        . ,(all-the-icons-faicon   "globe"          :face 'all-the-icons-green   :v-adjust 0.01))
-;;            ("info"       . ,(all-the-icons-faicon   "info-circle"    :face 'all-the-icons-blue    :v-adjust 0.01))
-;;            ("issue"      . ,(all-the-icons-faicon   "bug"            :face 'all-the-icons-red     :v-adjust 0.01))
-;;            ("someday"    . ,(all-the-icons-faicon   "calendar-o"     :face 'all-the-icons-cyan    :v-adjust 0.01))
-;;            ("idea"       . ,(all-the-icons-octicon  "light-bulb"     :face 'all-the-icons-yellow  :v-adjust 0.01))
-;;            ("emacs"      . ,(all-the-icons-fileicon "emacs"          :face 'all-the-icons-lpurple :v-adjust 0.01))))
-;;    (org-pretty-tags-global-mode)))
+;; (use-package org-pretty-tags
+;; :config
+;;  (setq org-pretty-tags-surrogate-strings
+;;        `(("uni"        . ,(all-the-icons-faicon   "graduation-cap" :face 'all-the-icons-purple  :v-adjust 0.01))
+;;          ("ucc"        . ,(all-the-icons-material "computer"       :face 'all-the-icons-silver  :v-adjust 0.01))
+;;          ("assignment" . ,(all-the-icons-material "library_books"  :face 'all-the-icons-orange  :v-adjust 0.01))
+;;          ("test"       . ,(all-the-icons-material "timer"          :face 'all-the-icons-red     :v-adjust 0.01))
+;;          ("lecture"    . ,(all-the-icons-fileicon "keynote"        :face 'all-the-icons-orange  :v-adjust 0.01))
+;;          ("email"      . ,(all-the-icons-faicon   "envelope"       :face 'all-the-icons-blue    :v-adjust 0.01))
+;;          ("read"       . ,(all-the-icons-octicon  "book"           :face 'all-the-icons-lblue   :v-adjust 0.01))
+;;          ("article"    . ,(all-the-icons-octicon  "file-text"      :face 'all-the-icons-yellow  :v-adjust 0.01))
+;;          ("web"        . ,(all-the-icons-faicon   "globe"          :face 'all-the-icons-green   :v-adjust 0.01))
+;;          ("info"       . ,(all-the-icons-faicon   "info-circle"    :face 'all-the-icons-blue    :v-adjust 0.01))
+;;          ("issue"      . ,(all-the-icons-faicon   "bug"            :face 'all-the-icons-red     :v-adjust 0.01))
+;;          ("someday"    . ,(all-the-icons-faicon   "calendar-o"     :face 'all-the-icons-cyan    :v-adjust 0.01))
+;;          ("idea"       . ,(all-the-icons-octicon  "light-bulb"     :face 'all-the-icons-yellow  :v-adjust 0.01))
+;;          ("emacs"      . ,(all-the-icons-fileicon "emacs"          :face 'all-the-icons-lpurple :v-adjust 0.01))))
+;;  (org-pretty-tags-global-mode))
 
 (after! org-superstar
   (setq org-superstar-headline-bullets-list '("◉" "○" "✸" "✿" "✤" "✜" "◆" "▶")
         ;; org-superstar-headline-bullets-list '("Ⅰ" "Ⅱ" "Ⅲ" "Ⅳ" "Ⅴ" "Ⅵ" "Ⅶ" "Ⅷ" "Ⅸ" "Ⅹ")
         org-superstar-prettify-item-bullets t ))
-(after! org
-  (setq org-ellipsis " ▾ "
-        org-hide-leading-stars t
-        org-priority-highest ?A
-        org-priority-lowest ?E
-        org-priority-faces
-        '((?A . 'all-the-icons-red)
-          (?B . 'all-the-icons-orange)
-          (?C . 'all-the-icons-yellow)
-          (?D . 'all-the-icons-green)
-          (?E . 'all-the-icons-blue))))
+
+(setq org-ellipsis " ▾ "
+      org-hide-leading-stars t
+      org-priority-highest ?A
+      org-priority-lowest ?E
+      org-priority-faces
+      '((?A . 'all-the-icons-red)
+        (?B . 'all-the-icons-orange)
+        (?C . 'all-the-icons-yellow)
+        (?D . 'all-the-icons-green)
+        (?E . 'all-the-icons-blue)))
 #+end_src
 It's also nice to make use of the Unicode characters for check boxes, and other commands.
 #+begin_src emacs-lisp
-(after! org
-  (appendq! +ligatures-extra-symbols
-            `(:checkbox      "☐"
-              :pending       "◼"
-              :checkedbox    "☑"
-              :list_property "∷"
-              :em_dash       "—"
-              :ellipses      "…"
-              :title         "𝙏"
-              :subtitle      "𝙩"
-              :author        "𝘼"
-              :date          "𝘿"
-              :property      "☸"
-              :options       "⌥"
-              :latex_class   "🄲"
-              :latex_header  "⇥"
-              :beamer_header "↠"
-              :attr_latex    "🄛"
-              :attr_html     "🄗"
-              :begin_quote   "❮"
-              :end_quote     "❯"
-              :caption       "☰"
-              :header        "›"
-              :results       "🠶"
-              :begin_export  "⯮"
-              :end_export    "⯬"
-              :properties    "⚙"
-              :end           "∎"
-              :priority_a   ,(propertize "⚑" 'face 'all-the-icons-red)
-              :priority_b   ,(propertize "⬆" 'face 'all-the-icons-orange)
-              :priority_c   ,(propertize "■" 'face 'all-the-icons-yellow)
-              :priority_d   ,(propertize "⬇" 'face 'all-the-icons-green)
-              :priority_e   ,(propertize "❓" 'face 'all-the-icons-blue)))
-  (set-ligatures! 'org-mode
-    :merge t
-    :checkbox      "[ ]"
-    :pending       "[-]"
-    :checkedbox    "[X]"
-    :list_property "::"
-    :em_dash       "---"
-    :ellipsis      "..."
-    :title         "#+title:"
-    :subtitle      "#+subtitle:"
-    :author        "#+author:"
-    :date          "#+date:"
-    :property      "#+property:"
-    :options       "#+options:"
-    :latex_class   "#+latex_class:"
-    :latex_header  "#+latex_header:"
-    :beamer_header "#+beamer_header:"
-    :attr_latex    "#+attr_latex:"
-    :attr_html     "#+attr_latex:"
-    :begin_quote   "#+begin_quote"
-    :end_quote     "#+end_quote"
-    :caption       "#+caption:"
-    :header        "#+header:"
-    :begin_export  "#+begin_export"
-    :end_export    "#+end_export"
-    :results       "#+RESULTS:"
-    :property      ":PROPERTIES:"
-    :end           ":END:"
-    :priority_a    "[#A]"
-    :priority_b    "[#B]"
-    :priority_c    "[#C]"
-    :priority_d    "[#D]"
-    :priority_e    "[#E]"))
+(appendq! +ligatures-extra-symbols
+          `(:checkbox      "☐"
+            :pending       "◼"
+            :checkedbox    "☑"
+            :list_property "∷"
+            :em_dash       "—"
+            :ellipses      "…"
+            :title         "𝙏"
+            :subtitle      "𝙩"
+            :author        "𝘼"
+            :date          "𝘿"
+            :property      "☸"
+            :options       "⌥"
+            :latex_class   "🄲"
+            :latex_header  "⇥"
+            :beamer_header "↠"
+            :attr_latex    "🄛"
+            :attr_html     "🄗"
+            :begin_quote   "❮"
+            :end_quote     "❯"
+            :caption       "☰"
+            :header        "›"
+            :results       "🠶"
+            :begin_export  "⯮"
+            :end_export    "⯬"
+            :properties    "⚙"
+            :end           "∎"
+            :priority_a   ,(propertize "⚑" 'face 'all-the-icons-red)
+            :priority_b   ,(propertize "⬆" 'face 'all-the-icons-orange)
+            :priority_c   ,(propertize "■" 'face 'all-the-icons-yellow)
+            :priority_d   ,(propertize "⬇" 'face 'all-the-icons-green)
+            :priority_e   ,(propertize "❓" 'face 'all-the-icons-blue)))
+(set-ligatures! 'org-mode
+  :merge t
+  :checkbox      "[ ]"
+  :pending       "[-]"
+  :checkedbox    "[X]"
+  :list_property "::"
+  :em_dash       "---"
+  :ellipsis      "..."
+  :title         "#+title:"
+  :subtitle      "#+subtitle:"
+  :author        "#+author:"
+  :date          "#+date:"
+  :property      "#+property:"
+  :options       "#+options:"
+  :latex_class   "#+latex_class:"
+  :latex_header  "#+latex_header:"
+  :beamer_header "#+beamer_header:"
+  :attr_latex    "#+attr_latex:"
+  :attr_html     "#+attr_latex:"
+  :begin_quote   "#+begin_quote"
+  :end_quote     "#+end_quote"
+  :caption       "#+caption:"
+  :header        "#+header:"
+  :begin_export  "#+begin_export"
+  :end_export    "#+end_export"
+  :results       "#+RESULTS:"
+  :property      ":PROPERTIES:"
+  :end           ":END:"
+  :priority_a    "[#A]"
+  :priority_b    "[#B]"
+  :priority_c    "[#C]"
+  :priority_d    "[#D]"
+  :priority_e    "[#E]")
 (plist-put +ligatures-extra-symbols :name "⁍")
 #+end_src
 We also like ~org-fragtog~, and that wants a hook.
@@ -5503,8 +5503,7 @@ We also like ~org-fragtog~, and that wants a hook.
 ***** LaTeX Fragments
 First off, we want those fragments to look good.
 #+begin_src emacs-lisp
-(after! org
-  (setq org-highlight-latex-and-related '(native script entities)))
+(setq org-highlight-latex-and-related '(native script entities))
 #+end_src
 It's nice to customise the look of LaTeX fragments so they fit better in the
 text --- like this \(\sqrt{\beta^2+3}-\sum_{\phi=1}^\infty \frac{x^\phi-1}{\Gamma(a)}\). Let's start by adding a sans font.
@@ -5566,141 +5565,136 @@ Exporting to HTML][LaTeX Rendering]].
 As well as having a sans font, there are a few other tweaks which can make them
 look better. Namely making sure that the colours switch when the theme does.
 #+begin_src emacs-lisp
-(after! org
-  ;; make background of fragments transparent
-  ;; (let ((dvipng--plist (alist-get 'dvipng org-preview-latex-process-alist)))
-  ;;   (plist-put dvipng--plist :use-xcolor t)
-  ;;   (plist-put dvipng--plist :image-converter '("dvipng -D %D -bg 'transparent' -T tight -o %O %f")))
-  (add-hook! 'doom-load-theme-hook
-    (defun +org-refresh-latex-background ()
-      (plist-put! org-format-latex-options
-                  :background
-                  (face-attribute (or (cadr (assq 'default face-remapping-alist))
-                                      'default)
-                                  :background nil t))))
-  )
+;; make background of fragments transparent
+;; (let ((dvipng--plist (alist-get 'dvipng org-preview-latex-process-alist)))
+;;   (plist-put dvipng--plist :use-xcolor t)
+;;   (plist-put dvipng--plist :image-converter '("dvipng -D %D -bg 'transparent' -T tight -o %O %f")))
+(add-hook! 'doom-load-theme-hook
+  (defun +org-refresh-latex-background ()
+    (plist-put! org-format-latex-options
+                :background
+                (face-attribute (or (cadr (assq 'default face-remapping-alist))
+                                    'default)
+                                :background nil t))))
 #+end_src
 It'd be nice to make ~mhchem~ equations able to be rendered.
 NB: This doesn't work at the moment.
 #+begin_src emacs-lisp
-(after! org
-  (add-to-list 'org-latex-regexps '("\\ce" "^\\\\ce{\\(?:[^\000{}]\\|{[^\000}]+?}\\)}" 0 nil)))
+(add-to-list 'org-latex-regexps '("\\ce" "^\\\\ce{\\(?:[^\000{}]\\|{[^\000}]+?}\\)}" 0 nil))
 #+end_src
 ***** Stolen from [[https://github.com/jkitchin/scimax][scimax]] (semi-working right now)
 I want fragment justification
 #+begin_src emacs-lisp
-(after! org
-  (defun scimax-org-latex-fragment-justify (justification)
-    "Justify the latex fragment at point with JUSTIFICATION.
+(defun scimax-org-latex-fragment-justify (justification)
+  "Justify the latex fragment at point with JUSTIFICATION.
 JUSTIFICATION is a symbol for 'left, 'center or 'right."
-    (interactive
-     (list (intern-soft
-            (completing-read "Justification (left): " '(left center right)
-                             nil t nil nil 'left))))
-    (let* ((ov (ov-at))
-           (beg (ov-beg ov))
-           (end (ov-end ov))
-           (shift (- beg (line-beginning-position)))
-           (img (overlay-get ov 'display))
-           (img (and (and img (consp img) (eq (car img) 'image)
-                          (image-type-available-p (plist-get (cdr img) :type)))
-                     img))
-           space-left offset)
-      (when (and img
-                 ;; This means the equation is at the start of the line
-                 (= beg (line-beginning-position))
-                 (or
-                  (string= "" (s-trim (buffer-substring end (line-end-position))))
-                  (eq 'latex-environment (car (org-element-context)))))
-        (setq space-left (- (window-max-chars-per-line) (car (image-size img)))
-              offset (floor (cond
-                             ((eq justification 'center)
-                              (- (/ space-left 2) shift))
-                             ((eq justification 'right)
-                              (- space-left shift))
-                             (t
-                              0))))
-        (when (>= offset 0)
-          (overlay-put ov 'before-string (make-string offset ?\ ))))))
+  (interactive
+   (list (intern-soft
+          (completing-read "Justification (left): " '(left center right)
+                           nil t nil nil 'left))))
+  (let* ((ov (ov-at))
+         (beg (ov-beg ov))
+         (end (ov-end ov))
+         (shift (- beg (line-beginning-position)))
+         (img (overlay-get ov 'display))
+         (img (and (and img (consp img) (eq (car img) 'image)
+                        (image-type-available-p (plist-get (cdr img) :type)))
+                   img))
+         space-left offset)
+    (when (and img
+               ;; This means the equation is at the start of the line
+               (= beg (line-beginning-position))
+               (or
+                (string= "" (s-trim (buffer-substring end (line-end-position))))
+                (eq 'latex-environment (car (org-element-context)))))
+      (setq space-left (- (window-max-chars-per-line) (car (image-size img)))
+            offset (floor (cond
+                           ((eq justification 'center)
+                            (- (/ space-left 2) shift))
+                           ((eq justification 'right)
+                            (- space-left shift))
+                           (t
+                            0))))
+      (when (>= offset 0)
+        (overlay-put ov 'before-string (make-string offset ?\ ))))))
 
-  (defun scimax-org-latex-fragment-justify-advice (beg end image imagetype)
-    "After advice function to justify fragments."
-    (scimax-org-latex-fragment-justify (or (plist-get org-format-latex-options :justify) 'left)))
+(defun scimax-org-latex-fragment-justify-advice (beg end image imagetype)
+  "After advice function to justify fragments."
+  (scimax-org-latex-fragment-justify (or (plist-get org-format-latex-options :justify) 'left)))
 
 
-  (defun scimax-toggle-latex-fragment-justification ()
-    "Toggle if LaTeX fragment justification options can be used."
-    (interactive)
-    (if (not (get 'scimax-org-latex-fragment-justify-advice 'enabled))
-        (progn
-          (advice-add 'org--format-latex-make-overlay :after 'scimax-org-latex-fragment-justify-advice)
-          (put 'scimax-org-latex-fragment-justify-advice 'enabled t)
-          (message "Latex fragment justification enabled"))
-      (advice-remove 'org--format-latex-make-overlay 'scimax-org-latex-fragment-justify-advice)
-      (put 'scimax-org-latex-fragment-justify-advice 'enabled nil)
-      (message "Latex fragment justification disabled"))))
+(defun scimax-toggle-latex-fragment-justification ()
+  "Toggle if LaTeX fragment justification options can be used."
+  (interactive)
+  (if (not (get 'scimax-org-latex-fragment-justify-advice 'enabled))
+      (progn
+        (advice-add 'org--format-latex-make-overlay :after 'scimax-org-latex-fragment-justify-advice)
+        (put 'scimax-org-latex-fragment-justify-advice 'enabled t)
+        (message "Latex fragment justification enabled"))
+    (advice-remove 'org--format-latex-make-overlay 'scimax-org-latex-fragment-justify-advice)
+    (put 'scimax-org-latex-fragment-justify-advice 'enabled nil)
+    (message "Latex fragment justification disabled")))
 #+end_src
 There's also this lovely equation numbering stuff I'll nick
 #+begin_src emacs-lisp
 ;; Numbered equations all have (1) as the number for fragments with vanilla
 ;; org-mode. This code injects the correct numbers into the previews so they
 ;; look good.
-(after! org
-  (defun scimax-org-renumber-environment (orig-func &rest args)
-    "A function to inject numbers in LaTeX fragment previews."
-    (let ((results '())
-          (counter -1)
-          (numberp))
-      (setq results (cl-loop for (begin . env) in
-                             (org-element-map (org-element-parse-buffer) 'latex-environment
-                               (lambda (env)
-                                 (cons
-                                  (org-element-property :begin env)
-                                  (org-element-property :value env))))
-                             collect
-                             (cond
-                              ((and (string-match "\\\\begin{equation}" env)
-                                    (not (string-match "\\\\tag{" env)))
-                               (incf counter)
-                               (cons begin counter))
-                              ((string-match "\\\\begin{align}" env)
-                               (prog2
-                                   (incf counter)
-                                   (cons begin counter)
-                                 (with-temp-buffer
-                                   (insert env)
-                                   (goto-char (point-min))
-                                   ;; \\ is used for a new line. Each one leads to a number
-                                   (incf counter (count-matches "\\\\$"))
-                                   ;; unless there are nonumbers.
-                                   (goto-char (point-min))
-                                   (decf counter (count-matches "\\nonumber")))))
-                              (t
-                               (cons begin nil)))))
+(defun scimax-org-renumber-environment (orig-func &rest args)
+  "A function to inject numbers in LaTeX fragment previews."
+  (let ((results '())
+        (counter -1)
+        (numberp))
+    (setq results (cl-loop for (begin . env) in
+                           (org-element-map (org-element-parse-buffer) 'latex-environment
+                             (lambda (env)
+                               (cons
+                                (org-element-property :begin env)
+                                (org-element-property :value env))))
+                           collect
+                           (cond
+                            ((and (string-match "\\\\begin{equation}" env)
+                                  (not (string-match "\\\\tag{" env)))
+                             (incf counter)
+                             (cons begin counter))
+                            ((string-match "\\\\begin{align}" env)
+                             (prog2
+                                 (incf counter)
+                                 (cons begin counter)
+                               (with-temp-buffer
+                                 (insert env)
+                                 (goto-char (point-min))
+                                 ;; \\ is used for a new line. Each one leads to a number
+                                 (incf counter (count-matches "\\\\$"))
+                                 ;; unless there are nonumbers.
+                                 (goto-char (point-min))
+                                 (decf counter (count-matches "\\nonumber")))))
+                            (t
+                             (cons begin nil)))))
 
-      (when (setq numberp (cdr (assoc (point) results)))
-        (setf (car args)
-              (concat
-               (format "\\setcounter{equation}{%s}\n" numberp)
-               (car args)))))
+    (when (setq numberp (cdr (assoc (point) results)))
+      (setf (car args)
+            (concat
+             (format "\\setcounter{equation}{%s}\n" numberp)
+             (car args)))))
 
-    (apply orig-func args))
+  (apply orig-func args))
 
 
-  (defun scimax-toggle-latex-equation-numbering ()
-    "Toggle whether LaTeX fragments are numbered."
-    (interactive)
-    (if (not (get 'scimax-org-renumber-environment 'enabled))
-        (progn
-          (advice-add 'org-create-formula-image :around #'scimax-org-renumber-environment)
-          (put 'scimax-org-renumber-environment 'enabled t)
-          (message "Latex numbering enabled"))
-      (advice-remove 'org-create-formula-image #'scimax-org-renumber-environment)
-      (put 'scimax-org-renumber-environment 'enabled nil)
-      (message "Latex numbering disabled.")))
+(defun scimax-toggle-latex-equation-numbering ()
+  "Toggle whether LaTeX fragments are numbered."
+  (interactive)
+  (if (not (get 'scimax-org-renumber-environment 'enabled))
+      (progn
+        (advice-add 'org-create-formula-image :around #'scimax-org-renumber-environment)
+        (put 'scimax-org-renumber-environment 'enabled t)
+        (message "Latex numbering enabled"))
+    (advice-remove 'org-create-formula-image #'scimax-org-renumber-environment)
+    (put 'scimax-org-renumber-environment 'enabled nil)
+    (message "Latex numbering disabled.")))
 
-  (advice-add 'org-create-formula-image :around #'scimax-org-renumber-environment)
-  (put 'scimax-org-renumber-environment 'enabled t))
+(advice-add 'org-create-formula-image :around #'scimax-org-renumber-environment)
+(put 'scimax-org-renumber-environment 'enabled t)
 #+end_src
 **** Org Plot
 We can use some of the variables in =org-plot= to use the current doom theme
@@ -5780,7 +5774,7 @@ set palette defined ( 0 '%s',\
 #+end_src
 **** Exporting (general)
 #+begin_src emacs-lisp
-(after! org (setq org-export-headline-levels 5)) ; I like nesting
+(setq org-export-headline-levels 5) ; I like nesting
 #+end_src
 I'm also going to make use of an item in =ox-extra= so that I can add an =:ignore:=
 tag to headings for the content to be kept, but the heading itself ignored
@@ -5788,9 +5782,8 @@ tag to headings for the content to be kept, but the heading itself ignored
 I want to use headings to provide a structure for writing that doesn't appear in
 the final documents.
 #+begin_src emacs-lisp
-(after! org
-  (require 'ox-extra)
-  (ox-extras-activate '(ignore-headlines)))
+(require 'ox-extra)
+(ox-extras-activate '(ignore-headlines))
 #+end_src
 **** Exporting to HTML
 I want to tweak a whole bunch of things. While I'll want my tweaks almost all
@@ -6148,20 +6141,22 @@ to copy the content of the block.
 
 #+name: Example, fixed width, and property blocks
 #+begin_src emacs-lisp
-(after! org
-  (defun org-html-block-collapsable (orig-fn block contents info)
-    "Wrap the usual block in a <details>"
-    (if (or (not org-fancy-html-export-mode) (bound-and-true-p +org-msg-currently-exporting))
-        (funcall orig-fn block contents info)
-      (let ((ref (org-export-get-reference block info))
-            (type (pcase (car block)
-                    ('property-drawer "Properties")))
-            (collapsed-default (pcase (car block)
-                                 ('property-drawer t)
-                                 (_ nil)))
-            (collapsed-value (org-export-read-attribute :attr_html block :collapsed)))
-        (format
-         "<details id='%s' class='code'%s>
+(defun org-html-block-collapsable (orig-fn block contents info)
+  "Wrap the usual block in a <details>"
+  (if (or (not org-fancy-html-export-mode) (bound-and-true-p +org-msg-currently-exporting))
+      (funcall orig-fn block contents info)
+    (let ((ref (org-export-get-reference block info))
+          (type (pcase (car block)
+                  ('property-drawer "Properties")))
+          (collapsed-default (pcase (car block)
+                               ('property-drawer t)
+                               (_ nil)))
+          (collapsed-value (org-export-read-attribute :attr_html block :collapsed))
+          (collapsed-p (or (member (org-export-read-attribute :attr_html block :collapsed)
+                                   '("y" "yes" "t" t "true"))
+                           (member (plist-get info :collapsed) '("all")))))
+      (format
+       "<details id='%s' class='code'%s>
 <summary%s>%s</summary>
 <div class='gutter'>\
 <a href='#%s'>#</a>
@@ -6285,13 +6280,12 @@ Then, styling these two cases differently can help improve clarity in a document
 ***** Change checkbox type
 We also want to use HTML checkboxes, however we want to get a bit fancier than default
 #+begin_src emacs-lisp
-(after! org
-  (appendq! org-html-checkbox-types
-            '((html-span
-               (on . "<span class='checkbox'></span>")
-                (off . "<span class='checkbox'></span>")
-                (trans . "<span class='checkbox'></span>"))))
-  (setq org-html-checkbox-type 'html-span))
+(appendq! org-html-checkbox-types
+          '((html-span
+             (on . "<span class='checkbox'></span>")
+             (off . "<span class='checkbox'></span>")
+             (trans . "<span class='checkbox'></span>"))))
+(setq org-html-checkbox-type 'html-span)
 #+end_src
 - [ ] I'm yet to do this
 - [-] Work in progress
@@ -6299,18 +6293,17 @@ We also want to use HTML checkboxes, however we want to get a bit fancier than d
 ***** Header anchors
 I want to add GitHub-style links on hover for headings.
 #+begin_src emacs-lisp
-(after! org
-  (defun org-export-html-headline-anchor (text backend info)
-    (when (and (org-export-derived-backend-p backend 'html)
-               org-fancy-html-export-mode)
-      (unless (bound-and-true-p +org-msg-currently-exporting)
-        (replace-regexp-in-string
-         "<h\\([0-9]\\) id=\"\\([a-z0-9-]+\\)\">\\(.*[^ ]\\)<\\/h[0-9]>" ; this is quite restrictive, but due to `org-reference-contraction' I can do this
-         "<h\\1 id=\"\\2\">\\3<a aria-hidden=\"true\" href=\"#\\2\">#</a> </h\\1>"
-         text))))
+(defun org-export-html-headline-anchor (text backend info)
+  (when (and (org-export-derived-backend-p backend 'html)
+             org-fancy-html-export-mode)
+    (unless (bound-and-true-p +org-msg-currently-exporting)
+      (replace-regexp-in-string
+       "<h\\([0-9]\\) id=\"\\([a-z0-9-]+\\)\">\\(.*[^ ]\\)<\\/h[0-9]>" ; this is quite restrictive, but due to `org-reference-contraction' I can do this
+       "<h\\1 id=\"\\2\">\\3<a aria-hidden=\"true\" href=\"#\\2\">#</a> </h\\1>"
+       text))))
 
-  (add-to-list 'org-export-filter-headline-functions
-               'org-export-html-headline-anchor))
+(add-to-list 'org-export-filter-headline-functions
+             'org-export-html-headline-anchor)
 #+end_src
 It's worth noting that ~+org-msg-currently-exporting~ is defined in [[*Org Msg][Org Msg]].
 ***** Acronyms
@@ -6332,17 +6325,16 @@ single file instead of multiple, but seems to be a bit bigger unfortunately.
 Thankfully this can be mitigated my adding the ~async~ attribute to defer loading.
 
 #+begin_src emacs-lisp
-(after! org
-  (setq org-html-mathjax-options
-        '((path "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" )
-          (scale "1")
-          (autonumber "ams")
-          (multlinewidth "85%")
-          (tagindent ".8em")
-          (tagside "right")))
+(setq org-html-mathjax-options
+      '((path "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" )
+        (scale "1")
+        (autonumber "ams")
+        (multlinewidth "85%")
+        (tagindent ".8em")
+        (tagside "right")))
 
-  (setq org-html-mathjax-template
-        "<script>
+(setq org-html-mathjax-template
+      "<script>
 MathJax = {
   chtml: {
     scale: %SCALE
@@ -6360,7 +6352,7 @@ MathJax = {
 };
 </script>
 <script id=\"MathJax-script\" async
-        src=\"%PATH\"></script>"))
+        src=\"%PATH\"></script>")
 #+end_src
 **** Exporting to LaTeX
 ***** Compiling
@@ -6395,60 +6387,57 @@ be unaffected let's use ~;~ as a prefix to prevent the transformation --- i.e.
 
 While this is the LaTeX section, it's convenient to also provide HTML acronyms here.
 #+begin_src emacs-lisp
-(after! org
-  (defun tec/org-export-latex-filter-acronym (text backend info)
-    (let ((the-backend
-           (cond
-            ((org-export-derived-backend-p backend 'latex) 'latex)
-            ((org-export-derived-backend-p backend 'html) 'html)))
-          (case-fold-search nil))
-      (when the-backend
-        (replace-regexp-in-string
-         "[;\\\\]?\\b[A-Z][A-Z]+s?"
-         (lambda (all-caps-str)
-           ;; only format as acronym if str doesn't start with ";" or "\" (for LaTeX commands)
-           (cond ((equal (aref all-caps-str 0) ?\;) (substring all-caps-str 1))
-                 ((equal (aref all-caps-str 0) ?\\) all-caps-str)
-                 ((equal (aref all-caps-str (- (length all-caps-str) 1)) ?s)
-                  (pcase the-backend
+(defun tec/org-export-latex-filter-acronym (text backend info)
+  (let ((the-backend
+         (cond
+          ((org-export-derived-backend-p backend 'latex) 'latex)
+          ((org-export-derived-backend-p backend 'html) 'html)))
+        (case-fold-search nil))
+    (when the-backend
+      (replace-regexp-in-string
+       "[;\\\\]?\\b[A-Z][A-Z]+s?"
+       (lambda (all-caps-str)
+         ;; only format as acronym if str doesn't start with ";" or "\" (for LaTeX commands)
+         (cond ((equal (aref all-caps-str 0) ?\;) (substring all-caps-str 1))
+               ((equal (aref all-caps-str 0) ?\\) all-caps-str)
+               ((equal (aref all-caps-str (- (length all-caps-str) 1)) ?s)
+                (pcase the-backend
+                  ('latex
+                   (concat "\\textls*[70]{\\textsc{" (s-downcase (substring all-caps-str 0 -1))
+                           "}\\protect\\scalebox{.91}[.84]{s}}"))
+                  ('html
+                   (concat "<span class='acr'>" (substring all-caps-str 0 -1)
+                           "</span><small>s</small>"))))
+               (t (pcase the-backend
                     ('latex
-                     (concat "\\textls*[70]{\\textsc{" (s-downcase (substring all-caps-str 0 -1))
-                             "}\\protect\\scalebox{.91}[.84]{s}}"))
-                    ('html
-                     (concat "<span class='acr'>" (substring all-caps-str 0 -1)
-                             "</span><small>s</small>"))))
-                 (t (pcase the-backend
-                      ('latex
-                       (concat "\\textls*[70]{\\textsc{" (s-downcase all-caps-str) "}}"))
-                      ('html (concat "<span class='acr'>" all-caps-str "</span>"))))))
-         text t t))))
+                     (concat "\\textls*[70]{\\textsc{" (s-downcase all-caps-str) "}}"))
+                    ('html (concat "<span class='acr'>" all-caps-str "</span>"))))))
+       text t t))))
 
-  (add-to-list 'org-export-filter-plain-text-functions
-               'tec/org-export-latex-filter-acronym)
-  ;; FIXME I want to process headings, but this causes issues ATM,
-  ;;       specifically it passes (and formats) the entire section contents
-  ;; (add-to-list 'org-export-filter-headline-functions
-  ;;              'tec/org-export-latex-filter-acronym)
-  )
+(add-to-list 'org-export-filter-plain-text-functions
+             'tec/org-export-latex-filter-acronym)
+;; FIXME I want to process headings, but this causes issues ATM,
+;;       specifically it passes (and formats) the entire section contents
+;; (add-to-list 'org-export-filter-headline-functions
+;;              'tec/org-export-latex-filter-acronym)
 #+end_src
 
 ***** Nicer checkboxes
 #+begin_src emacs-lisp
-(after! org
-  (defun tec/org-export-latex-fancy-item-checkboxes (text backend info)
-    (when (org-export-derived-backend-p backend 'latex)
-      (replace-regexp-in-string
-       "\\\\item\\[{$\\\\\\(\\w+\\)$}\\]"
-       (lambda (fullmatch)
-         (concat "\\\\item[" (pcase (substring fullmatch 9 -3) ; content of capture group
-                               ("square"   "\\\\ifdefined\\\\checkboxUnchecked\\\\checkboxUnchecked\\\\else$\\\\square$\\\\fi"    )
-                               ("boxminus" "\\\\ifdefined\\\\checkboxTransitive\\\\checkboxTransitive\\\\else$\\\\boxminus$\\\\fi")
-                               ("boxtimes" "\\\\ifdefined\\\\checkboxChecked\\\\checkboxChecked\\\\else$\\\\boxtimes$\\\\fi"      )
-                               (_ (substring fullmatch 9 -3))) "]"))
-       text)))
+(defun tec/org-export-latex-fancy-item-checkboxes (text backend info)
+  (when (org-export-derived-backend-p backend 'latex)
+    (replace-regexp-in-string
+     "\\\\item\\[{$\\\\\\(\\w+\\)$}\\]"
+     (lambda (fullmatch)
+       (concat "\\\\item[" (pcase (substring fullmatch 9 -3) ; content of capture group
+                             ("square"   "\\\\ifdefined\\\\checkboxUnchecked\\\\checkboxUnchecked\\\\else$\\\\square$\\\\fi"    )
+                             ("boxminus" "\\\\ifdefined\\\\checkboxTransitive\\\\checkboxTransitive\\\\else$\\\\boxminus$\\\\fi")
+                             ("boxtimes" "\\\\ifdefined\\\\checkboxChecked\\\\checkboxChecked\\\\else$\\\\boxtimes$\\\\fi"      )
+                             (_ (substring fullmatch 9 -3))) "]"))
+     text)))
 
-  (add-to-list 'org-export-filter-item-functions
-               'tec/org-export-latex-fancy-item-checkboxes))
+(add-to-list 'org-export-filter-item-functions
+             'tec/org-export-latex-fancy-item-checkboxes)
 #+end_src
 
 ***** Class templates
