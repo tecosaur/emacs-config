@@ -4705,6 +4705,7 @@ made unique when necessary."
   (if unpackaged/org-export-html-with-useful-ids-mode
       (advice-add #'org-export-get-reference :override #'unpackaged/org-export-get-reference)
     (advice-remove #'org-export-get-reference #'unpackaged/org-export-get-reference)))
+(unpackaged/org-export-html-with-useful-ids-mode 1) ; ensure enabled, and advice run
 
 (defun unpackaged/org-export-get-reference (datum info)
   "Like `org-export-get-reference', except uses heading titles instead of random numbers."
