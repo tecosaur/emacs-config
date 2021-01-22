@@ -55,7 +55,7 @@ jobs:
     - name: Export config
       run: |
         cd ~/.config/doom/misc
-        ./config-exporter.sh
+        ./config-publishing/publish.sh
         cp ../config.html ../index.html
 
     - name: Move files of interest to the publish subdir
