@@ -1,5 +1,5 @@
 #!/usr/bin/env sh
-":"; exec script -eqfc "TERM=xterm-direct emacs --quick -nw --eval '(load (expand-file-name \"$0\"))'" 1>/dev/null # -*- mode: emacs-lisp; lexical-binding: t; -*-
+":"; exec script -eqfc "TERM=xterm-direct emacs --quick -nw --eval '(load (expand-file-name \"$0\"))' && rm typescript" 1>/dev/null # -*- mode: emacs-lisp; lexical-binding: t; -*-
 
 (defvar files-to-htmlize '("init.el" "config.el" "packages.el"))
 (defvar htmlize-theme 'doom-one-light)

@@ -28,17 +28,11 @@
         (if (= 0 (process-exit-status process))
             (message (format "[1;35] %s finished%s"
                              ,(file-name-base (eval file))
-                             (make-string (- (* (1+ max-name-length)
-                                                (length dependent-process-names))
-                                             ,(length (eval file)))
-                                          ? )))
+                             (space-fill-line (length (eval file)))))
           ;; non-zero exit code
           (message (format "[31] %s process failed!%s"
                            ,(file-name-base (eval file))
-                           (make-string (- (* (1+ max-name-length)
-                                              (length dependent-process-names))
-                                           ,(length (eval file)))
-                                        ? )))
+                           (space-fill-line ,(length (eval file)))))
           (message "\033[0;31m      %s\033[0m"
                    'unmodified
                    (with-temp-buffer
@@ -46,7 +40,16 @@
                      (buffer-substring-no-properties (point-min) (point-max))))
           (setq exit-code 1))))))
 
+(defun space-fill-line (base-length)
+  "Return whitespace such that the line will be filled to overwrite the status line."
+  (make-string (max 0 (- (* (1+ max-name-length)
+                            (length dependent-process-names))
+                         base-length))
+               ? ))
+
 ;;; Start dependent processes
+
+(wait-for-script "check-package-updates.sh")
 
 (wait-for-script "htmlize.sh")
 
@@ -86,9 +89,7 @@
   (unless all-proc-finished
     (sleep-for 0.5)))
 
-(delete-file "typescript")
-
-(message "[1;32] Config publish content generated!")
+(message "[1;32] Config publish content generated!%s" (space-fill-line 34))
 
 (setq inhibit-message t)
 (kill-emacs exit-code)
