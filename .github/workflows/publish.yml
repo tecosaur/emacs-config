@@ -64,7 +64,3 @@ jobs:
           deploy_key: ${{ secrets.ACTIONS_DEPLOY_KEY }}
           publish_dir: ./publish
           force_orphan: true
-
-      - name: Clear cached images
-        if: ${{ github.event_name != 'pull_request'}}
-        run: ~/.config/doom/misc/config-publishing/clear-github-cached-images.sh
