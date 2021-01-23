@@ -16,10 +16,10 @@
   (message "[33] Exporting %s" (buffer-file-name))
   (org-html-export-to-html))
 
-(make-symbolic-link (expand-file-name "config.html" config-root)
-                    (expand-file-name "index.html" config-root))
+(publish "config.html" "misc/*.svg")
 
-(publish "config.html" "index.html" "misc/*.svg")
+(make-symbolic-link (expand-file-name "config.html" publish-dir)
+                    (expand-file-name "index.html" publish-dir))
 
 (message "[1;32] Config export complete!")
 
