@@ -6,43 +6,45 @@
 (setq message-colour t)
 (load (expand-file-name "initialise.el") nil t)
 
-(message "[0;1] Starting publish process")
+(message "Starting publish process")
 
 ;;; Associated processes
 
 (defvar dependent-processes nil)
 (defvar dependent-process-names nil)
 
-(defmacro wait-for-script (file)
-  `(progn
-     (setq ,(intern (format "%s-process" (file-name-base file)))
-           (start-process ,(file-name-base file) nil
-                          "sh" (expand-file-name ,file)))
-     (push ,(intern (format "%s-process" (file-name-base file))) dependent-processes)
-     (push ,(file-name-base file) dependent-process-names)
-     (set-process-sentinel
-      ,(intern (format "%s-process" (file-name-base file)))
-      (lambda (process _signal)
-        (when (eq (process-status process) 'exit)
-          (if (= 0 (process-exit-status process))
-              (message (format "[1;35] %s finished%s"
-                               ,file
-                               (make-string (- (length file)
-                                               (* (1+ max-name-length) (length dependent-process-names))
-                                               -6)
-                                            ? )))
-            (message (format "[31] %s process failed!%s"
-                             ,file
-                             (make-string (- (length file)
-                                               (* (1+ max-name-length) (length dependent-process-names))
-                                               -6)
-                                            ? )))
-            (message "\033[0;31m      %s\033[0m"
-                     'unmodified
-                     (with-temp-buffer
-                       (insert-file-contents-literally ,(expand-file-name (format "%s-log.txt" (file-name-base file) (file-name-directory load-file-name))))
-                       (buffer-substring-no-properties (point-min) (point-max))))
-            (setq exit-code 1)))))))
+(defun wait-for-script (file)
+  (let ((proc-name (intern (format "%s-process" (file-name-base file)))))
+    (set proc-name (start-process (file-name-base file) nil (expand-file-name file)))
+    (push (symbol-value proc-name) dependent-processes)
+    (push (file-name-base file) dependent-process-names)
+    (watch-process (symbol-value proc-name) file)))
+
+(defun watch-process (proc file)
+  (set-process-sentinel
+   proc
+   `(lambda (process _signal)
+      (when (eq (process-status process) 'exit)
+        (if (= 0 (process-exit-status process))
+            (message (format "[1;35] %s finished%s"
+                             ,(file-name-base (eval file))
+                             (make-string (- (* (1+ max-name-length)
+                                                (length dependent-process-names))
+                                             ,(length (eval file)))
+                                          ? )))
+          ;; non-zero exit code
+          (message (format "[31] %s process failed!%s"
+                           ,(file-name-base (eval file))
+                           (make-string (- (* (1+ max-name-length)
+                                              (length dependent-process-names))
+                                           ,(length (eval file)))
+                                        ? )))
+          (message "\033[0;31m      %s\033[0m"
+                   'unmodified
+                   (with-temp-buffer
+                     (insert-file-contents-literally (expand-file-name (format "%s-log.txt" (file-name-base file) (file-name-directory load-file-name))))
+                     (buffer-substring-no-properties (point-min) (point-max))))
+          (setq exit-code 1))))))
 
 ;;; Start dependent processes
 
