@@ -4,7 +4,7 @@
 :badges:
 
 [[https://img.shields.io/badge/Emacs-27.1-blueviolet.svg?style=flat-square&logo=GNU%20Emacs&logoColor=white]]
-[[https://img.shields.io/github/workflow/status/tecosaur/emacs-config/Publish/master.svg?style=flat-square]]
+[[https://img.shields.io/github/workflow/status/tecosaur/emacs-config/Publish/master.svg?style=flat-square&label=publish&logo=buffer]]
 [[https://raw.githubusercontent.com/tecosaur/emacs-config/gh-pages/misc/pkg-status.svg]]
 
 :end:

@@ -24,7 +24,7 @@
      nil nil nil
      "-O"
      "../pkg-status.svg"
-     (format "https://img.shields.io/badge/packages-%s-%s.svg?style=flat-square"
+     (format "https://img.shields.io/badge/packages-%s-%s.svg?style=flat-square&logo=blueprint"
              (url-hexify-string text) colour))
     (publish "misc/pkg-status.svg")))
 
