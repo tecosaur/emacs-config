@@ -1,6 +1,14 @@
 #+title: Doom Emacs Configuration --- [[https://tecosaur.github.io/emacs-config/config.html][HTML Version]]
 #+author: tecosaur
 
+:badges:
+
+[[https://img.shields.io/badge/Emacs-27.1-blueviolet.svg?style=flat-square&logo=GNU%20Emacs&logoColor=white]]
+[[https://img.shields.io/github/workflow/status/tecosaur/emacs-config/Publish/master.svg?style=flat-square]]
+[[https://tecosaur.github.io/emacs-config/misc/pkg-status.svg]]
+
+:end:
+
 Here you may find my config. There is only one significant file:
 - [[file:config.org][config.org]], my configuration file
 
