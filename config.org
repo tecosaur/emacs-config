@@ -1186,7 +1186,7 @@ having something that doesn't cover up screen content is nice.
 [[https://tecosaur.com/lfs/emacs-config/screenshots/keycast.png]]
 
 #+begin_src emacs-lisp
-(package! keycast :pin "16d9961d15536054632be1eff75fd0fb1a4420f8")
+(package! keycast :pin "a3a0798349adf3e33277091fa8dee63173b68edf")
 #+end_src
 let's just make sure this is lazy-loaded appropriately.
 #+begin_src emacs-lisp :tangle yes
@@ -1270,7 +1270,7 @@ View data frames better with
 [[https://github.com/dandavison/delta/][Delta]] is a git diff syntax highlighter written in rust. The author also wrote a
 package to hook this into the magit diff view. This requires the ~delta~ binary.
 #+begin_src emacs-lisp
-;; (package! magit-delta :recipe (:host github :repo "dandavison/magit-delta") :pin "b8526f890415374822514e488341d2b706d6bc2f")
+;; (package! magit-delta :recipe (:host github :repo "dandavison/magit-delta") :pin "fc4de96e3faa1c983728239c5e41cc9f074b73a2")
 #+end_src
 **** Info colours
 This makes manual pages nicer to look at :)
@@ -1321,7 +1321,7 @@ For managing my ebooks, I'll hook into the well-established ebook library
 manager [[https://calibre-ebook.com/][calibre]]. A number of Emacs clients for this exist, but this seems like a
 good option.
 #+begin_src emacs-lisp
-(package! calibredb :pin "3f4ed7868bed75f633a8bc86909251a7b070dd55")
+(package! calibredb :pin "1f38fc34a8c159846450d18b1ee50cc960349ee7")
 #+end_src
 
 Then for reading them, the only currently viable options seems to be [[https://depp.brause.cc/nov.el/][nov.el]].
@@ -1352,7 +1352,7 @@ For mathematical convenience, WIP
 #+begin_src emacs-lisp
 (package! auto-activating-snippets :recipe
   (:host github :repo "ymarco/auto-activating-snippets")
-  :pin "a6386b062cacbbea30c6d239a771d69859839f1d")
+  :pin "4bd59a656bafa18a455e503b933870a8350a1720")
 (package! latex-auto-activating-snippets
   :recipe (:local-repo "lisp/LaTeX-auto-activating-snippets"))
 #+end_src
@@ -1386,7 +1386,7 @@ set up org-capture.
 #+begin_src emacs-lisp
 (package! doct
   :recipe (:host github :repo "progfolio/doct")
-  :pin "dabb30ebea866ef225b81561c8265d740b1e81c3")
+  :pin "a795fa4eafd42e016b6c9fed93d2f370c4f5eef5")
 #+end_src
 **** Visuals
 Org tables aren't the prettiest thing to look at. This package is supposed to
@@ -1399,7 +1399,7 @@ improvement to me! Just need to get it working...
 
 For automatically toggling LaTeX fragment previews there's this nice package
 #+begin_src emacs-lisp
-(package! org-fragtog :pin "f8e2300acd14724c280e9d12da3f4f03f4193467")
+(package! org-fragtog :pin "0151cabc7aa9f244f82e682b87713b344d780c23")
 #+end_src
 
 ~org-superstar-mode~ is great. While we're at it we may as well make tags prettier as well :)
@@ -1422,7 +1422,7 @@ features that GitHub has.
 
 Now and then citations need to happen
 #+begin_src emacs-lisp
-(package! org-ref :pin "120509c38929cc25d814e9a42092c44cb34ec34e")
+(package! org-ref :pin "4b5df6b312b1486428561aea7cfb72501c496d7c")
 #+end_src
 
 Came across this and ... it's cool
@@ -1450,7 +1450,7 @@ to make that right again, and this package makes that even easier to do.
 Org-roam is nice by itself, but there are so /extra/ nice packages which integrate
 with it.
 #+begin_src emacs-lisp
-(package! org-roam-server :pin "93b673209d141953547fc0732506bb0efa68f804")
+(package! org-roam-server :pin "c7793202e9929dc2a415482779141e7b429421ce")
 #+end_src
 #+begin_src emacs-lisp :tangle yes
 (use-package org-roam-server
