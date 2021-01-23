@@ -1,7 +1,8 @@
 #!/usr/bin/env sh
 ":"; exec emacs --quick --script "$0" -- "$@" # -*- mode: emacs-lisp; lexical-binding: t; -*-
 
-(setq message-colour t)
+(setq log-file (format "%s-log.txt" (file-name-base load-file-name)))
+
 (load (expand-file-name "initialise.el" (file-name-directory load-file-name)) nil t)
 (initialise)
 
@@ -55,7 +56,7 @@
    (replace-regexp-in-string
     "- \\[ *[0-9.s]+\\] " ""
     (replace-regexp-in-string
-     "\033[0;90m" ""
+     "\033\\[0;90m" ""
      (replace-regexp-in-string
       "\\`.*\n" ""
       package-upgrades)))

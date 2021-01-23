@@ -3,7 +3,8 @@
 
 (setq default-directory (file-name-directory load-file-name))
 
-(setq message-colour t)
+(setq log-file (format "%s-log.txt" (file-name-base load-file-name)))
+
 (load (expand-file-name "initialise.el") nil t)
 
 (message "Starting publish process")

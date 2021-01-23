@@ -6,7 +6,8 @@
 
 ;; Setup
 
-(setq log-file "htmlize-log.txt")
+(setq log-file (format "%s-log.txt" (file-name-base load-file-name)))
+
 (load (expand-file-name "initialise.el" (file-name-directory load-file-name)))
 (initialise)
 

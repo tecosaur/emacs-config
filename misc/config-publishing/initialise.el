@@ -14,13 +14,13 @@
 (setq debug-on-error t
       doom-debug-p t)
 
-(defvar log-file (format "%s-log.txt" (file-name-sans-extension load-file-name)))
+(defvar log-file "unnamed-log.txt")
 
 (write-region "" nil log-file)
 
 ;;; Messaging
 
-(defvar message-colour nil)
+(defvar message-colour t)
 
 (defun logged-message (msg)
   (unless inhibit-message
