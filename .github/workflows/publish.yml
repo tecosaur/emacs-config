@@ -59,6 +59,7 @@ jobs:
           cp ../config.html ../index.html
 
       - name: Move files of interest to the publish subdir
+        if: ${{ github.event_name != 'pull_request'}}
         run: |
           cd ~/.config/doom
           mkdir ./publish
@@ -67,6 +68,7 @@ jobs:
           mv ./misc/*.svg ./publish/misc/
 
       - name: Deploy
+        if: ${{ github.event_name != 'pull_request'}}
         uses: peaceiris/actions-gh-pages@v3
         with:
           deploy_key: ${{ secrets.ACTIONS_DEPLOY_KEY }}
