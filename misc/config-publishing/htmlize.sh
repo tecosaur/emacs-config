@@ -48,6 +48,7 @@
   </style>\n")
         (let ((inhibit-message t))
           (write-file output-file)
+          (publish output-file)
           (kill-buffer (current-buffer))))
       (kill-buffer (current-buffer)))))
 

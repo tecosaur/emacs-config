@@ -55,19 +55,7 @@ jobs:
         run: ~/.emacs.d/bin/doom install --no-env --no-fonts
 
       - name: Export config
-        run: |
-          cd ~/.config/doom/misc
-          ./config-publishing/publish.sh
-          cp ../config.html ../index.html
-
-      - name: Move files of interest to the publish subdir
-        if: ${{ github.event_name != 'pull_request'}}
-        run: |
-          cd ~/.config/doom
-          mkdir ./publish
-          mv *.html ./publish
-          mkdir ./publish/misc
-          mv ./misc/*.svg ./publish/misc/
+        run: ~/.config/doom/misc/config-publishing/publish.sh
 
       - name: Deploy
         if: ${{ github.event_name != 'pull_request'}}

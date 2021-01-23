@@ -18,6 +18,8 @@
 
 (write-region "" nil log-file)
 
+;;; Messaging
+
 (defvar message-colour nil)
 
 (defun logged-message (msg)
@@ -58,6 +60,8 @@
   (advice-add 'debug :around #'red-error)
   (advice-add 'message :around #'timed-coloured-message))
 
+;;; Initialisation
+
 (defun initialise ()
   (advice-add 'theme-magic-from-emacs :override #'ignore)
   (advice-add 'format-all-buffer :override #'ignore)
@@ -70,3 +74,31 @@
   (when (and (featurep 'undo-tree) global-undo-tree-mode)
     (global-undo-tree-mode -1)
     (advice-add 'undo-tree-save-history :override #'ignore)))
+
+;;; Publishing
+
+(defvar publish-dir (expand-file-name "publish/" config-root))
+
+(defvar known-existing-dirs (list config-root))
+(defun ensure-dir-exists (file-or-dir)
+  (let ((dir (file-name-directory (expand-file-name file-or-dir config-root))))
+    (unless (member dir known-existing-dirs)
+      (unless (file-exists-p dir)
+        (make-directory dir t))
+      (push dir known-existing-dirs))))
+
+(defun publish (&rest files)
+  "Move each file into `publish'.
+Names containing \"*\" are treate as a glob."
+  (dolist (file files)
+    (if (string-match-p "\\*" file)
+        (apply #'publish
+               (directory-files (expand-file-name (or (file-name-directory file) "./") config-root)
+                                t
+                                (dired-glob-regexp (file-name-nondirectory file))))
+      (message (concat (when message-colour "[34] ") "Publishing %s") file)
+      (let ((target (replace-regexp-in-string (regexp-quote config-root)
+                                              publish-dir
+                                              (expand-file-name file config-root))))
+        (ensure-dir-exists target)
+        (rename-file (expand-file-name file config-root) target t)))))
