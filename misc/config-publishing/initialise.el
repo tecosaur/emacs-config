@@ -62,14 +62,18 @@
 
 ;;; Initialisation
 
-(defun initialise ()
+(defun initialise (&optional full)
   (advice-add 'theme-magic-from-emacs :override #'ignore)
   (advice-add 'format-all-buffer :override #'ignore)
 
   ;; Avoid error: file-missing "Opening directory" "No such file or directory" "~/org/roam"
   (setq org-roam-directory "~")
 
-  (load (expand-file-name "~/.emacs.d/init.el"))
+  (if full
+      (load (expand-file-name "~/.emacs.d/init.el"))
+    (load (expand-file-name "core/core.el" user-emacs-directory) nil t)
+    (require 'core-cli)
+    (doom-initialize))
 
   (when (and (featurep 'undo-tree) global-undo-tree-mode)
     (global-undo-tree-mode -1)

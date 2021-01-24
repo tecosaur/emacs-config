@@ -32,7 +32,7 @@
 
 (message "[34] Opening package file")
 
-(with-current-buffer (find-file (expand-file-name "packages.el" config-root))
+(with-current-buffer (find-file-noselect (expand-file-name "packages.el" config-root))
   (message "[34] Checking for updates")
   (setq package-upgrades (doom/bump-packages-in-buffer))
   (goto-char (point-min))

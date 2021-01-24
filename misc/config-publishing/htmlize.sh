@@ -30,7 +30,7 @@
   (let ((output-file (expand-file-name
                       (htmlize-make-file-name (file-name-nondirectory file))
                       (file-name-directory file))))
-    (with-current-buffer (find-file-literally file)
+    (with-current-buffer (find-file-noselect file)
       (normal-mode)
       (font-lock-ensure)
       (set-buffer-modified-p nil)

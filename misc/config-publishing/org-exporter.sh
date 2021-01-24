@@ -13,7 +13,8 @@
 
 (require 'vc) ; need this for modification-time macro
 
-(with-current-buffer (find-file (expand-file-name "config.org" config-root))
+(setq org-mode-hook nil)
+(with-current-buffer (find-file-noselect (expand-file-name "config.org" config-root))
   (message "[33] Exporting %s" (buffer-file-name))
   (org-html-export-to-html))
 
