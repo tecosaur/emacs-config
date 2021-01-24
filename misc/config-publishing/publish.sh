@@ -9,6 +9,8 @@
 
 (message "Starting publish process")
 
+(setq timeout 300) ; give up after this many seconds
+
 ;;; Associated processes
 
 (defvar dependent-processes nil)
@@ -17,8 +19,11 @@
 (defun wait-for-script (file)
   (let ((proc-name (intern (format "%s-process" (file-name-base file)))))
     (set proc-name (start-process (file-name-base file) nil (expand-file-name file)))
-    (push (symbol-value proc-name) dependent-processes)
-    (push (file-name-base file) dependent-process-names)
+    (push (list :proc (symbol-value proc-name)
+                :file file
+                :name (file-name-base file)
+                :padded-name (format "%-8s" (file-name-base file))) ; max len Active/Complete
+          dependent-processes)
     (watch-process (symbol-value proc-name) file)))
 
 (defun watch-process (proc file)
@@ -29,23 +34,25 @@
         (if (= 0 (process-exit-status process))
             (message (format "[1;35] %s finished%s"
                              ,(file-name-base (eval file))
-                             (space-fill-line (length (eval file)))))
+                             (space-fill-line ,(length (file-name-base (eval file))))))
           ;; non-zero exit code
           (message (format "[31] %s process failed!%s"
                            ,(file-name-base (eval file))
-                           (space-fill-line ,(length (eval file)))))
+                           (space-fill-line ,(length (file-name-base (eval file))))))
           (message "\033[0;31m      %s\033[0m"
                    'unmodified
                    (with-temp-buffer
-                     (insert-file-contents-literally (expand-file-name (format "%s-log.txt" (file-name-base file) (file-name-directory load-file-name))))
+                     (insert-file-contents-literally (expand-file-name ,(format "%s-log.txt" (file-name-base file))
+                                                                       (file-name-directory load-file-name)))
                      (buffer-substring-no-properties (point-min) (point-max))))
-          (setq exit-code 1))))))
+          (message "[1;31] Config publishing aborted%s" (space-fill-line 23))
+          (kill-emacs 1))))))
 
 (defun space-fill-line (base-length)
   "Return whitespace such that the line will be filled to overwrite the status line."
-  (make-string (max 0 (- (* (1+ max-name-length)
-                            (length dependent-process-names))
-                         base-length))
+  (make-string (max 0
+                    (- (apply #'+ (mapcar (lambda (dep) (length (plist-get dep :padded-name))) dependent-processes))
+                       base-length))
                ? ))
 
 ;;; Start dependent processes
@@ -58,20 +65,18 @@
 
 ;;; Status info
 
-(defvar max-name-length (apply #'max (cons 8 (mapcar #'length dependent-process-names))))
 (defun process-status-table ()
   (message (concat
             "\033[1m[%4.1fs] \033[0;1m"
-            (mapconcat (lambda (name)
-                         (format (format "%%%ds" max-name-length) name))
-                       dependent-process-names " ")
+            (mapconcat (lambda (dep) (plist-get dep :padded-name)) dependent-processes " ")
             "\n\033[0m        "
-            (mapconcat (lambda (proc)
-                         (apply #'format (format "%%s%%%ds" max-name-length)
-                                (pcase (process-status proc)
+            (mapconcat (lambda (dep)
+                         (apply #'format (format "%%s%%-%ds" (length (plist-get dep :padded-name)))
+                                (pcase (process-status (plist-get dep :proc))
                                   ('run '("\033[0;33m" "Active"))
                                   ('exit '("\033[0;32m" "Complete")))))
-                       dependent-processes " ")
+                       dependent-processes
+                       " ")
             "\033[0;90m[1A[K[1A[K")
            'unmodified
            (- (float-time) start-time)))
@@ -83,14 +88,30 @@
 (while (not all-proc-finished)
   (process-status-table)
   (setq all-proc-finished t)
-  (dolist (proc dependent-processes)
-    (let ((status (process-status proc)))
-      (when (not (eq (process-status proc) 'exit))
-        (setq all-proc-finished nil))))
+  (dolist (dep dependent-processes)
+    (when (not (eq (process-status (plist-get dep :proc)) 'exit))
+      (setq all-proc-finished nil)))
+  (when (< timeout (- (float-time) start-time))
+    (message "[0;31] Timout exceeded. Killing slow processes%s" (space-fill-line 37))
+    (dolist (dep dependent-processes)
+      (let ((proc (plist-get dep :proc)))
+        (when (not (eq (process-status proc) 'exit))
+          (message "[1;31] Killing %s%s" proc (space-fill-line (+ 6 (length (format "%s" proc)))))
+          (delete-process proc)
+          (message "\n\033[0;31m      %s\033[0m"
+                   'unmodified
+                   (with-temp-buffer
+                     (insert-file-contents-literally (expand-file-name (format "%s-log.txt" (file-name-base (plist-get dep :file)))
+                                                                       (file-name-directory load-file-name)))
+                     (buffer-substring-no-properties (point-min) (point-max)))))))
+    (setq all-proc-finished t)
+    (setq exit-code 1))
   (unless all-proc-finished
     (sleep-for 0.5)))
 
-(message "[1;32] Config publish content generated!%s" (space-fill-line 34))
+(if (= 0 exit-code)
+    (message "[1;32] Config publish content generated!%s" (space-fill-line 31))
+  (message "[1;31] Config publishing aborted%s" (space-fill-line 23)))
 
 (setq inhibit-message t)
 (kill-emacs exit-code)
