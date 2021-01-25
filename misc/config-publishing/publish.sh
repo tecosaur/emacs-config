@@ -38,7 +38,7 @@
           ;; non-zero exit code
           (message (format "[31] %s process failed!%s"
                            ,(file-name-base (eval file))
-                           (space-fill-line ,(length (file-name-base (eval file))))))
+                           (space-fill-line ,(+ 16 (length (file-name-base (eval file)))))))
           (message "\033[0;31m      %s\033[0m"
                    'unmodified
                    (with-temp-buffer
@@ -51,7 +51,8 @@
 (defun space-fill-line (base-length)
   "Return whitespace such that the line will be filled to overwrite the status line."
   (make-string (max 0
-                    (- (apply #'+ (mapcar (lambda (dep) (length (plist-get dep :padded-name))) dependent-processes))
+                    (- (apply #'+ (* 2 (1- (length dependent-processes)))
+                              (mapcar (lambda (dep) (length (plist-get dep :padded-name))) dependent-processes))
                        base-length))
                ? ))
 
@@ -68,7 +69,7 @@
 (defun process-status-table ()
   (message (concat
             "\033[1m[%4.1fs] \033[0;1m"
-            (mapconcat (lambda (dep) (plist-get dep :padded-name)) dependent-processes " ")
+            (mapconcat (lambda (dep) (plist-get dep :padded-name)) dependent-processes "  ")
             "\n\033[0m        "
             (mapconcat (lambda (dep)
                          (apply #'format (format "%%s%%-%ds" (length (plist-get dep :padded-name)))
@@ -76,7 +77,7 @@
                                   ('run '("\033[0;33m" "Active"))
                                   ('exit '("\033[0;32m" "Complete")))))
                        dependent-processes
-                       " ")
+                       "  ")
             "\033[0;90m[1A[K[1A[K")
            'unmodified
            (- (float-time) start-time)))
@@ -97,6 +98,8 @@
       (let ((proc (plist-get dep :proc)))
         (when (not (eq (process-status proc) 'exit))
           (message "[1;31] Killing %s%s" proc (space-fill-line (+ 6 (length (format "%s" proc)))))
+          (signal-process proc 'SIGUSR2)
+          (sleep-for 0.2)
           (delete-process proc)
           (message "\n\033[0;31m      %s\033[0m"
                    'unmodified
@@ -110,8 +113,8 @@
     (sleep-for 0.5)))
 
 (if (= 0 exit-code)
-    (message "[1;32] Config publish content generated!%s" (space-fill-line 31))
-  (message "[1;31] Config publishing aborted%s" (space-fill-line 23)))
+    (message "[1;32] Config publish content generated!%s" (space-fill-line 33))
+  (message "[1;31] Config publishing aborted%s" (space-fill-line 25)))
 
 (setq inhibit-message t)
 (kill-emacs exit-code)

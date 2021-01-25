@@ -32,14 +32,14 @@
 
 (message "[34] Opening package file")
 
-(with-current-buffer (find-file-noselect (expand-file-name "packages.el" config-root))
+(with-temp-buffer
+  (insert-file-contents (expand-file-name "packages.el" config-root))
   (message "[34] Checking for updates")
   (setq package-upgrades (doom/bump-packages-in-buffer))
   (goto-char (point-min))
   (setq total-packages 0)
   (while (search-forward "(package!" nil t)
-    (setq total-packages (1+ total-packages)))
-  (kill-buffer (current-buffer)))
+    (setq total-packages (1+ total-packages))))
 
 (message "[32] %s total packages" total-packages)
 

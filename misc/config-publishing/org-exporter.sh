@@ -4,7 +4,7 @@
 (setq log-file (format "%s-log.txt" (file-name-base load-file-name)))
 
 (load (expand-file-name "initialise.el" (file-name-directory load-file-name)) nil t)
-(initialise)
+(initialise t)
 
 ;;; Actually do the exporting now
 
@@ -12,11 +12,16 @@
          (expand-file-name "config.org" config-root))
 
 (require 'vc) ; need this for modification-time macro
+(require 'org)
 
 (setq org-mode-hook nil)
-(with-current-buffer (find-file-noselect (expand-file-name "config.org" config-root))
-  (message "[33] Exporting %s" (buffer-file-name))
-  (org-html-export-to-html))
+(with-temp-buffer
+  (let ((buffer-file-name (expand-file-name "config.org" config-root))
+        (org-export-coding-system org-html-coding-system)
+        org-mode-hook)
+    (insert-file-contents (expand-file-name "config.org" config-root))
+    (message "[33] Exporting %s" (buffer-file-name))
+    (org-export-to-file 'html (expand-file-name "config.html" config-root))))
 
 (publish "config.html" "misc/*.svg")
 

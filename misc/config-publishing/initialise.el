@@ -71,9 +71,13 @@
 
   (if full
       (load (expand-file-name "~/.emacs.d/init.el"))
+    (setq gc-cons-threshold 16777216
+          gcmh-high-cons-threshold 16777216)
     (load (expand-file-name "core/core.el" user-emacs-directory) nil t)
     (require 'core-cli)
     (doom-initialize))
+
+  (defalias 'y-or-n-p #'ignore)
 
   (when (and (featurep 'undo-tree) global-undo-tree-mode)
     (global-undo-tree-mode -1)
