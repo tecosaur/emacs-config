@@ -6676,21 +6676,36 @@ included when a certain regex is successfully found in the Org buffer.
     ("#\\+BEGIN_SRC\\|#\\+begin_src" . ,org-latex-minted-preamble))
   "Snippets which are conditionally included in the preamble of a LaTeX export.
 
-Alist where each car is a regexp which will be searched for in the Org buffer being exported,
-and the cdr is a string which will be included in the LaTeX preamble.")
+Alist where when the car results in a non-nil value, the cdr is inserted in
+the preamble.  The car may be a:
+- string, which is used as a regex search in the buffer
+- symbol, the value of which used
+- function, the result of the function is used
+
+The cdr may be a:
+- string, which is inserted without processing
+- symbol, the value of which is inserted
+- function, the result of which is inserted")
 
 (defadvice! org-latex-header-smart-preamble (orig-fn tpl def-pkg pkg snippets-p &optional extra)
-  "Include certain config if a need is detected."
+  "Dynamically insert preamble content based on `org-latex-conditional-preambles'."
   :around #'org-splice-latex-header
   (let ((header (funcall orig-fn tpl def-pkg pkg snippets-p extra)))
     (if snippets-p header
       (concat header
-              org-latex-universal-preamble
               (mapconcat (lambda (term-preamble)
-                           (when (save-excursion
-                                   (goto-char (point-min))
-                                   (search-forward-regexp (car term-preamble) nil t))
-                             (cdr term-preamble)))
+                           (when (pcase (car term-preamble)
+                                   ((pred stringp) (save-excursion
+                                                       (goto-char (point-min))
+                                                       (search-forward-regexp (car term-preamble) nil t)))
+                                   ((pred functionp) (funcall (car term-preamble)))
+                                   ((pred symbolp) (symbol-value (car term-preamble)))
+                                   (_ (user-error "org-latex-conditional-preambles key %s unable to be used" (car term-preamble))))
+                             (pcase (cdr term-preamble)
+                               ((pred stringp) (cdr term-preamble))
+                               ((pred functionp) (funcall (cdr term-preamble)))
+                               ((pred symbolp) (symbol-value (cdr term-preamble)))
+                               (_ (user-error "org-latex-conditional-preambles value %s unable to be used" (cdr term-preamble))))))
                          org-latex-conditional-preambles
                          "\n")))))
 #+end_src
