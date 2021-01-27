@@ -13,3 +13,6 @@
 [submodule "screenshot"]
 	path = lisp/screenshot
 	url = https://github.com/tecosaur/screenshot.git
+[submodule "engrave-faces"]
+	path = lisp/engrave-faces
+	url = https://github.com/tecosaur/engrave-faces.git

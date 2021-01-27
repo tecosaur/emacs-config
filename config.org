@@ -1406,6 +1406,16 @@ For automatically toggling LaTeX fragment previews there's this nice package
 #+begin_src emacs-lisp
 (package! org-pretty-tags :pin "5c7521651b35ae9a7d3add4a66ae8cc176ae1c76")
 #+end_src
+
+There's this nice package that can provide nice syntax highlighting with LaTeX
+exports.
+#+begin_src emacs-lisp
+(package! engrave-faces :recipe (:local-repo "lisp/engrave-faces"))
+#+end_src
+#+begin_src emacs-lisp :tangle yes
+(use-package! engrave-faces-latex
+  :after ox-latex)
+#+end_src
 **** Extra functionality
 Because of the /[[https://github.com/commonmark/commonmark-spec/wiki/markdown-flavors][lovely variety in markdown implementations]]/ there isn't actually
 such a thing a standard table spec ... or standard anything really. Because
@@ -6569,9 +6579,7 @@ While this is the LaTeX section, it's convenient to also provide HTML acronyms h
 
   <<org-latex-conditional-preamble>>
 
-  (setq org-latex-listings 'minted
-        org-latex-minted-options
-        '())
+  (setq org-latex-listings 'engraved) ; NOTE non-standard value
 
   (setq org-latex-tables-booktabs t)
 
@@ -6596,54 +6604,7 @@ While this is the LaTeX section, it's convenient to also provide HTML acronyms h
 #+end_src
 
 ***** A cleverer preamble
-We also want a particular preamble when minted is used,
-#+name: org-minted-preamble
-#+begin_src LaTeX
-\\usepackage{minted}
-\\usepackage[many]{tcolorbox}
-\\setminted{
-  frame=none,
-  % framesep=2mm,
-  baselinestretch=1.2,
-  fontsize=\\footnotesize,
-  highlightcolor=white!95!black!80!blue,
-  linenos,
-  breakanywhere=true,
-  breakautoindent=true,
-  breaklines=true,
-  tabsize=4,
-  xleftmargin=3.5em,
-  autogobble=true,
-  obeytabs=true,
-  python3=true,
-  % texcomments=true,
-  framesep=2mm,
-  breakbefore=\\\\\.+,
-  breakafter=\\,
-  style=autumn,
-  breaksymbol=\\color{white!60!black}\\tiny\\ensuremath{\\hookrightarrow},
-  breakanywheresymbolpre=\\,\\footnotesize\\ensuremath{_{\\color{white!60!black}\\rfloor}},
-  breakbeforesymbolpre=\\,\\footnotesize\\ensuremath{_{\\color{white!60!black}\\rfloor}},
-  breakaftersymbolpre=\\,\\footnotesize\\ensuremath{_{\\color{white!60!black}\\rfloor}},
-}
-
-\\BeforeBeginEnvironment{minted}{
-  \\begin{tcolorbox}[%
-  enhanced,
-  overlay={\\fill[white!95!black] ([xshift=2.8em]frame.north west) {[rounded corners=3pt] --
-      (frame.north west) -- (frame.south west) } -- ([xshift=2.8em]frame.south west) -- cycle;},
-  colback=white!98!black,
-  colframe=white!98!black,
-  breakable,
-  arc=3pt,outer arc=3pt,
-  boxsep=0pt,left=0pt,right=0pt,top=0pt,bottom=0pt%
-  ]%
-}
-\\AfterEndEnvironment{minted}{\\end{tcolorbox}}
-\\renewcommand\\theFancyVerbLine{\\color{black!60!white}\\arabic{FancyVerbLine}} % minted line numbering
-#+end_src
-
-We also always want some particular elements in the preamble, let's call this
+We always want some particular elements in the preamble, let's call this
 the "universal preamble"
 #+name: org-universal-preamble
 #+begin_src LaTeX
@@ -6660,20 +6621,15 @@ want to /always/ appear, and then conditional preamble snippets, which are only
 included when a certain regex is successfully found in the Org buffer.
 
 #+name: org-latex-conditional-preamble
-#+begin_src emacs-lisp :tangle no :noweb no-export
-(defvar org-latex-minted-preamble "
-<<org-minted-preamble>>
-"
-  "Preamble to be inserted when minted is used.")
-
+#+begin_src emacs-lisp :noweb no-export
 (defvar org-latex-universal-preamble "
 <<org-universal-preamble>>
 "
   "Preamble to be included in every export.")
 
 (defvar org-latex-conditional-preambles
-  `(("\\[\\[file:.*\\.svg\\]\\]" . "\\usepackage{svg}")
-    ("#\\+BEGIN_SRC\\|#\\+begin_src" . ,org-latex-minted-preamble))
+  `((t . org-universal-preamble)
+    ("\\[\\[file:.*\\.svg\\]\\]" . "\\usepackage{svg}"))
   "Snippets which are conditionally included in the preamble of a LaTeX export.
 
 Alist where when the car results in a non-nil value, the cdr is inserted in
@@ -6709,6 +6665,132 @@ The cdr may be a:
                          org-latex-conditional-preambles
                          "\n")))))
 #+end_src
+
+***** Pretty code blocks
+
+We could just use minted for syntax highlighting --- however, we can do better!
+The =engrave-faces= package lets us use Emacs' font-lock for syntax highlighting,
+exporting that as LaTeX commands.
+
+Thanks to ~org-latex-conditional-preambles~ and some copy-paste with the =minted=
+entry in ~org-latex-scr-block~ we can easily add this as a recognised
+~org-latex-listings~ value.
+
+#+begin_src emacs-lisp :noweb no-export
+(defadvice! org-latex-src-block-engraved (orig-fn src-block contents info)
+  "Like `org-latex-src-block', but supporting an engraved backend"
+  :around #'org-latex-src-block
+  (if (eq 'engraved (plist-get info :latex-listings))
+      (org-latex-scr-block--engraved src-block contents info)
+    (funcall orig-fn src-block contents info)))
+
+(setq org-latex-engraved-code-preamble "
+<<org-latex-engraved-code-preamble>>
+")
+
+(add-to-list 'org-latex-conditional-preambles '("#\\+BEGIN_SRC\\|#\\+begin_src" . org-latex-engraved-code-preamble) t)
+(add-to-list 'org-latex-conditional-preambles '("#\\+BEGIN_SRC\\|#\\+begin_src" . engrave-faces-latex-gen-preamble) t)
+
+(defun org-latex-scr-block--engraved (src-block contents info)
+  (let* ((lang (org-element-property :language src-block))
+         (attributes (org-export-read-attribute :attr_latex src-block))
+         (float (plist-get attributes :float))
+         (num-start (org-export-get-loc src-block info))
+         (retain-labels (org-element-property :retain-labels src-block))
+         (caption (org-element-property :caption src-block))
+         (caption-above-p (org-latex--caption-above-p src-block info))
+         (caption-str (org-latex--caption/label-string src-block info))
+         (placement (or (org-unbracket-string "[" "]" (plist-get attributes :placement))
+                        (plist-get info :latex-default-figure-position)))
+         (float-env
+          (cond
+           ((string= "multicolumn" float)
+            (format "\\begin{listing*}[%s]\n%s%%s\n%s\\end{listing*}"
+                    placement
+                    (if caption-above-p caption-str "")
+                    (if caption-above-p "" caption-str)))
+           (caption
+            (format "\\begin{listing}[%s]\n%s%%s\n%s\\end{listing}"
+                    placement
+                    (if caption-above-p caption-str "")
+                    (if caption-above-p "" caption-str)))
+           ((string= "t" float)
+            (concat (format "\\begin{listing}[%s]\n"
+                            placement)
+                    "%s\n\\end{listing}"))
+           (t "%s")))
+         (options (plist-get info :latex-minted-options))
+         (content-buffer
+          (with-temp-buffer
+            (insert
+             (let* ((code-info (org-export-unravel-code src-block))
+                    (max-width
+                     (apply 'max
+                            (mapcar 'length
+                                    (org-split-string (car code-info)
+                                                      "\n")))))
+               (org-export-format-code
+                (car code-info)
+                (lambda (loc _num ref)
+                  (concat
+                   loc
+                   (when ref
+                     ;; Ensure references are flushed to the right,
+                     ;; separated with 6 spaces from the widest line
+                     ;; of code.
+                     (concat (make-string (+ (- max-width (length loc)) 6)
+                                          ?\s)
+                             (format "(%s)" ref)))))
+                nil (and retain-labels (cdr code-info)))))
+            (funcall (org-src-get-lang-mode lang))
+            (engrave-faces-latex-buffer)))
+         (content
+          (with-current-buffer content-buffer
+            (buffer-string)))
+         (body
+          (format
+           "\\begin{Code}\n\\begin{Verbatim}[%s]\n%s\\end{Verbatim}\n\\end{Code}"
+           ;; Options.
+           (concat
+            (org-latex--make-option-string
+             (if (or (not num-start) (assoc "linenos" options))
+                 options
+               (append
+                `(("linenos")
+                  ("firstnumber" ,(number-to-string (1+ num-start))))
+                options)))
+            (let ((local-options (plist-get attributes :options)))
+              (and local-options (concat "," local-options))))
+           content)))
+    (kill-buffer content-buffer)
+    ;; Return value.
+    (format float-env body)))
+#+end_src
+
+Whenever this is used, in order for it to actually work (and look a little
+better) we add bit to the preamble:
+
+#+name: org-latex-engraved-code-preamble
+#+begin_src LaTeX
+\\usepackage{fvextra}
+\\fvset{
+  commandchars=\\\\\\{\\},
+  highlightcolor=white!95!black!80!blue,
+  breaklines=true,
+  breaksymbol=\\color{white!60!black}\\tiny\\ensuremath{\\hookrightarrow}}
+\\renewcommand\\theFancyVerbLine{\\footnotesize\\color{black!40!white}\\arabic{FancyVerbLine}}
+
+\\usepackage[many]{tcolorbox}
+\\DeclareTColorBox[]{Code}{}%
+{enhanced,
+  colback=white!97!black,
+  colframe=white!94!black, boxrule=0.5pt,
+  fontupper=\\color{EFD}\\footnotesize,
+  arc=2.5pt, outer arc=2.5pt,
+  boxsep=2pt, left=2pt, right=2pt, top=1pt, bottom=0.5pt,
+  breakable}
+#+end_src
+
 ***** Chameleon --- aka. match theme
 Once the idea of having the look of the LaTeX document produced match the
 current Emacs theme, I was enraptured. The result is the pseudo-class ~chameleon~.
