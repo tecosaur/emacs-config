@@ -6606,7 +6606,7 @@ While this is the LaTeX section, it's convenient to also provide HTML acronyms h
 ***** A cleverer preamble
 We always want some particular elements in the preamble, let's call this
 the "universal preamble"
-#+name: org-universal-preamble
+#+name: org-latex-universal-preamble
 #+begin_src LaTeX
 \\usepackage[main,include]{embedall}
 \\IfFileExists{./\\jobname.org}{\\embedfile[desc=The original file]{\\jobname.org}}{}
@@ -6623,12 +6623,12 @@ included when a certain regex is successfully found in the Org buffer.
 #+name: org-latex-conditional-preamble
 #+begin_src emacs-lisp :noweb no-export
 (defvar org-latex-universal-preamble "
-<<org-universal-preamble>>
+<<org-latex-universal-preamble>>
 "
   "Preamble to be included in every export.")
 
 (defvar org-latex-conditional-preambles
-  `((t . org-universal-preamble)
+  `((t . org-latex-universal-preamble)
     ("\\[\\[file:.*\\.svg\\]\\]" . "\\usepackage{svg}"))
   "Snippets which are conditionally included in the preamble of a LaTeX export.
 
