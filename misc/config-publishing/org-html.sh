@@ -14,14 +14,14 @@
 (require 'vc) ; need this for modification-time macro
 (require 'org)
 
-(setq org-mode-hook nil)
 (with-temp-buffer
-  (let ((buffer-file-name (expand-file-name "config.org" config-root))
+  (let ((default-directory config-root)
+        (buffer-file-name (expand-file-name "config.org" config-root))
         (org-export-coding-system org-html-coding-system)
-        org-mode-hook)
+        org-mode-hook org-load-hook)
     (insert-file-contents (expand-file-name "config.org" config-root))
     (message "[33] Exporting %s" (buffer-file-name))
-    (org-export-to-file 'html (expand-file-name "config.html" config-root))))
+    (org-html-export-to-html)))
 
 (publish "config.html" "misc/*.svg")
 

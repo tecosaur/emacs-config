@@ -62,7 +62,9 @@
 
 (wait-for-script "htmlize.sh")
 
-(wait-for-script "org-exporter.sh")
+(wait-for-script "org-pdf.sh")
+
+(wait-for-script "org-html.sh")
 
 ;;; Status info
 

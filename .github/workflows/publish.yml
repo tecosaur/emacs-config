@@ -54,12 +54,17 @@ jobs:
       - name: Install Doom
         run: ~/.emacs.d/bin/doom install --no-env --no-fonts
 
+      - name: Install LaTeX compiler chain
+        run: |
+          git clone https://github.com/tecosaur/BMC.git ~/texmf/tex/latex/bmc
+          sudo apt install texlive-base texlive-latex-recommended texlive-fonts-extra latexmk
+
       - name: Export config
         run: ~/.config/doom/misc/config-publishing/publish.sh
 
-      # - name: Debug failure over SSH (tmate)
-      #   if: ${{ failure() }}
-      #   uses: mxschmitt/action-tmate@v3.1
+      - name: Debug failure over SSH (tmate)
+        if: ${{ failure() }}
+        uses: mxschmitt/action-tmate@v3.1
 
       - name: Deploy
         if: ${{ github.event_name != 'pull_request'}}

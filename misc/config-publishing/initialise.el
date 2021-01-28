@@ -68,6 +68,8 @@
 
   ;; Avoid error: file-missing "Opening directory" "No such file or directory" "~/org/roam"
   (setq org-roam-directory "~")
+  (advice-add 'org-roam-mode :override #'ignore)
+  (advice-add 'org-roam-db-build-cache :override #'ignore)
 
   (if full
       (load (expand-file-name "~/.emacs.d/init.el"))
