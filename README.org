@@ -1,4 +1,4 @@
-#+title: Doom Emacs Configuration --- [[https://tecosaur.github.io/emacs-config/config.html][HTML Version]]
+#+title: Doom Emacs Configuration --- [[https://tecosaur.github.io/emacs-config/config.html][HTML Version]], [[https://tecosaur.github.io/emacs-config/config.pdf][PDF]]
 #+author: tecosaur
 
 :badges:
@@ -12,8 +12,8 @@
 Here you may find my config. There is only one significant file:
 - [[file:config.org][config.org]], my configuration file
 
-What you *really* want is the =M-x org-html-export-to-html= version of ~config.org~
-(linked in the title).
+What you *really* want is the =M-x org-html-export-to-html= version of ~config.org~ ,
+or the =M-x org-latex-export-to-pdf= version (linked in the title).
 
 In addition to the =html= export, this /produces/ the [[https://tecosaur.github.io/emacs-config/init.el.html][init.el]], [[https://tecosaur.github.io/emacs-config/config.el.html][config.el]], and [[https://tecosaur.github.io/emacs-config/packages.el.html][packages.el]] files.
 
@@ -30,7 +30,7 @@ generate the =init.el= once.
 
 #+begin_src shell :eval query
 git clone --recurse-submodules git@github.com:tecosaur/emacs-config.git ~/.config/doom
-emacs --batch --eval "(require 'org)" --eval '(org-babel-tangle-file "config.org")'
+emacs --batch --eval "(require 'org)" --eval '(org-babel-tangle-file "~/.config/doom/config.org")'
 git clone --depth 1 https://github.com/hlissner/doom-emacs ~/.emacs.d
 ~/.emacs.d/bin/doom install
 #+end_src
