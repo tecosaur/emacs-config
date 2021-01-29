@@ -13,6 +13,7 @@
 
 (require 'vc) ; need this for modification-time macro
 (require 'org)
+(require 'ox-latex)
 
 (setq org-mode-hook nil)
 (with-temp-buffer

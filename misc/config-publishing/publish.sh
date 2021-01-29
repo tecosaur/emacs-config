@@ -16,37 +16,47 @@
 (defvar dependent-processes nil)
 (defvar dependent-process-names nil)
 
-(defun wait-for-script (file)
-  (let ((proc-name (intern (format "%s-process" (file-name-base file)))))
-    (set proc-name (start-process (file-name-base file) nil (expand-file-name file)))
-    (push (list :proc (symbol-value proc-name)
-                :file file
-                :name (file-name-base file)
-                :padded-name (format "%-8s" (file-name-base file))) ; max len Active/Complete
-          dependent-processes)
-    (watch-process (symbol-value proc-name) file)))
+(require 'cl-lib)
 
-(defun watch-process (proc file)
-  (set-process-sentinel
-   proc
-   `(lambda (process _signal)
-      (when (eq (process-status process) 'exit)
-        (if (= 0 (process-exit-status process))
-            (message (format "[1;35] %s finished%s"
+(cl-defun wait-for-script (file &key then)
+  (let ((proc-name (intern (format "%s-process" (file-name-base file))))
+        proc-info)
+    (set proc-name (start-process (file-name-base file) nil (expand-file-name file)))
+    (setq proc-info (list :proc (symbol-value proc-name)
+                          :file file
+                          :name (file-name-base file)
+                          :padded-name (format "%-8s" (file-name-base file)) ; max len Active/Complete
+                          :then (if (listp then) then (list then))))
+    (push proc-info dependent-processes)
+    (watch-process proc-info)))
+
+(defun watch-process (proc-info)
+  (let ((file (plist-get proc-info :file)))
+    (set-process-sentinel
+     (plist-get proc-info :proc)
+     `(lambda (process _signal)
+        (when (eq (process-status process) 'exit)
+          (if (= 0 (process-exit-status process))
+              (progn
+                (message (format "[1;35] %s finished%s"
+                                 ,(file-name-base file)
+                                 (space-fill-line ,(length (file-name-base file)))))
+                ;; start dependent processes
+                (when ,(car (plist-get proc-info :then))
+                  (mapcar (lambda (then) (apply #'wait-for-script (if (listp then) then (list then))))
+                          ',(plist-get proc-info :then))))
+            ;; non-zero exit code
+            (message (format "[31] %s process failed!%s"
                              ,(file-name-base (eval file))
-                             (space-fill-line ,(length (file-name-base (eval file))))))
-          ;; non-zero exit code
-          (message (format "[31] %s process failed!%s"
-                           ,(file-name-base (eval file))
-                           (space-fill-line ,(+ 16 (length (file-name-base (eval file)))))))
-          (message "\033[0;31m      %s\033[0m"
-                   'unmodified
-                   (with-temp-buffer
-                     (insert-file-contents-literally (expand-file-name ,(format "%s-log.txt" (file-name-base file))
-                                                                       (file-name-directory load-file-name)))
-                     (buffer-substring-no-properties (point-min) (point-max))))
-          (message "[1;31] Config publishing aborted%s" (space-fill-line 23))
-          (kill-emacs 1))))))
+                             (space-fill-line ,(+ 16 (length (file-name-base file))))))
+            (message "\033[0;31m      %s\033[0m"
+                     'unmodified
+                     (with-temp-buffer
+                       (insert-file-contents-literally (expand-file-name ,(format "%s-log.txt" (file-name-base file))
+                                                                         (file-name-directory load-file-name)))
+                       (buffer-substring-no-properties (point-min) (point-max))))
+            (message "[1;31] Config publishing aborted%s" (space-fill-line 23))
+            (kill-emacs 1)))))))
 
 (defun space-fill-line (base-length)
   "Return whitespace such that the line will be filled to overwrite the status line."
@@ -62,9 +72,10 @@
 
 (wait-for-script "htmlize.sh")
 
-(wait-for-script "org-pdf.sh")
-
-(wait-for-script "org-html.sh")
+(if (not (file-exists-p (concat user-emacs-directory "xkcd/")))
+    (wait-for-script "org-html.sh" :then "org-pdf.sh")
+  (wait-for-script "org-html.sh")
+  (wait-for-script "org-pdf.sh"))
 
 ;;; Status info
 

@@ -82,9 +82,14 @@
 
   (defalias 'y-or-n-p #'ignore)
 
-  (when (and (featurep 'undo-tree) global-undo-tree-mode)
+  (advice-add 'ask-user-about-supersession-threat :override #'ignore)
+
+  (after! undo-tree
     (global-undo-tree-mode -1)
-    (advice-add 'undo-tree-save-history :override #'ignore)))
+    (advice-add 'undo-tree-mode :override #'ignore)
+    (remove-hook 'write-file-functions #'undo-tree-save-history-from-hook)
+    (remove-hook 'kill-buffer-hook #'undo-tree-save-history-from-hook)
+    (remove-hook 'find-file-hook #'undo-tree-load-history-from-hook)))
 
 ;;; Publishing
 
@@ -112,4 +117,4 @@ Names containing \"*\" are treate as a glob."
                                               publish-dir
                                               (expand-file-name file config-root))))
         (ensure-dir-exists target)
-        (rename-file (expand-file-name file config-root) target t)))))
+        (copy-file (expand-file-name file config-root) target t)))))

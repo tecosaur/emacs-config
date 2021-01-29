@@ -60,11 +60,13 @@ jobs:
           sudo apt install texlive-base texlive-latex-recommended texlive-fonts-extra latexmk
 
       - name: Export config
-        run: ~/.config/doom/misc/config-publishing/publish.sh
+        run: |
+          cd ~/.config/doom/misc/config-publishing
+          ./publish.sh
 
-      - name: Debug failure over SSH (tmate)
-        if: ${{ failure() }}
-        uses: mxschmitt/action-tmate@v3.1
+      # - name: Debug over SSH (tmate)
+      #   if: ${{ failure() }}
+      #   uses: mxschmitt/action-tmate@v3.1
 
       - name: Deploy
         if: ${{ github.event_name != 'pull_request'}}

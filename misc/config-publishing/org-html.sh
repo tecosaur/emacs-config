@@ -13,6 +13,7 @@
 
 (require 'vc) ; need this for modification-time macro
 (require 'org)
+(require 'ox-html)
 
 (with-temp-buffer
   (let ((default-directory config-root)
@@ -26,7 +27,7 @@
 (publish "config.html" "misc/*.svg")
 
 (make-symbolic-link (expand-file-name "config.html" publish-dir)
-                    (expand-file-name "index.html" publish-dir))
+                    (expand-file-name "index.html" publish-dir) t)
 
 (message "[1;32] Config export complete!")
 
