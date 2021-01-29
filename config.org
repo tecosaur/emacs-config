@@ -6489,11 +6489,10 @@ While this is the LaTeX section, it's convenient to also provide HTML acronyms h
 #+end_src
 
 ***** Class templates
-#+begin_src emacs-lisp :noweb no-export
-(after! ox-latex
-  (add-to-list 'org-latex-classes
-               '("fancy-article"
-                 "\\documentclass{scrartcl}\n\
+We'll be setting up an nice preamble to use in a new default export class.
+
+#+name: latex-fancy-preamble
+#+begin_src LaTeX
 \\usepackage[T1]{fontenc}\n\
 \\usepackage[osf,largesc,helvratio=0.9]{newpxtext}\n\
 \\usepackage[scale=0.92]{sourcecodepro}\n\
@@ -6536,6 +6535,36 @@ While this is the LaTeX section, it's convenient to also provide HTML acronyms h
 \\defsimplebox{info}{3584e4}{\\ding{68}}{Information}
 \\defsimplebox{success}{26a269}{\\ding{68}}{\\vspace{-\\baselineskip}}
 \\defsimplebox{error}{c01c28}{\\ding{68}}{Important}
+#+end_src
+
+The =hyperref= setup needs to be handled separately however.
+#+name: latex-fancy-hyperref
+#+begin_src LaTeX
+\\colorlet{greenyblue}{blue!70!green}
+\\colorlet{blueygreen}{blue!40!green}
+\\providecolor{link}{named}{greenyblue}
+\\providecolor{cite}{named}{blueygreen}
+\\hypersetup{
+  pdfauthor={%a},
+  pdftitle={%t},
+  pdfkeywords={%k},
+  pdfsubject={%d},
+  pdfcreator={%c},
+  pdflang={%L},
+  breaklinks=true,
+  colorlinks=true,
+  linkcolor=,
+  urlcolor=link,
+  citecolor=cite\n}
+\\urlstyle{same}
+#+end_src
+
+#+begin_src emacs-lisp :noweb no-export
+(after! ox-latex
+  (add-to-list 'org-latex-classes
+               '("fancy-article"
+                 "\\documentclass{scrartcl}\n
+<<latex-fancy-preamble>>
 "
                  ("\\section{%s}" . "\\section*{%s}")
                  ("\\subsection{%s}" . "\\subsection*{%s}")
@@ -6574,33 +6603,13 @@ While this is the LaTeX section, it's convenient to also provide HTML acronyms h
                  ("\\subsection{%s}" . "\\subsection*{%s}")
                  ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
                  ("\\paragraph{%s}" . "\\paragraph*{%s}")
-                 ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
-  (setq org-latex-default-class "fancy-article")
+                 ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))))
 
-  <<org-latex-conditional-preamble>>
-
-  (setq org-latex-listings 'engraved) ; NOTE non-standard value
-
-  (setq org-latex-tables-booktabs t)
-
-  (setq org-latex-hyperref-template "
-\\colorlet{greenyblue}{blue!70!green}
-\\colorlet{blueygreen}{blue!40!green}
-\\providecolor{link}{named}{greenyblue}
-\\providecolor{cite}{named}{blueygreen}
-\\hypersetup{
-  pdfauthor={%a},
-  pdftitle={%t},
-  pdfkeywords={%k},
-  pdfsubject={%d},
-  pdfcreator={%c},
-  pdflang={%L},
-  breaklinks=true,
-  colorlinks=true,
-  linkcolor=,
-  urlcolor=link,
-  citecolor=cite\n}
-\\urlstyle{same}\n"))
+(setq org-latex-default-class "fancy-article"
+      org-latex-tables-booktabs t
+      org-latex-hyperref-template "
+<<latex-fancy-hyperref>>
+")
 #+end_src
 
 ***** A cleverer preamble
@@ -6671,6 +6680,10 @@ The cdr may be a:
 We could just use minted for syntax highlighting --- however, we can do better!
 The =engrave-faces= package lets us use Emacs' font-lock for syntax highlighting,
 exporting that as LaTeX commands.
+
+#+begin_src emacs-lisp
+(setq org-latex-listings 'engraved) ; NOTE non-standard value
+#+end_src
 
 Thanks to ~org-latex-conditional-preambles~ and some copy-paste with the =minted=
 entry in ~org-latex-scr-block~ we can easily add this as a recognised
