@@ -24,7 +24,8 @@
 
 (defun logged-message (msg)
   (unless inhibit-message
-    (let ((inhibit-message t))
+    (let ((inhibit-message t)
+          (coding-system-for-write 'utf-8))
       (princ #'external-debugging-output #'ignore)
       (append-to-file msg nil log-file)
       (append-to-file "\n" nil log-file)))
