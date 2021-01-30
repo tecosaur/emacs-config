@@ -1,4 +1,4 @@
-;; Common initilisiation procedure for config publishing scripts
+;;; misc/config-publishing/initialise.el --- common initialisation procudure -*- lexical-binding: t; -*-
 
 (setq start-time (float-time)
       exit-code 0)
