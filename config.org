@@ -6832,6 +6832,54 @@ better) we add bit to the preamble:
   breakable}
 #+end_src
 
+Now let's have the example block be styled similarly.
+#+begin_src emacs-lisp
+(defadvice! org-latex-example-block-engraved (orig-fn example-block contents info)
+  "Like `org-latex-example-block', but supporting an engraved backend"
+  :around #'org-latex-example-block
+  (let ((output-block (funcall orig-fn example-block contents info)))
+    (if (eq 'engraved (plist-get info :latex-listings))
+        (format "\\begin{Code}[alt]\n%s\n\\end{Code}" output-block)
+      output-block)))
+#+end_src
+
+In addition to the vastly superior visual output, this should also be much
+faster to for code-heavy documents (like this config).
+
+Performing a little benchmark with this document, I find that this is indeed the
+case.
+
+| LaTeX syntax highlighting backend | Compile time | Overhead | Overhead ratio |
+|-----------------------------------+--------------+----------+----------------|
+| verbatim                          | 12 s         | 0        |            0.0 |
+| lstlistings                       | 15 s         | 3 s      |            0.2 |
+| Engrave                           | 34 s         | 22 s     |            1.8 |
+| Pygments (Minted)                 | 184 s        | 172 s    |           14.3 |
+#+TBLFM: $3=$2-@2$2::$4=$3 / @2$2;%.1f
+
+Treating the verbatim (no syntax highlighting) result as a baseline; this
+rudimentary test suggest that =engrave-faces= is around eight times faster than
+=pygments=, and takes three times as long as no syntax highlighting (verbatim).
+
+***** Remove non-ascii chars
+
+When using ~pdflatex~, almost non-ascii characters are generally problematic, and
+don't appear in the pdf. It's preferable to see that there was /some/ character
+which wasn't displayed as opposed to nothing.
+
+So, as a basic first-pass we replace every non-ascii char with =¿=. In future I
+could add sensible replacements (e.g. turn =§= into =\S=, and =…= with =\ldots=).
+
+#+begin_src emacs-lisp
+(defun +org-latex-replace-non-ascii-chars (text backend info)
+  "Replace non-ascii chars with \\char\"XYZ forms."
+  (when (and (org-export-derived-backend-p backend 'latex)
+             (string= (plist-get info :latex-compiler) "pdflatex"))
+    (replace-regexp-in-string "[^[:ascii:]]" "¿" text)))
+
+(add-to-list 'org-export-filter-final-output-functions #'+org-latex-replace-non-ascii-chars)
+#+end_src
+
 ***** Support images from URLs
 You can link to remote images easily, and they work nicely with HTML-based
 exports. However, LaTeX can only include local files, and so the current
