@@ -6818,14 +6818,17 @@ better) we add bit to the preamble:
   breaksymbol=\\color{white!60!black}\\tiny\\ensuremath{\\hookrightarrow}}
 \\renewcommand\\theFancyVerbLine{\\footnotesize\\color{black!40!white}\\arabic{FancyVerbLine}}
 
-\\usepackage[many]{tcolorbox}
-\\DeclareTColorBox[]{Code}{}%
-{enhanced,
-  colback=white!97!black,
-  colframe=white!94!black, boxrule=0.5pt,
+% TODO have code boxes keep line vertical alignment
+\\usepackage[breakable,xparse]{tcolorbox}
+\\DeclareTColorBox[]{Code}{o}%
+{colback=white!97!black, colframe=white!94!black,
   fontupper=\\color{EFD}\\footnotesize,
-  arc=2.5pt, outer arc=2.5pt,
-  boxsep=2pt, left=2pt, right=2pt, top=1pt, bottom=0.5pt,
+  IfNoValueTF={#1}%
+  {boxsep=2pt, arc=2.5pt, outer arc=2.5pt,
+    boxrule=0.5pt, left=2pt}%
+  {boxsep=2.5pt, arc=0pt, outer arc=0pt,
+    boxrule=0pt, leftrule=1.5pt, left=0.5pt},
+  right=2pt, top=1pt, bottom=0.5pt,
   breakable}
 #+end_src
 
