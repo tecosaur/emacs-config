@@ -6495,7 +6495,7 @@ We'll be setting up an nice preamble to use in a new default export class.
 #+begin_src LaTeX
 \\usepackage[T1]{fontenc}\n\
 \\usepackage[osf,largesc,helvratio=0.9]{newpxtext}\n\
-\\usepackage[scale=0.92]{sourcecodepro}\n\
+\\usepackage[scale=0.9]{sourcecodepro}\n\
 \\usepackage{bmc-maths}\n\
 
 \\usepackage[activate={true,nocompatibility},final,tracking=true,kerning=true,spacing=true,factor=2000]{microtype}\n\
@@ -7149,7 +7149,7 @@ For use in the new-file template, let's set out a nice preamble we may want to u
 
 \\usepackage[T1]{fontenc}
 \\usepackage[osf,helvratio=0.9]{newpxtext} % pallatino
-\\usepackage[scale=0.92]{sourcecodepro}
+\\usepackage[scale=0.9]{sourcecodepro}
 
 \\usepackage[varbb]{newpxmath}
 \\usepackage{mathtools}
