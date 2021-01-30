@@ -345,7 +345,7 @@ shown by =SPC h v= and selecting what I thought looks good, I've ended up adding
 
 (if (equal "Battery status not available"
            (battery))
-  (display-battery-mode 1)                        ; On laptops it's nice to know how much power you have
+    (display-battery-mode 1)                        ; On laptops it's nice to know how much power you have
   (setq password-cache-expiry nil))               ; I can trust my desktops ... can't I? (no battery = desktop)
 
 (global-subword-mode 1)                           ; Iterate through CamelCase words
@@ -702,7 +702,6 @@ irc                          ; how neckbeards socialize
 ;;twitter                    ; twitter client https://twitter.com/vnought
 #+end_src
 
-
 *** Visual Settings
 **** Font Face
 'Fira Code' is nice, and 'Overpass' makes for a nice sans companion. We just need to
@@ -961,6 +960,7 @@ with it, so I may as well eat the load time at startup. We also want to keep
 It would be good to start the IRC client (=circe=) too, but that seems to have
 issues when started in a non-graphical session.
 
+#+name: daemon initialisation
 #+begin_src emacs-lisp
 (defun greedily-do-daemon-setup ()
   (require 'org)
@@ -1675,7 +1675,6 @@ Affects behaviour of `emacs-anywhere--finalise-content'")
                                                (format "-[A-Za-z0-9 ]*%s" ea-app-name))
                             "[\s-]+" "[\s-]+")
                            45 nil nil "…")))
-  (message "window-title: %s" window-title)
 
   (when-let ((selection (gui-get-selection 'PRIMARY)))
     (insert selection))
@@ -3765,6 +3764,7 @@ It's nice to see ANSI colour codes displayed
 :CUSTOM_ID: org
 :header-args:emacs-lisp: :tangle no :noweb-ref org-conf
 :END:
+:intro:
 I really like org mode, I've given some thought to why, and below is the result.
 
 #+plot: transpose:yes type:radar min:0 max:4 file:"misc/document-format-comparison.png"
@@ -3822,6 +3822,7 @@ figure.png╶─╧─▶ PROJECT.ORG ▶───╴filters╶───╧─�
                     ╟─────────────────────────────────▶ .hs   ⎪ (Code)
                     ╙─────────────────────────────────▶ .el   ⎭
 #+end_example
+:end:
 
 Finally, because this section is fairly expensive to initialise, we'll wrap it
 in an ~(after! ...)~ block.
@@ -6472,7 +6473,7 @@ While this is the LaTeX section, it's convenient to also provide HTML acronyms h
 
 ***** Nicer checkboxes
 #+begin_src emacs-lisp
-(defun tec/org-export-latex-fancy-item-checkboxes (text backend info)
+(defun +org-export-latex-fancy-item-checkboxes (text backend info)
   (when (org-export-derived-backend-p backend 'latex)
     (replace-regexp-in-string
      "\\\\item\\[{$\\\\\\(\\w+\\)$}\\]"
@@ -6485,7 +6486,7 @@ While this is the LaTeX section, it's convenient to also provide HTML acronyms h
      text)))
 
 (add-to-list 'org-export-filter-item-functions
-             'tec/org-export-latex-fancy-item-checkboxes)
+             '+org-export-latex-fancy-item-checkboxes)
 #+end_src
 
 ***** Class templates
@@ -6831,6 +6832,16 @@ better) we add bit to the preamble:
   right=2pt, top=1pt, bottom=0.5pt,
   breakable}
 #+end_src
+
+At some point it would be nice to make the box colours easily customisable. At
+the moment it's fairly easy to change the syntax highlighting colours with
+src_emacs-lisp[:eval no :exports code]{(setq engrave-faces-preset-styles
+(engrave-faces-generate-preset))}, but perhaps a toggle which specifies whether
+to use the default values, the current theme, or any named theme could be a good
+idea. It should also possible to set the box background dynamically to match.
+The named theme could work by looking for a style definition with a certain name
+in a cache dir, and then switching to that theme and producing (and saving) the
+style definition if it doesn't exist.
 
 Now let's have the example block be styled similarly.
 #+begin_src emacs-lisp
@@ -7598,4 +7609,3 @@ enable it for ~.beancount~ files.
         :n "TAB" #'beancount-align-to-previous-number
         :i "TAB" #'beancount-tab-dwim))
 #+end_src
-
