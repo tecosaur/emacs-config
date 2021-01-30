@@ -6697,6 +6697,13 @@ entry in ~org-latex-scr-block~ we can easily add this as a recognised
       (org-latex-scr-block--engraved src-block contents info)
     (funcall orig-fn src-block contents info)))
 
+(defadvice! org-latex-inline-src-block-engraved (orig-fn inline-src-block contents info)
+  "Like `org-latex-inline-src-block', but supporting an engraved backend"
+  :around #'org-latex-inline-src-block
+  (if (eq 'engraved (plist-get info :latex-listings))
+      (org-latex-inline-scr-block--engraved inline-src-block contents info)
+    (funcall orig-fn src-block contents info)))
+
 (setq org-latex-engraved-code-preamble "
 <<org-latex-engraved-code-preamble>>
 ")
@@ -6778,6 +6785,24 @@ entry in ~org-latex-scr-block~ we can easily add this as a recognised
     (kill-buffer content-buffer)
     ;; Return value.
     (format float-env body)))
+
+(defun org-latex-inline-scr-block--engraved (inline-src-block _contents info)
+  (let ((options (org-latex--make-option-string
+                  (plist-get info :latex-minted-options)))
+        code-buffer code)
+    (setq code-buffer
+          (with-temp-buffer
+            (insert (org-element-property :value inline-src-block))
+            (funcall (org-src-get-lang-mode
+                      (org-element-property :language inline-src-block)))
+            (engrave-faces-latex-buffer)))
+    (setq code (with-current-buffer code-buffer
+                 (buffer-string)))
+    (kill-buffer code-buffer)
+    (format "\\Verb%s{%s}"
+            (if (string= options "") ""
+              (format "[%s]" options))
+            code)))
 #+end_src
 
 Whenever this is used, in order for it to actually work (and look a little
