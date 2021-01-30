@@ -22,6 +22,8 @@
         (org-export-coding-system org-html-coding-system)
         org-mode-hook org-load-hook)
     (insert-file-contents (expand-file-name "config.org" config-root))
+    (goto-char (point-max))
+    (insert (shell-command-to-string (expand-file-name "./gen-org-snippets.sh" script-root)))
     (message "[33] Exporting %s" (buffer-file-name))
     (org-latex-export-to-pdf)))
 

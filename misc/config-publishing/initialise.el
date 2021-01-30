@@ -3,6 +3,7 @@
 (setq start-time (float-time)
       exit-code 0)
 
+(defvar script-root default-directory)
 (defvar config-root (file-name-directory ; $DOOM_DIR/
                      (directory-file-name
                       (file-name-directory ; $DOOM_DIR/misc
