@@ -4489,8 +4489,15 @@ no modeline.
 ***** Basic settings
 I'll just set this to be within =Organisation= folder for now, in the future it
 could be worth seeing if I could hook this up to a [[https://nextcloud.com/][Nextcloud]] instance.
-#+begin_src emacs-lisp :tangle (if (file-exists-p "~/Desktop/TEC/Organisation/Roam/") "yes" "no")
+#+begin_src emacs-lisp :noweb-ref none :tangle yes
 (setq org-roam-directory "~/Desktop/TEC/Organisation/Roam/")
+#+end_src
+
+That said, if the directory doesn't exist we likely don't want to be using roam.
+Since we don't want to trigger errors (which will happen as soon as roam tries
+to initialise), let's not load roam.
+#+begin_src emacs-lisp :noweb-ref none :tangle (if (file-exists-p "~/Desktop/TEC/Organisation/Roam/") "no" "packages.el")
+(package! org-roam :disable t)
 #+end_src
 ***** Registering roam protocol
 The recommended method of registering a protocol is by registering a desktop

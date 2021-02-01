@@ -68,11 +68,6 @@
   (advice-add 'theme-magic-from-emacs :override #'ignore)
   (advice-add 'format-all-buffer :override #'ignore)
 
-  ;; Avoid error: file-missing "Opening directory" "No such file or directory" "~/org/roam"
-  (setq org-roam-directory "~")
-  (advice-add 'org-roam-mode :override #'ignore)
-  (advice-add 'org-roam-db-build-cache :override #'ignore)
-
   (if full
       (load (expand-file-name "~/.emacs.d/init.el"))
     (setq gc-cons-threshold 16777216
