@@ -1509,7 +1509,8 @@ Now we just need to load it appropriately.
 #+end_src
 *** Beancount (accounting)
 #+begin_src emacs-lisp
-(package! beancount :recipe (:host github :repo "beancount/beancount-mode"))
+(package! beancount :recipe (:host github :repo "beancount/beancount-mode")
+  :pin "7a0ef01d1ff6f8c318af944131310ca06d4c65ff")
 #+end_src
 * Package configuration
 ** Abbrev mode
@@ -7652,29 +7653,6 @@ Of course, there's an Emacs mode for this.
     (let ((compilation-read-command nil))
       (beancount--run "bean-report"
                       (file-relative-name buffer-file-name) "bal")))
-  (defvar beancount--fava-process nil)
-  (defun beancount-fava ()
-    "Start (and open) or stop the fava server."
-    (interactive)
-    (if beancount--fava-process
-        (progn
-          (delete-process beancount--fava-process)
-          (setq beancount--fava-process nil)
-          (message "Fava process killed"))
-      (setq beancount--fava-process
-            (start-process "fava" (get-buffer-create "*fava*") "fava"
-                           (cond
-                            ((string= "beancount"
-                                      (file-name-extension (buffer-file-name)))
-                             (buffer-file-name))
-                            (t (read-file-name "File to view: ")))))
-      (set-process-filter beancount--fava-process #'beancount--fava-filter)
-      (message "Fava process started")))
-  (defun beancount--fava-filter (process output)
-    (if-let ((url (string-match "Running Fava on \\(http://.+:[0-9]+\\)\n" output)))
-        (browse-url-xdg-open (match-string 1 output))))
-  (add-to-list 'all-the-icons-mode-icon-alist
-               '(beancount-mode all-the-icons-material "attach_money" :face all-the-icons-lblue))
   (map! :map beancount-mode-map
         :n "TAB" #'beancount-align-to-previous-number
         :i "RET" (cmd! (newline-and-indent) (beancount-align-to-previous-number))))
