@@ -6551,6 +6551,8 @@ We'll be setting up an nice preamble to use in a new default export class.
 \\setlength{\\parskip}{\\baselineskip}\n\
 \\setlength{\\parindent}{0pt}\n\
 
+\\AtBeginEnvironment{quote}{\\itshape}
+
 \\usepackage{pifont}
 \\newcommand{\\checkboxUnchecked}{$\\square$}
 \\newcommand{\\checkboxTransitive}{\\rlap{\\raisebox{-0.1ex}{\\hspace{0.35ex}\\Large\\textbf -}}$\\square$}
