@@ -7612,7 +7612,28 @@ enable it for ~.beancount~ files.
     (let ((compilation-read-command nil))
       (beancount--run "bean-report"
                       (file-relative-name buffer-file-name) "bal")))
+  (defvar beancount--fava-process nil)
+  (defun beancount-fava ()
+    "Start (and open) or stop the fava server."
+    (interactive)
+    (if beancount--fava-process
+        (progn
+          (delete-process beancount--fava-process)
+          (setq beancount--fava-process nil)
+          (message "Fava process killed"))
+      (setq beancount--fava-process
+            (start-process "fava" (get-buffer-create "*fava*") "fava"
+                           (cond
+                            ((string= "beancount"
+                                      (file-name-extension (buffer-file-name)))
+                             (buffer-file-name))
+                            (t (read-file-name "File to view: ")))))
+      (set-process-filter beancount--fava-process #'beancount--fava-filter)
+      (message "Fava process started")))
+  (defun beancount--fava-filter (process output)
+    (if-let ((url (string-match "Running Fava on \\(http://.+:[0-9]+\\)\n" output)))
+        (browse-url-xdg-open (match-string 1 output))))
   (map! :map beancount-mode-map
         :n "TAB" #'beancount-align-to-previous-number
-        :i "TAB" #'beancount-tab-dwim))
+        :i "RET" (cmd! (newline-and-indent) (beancount-align-to-previous-number))))
 #+end_src
