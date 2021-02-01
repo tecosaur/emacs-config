@@ -1507,6 +1507,10 @@ Now we just need to load it appropriately.
   :mode ("authinfo.gpg\\'" . authinfo-color-mode)
   :init (advice-add 'authinfo-mode :override #'authinfo-color-mode))
 #+end_src
+*** Beancount (accounting)
+#+begin_src emacs-lisp
+(package! beancount :recipe (:host github :repo "beancount/beancount-mode"))
+#+end_src
 * Package configuration
 ** Abbrev mode
 Thanks to [[https://emacs.stackexchange.com/questions/45462/use-a-single-abbrev-table-for-multiple-modes/45476#45476][use a single abbrev-table for multiple modes? - Emacs Stack Exchange]] I
@@ -7624,12 +7628,22 @@ sixth greyed out. Since the sixth level is so small, I'll turn up the boldness a
   '(markdown-header-face-6 :height 0.75 :weight extra-bold :inherit markdown-header-face))
 #+end_src
 ** Beancount
-The [[https://bitbucket.org/blais/beancount/src/tip/editors/emacs/beancount.el][beancount package]] online has been put into ~./lisp~, we just need to load and
-enable it for ~.beancount~ files.
+There are a number of rather compelling advantages to [[https://plaintextaccounting.org/][plain text accounting]],
+with [[https://www.ledger-cli.org/][ledger]] being the most obvious example. However, [[https://github.com/beancount/beancount][beancount]], a more recent
+implementation of the idea is ledger-compatable (meaning I can switch easily if
+I change my mind) and has a gorgeous front-end --- [[https://beancount.github.io/fava/][fava]].
+
+Of course, there's an Emacs mode for this.
+
 #+begin_src emacs-lisp
 (use-package! beancount
-  :load-path "~/.config/doom/lisp"
   :mode ("\\.beancount\\'" . beancount-mode)
+  :init
+  (after! all-the-icons
+    (add-to-list 'all-the-icons-icon-alist
+                 '("\\.beancount\\'" all-the-icons-material "attach_money" :face all-the-icons-lblue))
+    (add-to-list 'all-the-icons-mode-icon-alist
+                 '(beancount-mode all-the-icons-material "attach_money" :face all-the-icons-lblue)))
   :config
   (setq beancount-electric-currency t)
   (defun beancount-bal ()
@@ -7659,6 +7673,8 @@ enable it for ~.beancount~ files.
   (defun beancount--fava-filter (process output)
     (if-let ((url (string-match "Running Fava on \\(http://.+:[0-9]+\\)\n" output)))
         (browse-url-xdg-open (match-string 1 output))))
+  (add-to-list 'all-the-icons-mode-icon-alist
+               '(beancount-mode all-the-icons-material "attach_money" :face all-the-icons-lblue))
   (map! :map beancount-mode-map
         :n "TAB" #'beancount-align-to-previous-number
         :i "RET" (cmd! (newline-and-indent) (beancount-align-to-previous-number))))
