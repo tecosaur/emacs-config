@@ -1402,6 +1402,12 @@ For automatically toggling LaTeX fragment previews there's this nice package
 (package! org-fragtog :pin "0151cabc7aa9f244f82e682b87713b344d780c23")
 #+end_src
 
+Then for pretty markers
+#+begin_src emacs-lisp
+(package! org-appear :recipe (:host github :repo "awth13/org-appear")
+  :pin "19ea96e6e2ce01b8583b25a6e5579f1be207a119")
+#+end_src
+
 ~org-superstar-mode~ is great. While we're at it we may as well make tags prettier as well :)
 #+begin_src emacs-lisp
 (package! org-pretty-tags :pin "5c7521651b35ae9a7d3add4a66ae8cc176ae1c76")
@@ -5414,6 +5420,21 @@ We can then have quote blocks stand out a bit more by making them /italic/.
 #+begin_src emacs-lisp
 (setq org-fontify-quote-and-verse-blocks t)
 #+end_src
+
+While ~org-hide-emphasis-markers~ is very nice, it can sometimes make edits which
+occur at the border a bit more fiddley. We can improve this situation without
+sacrificing visual amenities with the =org-appear= package.
+#+begin_src emacs-lisp
+(use-package! org-appear
+  :hook (org-mode . org-appear-mode)
+  :config
+  (setq org-appear-autoemphasis t
+        org-appear-autosubmarkers t
+        org-appear-autolinks nil)
+  ;; for proper first-time setup, `org-appear--set-fragments'
+  ;; needs to be run after other hooks have acted.
+  (run-at-time nil nil #'org-appear--set-fragments))
+#+end_src
 ***** Symbols
 It's also nice to change the character used for collapsed items (by default ~…~),
 I think ~▾~ is better for indicating 'collapsed section'.
@@ -5524,15 +5545,20 @@ It's also nice to make use of the Unicode characters for check boxes, and other 
   :priority_e    "[#E]")
 (plist-put +ligatures-extra-symbols :name "⁍")
 #+end_src
-We also like ~org-fragtog~, and that wants a hook.
-#+begin_src emacs-lisp
-(add-hook 'org-mode-hook 'org-fragtog-mode)
-#+end_src
+
 ***** LaTeX Fragments
 First off, we want those fragments to look good.
 #+begin_src emacs-lisp
 (setq org-highlight-latex-and-related '(native script entities))
 #+end_src
+
+What's better than syntax-highlighted LaTeX is /rendered/ LaTeX though, and we can
+have this be performed automatically with =org-fragtog=.
+#+begin_src emacs-lisp
+(use-package! org-fragtog
+  :hook (org-mode . org-fragtog-mode))
+#+end_src
+
 It's nice to customise the look of LaTeX fragments so they fit better in the
 text --- like this \(\sqrt{\beta^2+3}-\sum_{\phi=1}^\infty \frac{x^\phi-1}{\Gamma(a)}\). Let's start by adding a sans font.
 #+begin_src emacs-lisp
