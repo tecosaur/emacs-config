@@ -3851,9 +3851,8 @@ in an ~(after! ...)~ block.
 **** Mime types
 Org mode isn't recognised as it's own mime type by default, but that can easily
 be changed with the following file. For system-wide changes try
-~~/usr/share/mime/packages/org.xml~.
-#+begin_src xml :tangle ~/.local/share/mime/packages/org.xml :mkdirp yes
-<?xml version="1.0" encoding="utf-8"?>
+~/usr/share/mime/packages/org.xml~.
+#+begin_src xml :tangle ~/.local/share/mime/packages/org.xml :mkdirp yes :comments none
 <mime-info xmlns='http://www.freedesktop.org/standards/shared-mime-info'>
   <mime-type type="text/org">
     <comment>Emacs Org-mode File</comment>
