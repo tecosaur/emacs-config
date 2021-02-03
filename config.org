@@ -38,28 +38,28 @@ Then I discovered [[https://github.com/cknadler/vim-anywhere][vim-anywhere]], an
 
 Separately, online I have seen the following statement enough times I think it's a catchphrase
 #+begin_quote
-Redditor1: I just discovered this thing, isn't it cool. \\
-Redditor2: Oh, there's an Emacs mode for that.
+Redditor 1: I just discovered this thing, isn't it cool. \\
+Redditor 2: Oh, there's an Emacs mode for that.
 #+end_quote
+
+This was enough for me to install Emacs, but I soon learned there are [[https://github.com/remacs/remacs#why-emacs][far more
+compelling reasons]] to keep using it.
 
 I tried out the =spacemacs= distribution a bit, but it wasn't quite to my liking.
 Then I heard about =doom emacs= and thought I may as well give that a try.
 TLDR; it's great.
 
 Now I've discovered the wonders of literate programming, and am becoming more
-settled by the day. This is my config, and also a cautionary tale (just replace
+settled by the day. This is both my config, and a cautionary tale (just replace
 "Linux" with "Emacs" in the comic below).
 
 [[xkcd:456]]
 
 ** Why Emacs?
-# https://github.com/esac-io/eos
-# https://github.com/remacs/remacs
-# https://www.eigenbahn.com/2020/01/12/emacs-is-no-editor
 
-Emacs is not a text editor, this is a common misnomer. It is far more apt to
-describe Emacs as Lisp machine providing a generic user-centric text
-manipulation environment.
+Emacs is [[https://www.eigenbahn.com/2020/01/12/emacs-is-no-editor][not a text editor]], this is a common misnomer. It is far more apt to
+describe Emacs as /a Lisp machine providing a generic user-centric text
+manipulation environment/. That's quite a mouthful.
 In simpler terms one can think of Emacs as a platform for text-related
 applications. It's a vague and generic definition because Emacs itself is
 generic.
@@ -89,9 +89,14 @@ good?
 + Integration between tasks previously relegated to different applications, but
   with a common subject --- e.g. linking to an email in a to-do list
 
-One can think of Emacs as a platform within which various elements of your
+Emacs can be thought of as a platform within which various elements of your
 workflow may settle, with the potential for rich integrations between them --- a
 /life/ IDE if you will.
+
+Today, many aspects of daily computer usage are split between different
+applications which act like islands, but this often doesn't mirror how we
+/actually use/ our computers. Emacs, if one goes down the rabbit hole, can give
+users the power to bridge this gap.
 
 #+name: emacs-platform
 #+begin_src dot :cmd circo :file misc/emacs-platform.svg :exports none
@@ -140,7 +145,7 @@ digraph {
 + Completely introspectable, with pervasive docstrings
 + Mutable environment, which can be incrementally modified
 + Functionality without applications
-+ Client-server seperation allows for a daemon, giving near-instant perceived
++ Client-server separation allows for a daemon, giving near-instant perceived
   startup time.
 
 *** Issues
