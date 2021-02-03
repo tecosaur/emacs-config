@@ -32,5 +32,5 @@ generate the =init.el= once.
 git clone --recurse-submodules git@github.com:tecosaur/emacs-config.git ~/.config/doom
 emacs --batch --eval "(require 'org)" --eval '(org-babel-tangle-file "~/.config/doom/config.org")'
 git clone --depth 1 https://github.com/hlissner/doom-emacs ~/.emacs.d
-~/.emacs.d/bin/doom install
+~/.emacs.d/bin/doom install; ~/.config/doom/setup.sh
 #+end_src
