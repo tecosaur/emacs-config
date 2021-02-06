@@ -7147,7 +7147,7 @@ frame from ~1~ to ~2~.
 #+end_src
 **** Exporting to Markdown
 When I want to paste exported markdown somewhere (for example when using [[*\[\[https://github.com/zachcurry/emacs-anywhere\]\[Emacs Anywhere\]\] configuration][Emacs
-Anywhere]]), it can be preferable to have unicode charachters for =---= etc. instead
+Anywhere]]), it can be preferable to have unicode characters for =---= etc. instead
 of =&#x2014;=.
 
 To accomplish this, we just need to locally rebind the alist which provides
@@ -7162,7 +7162,7 @@ these substitution.
            ("---\\([^-]\\)" . "—\\1")
            ("--\\([^-]\\)" . "–\\1")
            ("\\.\\.\\." . "…"))))
-    (funcall orig-fn text info)))
+    (funcall orig-fn text (plist-put info :with-smart-quotes nil))))
 #+end_src
 
 In the future, I may want to check =info= to only have this active when =ox-gfm= is
