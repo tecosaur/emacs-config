@@ -9,69 +9,47 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-20.04 # change to -latest when possible
+    container:
+      image: ghcr.io/tecosaur/emacs-config:latest
+      options: --user 0 # root
+      credentials:
+        username: ${{ github.actor }}
+        password: ${{ secrets.GHCR_TOKEN }}
 
     steps:
-      - uses: purcell/setup-emacs@master
-        with:
-          version: 27.1
-
       - name: Checkout config
-        uses: actions/checkout@v2
-        with:
-          submodules: recursive
-
-      - name: Symlink config to expected location
-        # I could just set DOOMDIR ... but this is also easy
-        run: |
-          mkdir -p ~/.config
-          ln -s $GITHUB_WORKSPACE ~/.config/doom
-          mkdir -p ~/.org/roam
+        run: runner 'git clone --depth 1 --recurse-submodules https://github.com/tecosaur/emacs-config.git ~/.config/doom'
 
       - name: Generate init.el et. al from config.org
-        run: |
-          cd ~/.config/doom
-          emacs --batch --eval "(require 'org)" --eval '(org-babel-tangle-file "config.org")'
+        run: runner "cd ~/.config/doom && emacs --batch --eval \"(require 'org)\" --eval '(org-babel-tangle-file \"config.org\")'"
 
       - name: Clone Doom to ~/.emacs.d
-        run: git clone --depth 1 https://github.com/hlissner/doom-emacs ~/.emacs.d
+        run: runner 'git clone --depth 1 https://github.com/hlissner/doom-emacs ~/.emacs.d'
 
       - name: Get Doom's version
         id: doom-version
-        run: |
-          cd ~/.emacs.d
-          echo ::set-output name=hash::$(git log -1 | head -1 | awk '{print substr($2,1,7)}')
-        shell: bash
+        run: runner 'cd ~/.emacs.d && echo "::set-output name=hash::$(git log -1 | head -1 | awk '"'"'{print substr($2,1,7)}'"'"')"'
 
       - name: Cache Doom's install
         uses: actions/cache@v2
         with:
-          path: ~/.emacs.d
+          path: /home/runner/.emacs.d
           key: ${{ runner.os }}-doom@${{ steps.doom-version.outputs.hash }}
 
-      - name: Doom dependencies
-        run: sudo apt-get install git ripgrep xclip
-
       - name: Install Doom
-        run: ~/.emacs.d/bin/doom install --no-env --no-fonts
-
-      - name: Install LaTeX compiler chain
-        run: |
-          git clone https://github.com/tecosaur/BMC.git ~/texmf/tex/latex/bmc
-          sudo apt install texlive-base texlive-latex-recommended texlive-fonts-extra latexmk
+        run: runner '~/.emacs.d/bin/doom install --no-env --no-fonts'
 
       - name: Export config
-        run: |
-          cd ~/.config/doom/misc/config-publishing
-          ./publish.sh
-
-      # - name: Debug over SSH (tmate)
-      #   if: ${{ failure() }}
-      #   uses: mxschmitt/action-tmate@v3.1
+        run: runner 'cd ~/.config/doom/misc/config-publishing && ./publish.sh'
 
       - name: Deploy
         if: ${{ github.event_name != 'pull_request'}}
         uses: peaceiris/actions-gh-pages@v3
         with:
           deploy_key: ${{ secrets.ACTIONS_DEPLOY_KEY }}
-          publish_dir: ./publish
+          publish_dir: /home/runner/.config/doom/publish
           force_orphan: true
+
+      - name: Debug over SSH (tmate)
+        if: ${{ failure() }}
+        uses: mxschmitt/action-tmate@v3.1

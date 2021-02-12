@@ -1,0 +1,33 @@
+name: "Build Image"
+on:
+  push:
+    branches: master
+    paths:
+      - ".github/workflows/Dockerfile"
+
+jobs:
+  build-image:
+    runs-on: ubuntu-20.04 # change to -latest when possible
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Login to the GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GHCR_TOKEN }}
+
+      - name: Push to Docker Hub
+        uses: docker/build-push-action@v2
+        with:
+          context: .github/workflows
+          tags: ghcr.io/tecosaur/emacs-config:latest
+          push: true
+
+      - name: Image digest
+        run: echo ${{ steps.docker_build.outputs.digest }}
