@@ -702,6 +702,7 @@ I couldn't resist the Email and Feed modules.
 #+name: doom-app
 #+begin_src emacs-lisp
 ;;calendar
+everywhere                   ; *leave* Emacs!? You must be joking.
 irc                          ; how neckbeards socialize
 (rss +org)                   ; emacs as an RSS reader
 ;;twitter                    ; twitter client https://twitter.com/vnought
@@ -1266,6 +1267,10 @@ This is a nice extension to ~calc~
                            :files ("*.el" "calctex/*.el" "calctex-contrib/*.el" "org-calctex/*.el"))
   :pin "7fa2673c64e259e04aef684ccf09ef85570c388b")
 #+end_src
+**** Emacs everywhere
+#+begin_src emacs-lisp
+(package! emacs-everywhere :recipe (:local-repo "lisp/emacs-everywhere") :pin nil)
+#+end_src
 **** ESS
 View data frames better with
 #+begin_src emacs-lisp
@@ -1608,118 +1613,18 @@ We then configure the dictionary we're using in [[*Ispell][Ispell]].
 #+begin_src emacs-lisp
 (setq elcord-use-major-mode-as-main-icon t)
 #+end_src
-** [[https://github.com/zachcurry/emacs-anywhere][Emacs Anywhere]] configuration
-To start with, let's install this.
-#+begin_src shell :tangle (if (executable-find "emacs_anywhere") "no" "setup.sh")
-cd /tmp
-curl -fsSL https://raw.github.com/zachcurry/emacs-anywhere/master/install -o ea-install.sh
-sed -i 's/EA_PATH=$HOME\/.emacs_anywhere/EA_PATH=$HOME\/.local\/share\/emacs_anywhere/' ea-install.sh
-bash ea-install.sh || exit
-cd ~/.local/share/emacs_anywhere
-# Install in ~/.local not ~/.emacs_anywhere
-sed -i 's/$HOME\/.emacs_anywhere/$HOME\/.local\/share\/emacs_anywhere/' ./bin/linux ./bin/emacstask
-ln -s ~/.local/share/emacs_anywhere/bin/linux ~/.local/bin/emacs_anywhere
-#+end_src
-
-It's nice to recognise GitHub (so we can use ~GFM~), and other apps which we know
-take markdown
+** Emacs Everywhere
 #+begin_src emacs-lisp
-(defun markdown-window-p (window-title)
-  "Judges from WINDOW-TITLE whether the current window likes markdown"
-  (if (string-match-p (rx (or "Stack Exchange" "Stack Overflow"
-                              "Pull Request" "Issue" "Discord"))
-                      window-title) t nil))
+(when (daemonp)
+  (require 'spell-fu)
+  (setq emacs-everywhere-major-mode-function #'org-mode
+        emacs-everywhere-frame-name-format "Edit ∷ %s — %s")
+  (require 'emacs-everywhere))
 #+end_src
-When the window opens, we generally want text so let's use a nice sans serif font,
-a position the window below and to the left. Oh, and don't forget about checking
-for ~GFM~, otherwise let's just use ~markdown~.
+** Emojify
 #+begin_src emacs-lisp
-(defvar emacs-anywhere--active-markdown nil
-  "Whether the buffer started off as markdown.
-Affects behaviour of `emacs-anywhere--finalise-content'")
-
-(defun emacs-anywhere--finalise-content (&optional _frame)
-  (when emacs-anywhere--active-markdown
-    (fundamental-mode)
-    (goto-char (point-min))
-    (insert "#+property: header-args :exports both\n#+options: toc:nil\n")
-    (rename-buffer "*EA Pre Export*")
-    (org-export-to-buffer 'gfm ea--buffer-name)
-    (kill-buffer "*EA Pre Export*"))
-  (gui-select-text (buffer-string)))
-
-(define-minor-mode emacs-anywhere-mode
-  "To tweak the current buffer for some emacs-anywhere considerations"
-  :init-value nil
-  :keymap (list
-           ;; Finish edit, but be smart in org mode
-           (cons (kbd "C-c C-c")
-                 (cmd! (if (and (eq major-mode 'org-mode)
-                                (org-in-src-block-p))
-                           (org-ctrl-c-ctrl-c)
-                         (delete-frame))))
-           ;; Abort edit. emacs-anywhere saves the current edit for next time.
-           (cons (kbd "C-c C-k")
-                 (cmd! (setq ea-on nil)
-                       (delete-frame))))
-  (when emacs-anywhere-mode
-    ;; line breaking
-    (turn-off-auto-fill)
-    (visual-line-mode t)
-    ;; DEL/C-SPC to clear (first keystroke only)
-    (set-transient-map (let ((keymap (make-sparse-keymap)))
-                         (define-key keymap (kbd "DEL")   (cmd! (delete-region (point-min) (point-max))))
-                         (define-key keymap (kbd "C-SPC") (cmd! (delete-region (point-min) (point-max))))
-                         keymap))
-    ;; disable tabs
-    (when (bound-and-true-p centaur-tabs-mode)
-      (centaur-tabs-local-mode t))))
-
-(defun ea-popup-handler (app-name window-title x y w h)
-  (interactive)
-  (set-frame-size (selected-frame) 80 12)
-  ;; position the frame near the mouse
-  (let* ((mousepos (split-string (shell-command-to-string "xdotool getmouselocation | sed -E \"s/ screen:0 window:[^ ]*|x:|y://g\"")))
-         (mouse-x (- (string-to-number (nth 0 mousepos)) 100))
-         (mouse-y (- (string-to-number (nth 1 mousepos)) 50)))
-    (set-frame-position (selected-frame) mouse-x mouse-y))
-
-  (set-frame-name (concat "Quick Edit ∷ " ea-app-name " — "
-                          (truncate-string-to-width
-                           (string-trim
-                            (string-trim-right window-title
-                                               (format "-[A-Za-z0-9 ]*%s" ea-app-name))
-                            "[\s-]+" "[\s-]+")
-                           45 nil nil "…")))
-
-  (when-let ((selection (gui-get-selection 'PRIMARY)))
-    (insert selection))
-
-  ;; convert buffer to org mode if markdown
-  (when (markdown-window-p window-title)
-    (shell-command-on-region (point-min) (point-max)
-                             "pandoc -f markdown -t org" nil t)
-    (deactivate-mark) (goto-char (point-max)))
-
-  ;; remove any blank newline at end
-  (delete-trailing-whitespace)
-  (delete-char (- (skip-chars-backward "\n")))
-
-  ;; set major mode
-  (org-mode)
-
-  ;; set markdown status
-  (setq-local emacs-anywhere--active-markdown (markdown-window-p window-title))
-
-  (advice-add 'ea--delete-frame-handler :before #'emacs-anywhere--finalise-content)
-
-  ;; I'll be honest with myself, I /need/ spellcheck
-  (spell-fu-buffer)
-
-  (evil-insert-state) ; start in insert
-  (emacs-anywhere-mode 1))
-
-(add-hook 'ea-popup-hook 'ea-popup-handler)
+(after! emojify
+  (setq emojify-emoji-set "twemoji-v2"))
 #+end_src
 
 #+end_src
@@ -7157,8 +7062,8 @@ frame from ~1~ to ~2~.
 (setq org-beamer-frame-level 2)
 #+end_src
 **** Exporting to Markdown
-When I want to paste exported markdown somewhere (for example when using [[*\[\[https://github.com/zachcurry/emacs-anywhere\]\[Emacs Anywhere\]\] configuration][Emacs
-Anywhere]]), it can be preferable to have unicode characters for =---= etc. instead
+When I want to paste exported markdown somewhere (for example when using [[Emacs Everywhere][Emacs
+Everywhere]]), it can be preferable to have unicode characters for =---= etc. instead
 of =&#x2014;=.
 
 To accomplish this, we just need to locally rebind the alist which provides
