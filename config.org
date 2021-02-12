@@ -3745,6 +3745,17 @@ We also want to define ~mu4e-compose-from-mailto~.
     (mu4e~compose-mail to subject headers)))
 #+end_src
 This may not quite function as intended for now due to [[github:jeremy-compostella/org-msg/issues/52][jeremy-compostella/org-msg#52]].
+
+It would also be nice to change the name pre-filled in =From:= when drafting.
+#+begin_src emacs-lisp
+(defvar mu4e-from-name "Timothy"
+  "Name used in \"From:\" template.")
+(defadvice! mu4e~draft-from-construct-renamed (orig-fn)
+  "Wrap `mu4e~draft-from-construct-renamed' to change the name."
+  :around #'mu4e~draft-from-construct
+  (let ((user-full-name mu4e-from-name))
+    (funcall orig-fn)))
+#+end_src
 *** Org Msg
 Doom does a fantastic stuff with the defaults with this, so we only make a few
 minor tweaks.
