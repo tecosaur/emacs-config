@@ -4,7 +4,7 @@ on:
   push:
     branches: master
   schedule:
-    - cron: "0 0 * * *" # daily
+    - cron: "0 */2 * * *" # every 2h
 
 jobs:
   deploy:
@@ -17,12 +17,6 @@ jobs:
         password: ${{ secrets.GHCR_TOKEN }}
 
     steps:
-      - name: Checkout config
-        run: runner 'git clone --depth 1 --recurse-submodules https://github.com/tecosaur/emacs-config.git ~/.config/doom'
-
-      - name: Generate init.el et. al from config.org
-        run: runner "cd ~/.config/doom && emacs --batch --eval \"(require 'org)\" --eval '(org-babel-tangle-file \"config.org\")'"
-
       - name: Clone Doom to ~/.emacs.d
         run: runner 'git clone --depth 1 https://github.com/hlissner/doom-emacs ~/.emacs.d'
 
@@ -30,26 +24,37 @@ jobs:
         id: doom-version
         run: runner 'cd ~/.emacs.d && echo "::set-output name=hash::$(git log -1 | head -1 | awk '"'"'{print substr($2,1,7)}'"'"')"'
 
-      - name: Cache Doom's install
+      - name: Cache Doom's Install
+        id: doomcache
         uses: actions/cache@v2
         with:
           path: /home/runner/.emacs.d
           key: ${{ runner.os }}-doom@${{ steps.doom-version.outputs.hash }}
 
-      - name: Install Doom
+      - name: Checkout config
+        if: github.event_name != 'schedule' || steps.doomcache.outputs.cache-hit != 'true'
+        run: runner 'git clone --depth 1 --recurse-submodules https://github.com/tecosaur/emacs-config.git ~/.config/doom'
+
+      - name: Generate init.el et. al from config.org
+        if: github.event_name != 'schedule' || steps.doomcache.outputs.cache-hit != 'true'
+        run: runner "cd ~/.config/doom && emacs --batch --eval \"(require 'org)\" --eval '(org-babel-tangle-file \"config.org\")'"
+
+      - name: Setup Doom
+        if: github.event_name != 'schedule' || steps.doomcache.outputs.cache-hit != 'true'
         run: runner '~/.emacs.d/bin/doom install --no-env --no-fonts'
 
       - name: Export config
+        if: github.event_name != 'schedule' || steps.doomcache.outputs.cache-hit != 'true'
         run: runner 'cd ~/.config/doom/misc/config-publishing && ./publish.sh'
 
       - name: Deploy
-        if: ${{ github.event_name != 'pull_request'}}
+        if: github.event_name != 'pull_request' && ( github.event_name != 'schedule' || steps.doomcache.outputs.cache-hit != 'true')
         uses: peaceiris/actions-gh-pages@v3
         with:
           deploy_key: ${{ secrets.ACTIONS_DEPLOY_KEY }}
           publish_dir: /home/runner/.config/doom/publish
           force_orphan: true
 
-      - name: Debug over SSH (tmate)
-        if: ${{ failure() }}
-        uses: mxschmitt/action-tmate@v3.1
+      # - name: Debug over SSH (tmate)
+      #   if: ${{ failure() }}
+      #   uses: mxschmitt/action-tmate@v3.1
