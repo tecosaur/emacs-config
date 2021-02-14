@@ -1357,24 +1357,22 @@ file uploading script (which I've renamed to ~upload~).
 *** LaTeX
 For mathematical convenience, WIP
 #+begin_src emacs-lisp
-(package! auto-activating-snippets :recipe
-  (:host github :repo "ymarco/auto-activating-snippets")
-  :pin "85cd255347c4cc59e734eaec892599449ce48022")
-(package! latex-auto-activating-snippets
-  :recipe (:local-repo "lisp/LaTeX-auto-activating-snippets"))
+(package! aas :recipe (:host github :repo "ymarco/auto-activating-snippets")
+  :pin "df0e0c05fc46351de1666ea3ea92f72f3a8b71e1")
+(package! laas :recipe (:local-repo "lisp/LaTeX-auto-activating-snippets"))
 #+end_src
 And some basic config
 #+begin_src emacs-lisp :tangle yes
-(use-package! auto-activating-snippets
-  :hook (LaTeX-mode . auto-activating-snippets-mode)
-  :config (require 'latex-auto-activating-snippets))
+(use-package! aas
+  :commands aas-mode)
 
-(use-package! latex-auto-activating-snippets
+(use-package! laas
+  :hook (LaTeX-mode . laas-mode)
   :config
-  (defun als-tex-fold-maybe ()
-    (unless (equal "/" als-transient-snippet-key)
+  (defun laas-tex-fold-maybe ()
+    (unless (equal "/" aas-transient-snippet-key)
       (+latex-fold-last-macro-a)))
-  (add-hook 'aas-post-snippet-expand-hook #'als-tex-fold-maybe))
+  (add-hook 'aas-post-snippet-expand-hook #'laas-tex-fold-maybe))
 #+end_src
 *** Org Mode
 Use HEAD for development.
