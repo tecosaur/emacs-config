@@ -1537,6 +1537,14 @@ have the following.
   (setq abbrev-file-name (expand-file-name "abbrev.el" doom-private-dir))
   (setq save-abbrevs 'silently))
 #+end_src
+** Avy
+What a wonderful way to jump to buffer positions, and it uses the QWERTY
+home-row for jumping. Very convenient ... except I'm using Colemak.
+
+#+begin_src emacs-lisp :tangle (if (= 0 (call-process "sh" nil nil nil "-c" "dmesg | grep -q 'ErgoDox'")) "yes" "no")
+(after! avy
+  (setq avy-keys '(?t ?n ?s ?e ?r ?i ?a ?o)))
+#+end_src
 ** Calc
 Any sane person prefers radians and exact values.
 
