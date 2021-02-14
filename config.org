@@ -292,9 +292,6 @@ fatal: Could not read from remote repository.
 Please make sure you have the correct access rights
 and the repository exists.
 #+end_src
-*** CalcTeX brings up compilation buffer
-With my [[*Calc][Calc]] hook, the first call of =M-x calc= brings up a compilation buffer
-from CalcTeX. I'm guessing this is from the compilation of the preamble / ~.fmt~ file.
 *** Unread emails doesn't work across Emacs instances
 It would be nice if it did, so that I could have the Emacs-daemon hold the
 active mu4e session, but still get that information. In this case I'd want to
@@ -1264,7 +1261,7 @@ This is a nice extension to ~calc~
 
 #+begin_src emacs-lisp
 (package! calctex :recipe (:host github :repo "johnbcoughlin/calctex"
-                           :files ("*.el" "calctex/*.el" "calctex-contrib/*.el" "org-calctex/*.el"))
+                           :files ("*.el" "calctex/*.el" "calctex-contrib/*.el" "org-calctex/*.el" "vendor"))
   :pin "7fa2673c64e259e04aef684ccf09ef85570c388b")
 #+end_src
 **** Emacs everywhere
@@ -1543,15 +1540,58 @@ have the following.
   (setq save-abbrevs 'silently))
 #+end_src
 ** Calc
-Radians are just better
-(setq calc-angle-mode 'rad  ;; radians are rad
-      calc-algebraic-mode t ;; allows '2*x instead of 'x<RET>2*
-      calc-symbolic-mode t) ;; keeps stuff like √2 irrational for as long as possible
-(after! calctex
-  (setq calctex-format-latex-header (concat calctex-format-latex-header
-                                            "\n\\usepackage{arevmath}")))
+Any sane person prefers radians and exact values.
+
 #+begin_src emacs-lisp
-(add-hook 'calc-mode-hook #'calctex-mode)
+(setq calc-angle-mode 'rad  ; radians are rad
+      calc-symbolic-mode t) ; keeps expressions like \sqrt{2} irrational for as long as possible
+#+end_src
+
+#+attr_html: :class invertible :alt Demonstration of calc, prettified by calctex.
+[[https://tecosaur.com/lfs/emacs-config/screenshots/calc-with-calctex.png]]
+
+We'd like to use CalcTeX too, so let's set that up, and fix some glaring
+inadequacies --- why on earth would you commit a hard-coded path to an executable
+that /only works on your local machine/, consequently breaking the package for
+everyone else!?
+
+#+begin_src emacs-lisp
+(use-package! calctex
+  :commands calctex-mode
+  :init
+  (add-hook 'calc-mode-hook #'calctex-mode)
+  :config
+  (setq calctex-additional-latex-packages "
+\\usepackage[usenames]{color}
+\\usepackage{xcolor}
+\\usepackage{soul}
+\\usepackage{adjustbox}
+\\usepackage{amsmath}
+\\usepackage{amssymb}
+\\usepackage{siunitx}
+\\usepackage{cancel}
+\\usepackage{mathtools}
+\\usepackage{mathalpha}
+\\usepackage{xparse}
+\\usepackage{arevmath}"
+        calctex-additional-latex-macros
+        (concat calctex-additional-latex-macros
+                "\n\\let\\evalto\\Rightarrow"))
+  (defadvice! no-messaging-a (orig-fn &rest args)
+    :around #'calctex-default-dispatching-render-process
+    (let ((inhibit-message t) message-log-max)
+      (apply orig-fn args)))
+  ;; Fix hardcoded dvichop path (whyyyyyyy)
+  (let ((vendor-folder (concat (file-truename doom-local-dir)
+                               "straight/"
+                               (format "build-%s" emacs-version)
+                               "/calctex/vendor/")))
+    (setq calctex-dvichop-sty (concat vendor-folder "texd/dvichop")
+          calctex-dvichop-bin (concat vendor-folder "texd/dvichop")))
+  (unless (file-exists-p calctex-dvichop-bin)
+    (message "CalcTeX: Building dvichop binary")
+    (let ((default-directory (file-name-directory calctex-dvichop-bin)))
+      (call-process "make" nil nil nil))))
 #+end_src
 ** Centaur Tabs
 We want to make the tabs a nice, comfy size (~36~), with icons. The modifier
