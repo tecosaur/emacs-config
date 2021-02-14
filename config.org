@@ -1445,7 +1445,7 @@ features that GitHub has.
 
 Now and then citations need to happen
 #+begin_src emacs-lisp
-(package! org-ref :pin "052a176b4cc1c080376c183e5e02ab37cb1f0f0a")
+(package! org-ref :pin "32803203cc4b01e1d4436f0f65138bf569dad8ad")
 #+end_src
 
 Came across this and ... it's cool
@@ -1473,7 +1473,7 @@ to make that right again, and this package makes that even easier to do.
 Org-roam is nice by itself, but there are so /extra/ nice packages which integrate
 with it.
 #+begin_src emacs-lisp
-(package! org-roam-server :pin "c7793202e9929dc2a415482779141e7b429421ce")
+(package! org-roam-server :pin "2093ea5a1a1f2d128dd377778472a481913717b4")
 #+end_src
 #+begin_src emacs-lisp :tangle yes
 (use-package org-roam-server
@@ -1495,7 +1495,7 @@ with it.
 *** Systemd
 For editing systemd unit files
 #+begin_src emacs-lisp
-(package! systemd :pin "51c148e09a129ddf33d95276aa0e89d4ef6f8dd2")
+(package! systemd :pin "b6ae63a236605b1c5e1069f7d3afe06ae32a7bae")
 #+end_src
 *** Graphviz
 Graphviz is a nice method of visualising simple graphs, based on plaintext
