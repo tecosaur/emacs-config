@@ -7130,6 +7130,48 @@ these substitution.
 In the future, I may want to check =info= to only have this active when =ox-gfm= is
 being used.
 
+Another worthwhile consideration is LaTeX formatting. It seems most Markdown
+parsers are fixated on TeX-style syntax (=$= and =$$=). As unfortunate as this is,
+it's probably best to accommodate them, for the sake of decent rendering.
+
+=ox-md= doesn't provide any transcoders for this, so we'll have to whip up our own
+and push them onto the =md= transcoders alist.
+
+#+begin_src emacs-lisp
+(after! ox-md
+  (defun org-md-latex-fragment (latex-fragment _contents info)
+    "Transcode a LATEX-FRAGMENT object from Org to Markdown."
+    (let ((frag (org-element-property :value latex-fragment)))
+      (cond
+       ((string-match-p "^\\\\(" frag)
+        (concat "$" (substring frag 2 -2) "$"))
+       ((string-match-p "^\\\\\\[" frag)
+        (concat "$$" (substring frag 2 -2) "$$"))
+       (t (message "unrecognised fragment: %s" frag)
+          frag))))
+
+  (defun org-md-latex-environment (latex-environment contents info)
+    "Transcode a LATEX-ENVIRONMENT object from Org to Markdown."
+    (concat "$$\n"
+            (org-html-latex-environment latex-environment contents info)
+            "$$\n"))
+
+  ;; We can't let this be immediately parsed and evaluated,
+  ;; because eager macro-expansion tries to call as-of-yet
+  ;; undefined functions.
+  (eval
+   '(let ((md-latex-frag '(latex-fragment . org-md-latex-fragment))
+          (md-latex-env '(latex-environment . org-md-latex-environment))
+          (md-transcoders (org-export-backend-transcoders
+                           (org-export-get-backend 'md))))
+      (unless (member md-latex-frag md-transcoders)
+        (push md-latex-frag (org-export-backend-transcoders
+                             (org-export-get-backend 'md))))
+      (unless (member md-latex-env md-transcoders)
+        (push md-latex-env (org-export-backend-transcoders
+                            (org-export-get-backend 'md)))))))
+#+end_src
+
 *** Babel
 Doom lazy-loads babel languages, with is lovely.
 
