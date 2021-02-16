@@ -6440,39 +6440,41 @@ be unaffected let's use ~;~ as a prefix to prevent the transformation --- i.e.
 
 While this is the LaTeX section, it's convenient to also provide HTML acronyms here.
 #+begin_src emacs-lisp
-(defun tec/org-export-latex-filter-acronym (text backend info)
-  (let ((the-backend
+(defun org-export-filter-text-acronym (text backend info)
+  "Wrap suspected acronyms in acronyms-specific formatting.
+Treat sequences of 2+ capital letters (optionally succeeded by \"s\") as an acronym.
+Ignore if preceeded by \";\" (for manual prevention) or \"\\\" (for LaTeX commands). "
+  (let ((base-backend
          (cond
           ((org-export-derived-backend-p backend 'latex) 'latex)
+          ;; Markdown is derived from HTML, but we want to treat it separately
+          ((org-export-derived-backend-p backend 'md) 'md)
           ((org-export-derived-backend-p backend 'html) 'html)))
         (case-fold-search nil))
-    (when the-backend
+    (when base-backend
       (replace-regexp-in-string
-       "[;\\\\]?\\b[A-Z][A-Z]+s?"
+       "[;\\\\]?\\b[A-Z][A-Z]+s?[^A-Z]"
        (lambda (all-caps-str)
          ;; only format as acronym if str doesn't start with ";" or "\" (for LaTeX commands)
          (cond ((equal (aref all-caps-str 0) ?\;) (substring all-caps-str 1))
                ((equal (aref all-caps-str 0) ?\\) all-caps-str)
-               ((equal (aref all-caps-str (- (length all-caps-str) 1)) ?s)
-                (pcase the-backend
-                  ('latex
-                   (concat "\\textls*[70]{\\textsc{" (s-downcase (substring all-caps-str 0 -1))
-                           "}\\protect\\scalebox{.91}[.84]{s}}"))
-                  ('html
-                   (concat "<span class='acr'>" (substring all-caps-str 0 -1)
-                           "</span><small>s</small>"))))
-               (t (pcase the-backend
-                    ('latex
-                     (concat "\\textls*[70]{\\textsc{" (s-downcase all-caps-str) "}}"))
-                    ('html (concat "<span class='acr'>" all-caps-str "</span>"))))))
+               (t (let* ((trailing-s (when (equal (aref all-caps-str (- (length all-caps-str) 2)) ?s)
+                                       (pcase base-backend
+                                         ('latex "\\protect\\scalebox{.91}[.84]{s}")
+                                         ('html "<small>s</small>"))))
+                         (acr (substring all-caps-str 0 (if trailing-s -2 -1)))
+                         (final-char (substring all-caps-str -1)))
+                    (pcase base-backend
+                      ('latex (concat "\\textls*[70]{\\textsc{" (s-downcase acr) "}" trailing-s "}" final-char))
+                      ('html (concat "<span class='acr'>" acr "</span>" trailing-s final-char)))))))
        text t t))))
 
 (add-to-list 'org-export-filter-plain-text-functions
-             'tec/org-export-latex-filter-acronym)
+             'org-export-filter-text-acronym)
 ;; FIXME I want to process headings, but this causes issues ATM,
 ;;       specifically it passes (and formats) the entire section contents
 ;; (add-to-list 'org-export-filter-headline-functions
-;;              'tec/org-export-latex-filter-acronym)
+;;              'org-export-filter-text-acronym)
 #+end_src
 
 ***** Nicer checkboxes
