@@ -7156,20 +7156,25 @@ and push them onto the =md= transcoders alist.
             (org-html-latex-environment latex-environment contents info)
             "$$\n"))
 
+  (defun org-utf8-entity (entity _contents _info)
+    "Transcode an ENTITY object from Org to utf-8.
+CONTENTS are the definition itself.  INFO is a plist holding
+contextual information."
+    (org-element-property :utf-8 entity))
+
   ;; We can't let this be immediately parsed and evaluated,
   ;; because eager macro-expansion tries to call as-of-yet
   ;; undefined functions.
+  ;; NOTE in the near future this shouldn't be required
   (eval
-   '(let ((md-latex-frag '(latex-fragment . org-md-latex-fragment))
-          (md-latex-env '(latex-environment . org-md-latex-environment))
-          (md-transcoders (org-export-backend-transcoders
-                           (org-export-get-backend 'md))))
-      (unless (member md-latex-frag md-transcoders)
-        (push md-latex-frag (org-export-backend-transcoders
-                             (org-export-get-backend 'md))))
-      (unless (member md-latex-env md-transcoders)
-        (push md-latex-env (org-export-backend-transcoders
-                            (org-export-get-backend 'md)))))))
+   '(dolist (extra-transcoder
+             '((latex-fragment . org-md-latex-fragment)
+               (latex-environment . org-md-latex-environment)
+               (entity . org-utf8-entity)))
+      (unless (member extra-transcoder (org-export-backend-transcoders
+                                        (org-export-get-backend 'md)))
+        (push extra-transcoder (org-export-backend-transcoders
+                                (org-export-get-backend 'md)))))))
 #+end_src
 
 *** Babel
