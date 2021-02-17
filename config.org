@@ -1358,7 +1358,7 @@ file uploading script (which I've renamed to ~upload~).
 For mathematical convenience, WIP
 #+begin_src emacs-lisp
 (package! aas :recipe (:host github :repo "ymarco/auto-activating-snippets")
-  :pin "df0e0c05fc46351de1666ea3ea92f72f3a8b71e1")
+  :pin "5064c60408c3ab45693c5f516003141d56a57629")
 (package! laas :recipe (:local-repo "lisp/LaTeX-auto-activating-snippets"))
 #+end_src
 And some basic config
@@ -1443,7 +1443,7 @@ features that GitHub has.
 
 Now and then citations need to happen
 #+begin_src emacs-lisp
-(package! org-ref :pin "32803203cc4b01e1d4436f0f65138bf569dad8ad")
+(package! org-ref :pin "113506df694d65e065534e516db1c592d61f44b7")
 #+end_src
 
 Came across this and ... it's cool
