@@ -1670,9 +1670,36 @@ We then configure the dictionary we're using in [[*Ispell][Ispell]].
   (require 'emacs-everywhere))
 #+end_src
 ** Emojify
+
+For starters, twitter's emojis look nicer than emoji-one.
+Other than that, this is pretty great OOTB.
+
 #+begin_src emacs-lisp
-(after! emojify
-  (setq emojify-emoji-set "twemoji-v2"))
+(setq emojify-emoji-set "twemoji-v2")
+#+end_src
+
+One minor annoyance is the use of emojis over the default character
+when the default is actually preferred. This occurs with overlay symbols I use
+in Org mode, such as checkbox state, and a few other miscellaneous cases.
+
+We can accommodate our preferences by deleting those entries from the emoji hash
+table
+
+#+begin_src emacs-lisp
+(defvar emojify-disabled-emojis
+  '(;; Org
+    "◼" "☑" "☸" "⚙" "⏩" "⏪" "⬆" "⬇" "❓"
+    ;; Terminal powerline
+    "✔"
+    ;; Box drawing
+    "▶" "◀")
+  "Charachters that should never be affected by `emojify-mode'.")
+
+(defadvice! emojify-delete-from-data ()
+  "Ensure `emojify-disabled-emojis' don't appear in `emojify-emojis'."
+  :after #'emojify-set-emoji-data
+  (dolist (emoji emojify-disabled-emojis)
+    (remhash emoji emojify-emojis)))
 #+end_src
 
 #+end_src
@@ -5475,8 +5502,8 @@ It's also nice to make use of the Unicode characters for check boxes, and other 
             :caption       "☰"
             :header        "›"
             :results       "🠶"
-            :begin_export  "⯮"
-            :end_export    "⯬"
+            :begin_export  "⏩"
+            :end_export    "⏪"
             :properties    "⚙"
             :end           "∎"
             :priority_a   ,(propertize "⚑" 'face 'all-the-icons-red)
