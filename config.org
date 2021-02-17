@@ -1544,7 +1544,8 @@ home-row for jumping. Very convenient ... except I'm using Colemak.
 
 #+begin_src emacs-lisp :tangle (if (= 0 (call-process "sh" nil nil nil "-c" "dmesg | grep -q 'ErgoDox'")) "yes" "no")
 (after! avy
-  (setq avy-keys '(?t ?n ?s ?e ?r ?i ?a ?o)))
+  ;; home row priorities: 8 6 4 5 - - 1 2 3 7
+  (setq avy-keys '(?n ?e ?i ?s ?t ?r ?i ?a)))
 #+end_src
 ** Calc
 Any sane person prefers radians and exact values.
