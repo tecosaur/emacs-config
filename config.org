@@ -4936,63 +4936,109 @@ appropriate.  In tables, insert a new row or end the table."
  :map evil-org-mode-map
  :i [return] #'unpackaged/org-return-dwim)
 #+end_src
-**** Snippet Helper
-For snippets which want to depend on the ~#+thing:~ on the current line.
-This is mostly source blocks, and property args, so let's get fancy with them.
+**** Snippet Helpers
 
-One-letter snippets are super-convenient, but for them to not be a pain
-everywhere else we'll need a nice condition function to use in yasnippet.
+I often want to set =src-block= headers, and it's a pain to
++ type them out
++ remember what the accepted values are
++ oh, and specifying the same language again and again
 
-By having this function give slightly more than a simple ~t~ or ~nil~, we can
-use in a second function to get the most popular language without explicit
-global header args.
+We can solve this in three steps
++ having one-letter snippets, conditioned on ~(point)~ being within a src header
++ creating a nice prompt showing accepted values and the current default
++ pre-filling the =src-block= language with the last language used
+
+For header args, the keys I'll use are
++ =r= for =:results=
++ =e= for =:exports=
++ =v= for =:eval=
++ =s= for =:session=
++ =d= for =:dir=
+
+#+begin_src emacs-lisp
+(defun +yas/org-src-header-p ()
+  "Determine whether `point' is within a src-block header or header-args."
+  (pcase (org-element-type (org-element-context))
+    ('src-block (< (point) ; before code part of the src-block
+                   (save-excursion (goto-char (org-element-property :begin (org-element-context)))
+                                   (forward-line 1)
+                                   (point))))
+    ('inline-src-block (< (point) ; before code part of the inline-src-block
+                          (save-excursion (goto-char (org-element-property :begin (org-element-context)))
+                                          (search-forward "]{")
+                                          (point))))
+    ('keyword (string-match-p "^header-args" (org-element-property :value (org-element-context))))))
+#+end_src
+
+Now let's write a function we can reference in yasnippets to produce a nice
+interactive way to specify header args.
+
+#+begin_src emacs-lisp
+(defun +yas/org-prompt-header-arg (arg question values)
+  "Prompt the user to set ARG header property to one of VALUES with QUESTION.
+The default value is identified and indicated. If either default is selected,
+or no selection is made: nil is returned."
+  (let* ((src-block-p (not (looking-back "^#\\+property:[ \t]+header-args:.*" (line-beginning-position))))
+         (default
+           (or
+            (cdr (assoc arg
+                        (if src-block-p
+                            (nth 2 (org-babel-get-src-block-info t))
+                          (org-babel-merge-params
+                           org-babel-default-header-args
+                           (let ((lang-headers
+                                  (intern (concat "org-babel-default-header-args:"
+                                                  (+yas/org-src-lang)))))
+                             (when (boundp lang-headers) (eval lang-headers t)))))))
+            ""))
+         default-value)
+    (setq values (mapcar
+                  (lambda (value)
+                    (if ((string-match-p (regexp-quote value) default))
+                        (setq default-value
+                              (concat value " "
+                                      (propertize "(default)" 'face 'font-lock-doc-face)))
+                      value))
+                  values))
+    (let ((selection (ivy-read question values :preselect default-value)))
+      (unless ((string-match-p "(default)$" selection)
+               (string= "" selection))
+        selection))))
+#+end_src
+
+Finally, we fetch the language information for new source blocks.
+
+Since we're getting this info, we might as well go a step further and also
+provide the ability to determine the most popular language in the buffer that
+doesn't have any =header-args= set for it (with =#+properties=).
+
 #+begin_src emacs-lisp
 (defun +yas/org-src-lang ()
-  "Try to find the current language of the src/header at point.
+  "Try to find the current language of the src/header at `point'.
 Return nil otherwise."
-  (save-excursion
-    (pcase
-        (downcase
-         (buffer-substring-no-properties
-          (goto-char (line-beginning-position))
-          (or (ignore-errors (1- (search-forward " " (line-end-position))))
-              (1+ (point)))))
-      ("#+property:"
-       (when (re-search-forward "header-args:")
-         (buffer-substring-no-properties
-          (point)
-          (or (and (forward-symbol 1) (point))
-              (1+ (point))))))
-      ("#+begin_src"
-       (buffer-substring-no-properties
-        (point)
-        (or (and (forward-symbol 1) (point))
-            (1+ (point)))))
-      ("#+header:"
-       (search-forward "#+begin_src")
-       (+yas/org-src-lang))
-      (_ nil))))
-
-(defun +yas/org-src-header-p ()
-  (or
-   (looking-back "^#\\+property:[ \t]+header-args:.*" (line-beginning-position))
-   (looking-back "^#\\+header:.*" (line-beginning-position))))
+  (let ((context (org-element-context)))
+    (pcase (org-element-type context)
+      ('src-block (org-element-property :language context))
+      ('inline-src-block (org-element-property :language context))
+      ('keyword (when (string-match "^header-args:\\([^ ]+\\)" (org-element-property :value context))
+                  (match-string 1 (org-element-property :value context)))))))
 
 (defun +yas/org-last-src-lang ()
+  "Return the language of the last src-block, if it exists."
   (save-excursion
     (beginning-of-line)
-    (when (search-backward "#+begin_src" nil t)
-      (+yas/org-src-lang))))
+    (when (re-search-backward "^[ 	]*#\\+begin_src" nil t)
+      (org-element-property :language (org-element-context)))))
 
 (defun +yas/org-most-common-no-property-lang ()
   "Find the lang with the most source blocks that has no global header-args, else nil."
   (let (src-langs header-langs)
     (save-excursion
       (goto-char (point-min))
-      (while (search-forward "#+begin_src" nil t)
+      (while (re-search-forward "^[ 	]*#\\+begin_src" nil t)
         (push (+yas/org-src-lang) src-langs))
       (goto-char (point-min))
-      (while (re-search-forward "#\\+property: +header-args" nil t)
+      (while (re-search-forward "^[ 	]*#\\+property: +header-args" nil t)
         (push (+yas/org-src-lang) header-langs)))
 
     (setq src-langs
@@ -5006,6 +5052,7 @@ Return nil otherwise."
 
     (car (cl-set-difference src-langs header-langs :test #'string=))))
 #+end_src
+
 **** Translate capital keywords (old) to lower case (new)
 Everyone used to use ~#+CAPITAL~ keywords. Then people realised that ~#+lowercase~
 is actually both marginally easier and visually nicer, so now the capital

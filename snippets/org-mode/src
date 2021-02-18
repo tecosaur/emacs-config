@@ -3,6 +3,6 @@
 # uuid: src
 # key: src
 # --
-#+begin_src ${1:`(+yas/org-last-src-lang)`}
+#+begin_src ${1:`(or (+yas/org-last-src-lang) "?")`}
 `%`$0
 #+end_src
