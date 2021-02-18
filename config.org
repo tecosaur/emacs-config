@@ -1548,6 +1548,7 @@ home-row for jumping. Very convenient ... except I'm using Colemak.
   (setq avy-keys '(?n ?e ?i ?s ?t ?r ?i ?a)))
 #+end_src
 ** Calc
+*** Defaults
 Any sane person prefers radians and exact values.
 
 #+begin_src emacs-lisp
@@ -1557,6 +1558,8 @@ Any sane person prefers radians and exact values.
 
 #+attr_html: :class invertible :alt Demonstration of calc, prettified by calctex.
 [[https://tecosaur.com/lfs/emacs-config/screenshots/calc-with-calctex.png]]
+
+*** CalcTeX
 
 We'd like to use CalcTeX too, so let's set that up, and fix some glaring
 inadequacies --- why on earth would you commit a hard-coded path to an executable
@@ -1601,6 +1604,65 @@ everyone else!?
     (let ((default-directory (file-name-directory calctex-dvichop-bin)))
       (call-process "make" nil nil nil))))
 #+end_src
+
+*** Embedded calc
+
+Embedded calc is a lovely feature which let's us use calc to operate on LaTeX
+maths expressions. The standard keybinding is a bit janky however (=C-x * e=), so
+we'll add a localleader-based alternative.
+
+#+begin_src emacs-lisp
+(map! :map calc-mode-map
+      :after calc
+      :localleader
+      :desc "Embedded calc (toggle)" "e" #'calc-embedded)
+(map! :map org-mode-map
+      :after org
+      :localleader
+      :desc "Embedded calc (toggle)" "E" #'calc-embedded)
+(map! :map latex-mode-map
+      :after latex
+      :localleader
+      :desc "Embedded calc (toggle)" "e" #'calc-embedded)
+#+end_src
+
+Unfortunately this operates without the (rather informative) calculator and
+trail buffers, but we can advice it that we would rather like those in a side
+panel.
+
+#+begin_src emacs-lisp
+(defvar calc-embedded-trail-window nil)
+(defvar calc-embedded-calculator-window nil)
+
+(defadvice! calc-embedded-with-side-pannel (&rest _)
+  :after #'calc-do-embedded
+  (when calc-embedded-trail-window
+    (ignore-errors
+      (delete-window calc-embedded-trail-window))
+    (setq calc-embedded-trail-window nil))
+  (when calc-embedded-calculator-window
+    (ignore-errors
+      (delete-window calc-embedded-calculator-window))
+    (setq calc-embedded-calculator-window nil))
+  (when (and calc-embedded-info
+             (> (* (window-width) (window-height)) 1200))
+    (let ((main-window (selected-window))
+          (vertical-p (> (window-width) 80)))
+      (select-window
+       (setq calc-embedded-trail-window
+             (if vertical-p
+                 (split-window-horizontally (- (max 30 (/ (window-width) 3))))
+               (split-window-vertically (- (max 8 (/ (window-height) 4)))))))
+      (switch-to-buffer "*Calc Trail*")
+      (select-window
+       (setq calc-embedded-calculator-window
+             (if vertical-p
+                 (split-window-vertically -6)
+               (split-window-horizontally (- (/ (window-width) 2))))))
+      (switch-to-buffer "*Calculator*")
+      (select-window main-window))))
+#+end_src
+
 ** Centaur Tabs
 We want to make the tabs a nice, comfy size (~36~), with icons. The modifier
 marker is nice, but the particular default Unicode one causes a lag spike, so
