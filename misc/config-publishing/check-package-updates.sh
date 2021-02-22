@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 ":"; exec emacs --quick --script "$0" -- "$@" # -*- mode: emacs-lisp; lexical-binding: t; -*-
 
-(setq log-file (format "%s-log.txt" (file-name-base load-file-name)))
+(setq log-file (expand-file-name (format "%s-log.txt" (file-name-base load-file-name))))
 
 (load (expand-file-name "initialise.el" (file-name-directory load-file-name)) nil t)
 (initialise)
@@ -46,7 +46,7 @@
            (oldid (or (plist-get plist :pin)
                       (doom-package-get package :pin)))
            (url (straight-vc-git--destructure recipe (upstream-repo upstream-host)
-                  (straight-vc-git--encode-url upstream-repo upstream-host)))
+                                              (straight-vc-git--encode-url upstream-repo upstream-host)))
            (id (or (when url
                      (cdr (doom-call-process
                            "git" "ls-remote" url
@@ -60,9 +60,11 @@
                                  (plist-member plist :pin)
                                  (equal oldid id))
                       (let ((default-directory
-                              (straight--repos-dir
-                               (file-name-sans-extension
-                                (file-name-nondirectory url)))))
+                              (or (when (plist-member recipe :local-repo)
+                                    (doom-glob doom-private-dir (plist-get recipe :local-repo)))
+                                  (straight--repos-dir
+                                   (file-name-sans-extension
+                                    (file-name-nondirectory url))))))
                         (doom-call-process "git" "fetch")
                         (concat "  "
                                 (cdr
