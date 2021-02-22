@@ -6578,15 +6578,15 @@ be unaffected let's use ~;~ as a prefix to prevent the transformation --- i.e.
 
 While this is the LaTeX section, it's convenient to also provide HTML acronyms here.
 #+begin_src emacs-lisp
-(defun org-export-filter-text-acronym (text backend info)
+(defun org-export-filter-text-acronym (text backend _info)
   "Wrap suspected acronyms in acronyms-specific formatting.
 Treat sequences of 2+ capital letters (optionally succeeded by \"s\") as an acronym.
 Ignore if preceeded by \";\" (for manual prevention) or \"\\\" (for LaTeX commands). "
   (let ((base-backend
          (cond
           ((org-export-derived-backend-p backend 'latex) 'latex)
-          ;; Markdown is derived from HTML, but we want to treat it separately
-          ((org-export-derived-backend-p backend 'md) 'md)
+          ;; Markdown is derived from HTML, but we don't want to format it
+          ((org-export-derived-backend-p backend 'md) nil)
           ((org-export-derived-backend-p backend 'html) 'html)))
         (case-fold-search nil))
     (when base-backend
@@ -6608,11 +6608,22 @@ Ignore if preceeded by \";\" (for manual prevention) or \"\\\" (for LaTeX comman
        text t t))))
 
 (add-to-list 'org-export-filter-plain-text-functions
-             'org-export-filter-text-acronym)
-;; FIXME I want to process headings, but this causes issues ATM,
-;;       specifically it passes (and formats) the entire section contents
-;; (add-to-list 'org-export-filter-headline-functions
-;;              'org-export-filter-text-acronym)
+             #'org-export-filter-text-acronym)
+
+;; We won't use `org-export-filter-headline-functions' because it
+;; passes (and formats) the entire section contents. That's no good.
+
+(defun org-html-format-headline-acronymised (todo todo-type priority text tags info)
+  "Like `org-html-format-headline-default-function', but with acronym formatting."
+  (org-html-format-headline-default-function
+   todo todo-type priority (org-export-filter-text-acronym text 'html info) tags info))
+(setq org-html-format-headline-function #'org-html-format-headline-acronymised)
+
+(defun org-latex-format-headline-acronymised (todo todo-type priority text tags info)
+  "Like `org-latex-format-headline-default-function', but with acronym formatting."
+  (org-latex-format-headline-default-function
+   todo todo-type priority (org-export-filter-text-acronym text 'latex info) tags info))
+(setq org-latex-format-headline-function #'org-latex-format-headline-acronymised)
 #+end_src
 
 ***** Nicer checkboxes
