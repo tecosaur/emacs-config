@@ -6003,7 +6003,7 @@ CONTENTS is the transcoded contents string.  INFO is a plist
 holding export options. Adds a few extra things to the body
 compared to the default implementation."
   :around #'org-html-template
-  (if (or (not org-fancy-html-export-mode) (bound-and-true-p +org-msg-currently-exporting))
+  (if (or (not org-fancy-html-export-mode) (bound-and-true-p org-msg-export-in-progress))
       (funcall orig-fn contents info)
     (concat
      (when (and (not (org-html-html5-p info)) (org-html-xhtml-p info))
@@ -6218,7 +6218,7 @@ and a button to copy the content of the block.
 (defadvice! org-html-src-block-collapsable (orig-fn src-block contents info)
   "Wrap the usual <pre> block in a <details>"
   :around #'org-html-src-block
-  (if (or (not org-fancy-html-export-mode) (bound-and-true-p +org-msg-currently-exporting))
+  (if (or (not org-fancy-html-export-mode) (bound-and-true-p org-msg-export-in-progress))
       (funcall orig-fn src-block contents info)
     (let* ((properties (cadr src-block))
            (lang (mode-name-to-lang-name
@@ -6337,7 +6337,7 @@ and a button to copy the content of the block.
 #+begin_src emacs-lisp
 (defun org-html-block-collapsable (orig-fn block contents info)
   "Wrap the usual block in a <details>"
-  (if (or (not org-fancy-html-export-mode) (bound-and-true-p +org-msg-currently-exporting))
+  (if (or (not org-fancy-html-export-mode) (bound-and-true-p org-msg-export-in-progress))
       (funcall orig-fn block contents info)
     (let ((ref (org-export-get-reference block info))
           (type (pcase (car block)
@@ -6395,7 +6395,7 @@ While we're at it, we can a link gutter, as we did with src blocks, and show the
 (defadvice! org-html-table-wrapped (orig-fn table contents info)
   "Wrap the usual <table> in a <div>"
   :around #'org-html-table
-  (if (or (not org-fancy-html-export-mode) (bound-and-true-p +org-msg-currently-exporting))
+  (if (or (not org-fancy-html-export-mode) (bound-and-true-p org-msg-export-in-progress))
       (funcall orig-fn table contents info)
     (let* ((name (plist-get (cadr table) :name))
            (ref (org-export-get-reference table info)))
@@ -6427,7 +6427,7 @@ this config a tad.
   "Add a label and checkbox to `org-html--format-toc-headline's usual output,
 to allow the TOC to be a collapseable tree."
   :around #'org-html--format-toc-headline
-  (if (or (not org-fancy-html-export-mode) (bound-and-true-p +org-msg-currently-exporting))
+  (if (or (not org-fancy-html-export-mode) (bound-and-true-p org-msg-export-in-progress))
       (funcall orig-fn headline info)
     (let ((id (or (org-element-property :CUSTOM_ID headline)
                   (org-export-get-reference headline info))))
@@ -6444,7 +6444,7 @@ org provides.
 (defadvice! org-html--toc-text-stripped-leaves (orig-fn toc-entries)
   "Remove label"
   :around #'org-html--toc-text
-  (if (or (not org-fancy-html-export-mode) (bound-and-true-p +org-msg-currently-exporting))
+  (if (or (not org-fancy-html-export-mode) (bound-and-true-p org-msg-export-in-progress))
       (funcall orig-fn toc-entries)
     (replace-regexp-in-string "<input [^>]+><label [^>]+>\\(.+?\\)</label></li>" "\\1</li>"
                               (funcall orig-fn toc-entries))))
@@ -6488,7 +6488,7 @@ I want to add GitHub-style links on hover for headings.
 (defun org-export-html-headline-anchor (text backend info)
   (when (and (org-export-derived-backend-p backend 'html)
              org-fancy-html-export-mode)
-    (unless (bound-and-true-p +org-msg-currently-exporting)
+    (unless (bound-and-true-p org-msg-export-in-progress)
       (replace-regexp-in-string
        "<h\\([0-9]\\) id=\"\\([a-z0-9-]+\\)\">\\(.*[^ ]\\)<\\/h[0-9]>" ; this is quite restrictive, but due to `org-reference-contraction' I can do this
        "<h\\1 id=\"\\2\">\\3<a aria-hidden=\"true\" href=\"#\\2\">#</a> </h\\1>"
@@ -6497,7 +6497,6 @@ I want to add GitHub-style links on hover for headings.
 (add-to-list 'org-export-filter-headline-functions
              'org-export-html-headline-anchor)
 #+end_src
-It's worth noting that ~+org-msg-currently-exporting~ is defined in [[*Org Msg][Org Msg]].
 ***** Acronyms
 I want to style acronyms nicely. For the sake of convenience in implementation
 I've actually done this under the [[#org-latex-acronyms][LaTeX export section]], for the sake of
