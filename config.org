@@ -6653,50 +6653,15 @@ We'll be setting up an nice preamble to use in a new default export class.
 
 #+name: latex-fancy-preamble
 #+begin_src LaTeX
-\\usepackage[T1]{fontenc}\n\
-\\usepackage[osf,largesc,helvratio=0.9]{newpxtext}\n\
-\\usepackage[scale=0.9]{sourcecodepro}\n\
-\\usepackage{bmc-maths}\n\
+\\usepackage[osf,largesc,helvratio=0.9]{newpxtext}
+\\usepackage[scale=0.9]{sourcecodepro}
 
-\\usepackage[activate={true,nocompatibility},final,tracking=true,kerning=true,spacing=true,factor=2000]{microtype}\n\
-\\usepackage{xcolor}\n\
-\\usepackage{booktabs}
+\\usepackage[activate={true,nocompatibility},final,tracking=true,kerning=true,spacing=true,factor=2000]{microtype}
 
-\\usepackage{subcaption}
-\\usepackage[hypcap=true]{caption}
-\\setkomafont{caption}{\\sffamily\\small}
-\\setkomafont{captionlabel}{\\upshape\\bfseries}
-\\captionsetup{justification=raggedright,singlelinecheck=true}
-\\setcapindent{0pt}
-
-\\setlength{\\parskip}{\\baselineskip}\n\
-\\setlength{\\parindent}{0pt}\n\
+\\setlength{\\parskip}{\\baselineskip}
+\\setlength{\\parindent}{0pt}
 
 \\AtBeginEnvironment{quote}{\\itshape}
-
-\\usepackage{pifont}
-\\newcommand{\\checkboxUnchecked}{$\\square$}
-\\newcommand{\\checkboxTransitive}{\\rlap{\\raisebox{-0.1ex}{\\hspace{0.35ex}\\Large\\textbf -}}$\\square$}
-\\newcommand{\\checkboxChecked}{\\rlap{\\raisebox{0.2ex}{\\hspace{0.35ex}\\scriptsize \\ding{52}}}$\\square$}
-
-% args = #1 Name, #2 Colour, #3 Ding, #4 Label
-\\newcommand{\\defsimplebox}[4]{%
-  \\definecolor{#1}{HTML}{#2}
-  \\newenvironment{#1}
-  {%
-    \\par \\vspace{-0.7\\baselineskip}%
-    \\textcolor{#1}{#3} \\textcolor{#1}{\\textbf{#4}}%
-    \\vspace{-0.8\\baselineskip}
-    \\begin{addmargin}[1em]{1em}
-  }{%
-    \\end{addmargin}
-    \\vspace{-0.5\\baselineskip}
-  }%
-}
-\\defsimplebox{warning}{e66100}{\\ding{68}}{Warning}
-\\defsimplebox{info}{3584e4}{\\ding{68}}{Information}
-\\defsimplebox{success}{26a269}{\\ding{68}}{\\vspace{-\\baselineskip}}
-\\defsimplebox{error}{c01c28}{\\ding{68}}{Important}
 #+end_src
 
 The =hyperref= setup needs to be handled separately however.
@@ -6726,6 +6691,9 @@ The =hyperref= setup needs to be handled separately however.
   (add-to-list 'org-latex-classes
                '("fancy-article"
                  "\\documentclass{scrartcl}\n
+[DEFAULT-PACKAGES]
+[PACKAGES]
+
 <<latex-fancy-preamble>>
 "
                  ("\\section{%s}" . "\\section*{%s}")
@@ -6775,6 +6743,7 @@ The =hyperref= setup needs to be handled separately however.
 #+end_src
 
 ***** A cleverer preamble
+****** Use case
 We always want some particular elements in the preamble, let's call this
 the "universal preamble"
 #+name: org-latex-universal-preamble
@@ -6791,16 +6760,95 @@ Instead, we can have a "universal preamble" which contains a snippet which we
 want to /always/ appear, and then conditional preamble snippets, which are only
 included when a certain regex is successfully found in the Org buffer.
 
-#+name: org-latex-conditional-preamble
+****** Conditional Content
+
+Let's consider some other content we only want in certain sutuations.
+
+#+name: org-latex-caption-preamble
+#+begin_src LaTeX
+\\usepackage{subcaption}
+\\usepackage[hypcap=true]{caption}
+\\setkomafont{caption}{\\sffamily\\small}
+\\setkomafont{captionlabel}{\\upshape\\bfseries}
+\\captionsetup{justification=raggedright,singlelinecheck=true}
+\\setcapindent{0pt}
+\\usepackage{capt-of} % required by Org
+#+end_src
+
+#+name: org-latex-checkbox-preamble
+#+begin_src LaTeX
+\\usepackage{pifont}
+\\newcommand{\\checkboxUnchecked}{$\\square$}
+\\newcommand{\\checkboxTransitive}{\\rlap{\\raisebox{-0.1ex}{\\hspace{0.35ex}\\Large\\textbf -}}$\\square$}
+\\newcommand{\\checkboxChecked}{\\rlap{\\raisebox{0.2ex}{\\hspace{0.35ex}\\scriptsize \\ding{52}}}$\\square$}
+#+end_src
+
+#+name: org-latex-box-preamble
+#+begin_src LaTeX
+% args = #1 Name, #2 Colour, #3 Ding, #4 Label
+\\usepackage{pifont}
+\\newcommand{\\defsimplebox}[4]{%
+  \\definecolor{#1}{HTML}{#2}
+  \\newenvironment{#1}
+  {%
+    \\vspace{-0.7\\baselineskip}%
+    \\textcolor{#1}{#3} \\textcolor{#1}{\\textbf{#4}}%
+    \\vspace{-0.8\\baselineskip}
+    \\begin{addmargin}[1em]{1em}
+  }{%
+    \\end{addmargin}
+    \\vspace{-0.5\\baselineskip}
+  }%
+}
+\\defsimplebox{warning}{e66100}{\\ding{68}}{Warning}
+\\defsimplebox{info}{3584e4}{\\ding{68}}{Information}
+\\defsimplebox{success}{26a269}{\\ding{68}}{\\vspace{-\\baselineskip}}
+\\defsimplebox{error}{c01c28}{\\ding{68}}{Important}
+#+end_src
+
+Lastly, we will pass this content into some global variables we for ease of
+access.
+
 #+begin_src emacs-lisp :noweb no-export
 (defvar org-latex-universal-preamble "
 <<org-latex-universal-preamble>>
 "
   "Preamble to be included in every export.")
 
+(defvar org-latex-caption-preamble "
+<<org-latex-caption-preamble>>
+"
+  "Preamble to be included to improve captions.")
+
+(defvar org-latex-checkbox-preamble "
+<<org-latex-checkbox-preamble>>
+"
+  "Preamble to be included to improve checkboxes.")
+
+(defvar org-latex-box-preamble "
+<<org-latex-box-preamble>>
+"
+  "Preamble to be included to improve boxes.")
+#+end_src
+
+****** Implementation
+#+name: org-latex-conditional-preamble
+#+begin_src emacs-lisp
 (defvar org-latex-conditional-preambles
-  `((t . org-latex-universal-preamble)
-    ("\\[\\[file:.*\\.svg\\]\\]" . "\\usepackage{svg}"))
+  '((t . org-latex-universal-preamble)
+    ("\\[\\[file:\\(?:[^\\]]+?|\\\\\\]\\)\\.svg\\]\\]" . "\\usepackage{svg}")
+    ("\\[\\[file:\\(?:[^]]\\|\\\\\\]\\)+\\.\\(?:eps\\|pdf\\|png\\|jpeg\\|jpg\\|jbig2\\)\\]\\]" . "\\usepackage{graphicx}")
+    ("^[ 	]*|" . "\\usepackage{longtable}\n\\usepackage{booktabs}")
+    ("\\\\(\\|\\\\\\[\\|\\\\begin{\\(?:math\\|displaymath\\|equation\\|align\\|flalign\\|multiline\\|gather\\)[a-z]*\\*?}"
+     . "\\usepackage{bmc-maths}")
+    ("\\+[^ ].*[^ ]\\+\\|_[^ ].*[^ ]_\\|\\\\uu?line\\|\\\\uwave\\|\\\\sout\\|\\\\xout\\|\\\\dashuline\\|\\dotuline\\|\\markoverwith"
+     . "\\usepackage[normalem]{ulem}")
+    (":float wrap" . "\\usepackage{wrapfig}")
+    (":float sideways" . "\\usepackage{rotating}")
+    ("^[ 	]*#\\+caption:\\|\\\\caption" . org-latex-caption-preamble)
+    ("^[ 	]*\\(?:[-+*]\\|[0-9]+[.)]\\|[A-Za-z]+[.)]\\) \\[[ -X]\\]" . org-latex-checkbox-preamble)
+    ("^[ 	]*#\\+begin_\\(?:warning\\|info\\|success\\|error\\)\\|\\\\begin{\\(?:warning\\|info\\|success\\|error\\)}"
+     . org-latex-box-preamble))
   "Snippets which are conditionally included in the preamble of a LaTeX export.
 
 Alist where when the car results in a non-nil value, the cdr is inserted in
@@ -6823,18 +6871,37 @@ The cdr may be a:
               (mapconcat (lambda (term-preamble)
                            (when (pcase (car term-preamble)
                                    ((pred stringp) (save-excursion
-                                                       (goto-char (point-min))
-                                                       (search-forward-regexp (car term-preamble) nil t)))
+                                                     (goto-char (point-min))
+                                                     (search-forward-regexp (car term-preamble) nil t)))
                                    ((pred functionp) (funcall (car term-preamble)))
                                    ((pred symbolp) (symbol-value (car term-preamble)))
                                    (_ (user-error "org-latex-conditional-preambles key %s unable to be used" (car term-preamble))))
-                             (pcase (cdr term-preamble)
-                               ((pred stringp) (cdr term-preamble))
-                               ((pred functionp) (funcall (cdr term-preamble)))
-                               ((pred symbolp) (symbol-value (cdr term-preamble)))
-                               (_ (user-error "org-latex-conditional-preambles value %s unable to be used" (cdr term-preamble))))))
+                             (concat
+                              (pcase (cdr term-preamble)
+                                ((pred stringp) (cdr term-preamble))
+                                ((pred functionp) (funcall (cdr term-preamble)))
+                                ((pred symbolp) (symbol-value (cdr term-preamble)))
+                                (_ (user-error "org-latex-conditional-preambles value %s unable to be used" (cdr term-preamble))))
+                              "\n")))
                          org-latex-conditional-preambles
-                         "\n")))))
+                         "") "\n"))))
+#+end_src
+
+****** Reduce default packages
+
+Thanks to our additions, we can remove a few packages from
+~org-latex-default-packages-alist~.
+
+There are also some obsolete entries in the default value, specifically
++ =grffile='s capabilities are built into the current version of =graphicx=
++ =textcomp='s functionality has been included in LaTeX's core for a while now
+
+#+begin_src emacs-lisp
+(setq org-latex-default-packages-alist
+      '(("AUTO" "inputenc" t ("pdflatex"))
+        ("T1" "fontenc" t ("pdflatex"))
+        ("" "xcolor" nil) ; Generally useful
+        ("" "hyperref" nil)))
 #+end_src
 
 ***** Pretty code blocks
@@ -6870,8 +6937,8 @@ entry in ~org-latex-scr-block~ we can easily add this as a recognised
 <<org-latex-engraved-code-preamble>>
 ")
 
-(add-to-list 'org-latex-conditional-preambles '("#\\+BEGIN_SRC\\|#\\+begin_src" . org-latex-engraved-code-preamble) t)
-(add-to-list 'org-latex-conditional-preambles '("#\\+BEGIN_SRC\\|#\\+begin_src" . engrave-faces-latex-gen-preamble) t)
+(add-to-list 'org-latex-conditional-preambles '("^[ 	]*#\\+BEGIN_SRC\\|#\\+begin_src" . org-latex-engraved-code-preamble) t)
+(add-to-list 'org-latex-conditional-preambles '("^[ 	]*#\\+BEGIN_SRC\\|#\\+begin_src" . engrave-faces-latex-gen-preamble) t)
 
 (defun org-latex-scr-block--engraved (src-block contents info)
   (let* ((lang (org-element-property :language src-block))
