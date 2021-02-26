@@ -5060,15 +5060,15 @@ or no selection is made: nil is returned."
          default-value)
     (setq values (mapcar
                   (lambda (value)
-                    (if ((string-match-p (regexp-quote value) default))
+                    (if (string-match-p (regexp-quote value) default)
                         (setq default-value
                               (concat value " "
                                       (propertize "(default)" 'face 'font-lock-doc-face)))
                       value))
                   values))
     (let ((selection (ivy-read question values :preselect default-value)))
-      (unless ((string-match-p "(default)$" selection)
-               (string= "" selection))
+      (unless (or (string-match-p "(default)$" selection)
+                  (string= "" selection))
         selection))))
 #+end_src
 
