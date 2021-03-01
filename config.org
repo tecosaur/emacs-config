@@ -7401,6 +7401,45 @@ contextual information."
 
 *** Babel
 Doom lazy-loads babel languages, with is lovely.
+It also pulls in [[https://github.com/astahlman/ob-async][ob-async]], which is nice, but it would be even better if it was
+used by default.
+
+There are two caveats to =ob-async=:
+1. It does not support =:session=
+   + So, we don't want =:async= used when =:session= is set
+2. It adds a fixed delay to execution
+   + This is undesirable in a number of cases, for example it's generally
+     unwanted with =emacs-lisp= code
+   + As such, I also introduce a async language blacklist to control when it's
+     automatically enabled
+
+Due to the nuance in the desired behaviour, instead of just adding =:async= to
+~org-babel-default-header-args~, I advice ~org-babel-get-src-block-info~ to add
+=:async= intelligently. As an escape hatch, it also recognises =:sync= as an
+indication that =:async= should not be added.
+
+#+begin_src emacs-lisp
+(add-transient-hook! #'org-babel-execute-src-block
+  (require 'ob-async))
+
+(defvar org-babel-async-language-blacklist '("emacs-lisp")
+  "Babel languages which should not be executed asyncronously.")
+
+(defadvice! org-babel-get-src-block-info-eager-async-a (orig-fn &optional light datum)
+  "Eagarly add an :async parameter to the src information, unless it seems problematic.
+Not added when either:
++ session is not \"none\"
++ :sync is set
++ the language is in `org-babel-async-language-blacklist'"
+  :around #'org-babel-get-src-block-info
+  (let ((result (funcall orig-fn light datum)))
+    (setq resultt result)
+    (when (or (not (string= "none" (cdr (assoc :session (caddr result)))))
+              (member (car result) org-babel-async-language-blacklist)
+              (assoc :async (caddr result)) ; don't duplicate
+              (assoc :sync (caddr result)))
+      (push '(:async) (caddr result)))
+    result))
 #+end_src
 *** ESS
 We don't want ~R~ evaluation to hang the editor, hence
