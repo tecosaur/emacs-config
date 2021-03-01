@@ -7401,19 +7401,6 @@ contextual information."
 
 *** Babel
 Doom lazy-loads babel languages, with is lovely.
-
-We need to tell babel to use python3. Who uses python2 anymore anyway? And why
-doesn't ~python~ refer to the latest version!?
-#+begin_src emacs-lisp
-(setq org-babel-python-command "python3")
-#+end_src
-We also like auto-completion here
-#+begin_src emacs-lisp
-(defun tec-org-python ()
-  (if (eq major-mode 'python-mode)
-      (progn (anaconda-mode t)
-             (company-mode t))))
-(add-hook 'org-src-mode-hook 'tec-org-python)
 #+end_src
 *** ESS
 We don't want ~R~ evaluation to hang the editor, hence
