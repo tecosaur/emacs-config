@@ -7427,11 +7427,10 @@ Not added when either:
 + the language is in `org-babel-async-language-blacklist'"
   :around #'org-babel-get-src-block-info
   (let ((result (funcall orig-fn light datum)))
-    (setq resultt result)
-    (when (or (not (string= "none" (cdr (assoc :session (caddr result)))))
-              (member (car result) org-babel-async-language-blacklist)
-              (assoc :async (caddr result)) ; don't duplicate
-              (assoc :sync (caddr result)))
+    (unless (or (not (string= "none" (cdr (assoc :session (caddr result)))))
+                (member (car result) org-babel-async-language-blacklist)
+                (assoc :async (caddr result)) ; don't duplicate
+                (assoc :sync (caddr result)))
       (push '(:async) (caddr result)))
     result))
 #+end_src
