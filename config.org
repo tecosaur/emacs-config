@@ -4040,7 +4040,7 @@ There also seem to be a few keybindings which use =hjkl=, but miss arrow key equ
 **** Extra functionality
 ***** Org buffer creation
 Let's also make creating an org buffer just that little bit easier.
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes :noweb-ref none
 (evil-define-command evil-buffer-org-new (count file)
   "Creates a new ORG buffer replacing the current window, optionally
    editing a certain FILE"
