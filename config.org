@@ -5130,7 +5130,7 @@ man's bold, and supported for historical reasons. --- [[https://orgmode.org/list
 
 To avoid sometimes having to choose between the hassle out of updating old
 documents and using mixed syntax, I'll whip up a basic transcode-y function.
-It likely misses some edged cases, but should mostly work.
+It likely misses some edge cases, but should mostly work.
 
 #+begin_src emacs-lisp
 (defun org-syntax-convert-case-to-lower ()
@@ -5140,7 +5140,7 @@ It likely misses some edged cases, but should mostly work.
     (goto-char (point-min))
     (let ((count 0)
           (case-fold-search nil))
-      (while (re-search-forward "#\\+[A-Z_]+" nil t)
+      (while (re-search-forward "^[ 	]*#\\+[A-Z_]+" nil t)
         (replace-match (downcase (match-string 0)) t)
         (setq count (1+ count)))
       (message "Replaced %d occurances" count))))
