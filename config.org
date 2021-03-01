@@ -5491,8 +5491,7 @@ font changes etc, and also propagate colours from the current theme.
 
 [[xkcd:1882]]
 
-**** In editor
-***** Font Display
+**** Font Display
 Mixed pitch is great. As is ~+org-pretty-mode~, let's use them.
 #+begin_src emacs-lisp
 (add-hook! 'org-mode-hook #'+org-pretty-mode #'mixed-pitch-mode)
@@ -5549,7 +5548,7 @@ sacrificing visual amenities with the =org-appear= package.
   ;; needs to be run after other hooks have acted.
   (run-at-time nil nil #'org-appear--set-fragments))
 #+end_src
-***** Symbols
+**** Symbols
 It's also nice to change the character used for collapsed items (by default ~…~),
 I think ~▾~ is better for indicating 'collapsed section'.
 and add an extra ~org-bullet~ to the default list of four.
@@ -5660,7 +5659,7 @@ It's also nice to make use of the Unicode characters for check boxes, and other 
 (plist-put +ligatures-extra-symbols :name "⁍")
 #+end_src
 
-***** LaTeX Fragments
+**** LaTeX Fragments
 First off, we want those fragments to look good.
 #+begin_src emacs-lisp
 (setq org-highlight-latex-and-related '(native script entities))
@@ -5726,8 +5725,7 @@ Now let's combine this to see what's best
 | ~latex~ + ~dvisvgm~    | 392 \pm 4 ms | 8 KiB               |
 | ~pdflatex~ + ~pdf2svg~ | 230 \pm 2 ms | 16 KiB              |
 
-So, let's use ~dvipng~ for previewing LaTeX fragments in-Emacs, but ~dvisvgm~ for [[
-Exporting to HTML][LaTeX Rendering]].
+So, let's use ~dvipng~ for previewing LaTeX fragments in-Emacs, but ~dvisvgm~ for [[LaTeX Rendering]].
 /Unfortunately: it seems that svg sizing is annoying ATM, so let's actually not do this right now./
 
 As well as having a sans font, there are a few other tweaks which can make them
@@ -5750,7 +5748,7 @@ NB: This doesn't work at the moment.
 #+begin_src emacs-lisp
 (add-to-list 'org-latex-regexps '("\\ce" "^\\\\ce{\\(?:[^\000{}]\\|{[^\000}]+?}\\)}" 0 nil))
 #+end_src
-***** Stolen from [[https://github.com/jkitchin/scimax][scimax]] (semi-working right now)
+**** Stolen from [[https://github.com/jkitchin/scimax][scimax]] (semi-working right now)
 I want fragment justification
 #+begin_src emacs-lisp
 (defun scimax-org-latex-fragment-justify (justification)
@@ -5940,7 +5938,8 @@ set palette defined ( 0 '%s',\
   (setq org-plot/gnuplot-script-preamble #'org-plot/generate-theme)
   (setq org-plot/gnuplot-term-extra #'org-plot/gnuplot-term-properties))
 #+end_src
-**** Exporting (general)
+*** Exporting
+**** General settings
 #+begin_src emacs-lisp
 (setq org-export-headline-levels 5) ; I like nesting
 #+end_src
@@ -5953,7 +5952,64 @@ the final documents.
 (require 'ox-extra)
 (ox-extras-activate '(ignore-headlines))
 #+end_src
-**** Exporting to HTML
+**** Acronym formatting
+I like automatically using spaced small caps for acronyms. For strings I want to
+be unaffected let's use ~;~ as a prefix to prevent the transformation --- i.e.
+~;JFK~ (as one would want for two-letter geographic locations and names).
+
+This has to be implemented on a per-format basis, currently HTML and LaTeX
+exports are supported.
+
+#+begin_src emacs-lisp
+(defun org-export-filter-text-acronym (text backend _info)
+  "Wrap suspected acronyms in acronyms-specific formatting.
+Treat sequences of 2+ capital letters (optionally succeeded by \"s\") as an acronym.
+Ignore if preceeded by \";\" (for manual prevention) or \"\\\" (for LaTeX commands). "
+  (let ((base-backend
+         (cond
+          ((org-export-derived-backend-p backend 'latex) 'latex)
+          ;; Markdown is derived from HTML, but we don't want to format it
+          ((org-export-derived-backend-p backend 'md) nil)
+          ((org-export-derived-backend-p backend 'html) 'html)))
+        (case-fold-search nil))
+    (when base-backend
+      (replace-regexp-in-string
+       "[;\\\\]?\\b[A-Z][A-Z]+s?[^A-Z]"
+       (lambda (all-caps-str)
+         ;; only format as acronym if str doesn't start with ";" or "\" (for LaTeX commands)
+         (cond ((equal (aref all-caps-str 0) ?\;) (substring all-caps-str 1))
+               ((equal (aref all-caps-str 0) ?\\) all-caps-str)
+               (t (let* ((trailing-s (when (equal (aref all-caps-str (- (length all-caps-str) 2)) ?s)
+                                       (pcase base-backend
+                                         ('latex "\\protect\\scalebox{.91}[.84]{s}")
+                                         ('html "<small>s</small>"))))
+                         (acr (substring all-caps-str 0 (if trailing-s -2 -1)))
+                         (final-char (substring all-caps-str -1)))
+                    (pcase base-backend
+                      ('latex (concat "\\textls*[70]{\\textsc{" (s-downcase acr) "}" trailing-s "}" final-char))
+                      ('html (concat "<span class='acr'>" acr "</span>" trailing-s final-char)))))))
+       text t t))))
+
+(add-to-list 'org-export-filter-plain-text-functions
+             #'org-export-filter-text-acronym)
+
+;; We won't use `org-export-filter-headline-functions' because it
+;; passes (and formats) the entire section contents. That's no good.
+
+(defun org-html-format-headline-acronymised (todo todo-type priority text tags info)
+  "Like `org-html-format-headline-default-function', but with acronym formatting."
+  (org-html-format-headline-default-function
+   todo todo-type priority (org-export-filter-text-acronym text 'html info) tags info))
+(setq org-html-format-headline-function #'org-html-format-headline-acronymised)
+
+(defun org-latex-format-headline-acronymised (todo todo-type priority text tags info)
+  "Like `org-latex-format-headline-default-function', but with acronym formatting."
+  (org-latex-format-headline-default-function
+   todo todo-type priority (org-export-filter-text-acronym text 'latex info) tags info))
+(setq org-latex-format-headline-function #'org-latex-format-headline-acronymised)
+#+end_src
+
+*** HTML Export
 :PROPERTIES:
 :header-args:emacs-lisp: :noweb-ref ox-html-conf
 :END:
@@ -5992,7 +6048,7 @@ block.
   <<ox-html-conf>>
 )
 #+end_src
-***** Extra header content
+**** Extra header content
 We want to tack on a few more bits to the start of the body. Unfortunately, there
 doesn't seem to be any nice variable or hook, so we'll just override the
 relevant function.
@@ -6161,7 +6217,7 @@ Lastly, let's pile on some metadata. This gives my pages nice embeds.
   (defalias 'org-html-meta-tags-default #'ignore))
 (setq org-html-meta-tags #'org-html-meta-tags-fancy)
 #+end_src
-***** Custom CSS/JS
+**** Custom CSS/JS
 The default org HTML export is ... alright, but we can really jazz it up.
 [[https://lepisma.xyz][lepisma.xyz]] has a really nice style, and from and org export too!
 Suffice to say I've snatched it, with a few of my own tweaks applied.
@@ -6195,7 +6251,7 @@ Suffice to say I've snatched it, with a few of my own tweaks applied.
     (setq org-html-style-default org-html-style-fancy)))
 (org-html-reload-fancy-style)
 #+end_src
-***** Collapsable src and example blocks
+**** Collapsable src and example blocks
 By wrapping the ~<pre>~ element in a ~<details>~ block, we can obtain collapsable
 blocks with no CSS, though we will toss a little in anyway to have this looking
 somewhat spiffy.
@@ -6374,7 +6430,7 @@ and a button to copy the content of the block.
 (advice-add 'org-html-property-drawer :around #'org-html-block-collapsable)
 #+end_src
 
-***** Include extra font-locking in htmlize
+**** Include extra font-locking in htmlize
 
 Org uses [[https://github.com/hniksic/emacs-htmlize][htmlize.el]] to export buffers with syntax highlighting.
 
@@ -6387,7 +6443,7 @@ By enabling these modes in ~htmlize-before-hook~ we can correct this behaviour.
 (add-hook 'htmlize-before-hook #'highlight-numbers--turn-on)
 #+end_src
 
-***** Handle table overflow
+**** Handle table overflow
 In order to accommodate wide tables ---particularly on mobile devices--- we want
 to set a maximum width and scroll overflow. Unfortunately, this cannot be applied
 directly to the ~table~ element, so we have to wrap it in a ~div~.
@@ -6415,7 +6471,7 @@ While we're at it, we can a link gutter, as we did with src blocks, and show the
                                             (funcall orig-fn table contents info))
                 (funcall orig-fn table contents info))))))
 #+end_src
-***** TOC as a collapsable tree
+**** TOC as a collapsable tree
 The TOC is much nicer to navigate as a collapsable tree. Unfortunately we cannot
 achieve this with CSS alone. Thankfully we can avoid JS though, by adapting the
 TOC generation code to use a ~label~ for each item, and a hidden ~checkbox~ to keep
@@ -6453,7 +6509,7 @@ org provides.
     (replace-regexp-in-string "<input [^>]+><label [^>]+>\\(.+?\\)</label></li>" "\\1</li>"
                               (funcall orig-fn toc-entries))))
 #+end_src
-***** Make verbatim different to code
+**** Make verbatim different to code
 Since we have =verbatim= and ~code~, let's make use of the difference.
 
 We can use ~code~ exclusively for code snippets and commands like: "calling ~(message
@@ -6473,7 +6529,7 @@ Then, styling these two cases differently can help improve clarity in a document
         (underline . "<span class=\"underline\">%s</span>")
         (verbatim . "<kbd>%s</kbd>")))
 #+end_src
-***** Change checkbox type
+**** Change checkbox type
 We also want to use HTML checkboxes, however we want to get a bit fancier than default
 #+begin_src emacs-lisp
 (appendq! org-html-checkbox-types
@@ -6486,7 +6542,7 @@ We also want to use HTML checkboxes, however we want to get a bit fancier than d
 - [ ] I'm yet to do this
 - [-] Work in progress
 - [X] This is done
-***** Header anchors
+**** Header anchors
 I want to add GitHub-style links on hover for headings.
 #+begin_src emacs-lisp
 (defun org-export-html-headline-anchor (text backend info)
@@ -6501,19 +6557,15 @@ I want to add GitHub-style links on hover for headings.
 (add-to-list 'org-export-filter-headline-functions
              'org-export-html-headline-anchor)
 #+end_src
-***** Acronyms
-I want to style acronyms nicely. For the sake of convenience in implementation
-I've actually done this under the [[#org-latex-acronyms][LaTeX export section]], for the sake of
-convenance in implementation (this transformation was first added there).
-***** LaTeX Rendering
-****** Pre-rendered
+**** LaTeX Rendering
+***** Pre-rendered
 I consider ~dvisvgm~ to be a rather compelling option. However this isn't scaled
 very well at the moment.
 #+begin_src emacs-lisp
 ;; (setq-default org-html-with-latex `dvisvgm)
 #+end_src
 
-****** MathJax
+***** MathJax
 If MathJax is used, we want to use version 3 instead of the default version 2.
 Looking at a [[https://www.intmath.com/cg5/katex-mathjax-comparison.php][comparison]] we seem to find that it is ~5 times as fast, uses a
 single file instead of multiple, but seems to be a bit bigger unfortunately.
@@ -6549,8 +6601,8 @@ MathJax = {
 <script id=\"MathJax-script\" async
         src=\"%PATH\"></script>")
 #+end_src
-**** Exporting to LaTeX
-***** Compiling
+*** LaTeX Export
+**** Compiling
 By default Org uses ~pdflatex~ \times 3 + ~bibtex~. This simply won't do in our
 modern world. ~latexmk~ + ~biber~ (which is used automatically with ~latexmk~) is a
 simply superior combination.
@@ -6572,65 +6624,7 @@ value) it allows us to leave ~org-latex-compilers~ unmodified.
 This is nice in case I open an org file that uses =#+LATEX_COMPILER= for example,
 it should still work.
 
-***** Acronyms
-:PROPERTIES:
-:CUSTOM_ID: org-latex-acronyms
-:END:
-I like automatically using spaced small caps for acronyms. For strings I want to
-be unaffected let's use ~;~ as a prefix to prevent the transformation --- i.e.
-~;JFK~ (as one would want for two-letter geographic locations and names).
-
-While this is the LaTeX section, it's convenient to also provide HTML acronyms here.
-#+begin_src emacs-lisp
-(defun org-export-filter-text-acronym (text backend _info)
-  "Wrap suspected acronyms in acronyms-specific formatting.
-Treat sequences of 2+ capital letters (optionally succeeded by \"s\") as an acronym.
-Ignore if preceeded by \";\" (for manual prevention) or \"\\\" (for LaTeX commands). "
-  (let ((base-backend
-         (cond
-          ((org-export-derived-backend-p backend 'latex) 'latex)
-          ;; Markdown is derived from HTML, but we don't want to format it
-          ((org-export-derived-backend-p backend 'md) nil)
-          ((org-export-derived-backend-p backend 'html) 'html)))
-        (case-fold-search nil))
-    (when base-backend
-      (replace-regexp-in-string
-       "[;\\\\]?\\b[A-Z][A-Z]+s?[^A-Z]"
-       (lambda (all-caps-str)
-         ;; only format as acronym if str doesn't start with ";" or "\" (for LaTeX commands)
-         (cond ((equal (aref all-caps-str 0) ?\;) (substring all-caps-str 1))
-               ((equal (aref all-caps-str 0) ?\\) all-caps-str)
-               (t (let* ((trailing-s (when (equal (aref all-caps-str (- (length all-caps-str) 2)) ?s)
-                                       (pcase base-backend
-                                         ('latex "\\protect\\scalebox{.91}[.84]{s}")
-                                         ('html "<small>s</small>"))))
-                         (acr (substring all-caps-str 0 (if trailing-s -2 -1)))
-                         (final-char (substring all-caps-str -1)))
-                    (pcase base-backend
-                      ('latex (concat "\\textls*[70]{\\textsc{" (s-downcase acr) "}" trailing-s "}" final-char))
-                      ('html (concat "<span class='acr'>" acr "</span>" trailing-s final-char)))))))
-       text t t))))
-
-(add-to-list 'org-export-filter-plain-text-functions
-             #'org-export-filter-text-acronym)
-
-;; We won't use `org-export-filter-headline-functions' because it
-;; passes (and formats) the entire section contents. That's no good.
-
-(defun org-html-format-headline-acronymised (todo todo-type priority text tags info)
-  "Like `org-html-format-headline-default-function', but with acronym formatting."
-  (org-html-format-headline-default-function
-   todo todo-type priority (org-export-filter-text-acronym text 'html info) tags info))
-(setq org-html-format-headline-function #'org-html-format-headline-acronymised)
-
-(defun org-latex-format-headline-acronymised (todo todo-type priority text tags info)
-  "Like `org-latex-format-headline-default-function', but with acronym formatting."
-  (org-latex-format-headline-default-function
-   todo todo-type priority (org-export-filter-text-acronym text 'latex info) tags info))
-(setq org-latex-format-headline-function #'org-latex-format-headline-acronymised)
-#+end_src
-
-***** Nicer checkboxes
+**** Nicer checkboxes
 #+begin_src emacs-lisp
 (defun +org-export-latex-fancy-item-checkboxes (text backend info)
   (when (org-export-derived-backend-p backend 'latex)
@@ -6648,7 +6642,7 @@ Ignore if preceeded by \";\" (for manual prevention) or \"\\\" (for LaTeX comman
              '+org-export-latex-fancy-item-checkboxes)
 #+end_src
 
-***** Class templates
+**** Class templates
 We'll be setting up an nice preamble to use in a new default export class.
 
 #+name: latex-fancy-preamble
@@ -6742,8 +6736,8 @@ The =hyperref= setup needs to be handled separately however.
 ")
 #+end_src
 
-***** A cleverer preamble
-****** Use case
+**** A cleverer preamble
+***** Use case
 We always want some particular elements in the preamble, let's call this
 the "universal preamble"
 #+name: org-latex-universal-preamble
@@ -6760,7 +6754,7 @@ Instead, we can have a "universal preamble" which contains a snippet which we
 want to /always/ appear, and then conditional preamble snippets, which are only
 included when a certain regex is successfully found in the Org buffer.
 
-****** Conditional Content
+***** Conditional Content
 
 Let's consider some other content we only want in certain sutuations.
 
@@ -6831,7 +6825,7 @@ access.
   "Preamble to be included to improve boxes.")
 #+end_src
 
-****** Implementation
+***** Implementation
 #+name: org-latex-conditional-preamble
 #+begin_src emacs-lisp
 (defvar org-latex-conditional-preambles
@@ -6887,7 +6881,7 @@ The cdr may be a:
                          "") "\n"))))
 #+end_src
 
-****** Reduce default packages
+***** Reduce default packages
 
 Thanks to our additions, we can remove a few packages from
 ~org-latex-default-packages-alist~.
@@ -6904,7 +6898,7 @@ There are also some obsolete entries in the default value, specifically
         ("" "hyperref" nil)))
 #+end_src
 
-***** Pretty code blocks
+**** Pretty code blocks
 
 We could just use minted for syntax highlighting --- however, we can do better!
 The =engrave-faces= package lets us use Emacs' font-lock for syntax highlighting,
@@ -7100,7 +7094,7 @@ Treating the verbatim (no syntax highlighting) result as a baseline; this
 rudimentary test suggest that =engrave-faces= is around eight times faster than
 =pygments=, and takes three times as long as no syntax highlighting (verbatim).
 
-***** Remove non-ascii chars
+**** Remove non-ascii chars
 
 When using ~pdflatex~, almost non-ascii characters are generally problematic, and
 don't appear in the pdf. It's preferable to see that there was /some/ character
@@ -7119,7 +7113,7 @@ could add sensible replacements (e.g. turn =§= into =\S=, and =…= with =\ldot
 (add-to-list 'org-export-filter-final-output-functions #'+org-latex-replace-non-ascii-chars)
 #+end_src
 
-***** Support images from URLs
+**** Support images from URLs
 You can link to remote images easily, and they work nicely with HTML-based
 exports. However, LaTeX can only include local files, and so the current
 behaviour of =org-latex-link= is just to insert a URL to the image.
@@ -7159,7 +7153,7 @@ tempfile, this can provide a caching mechanism.
     (concat "% fetched from " url "\n"
             (org-latex--inline-image link info))))
 #+end_src
-***** Chameleon --- aka. match theme
+**** Chameleon --- aka. match theme
 Once the idea of having the look of the LaTeX document produced match the
 current Emacs theme, I was enraptured. The result is the pseudo-class ~chameleon~.
 #+begin_src emacs-lisp
@@ -7299,7 +7293,7 @@ current Emacs theme, I was enraptured. The result is the pseudo-class ~chameleon
                     ))))
   )
 #+end_src
-***** Make verbatim different to code
+**** Make verbatim different to code
 Since have just gone to so much effort above let's make the most of it by making
 =verbatim= use ~verb~ instead of ~protectedtexttt~ (default).
 
@@ -7314,7 +7308,7 @@ This gives the same advantages as mentioned in the [[*Make verbatim different to
         (underline . "\\uline{%s}")
         (verbatim . verb)))
 #+end_src
-**** Exporting to Beamer
+*** Beamer Export
 It's nice to use a different theme
 #+begin_src emacs-lisp
 (setq org-beamer-theme "[progressbar=foot]metropolis")
@@ -7329,7 +7323,7 @@ frame from ~1~ to ~2~.
 #+begin_src emacs-lisp
 (setq org-beamer-frame-level 2)
 #+end_src
-**** Exporting to Markdown
+*** Markdown Export
 When I want to paste exported markdown somewhere (for example when using [[Emacs Everywhere][Emacs
 Everywhere]]), it can be preferable to have unicode characters for =---= etc. instead
 of =&#x2014;=.
