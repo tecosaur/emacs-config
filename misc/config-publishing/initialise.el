@@ -80,6 +80,9 @@
 
   (advice-add 'ask-user-about-supersession-threat :override #'ignore)
 
+  (add-hook! 'doom-debug-mode-hook
+    (explain-pause-mode -1))
+
   (after! undo-tree
     (global-undo-tree-mode -1)
     (advice-add 'undo-tree-mode :override #'ignore)
