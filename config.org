@@ -5496,10 +5496,6 @@ Mixed pitch is great. As is ~+org-pretty-mode~, let's use them.
 #+begin_src emacs-lisp
 (add-hook! 'org-mode-hook #'+org-pretty-mode #'mixed-pitch-mode)
 #+end_src
-Earlier I loaded the ~org-pretty-table~ package, let's enable it everywhere!
-#+begin_src emacs-lisp
-(setq global-org-pretty-table-mode t)
-#+end_src
 
 Let's make headings a bit bigger
 #+begin_src emacs-lisp
