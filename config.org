@@ -1336,7 +1336,7 @@ good option.
 
 Then for reading them, the only currently viable options seems to be [[https://depp.brause.cc/nov.el/][nov.el]].
 #+begin_src emacs-lisp
-(package! nov :pin "0ece7ccbf79c074a3e4fbad1d1fa06647093f8e4")
+(package! nov :pin "b6138895ace3042ed78140b6f4859e544fbca27e")
 #+end_src
 
 Together these should give me a rather good experience reading ebooks.
@@ -1367,7 +1367,7 @@ file uploading script (which I've renamed to ~upload~).
 For mathematical convenience, WIP
 #+begin_src emacs-lisp
 (package! aas :recipe (:host github :repo "ymarco/auto-activating-snippets")
-  :pin "5064c60408c3ab45693c5f516003141d56a57629")
+  :pin "dd58b7601ec536980a14540bddac53f5d1c1da08")
 (package! laas :recipe (:local-repo "lisp/LaTeX-auto-activating-snippets"))
 #+end_src
 And some basic config
@@ -1423,7 +1423,7 @@ For automatically toggling LaTeX fragment previews there's this nice package
 Then for pretty markers
 #+begin_src emacs-lisp
 (package! org-appear :recipe (:host github :repo "awth13/org-appear")
-  :pin "19ea96e6e2ce01b8583b25a6e5579f1be207a119")
+  :pin "845be82b7a452e32caee0895e3388d5939f48eb5")
 #+end_src
 
 ~org-superstar-mode~ is great. While we're at it we may as well make tags prettier as well :)
@@ -1456,7 +1456,7 @@ features that GitHub has.
 
 Now and then citations need to happen
 #+begin_src emacs-lisp
-(package! org-ref :pin "113506df694d65e065534e516db1c592d61f44b7")
+(package! org-ref :pin "7dbe3ace9bf8ba9bd7c28c73ff960b4732d09071")
 #+end_src
 
 Came across this and ... it's cool
@@ -1528,7 +1528,7 @@ Now we just need to load it appropriately.
 *** Beancount (accounting)
 #+begin_src emacs-lisp
 (package! beancount :recipe (:host github :repo "beancount/beancount-mode")
-  :pin "7a0ef01d1ff6f8c318af944131310ca06d4c65ff")
+  :pin "3c04745fa539c25dc007683ad257239067c24cfe")
 #+end_src
 * Package configuration
 ** Abbrev mode
