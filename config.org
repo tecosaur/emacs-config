@@ -2056,6 +2056,7 @@ tweaks. Namely:
 + Hiding headline leading stars
 + Using fleurons as headline bullets
 + Hiding line numbers
++ Removing outline indentation
 + Centring the text
 + Turning on ~org-pretty-table-mode~
 
@@ -2080,13 +2081,17 @@ tweaks. Namely:
         (when +zen--original-solaire-mode-p (solaire-mode 1)))))
   (pushnew! writeroom--local-variables
             'display-line-numbers
-            'visual-fill-column-width)
+            'visual-fill-column-width
+            'org-adapt-indentation
+            'org-superstar-headline-bullets-list
+            'org-superstar-remove-leading-stars)
   (add-hook 'writeroom-mode-enable-hook
             (defun +zen-prose-org-h ()
               "Reformat the current Org buffer appearance for prose."
-              (when (and (eq major-mode 'org-mode) writeroom-mode)
+              (when (eq major-mode 'org-mode)
                 (setq display-line-numbers nil
-                      visual-fill-column-width 60)
+                      visual-fill-column-width 60
+                      org-adapt-indentation nil)
                 (when (featurep 'org-superstar)
                   (setq-local org-superstar-headline-bullets-list '("🙘" "🙙" "🙚" "🙛")
                               ;; org-superstar-headline-bullets-list '("🙐" "🙑" "🙒" "🙓" "🙔" "🙕" "🙖" "🙗")
