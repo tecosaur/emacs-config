@@ -7416,7 +7416,7 @@ indication that =:async= should not be added.
 (add-transient-hook! #'org-babel-execute-src-block
   (require 'ob-async))
 
-(defvar org-babel-async-language-blacklist '("emacs-lisp")
+(defvar org-babel-async-language-blacklist '("emacs-lisp" "latex" "LaTeX")
   "Babel languages which should not be executed asyncronously.")
 
 (defadvice! org-babel-get-src-block-info-eager-async-a (orig-fn &optional light datum)
