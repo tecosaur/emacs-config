@@ -1165,7 +1165,7 @@ Hey, let's get the weather in here while we're at it.
 Unfortunately this seems slightly unmaintained ([[https://github.com/bcbcarl/emacs-wttrin/pulls][few open bugfix PRs]]) so let's
 roll our [[file:lisp/wttrin.el][own version]].
 #+begin_src emacs-lisp
-(package! wttrin :recipe (:local-repo "lisp" :build (:not compile)))
+(package! wttrin :recipe (:local-repo "lisp/wttrin"))
 #+end_src
 
 Why not flash words on the screen. Why not --- hey, it could be fun.
