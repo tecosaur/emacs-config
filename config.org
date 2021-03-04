@@ -1340,6 +1340,12 @@ Then for reading them, the only currently viable options seems to be [[https://d
 #+end_src
 
 Together these should give me a rather good experience reading ebooks.
+**** My mixed-pitch fork
+I'd rather like to be able to use multiple faces with mixed-pitch, so I'll have
+to use my own branch for now.
+#+begin_src emacs-lisp
+(package! mixed-pitch :recipe (:local-repo "lisp/mixed-pitch") :pin nil)
+#+end_src
 **** Screenshots
 This makes it a breeze to take lovely screenshots.
 #+begin_src emacs-lisp
@@ -1401,8 +1407,12 @@ Org tables aren't the prettiest thing to look at. This package is supposed to
 redraw them in the buffer with box-drawing characters. Sounds like an
 improvement to me! Just need to get it working...
 #+begin_src emacs-lisp
-(package! org-pretty-table-mode
+(package! org-pretty-table
   :recipe (:host github :repo "Fuco1/org-pretty-table") :pin "474ad84a8fe5377d67ab7e491e8e68dac6e37a11")
+#+end_src
+#+begin_src emacs-lisp :tangle yes
+(use-package! org-pretty-table
+  :commands (org-pretty-table-mode global-org-pretty-table-mode))
 #+end_src
 
 For automatically toggling LaTeX fragment previews there's this nice package
@@ -1871,6 +1881,25 @@ syntax-highlighting-love though which is a bit sad. Thankfully
 #+end_src
 Unfortunately this seems to mess things up, which is something I'll want to look
 into later.
+** Mixed pitch
+#+begin_src emacs-lisp
+(autoload #'mixed-pitch-serif-mode "mixed-pitch"
+  "Change the default face of the current buffer to a serifed variable pitch, while keeping some faces fixed pitch." t)
+
+(after! mixed-pitch
+  (defface variable-pitch-serif
+    '((t (:family "serif")))
+    "A variable-pitch face with serifs."
+    :group 'basic-faces)
+  (setq mixed-pitch-set-height t)
+  (setq variable-pitch-serif-font (font-spec :family "Alegreya" :size 27))
+  (set-face-attribute 'variable-pitch-serif nil :font variable-pitch-serif-font)
+  (defun mixed-pitch-serif-mode (&optional arg)
+    "Change the default face of the current buffer to a serifed variable pitch, while keeping some faces fixed pitch."
+    (interactive)
+    (let ((mixed-pitch-face 'variable-pitch-serif))
+      (mixed-pitch-mode (or arg 'toggle)))))
+#+end_src
 ** Org Chef
 Loading after org seems a bit premature. Let's just load it when we try to use
 it, either by command or in a capture template.
@@ -2018,37 +2047,65 @@ I also think that having =evil-= appear in so many popups is a bit too verbose, 
 ** Writeroom
 For starters, I think Doom is a bit over-zealous when zooming in
 #+begin_src emacs-lisp
-(setq +zen-text-scale 0.6)
+(setq +zen-text-scale 0.8)
 #+end_src
 
-Now, I think it would also be nice to remove line numbers and org stars in
-writeroom.
+Then, when using Org it would be nice to make a number of other aesthetic
+tweaks. Namely:
++ Use a serifed variable-pitch font
++ Hiding headline leading stars
++ Using fleurons as headline bullets
++ Hiding line numbers
++ Centring the text
++ Turning on ~org-pretty-table-mode~
+
 #+begin_src emacs-lisp
+(defvar +zen-serif-p t
+  "Whether to use a serifed font with `mixed-pitch-mode'.")
 (after! writeroom-mode
-  (add-hook 'writeroom-mode-hook
-            (defun +zen-cleaner-org ()
+  (defvar-local +zen--original-org-indent-mode-p nil)
+  (defvar-local +zen--original-mixed-pitch-mode-p nil)
+  (defvar-local +zen--original-solaire-mode-p nil)
+  (defvar-local +zen--original-org-pretty-table-mode-p nil)
+  (defun +zen-enable-mixed-pitch-mode-h ()
+    "Enable `mixed-pitch-mode' when in `+zen-mixed-pitch-modes'."
+    (when (apply #'derived-mode-p +zen-mixed-pitch-modes)
+      (if writeroom-mode
+          (progn
+            (setq +zen--original-solaire-mode-p solaire-mode)
+            (solaire-mode -1)
+            (setq +zen--original-mixed-pitch-mode-p mixed-pitch-mode)
+            (funcall (if +zen-serif-p #'mixed-pitch-serif-mode #'mixed-pitch-mode) 1))
+        (funcall #'mixed-pitch-mode (if +zen--original-mixed-pitch-mode-p 1 -1))
+        (when +zen--original-solaire-mode-p (solaire-mode 1)))))
+  (pushnew! writeroom--local-variables
+            'display-line-numbers
+            'visual-fill-column-width)
+  (add-hook 'writeroom-mode-enable-hook
+            (defun +zen-prose-org-h ()
+              "Reformat the current Org buffer appearance for prose."
               (when (and (eq major-mode 'org-mode) writeroom-mode)
-                (setq-local -display-line-numbers display-line-numbers
-                            display-line-numbers nil)
-                (setq-local -org-indent-mode org-indent-mode)
-                (org-indent-mode -1)
+                (setq display-line-numbers nil
+                      visual-fill-column-width 60)
                 (when (featurep 'org-superstar)
-                  (setq-local -org-superstar-headline-bullets-list org-superstar-headline-bullets-list
+                  (setq-local org-superstar-headline-bullets-list '("🙘" "🙙" "🙚" "🙛")
                               ;; org-superstar-headline-bullets-list '("🙐" "🙑" "🙒" "🙓" "🙔" "🙕" "🙖" "🙗")
-                              org-superstar-headline-bullets-list '("🙘" "🙙" "🙚" "🙛")
-                              -org-superstar-remove-leading-stars org-superstar-remove-leading-stars
                               org-superstar-remove-leading-stars t)
-                  (org-superstar-restart)))))
+                  (org-superstar-restart))
+                (setq
+                 +zen--original-org-indent-mode-p org-indent-mode
+                 +zen--original-org-pretty-table-mode-p (bound-and-true-p org-pretty-table-mode))
+                (org-indent-mode -1)
+                (org-pretty-table-mode 1))))
   (add-hook 'writeroom-mode-disable-hook
-            (defun +zen-dirty-org ()
+            (defun +zen-nonprose-org-h ()
+              "Reverse the effect of `+zen-prose-org'."
               (when (eq major-mode 'org-mode)
-                (setq-local display-line-numbers -display-line-numbers)
-                (when -org-indent-mode
-                  (org-indent-mode 1))
                 (when (featurep 'org-superstar)
-                  (setq-local org-superstar-headline-bullets-list -org-superstar-headline-bullets-list
-                              org-superstar-remove-leading-stars -org-superstar-remove-leading-stars)
-                  (org-superstar-restart))))))
+                  (org-superstar-restart))
+                (when +zen--original-org-indent-mode-p (org-indent-mode 1))
+                ;; (unless +zen--original-org-pretty-table-mode-p (org-pretty-table-mode -1))
+                ))))
 #+end_src
 
 #+attr_html: :class invertible :alt Writeroom applied to an Org file
