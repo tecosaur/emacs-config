@@ -24,6 +24,7 @@
     (goto-char (point-max))
     (insert (shell-command-to-string (expand-file-name "./gen-org-snippets.sh" script-root)))
     (message "[33] Exporting %s" (buffer-file-name))
+    (org-mode)
     (org-html-export-to-html)))
 
 (publish "config.html" "misc/*.svg")
