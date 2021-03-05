@@ -6883,11 +6883,63 @@ access.
   "Preamble to be included to improve boxes.")
 #+end_src
 
+In the "universal preamble", we already embed the source =.org= file, but it would
+be nice to embed all the tangled files. This is fairly easy to accomplish using
+a cannibalised version of ~org-babel-tangle~ which just collects the file names of
+each block that is tangled.
+
+#+begin_src emacs-lisp
+(defun org-babel-tangle-files ()
+  "All files that may be tangled to.
+Uses a stripped-down version of `org-babel-tangle'"
+  (let (files)
+    (save-excursion
+      (mapc ;; map over all languages
+       (lambda (by-lang)
+         (let* ((lang (car by-lang))
+                (specs (cdr by-lang))
+                (ext (or (cdr (assoc lang org-babel-tangle-lang-exts)) lang)))
+           (mapc
+            (lambda (spec)
+              (let ((get-spec (lambda (name) (cdr (assoc name (nth 4 spec))))))
+                (let* ((tangle (funcall get-spec :tangle))
+                       (base-name (cond
+                                   ((string= "yes" tangle)
+                                    (file-name-sans-extension
+                                     (nth 1 spec)))
+                                   ((string= "no" tangle) nil)
+                                   ((> (length tangle) 0) tangle)))
+                       (file-name (when base-name
+                                    ;; decide if we want to add ext to base-name
+                                    (if (and ext (string= "yes" tangle))
+                                        (concat base-name "." ext) base-name))))
+                  (push file-name files))))
+            specs)))
+       (org-babel-tangle-collect-blocks)))
+    (delq nil (cl-delete-duplicates files :test #'string=))))
+#+end_src
+
+From here it is trivial to map each file to a form which embeds the file if it
+exists.
+#+begin_src emacs-lisp
+(defun org-latex-embed-tangled-files ()
+  "Return a string that uses embedfile to embed all tangled files."
+  (mapconcat
+   (lambda (tangle-file)
+     (format "\\IfFileExists{%1$s}{\\embedfile[desc=A tangled file]{%1$s}}{}"
+             (->> tangle-file
+                  (replace-regexp-in-string "\\\\" "\\\\\\\\")
+                  (replace-regexp-in-string "~" "\\\\string~"))))
+   (org-babel-tangle-files)
+   "\n"))
+#+end_src
+
 ***** Implementation
 #+name: org-latex-conditional-preamble
 #+begin_src emacs-lisp
 (defvar org-latex-conditional-preambles
   '((t . org-latex-universal-preamble)
+    ("^[ 	]*#\\+begin_src" . org-latex-embed-tangled-files)
     ("\\[\\[file:\\(?:[^\\]]+?|\\\\\\]\\)\\.svg\\]\\]" . "\\usepackage{svg}")
     ("\\[\\[file:\\(?:[^]]\\|\\\\\\]\\)+\\.\\(?:eps\\|pdf\\|png\\|jpeg\\|jpg\\|jbig2\\)\\]\\]" . "\\usepackage{graphicx}")
     ("^[ 	]*|" . "\\usepackage{longtable}\n\\usepackage{booktabs}")
