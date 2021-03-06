@@ -3,4 +3,4 @@
 # key: s
 # condition: (+yas/org-src-header-p)
 # --
-:session "${1:`(file-name-base (buffer-file-name))`-session}" $0
+:session "${1:`(file-name-base (or (buffer-file-name) "unnnamed"))`-session}" $0

@@ -1,7 +1,7 @@
 # -*- mode: snippet -*-
 # name: Org template                        
 # --
-#+title: ${1:`(s-titleized-words (file-name-base buffer-file-name))`}
+#+title: ${1:`(s-titleized-words (file-name-base (or buffer-file-name "new buffer")))`}
 #+author: ${2:`(user-full-name)`}
 #+date: ${3: `(format-time-string "%Y-%m-%d")`}
 
