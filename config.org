@@ -5656,6 +5656,8 @@ It's also nice to make use of the Unicode characters for check boxes, and other 
             :list_property "∷"
             :em_dash       "—"
             :ellipses      "…"
+            :arrow_right   "→"
+            :arrow_left    "←"
             :title         "𝙏"
             :subtitle      "𝙩"
             :author        "𝘼"
@@ -5689,6 +5691,8 @@ It's also nice to make use of the Unicode characters for check boxes, and other 
   :list_property "::"
   :em_dash       "---"
   :ellipsis      "..."
+  :arrow_right   "->"
+  :arrow_left    "<-"
   :title         "#+title:"
   :subtitle      "#+subtitle:"
   :author        "#+author:"
@@ -6600,6 +6604,26 @@ We also want to use HTML checkboxes, however we want to get a bit fancier than d
 - [ ] I'm yet to do this
 - [-] Work in progress
 - [X] This is done
+**** Extra special strings
+The ~org-html-special-string-regexps~ variable defines substitutions for:
++ =\-=, a shy hyphen
++ =---=, an em dash
++ =--=, an en dash
++ =...=, (horizontal) ellipses
+
+However I think it would be nice if there was also a substitution for left/right
+arrows (=->= and =<-=). This is a ~defconst~, but as you may tell from the amount of
+advice in this config, I'm not above messing with things I'm not 'supposed' to.
+
+The only minor complication is that =<= and =>= are converted to =&lt;= and =&gt;=
+before this stage of output processing.
+
+#+begin_src emacs-lisp
+(pushnew! org-html-special-string-regexps
+          '("-&gt;" . "&#8594;")
+          '("&lt;-" . "&#8592;"))
+#+end_src
+
 **** Header anchors
 I want to add GitHub-style links on hover for headings.
 #+begin_src emacs-lisp
@@ -7222,6 +7246,33 @@ could add sensible replacements (e.g. turn =§= into =\S=, and =…= with =\ldot
 
 (add-to-list 'org-export-filter-final-output-functions #'+org-latex-replace-non-ascii-chars)
 #+end_src
+**** Extra special strings
+LaTeX already recognises =---= and =--= as em/en-dashes, =\-= as a shy hyphen, and the
+conversion of =...= to =\ldots{}= is hardcoded into ~org-latex-plain-text~ (unlike
+~org-html-plain-text~).
+
+I'd quite like to also recognise =->= and =<-=, so let's set come up with some advice.
+
+#+begin_src emacs-lisp
+(defvar org-latex-extra-special-string-regexps
+  '(("->" . "\\\\textrightarrow{}")
+    ("<-" . "\\\\textleftarrow{}")))
+
+(defun org-latex-convert-extra-special-strings (string)
+  "Convert special characters in STRING to LaTeX."
+  (dolist (a org-latex-extra-special-string-regexps string)
+    (let ((re (car a))
+          (rpl (cdr a)))
+      (setq string (replace-regexp-in-string re rpl string t)))))
+
+(defadvice! org-latex-plain-text-extra-special-a (orig-fn text info)
+  "Make `org-latex-plain-text' handle some extra special strings."
+  :around #'org-latex-plain-text
+  (let ((output (funcall orig-fn text info)))
+    (when (plist-get info :with-special-strings)
+      (setq output (org-latex-convert-extra-special-strings output)))
+    output))
+#+end_src
 
 **** Support images from URLs
 You can link to remote images easily, and they work nicely with HTML-based
@@ -7447,9 +7498,11 @@ these substitution.
   :around #'org-md-plain-text
   (let ((org-html-special-string-regexps
          '(("\\\\-" . "-")
-           ("---\\([^-]\\)" . "—\\1")
-           ("--\\([^-]\\)" . "–\\1")
-           ("\\.\\.\\." . "…"))))
+           ("---\\([^-]\\|$\\)" . "—\\1")
+           ("--\\([^-]\\|$\\)" . "–\\1")
+           ("\\.\\.\\." . "…")
+           ("->" . "→")
+           ("<-" . "←"))))
     (funcall orig-fn text (plist-put info :with-smart-quotes nil))))
 #+end_src
 
