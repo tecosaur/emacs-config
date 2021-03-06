@@ -6843,7 +6843,7 @@ Let's consider some other content we only want in certain sutuations.
   \\definecolor{#1}{HTML}{#2}
   \\newenvironment{#1}
   {%
-    \\vspace{-0.7\\baselineskip}%
+    \\par\\vspace{-0.7\\baselineskip}%
     \\textcolor{#1}{#3} \\textcolor{#1}{\\textbf{#4}}%
     \\vspace{-0.8\\baselineskip}
     \\begin{addmargin}[1em]{1em}
