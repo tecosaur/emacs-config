@@ -15,6 +15,9 @@
 (require 'org)
 (require 'ox-latex)
 
+(advice-add 'pdf-tools-install :around #'ignore)
+(advice-add 'pdf-info-features :around #'ignore)
+
 (setq org-mode-hook nil)
 (with-temp-buffer
   (let ((default-directory config-root)
