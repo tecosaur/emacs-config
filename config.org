@@ -3987,6 +3987,22 @@ Then set Emacs as the default editor
 #+begin_src shell :tangle (if (string= (shell-command-to-string "xdg-mime query default text/org") "emacs-client.desktop\n") "no" "setup.sh")
 xdg-mime default emacs.desktop text/org
 #+end_src
+**** Git diffs
+Protesilaos wrote a [[https://protesilaos.com/codelog/2021-01-26-git-diff-hunk-elisp-org/][very helpful article]] in which he explains how to change the
+git diff chunk heading to something more useful than just the immediate line
+above the hunk --- like the parent heading.
+
+This can be achieved by first adding a new diff mode to git in =~/.config/git/attributes=
+#+begin_src fundamental
+,*.org   diff=org
+#+end_src
+
+Then adding a regex for it to =~/.config/git/config=
+#+begin_src gitconfig
+[diff "org"]
+  xfuncname = "^(\\*+ +.*)$"
+#+end_src
+
 **** Development
 Testing patches from the ML is currently more hassle than it needs to be. Let's
 change that.
