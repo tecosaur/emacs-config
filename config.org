@@ -6724,6 +6724,10 @@ This is nice in case I open an org file that uses =#+LATEX_COMPILER= for example
 it should still work.
 
 **** Nicer checkboxes
+
+We'll assume that thanks to the clever preamble the various custom =\checkbox...=
+commands below are defined.
+
 #+begin_src emacs-lisp
 (defun +org-export-latex-fancy-item-checkboxes (text backend info)
   (when (org-export-derived-backend-p backend 'latex)
@@ -6731,9 +6735,9 @@ it should still work.
      "\\\\item\\[{$\\\\\\(\\w+\\)$}\\]"
      (lambda (fullmatch)
        (concat "\\\\item[" (pcase (substring fullmatch 9 -3) ; content of capture group
-                             ("square"   "\\\\ifdefined\\\\checkboxUnchecked\\\\checkboxUnchecked\\\\else$\\\\square$\\\\fi"    )
-                             ("boxminus" "\\\\ifdefined\\\\checkboxTransitive\\\\checkboxTransitive\\\\else$\\\\boxminus$\\\\fi")
-                             ("boxtimes" "\\\\ifdefined\\\\checkboxChecked\\\\checkboxChecked\\\\else$\\\\boxtimes$\\\\fi"      )
+                             ("square"   "\\\\checkboxUnchecked")
+                             ("boxminus" "\\\\checkboxTransitive")
+                             ("boxtimes" "\\\\checkboxChecked")
                              (_ (substring fullmatch 9 -3))) "]"))
      text)))
 
@@ -6871,6 +6875,7 @@ Let's consider some other content we only want in certain sutuations.
 #+name: org-latex-checkbox-preamble
 #+begin_src LaTeX
 \\usepackage{pifont}
+\\usepackage{amssymb} % for \square
 \\newcommand{\\checkboxUnchecked}{$\\square$}
 \\newcommand{\\checkboxTransitive}{\\rlap{\\raisebox{-0.1ex}{\\hspace{0.35ex}\\Large\\textbf -}}$\\square$}
 \\newcommand{\\checkboxChecked}{\\rlap{\\raisebox{0.2ex}{\\hspace{0.35ex}\\scriptsize \\ding{52}}}$\\square$}
