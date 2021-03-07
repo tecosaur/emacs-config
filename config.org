@@ -699,7 +699,8 @@ I couldn't resist the Email and Feed modules.
 
 #+name: doom-app
 #+begin_src emacs-lisp
-;;calendar
+;;calendar                   ; A dated approach to timetabling
+;;emms                       ; Multimedia in Emacs is music to my ears
 everywhere                   ; *leave* Emacs!? You must be joking.
 irc                          ; how neckbeards socialize
 (rss +org)                   ; emacs as an RSS reader
