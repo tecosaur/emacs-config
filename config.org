@@ -5739,11 +5739,26 @@ It's also nice to make use of the Unicode characters for check boxes, and other 
 #+end_src
 
 **** LaTeX Fragments
+***** Prettier highlighting
 First off, we want those fragments to look good.
 #+begin_src emacs-lisp
 (setq org-highlight-latex-and-related '(native script entities))
 #+end_src
 
+However, by using =native= highlighting the =org-block= face is added, and that
+doesn't look too great --- particularly when the fragments are previewed.
+
+Ideally ~org-src-font-lock-fontify-block~ wouldn't add the =org-block= face, but we
+can avoid advising that entire function by just adding another face with
+=:inherit default= which will override the background colour.
+
+Inspecting ~org-do-latex-and-related~ shows that ="latex"= is the language argument
+passed, and so we can override the background as discussed above.
+#+begin_src emacs-lisp
+(add-to-list 'org-src-block-faces '("latex" (:inherit default :extend t)))
+#+end_src
+
+***** More eager rendering
 What's better than syntax-highlighted LaTeX is /rendered/ LaTeX though, and we can
 have this be performed automatically with =org-fragtog=.
 #+begin_src emacs-lisp
@@ -5751,8 +5766,12 @@ have this be performed automatically with =org-fragtog=.
   :hook (org-mode . org-fragtog-mode))
 #+end_src
 
+***** Prettier rendering
 It's nice to customise the look of LaTeX fragments so they fit better in the
-text --- like this \(\sqrt{\beta^2+3}-\sum_{\phi=1}^\infty \frac{x^\phi-1}{\Gamma(a)}\). Let's start by adding a sans font.
+text --- like this \(\sqrt{\beta^2+3}-\sum_{\phi=1}^\infty \frac{x^\phi-1}{\Gamma(a)}\).
+Let's start by adding a sans font. I'd also like to use some of the
+functionality from =bmc-maths=, so we'll load that too.
+
 #+begin_src emacs-lisp
 (setq org-format-latex-header "\\documentclass{article}
 \\usepackage[usenames]{color}
@@ -5781,6 +5800,14 @@ text --- like this \(\sqrt{\beta^2+3}-\sum_{\phi=1}^\infty \frac{x^\phi-1}{\Gamm
 ")
 #+end_src
 
+Since we can, instead of making the background colour match the =default= face,
+let's make it transparent.
+#+begin_src emacs-lisp
+(setq org-format-latex-options
+      (plist-put org-format-latex-options :background "Transparent"))
+#+end_src
+
+***** Rendering speed tests
 We can either render from a ~dvi~ or ~pdf~ file, so let's benchmark ~latex~ and
 ~pdflatex~.
 | ~latex~ time | ~pdflatex~ time |
@@ -5805,28 +5832,11 @@ Now let's combine this to see what's best
 | ~pdflatex~ + ~pdf2svg~ | 230 \pm 2 ms | 16 KiB              |
 
 So, let's use ~dvipng~ for previewing LaTeX fragments in-Emacs, but ~dvisvgm~ for [[LaTeX Rendering]].
-/Unfortunately: it seems that svg sizing is annoying ATM, so let's actually not do this right now./
 
-As well as having a sans font, there are a few other tweaks which can make them
-look better. Namely making sure that the colours switch when the theme does.
-#+begin_src emacs-lisp
-;; make background of fragments transparent
-;; (let ((dvipng--plist (alist-get 'dvipng org-preview-latex-process-alist)))
-;;   (plist-put dvipng--plist :use-xcolor t)
-;;   (plist-put dvipng--plist :image-converter '("dvipng -D %D -bg 'transparent' -T tight -o %O %f")))
-(add-hook! 'doom-load-theme-hook
-  (defun +org-refresh-latex-background ()
-    (plist-put! org-format-latex-options
-                :background
-                (face-attribute (or (cadr (assq 'default face-remapping-alist))
-                                    'default)
-                                :background nil t))))
-#+end_src
-It'd be nice to make ~mhchem~ equations able to be rendered.
-NB: This doesn't work at the moment.
-#+begin_src emacs-lisp
-(add-to-list 'org-latex-regexps '("\\ce" "^\\\\ce{\\(?:[^\000{}]\\|{[^\000}]+?}\\)}" 0 nil))
-#+end_src
+#+begin_warning
+Unfortunately, it seems that SVG sizing is annoying ATM, so let's actually not do this right now.
+#+end_warning
+
 **** Stolen from [[https://github.com/jkitchin/scimax][scimax]] (semi-working right now)
 I want fragment justification
 #+begin_src emacs-lisp
