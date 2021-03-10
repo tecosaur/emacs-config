@@ -6869,7 +6869,7 @@ included when a certain regex is successfully found in the Org buffer.
 
 ***** Conditional Content
 
-Let's consider some other content we only want in certain sutuations.
+Let's consider some other content we only want in certain situations.
 
 #+name: org-latex-caption-preamble
 #+begin_src LaTeX
@@ -7243,7 +7243,7 @@ Now let's have the example block be styled similarly.
 #+end_src
 
 In addition to the vastly superior visual output, this should also be much
-faster to for code-heavy documents (like this config).
+faster to compile for code-heavy documents (like this config).
 
 Performing a little benchmark with this document, I find that this is indeed the
 case.
@@ -7267,7 +7267,7 @@ don't appear in the pdf. It's preferable to see that there was /some/ character
 which wasn't displayed as opposed to nothing.
 
 So, as a basic first-pass we replace every non-ascii char with =¿=. In future I
-could add sensible replacements (e.g. turn =§= into =\S=, and =…= with =\ldots=).
+could add sensible replacements (e.g. turn =§= into =\S=, and =…= into =\ldots=).
 
 #+begin_src emacs-lisp
 (defun +org-latex-replace-non-ascii-chars (text backend info)
@@ -8086,7 +8086,7 @@ sixth greyed out. Since the sixth level is so small, I'll turn up the boldness a
 ** Beancount
 There are a number of rather compelling advantages to [[https://plaintextaccounting.org/][plain text accounting]],
 with [[https://www.ledger-cli.org/][ledger]] being the most obvious example. However, [[https://github.com/beancount/beancount][beancount]], a more recent
-implementation of the idea is ledger-compatable (meaning I can switch easily if
+implementation of the idea is ledger-compatible (meaning I can switch easily if
 I change my mind) and has a gorgeous front-end --- [[https://beancount.github.io/fava/][fava]].
 
 Of course, there's an Emacs mode for this.
