@@ -39,7 +39,8 @@
   (cl-destructuring-bind (&key package plist beg end)
       (or (doom--package-at-point)
           (user-error "Not on a `package!' call"))
-    (when (memq package doom-disabled-packages)
+    (when (or (memq package doom-disabled-packages)
+              (looking-back "^[ 	]*;.*" (line-beginning-position)))
       (user-error "Package %s is disabled, skipping." package))
     (let* ((recipe (doom--package-merge-recipes package plist))
            (branch (plist-get recipe :branch))
@@ -71,9 +72,7 @@
                                  (doom-call-process
                                   "git" "log" "--pretty=format:  %h %s"
                                   (format "%s...%s" oldid id))))))))
-      (when (and oldid
-                 (plist-member plist :pin)
-                 (equal oldid id))
+      (when (and oldid (equal oldid id))
         (user-error "%s: no update necessary" package))
       (save-excursion
         (if (re-search-forward ":pin +\"\\([^\"]+\\)\"" end t)
