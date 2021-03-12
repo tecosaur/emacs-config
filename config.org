@@ -5277,7 +5277,7 @@ documents and using mixed syntax, I'll whip up a basic transcode-y function.
 It likely misses some edge cases, but should mostly work.
 
 #+begin_src emacs-lisp
-(defun org-syntax-convert-case-to-lower ()
+(defun org-syntax-convert-keyword-case-to-lower ()
   "Convert all #+KEYWORDS to #+keywords."
   (interactive)
   (save-excursion
@@ -5285,8 +5285,9 @@ It likely misses some edge cases, but should mostly work.
     (let ((count 0)
           (case-fold-search nil))
       (while (re-search-forward "^[ 	]*#\\+[A-Z_]+" nil t)
-        (replace-match (downcase (match-string 0)) t)
-        (setq count (1+ count)))
+        (unless (s-matches-p "RESULTS" (match-string 0))
+          (replace-match (downcase (match-string 0)) t)
+          (setq count (1+ count))))
       (message "Replaced %d occurances" count))))
 #+end_src
 **** Extra links
