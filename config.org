@@ -7769,25 +7769,31 @@ Due to the nuance in the desired behaviour, instead of just adding =:async= to
 =:async= intelligently. As an escape hatch, it also recognises =:sync= as an
 indication that =:async= should not be added.
 
+I did originally have this enabled for everything except for =emacs-lisp= and
+=LaTeX= (there were weird issues), but this added  a ~3s "startup" cost to every
+src block evaluation, which was a bit of a pain. Since =:async= can be added
+easily with =#+properties=, I've turned this behaviour from a blacklist to a
+whitelist.
+
 #+begin_src emacs-lisp
 (add-transient-hook! #'org-babel-execute-src-block
   (require 'ob-async))
 
-(defvar org-babel-async-language-blacklist '("emacs-lisp" "latex" "LaTeX")
-  "Babel languages which should not be executed asyncronously.")
+(defvar org-babel-auto-async-languages '()
+  "Babel languages which should be executed asyncronously by default.")
 
 (defadvice! org-babel-get-src-block-info-eager-async-a (orig-fn &optional light datum)
   "Eagarly add an :async parameter to the src information, unless it seems problematic.
+This only acts o languages in `org-babel-auto-async-languages'.
 Not added when either:
 + session is not \"none\"
-+ :sync is set
-+ the language is in `org-babel-async-language-blacklist'"
++ :sync is set"
   :around #'org-babel-get-src-block-info
   (let ((result (funcall orig-fn light datum)))
-    (unless (or (not (string= "none" (cdr (assoc :session (caddr result)))))
-                (member (car result) org-babel-async-language-blacklist)
-                (assoc :async (caddr result)) ; don't duplicate
-                (assoc :sync (caddr result)))
+    (when (and (string= "none" (cdr (assoc :session (caddr result))))
+               (member (car result) org-babel-auto-async-languages)
+               (not (assoc :async (caddr result))) ; don't duplicate
+               (not (assoc :sync (caddr result))))
       (push '(:async) (caddr result)))
     result))
 #+end_src
