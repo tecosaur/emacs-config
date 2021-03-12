@@ -1510,6 +1510,21 @@ For editing systemd unit files
 #+begin_src emacs-lisp
 (package! systemd :pin "b6ae63a236605b1c5e1069f7d3afe06ae32a7bae")
 #+end_src
+*** Stan
+Stan is probabilistic programming language written in =C++=. From my brief
+exposure I think of it as a nicer =JAGS=. Though =Turing.jl= looks nicer yet...
+
+Anyway, the [[https://github.com/stan-dev/stan-mode][stan-dev/stan-mode]] repository contains a number of packages for
+working with Stan code. Let's grab them all.
+
+#+begin_src emacs-lisp
+(package! stan-mode :pin "9bb858b9f1314dcf1a5df23e39f9af522098276b")
+(package! company-stan :pin "9bb858b9f1314dcf1a5df23e39f9af522098276b")
+(package! eldoc-stan :pin "9bb858b9f1314dcf1a5df23e39f9af522098276b")
+(package! flycheck-stan :pin "9bb858b9f1314dcf1a5df23e39f9af522098276b")
+(package! stan-snippets :pin "9bb858b9f1314dcf1a5df23e39f9af522098276b")
+#+end_src
+
 *** Graphviz
 Graphviz is a nice method of visualising simple graphs, based on plaintext
 =.dot= / =.gv= files.
@@ -7700,6 +7715,7 @@ We don't want ~R~ evaluation to hang the editor, hence
 #+begin_src emacs-lisp
 (setq ess-eval-visibly 'nowait)
 #+end_src
+
 Syntax highlighting is nice, so let's turn all of that on
 #+begin_src emacs-lisp
 (setq ess-R-font-lock-keywords
@@ -7715,6 +7731,12 @@ Syntax highlighting is nice, so let's turn all of that on
         (ess-fl-keyword:delimiters . t)
         (ess-fl-keyword:= . t)
         (ess-R-fl-keyword:F&T . t)))
+#+end_src
+
+Lastly, in the event that I use =JAGS=, it would be nice to be able to use =jags= as
+the language identifier, not =ess-jags=.
+#+begin_src emacs-lisp
+(add-to-list '+org-babel-mode-alist '(jags . ess-jags))
 #+end_src
 ** LaTeX
 [[xkcd:1301]]
