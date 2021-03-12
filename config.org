@@ -640,7 +640,7 @@ ess                          ; emacs speaks statistics
 json                         ; At least it ain't XML
 ;;(java +meghanada)          ; the poster child for carpal tunnel syndrome
 (javascript +lsp)            ; all(hope(abandon(ye(who(enter(here))))))
-;;julia                      ; a better, faster MATLAB
+(julia +lsp)                 ; a better, faster MATLAB
 ;;kotlin                     ; a better, slicker Java(Script)
 (latex                       ; writing papers in Emacs has never been so fun
  +latexmk                    ; what else would you use?
@@ -8107,6 +8107,15 @@ priority of =mypyls=
     ;; Other
     :assign "<-"
     :multiply "%*%"))
+#+end_src
+** Julia
+As mentioned in [[https://github.com/non-Jedi/lsp-julia/issues/35][lsp-julia#35]], =lsp-mode= seems to serve an invalid response to the
+Julia server. The pseudo-fix is rather simple at least
+#+begin_src emacs-lisp
+(after! julia-mode
+  (add-hook! 'julia-mode-hook
+    (setq-local lsp-enable-folding t
+                lsp-folding-range-limit 100)))
 #+end_src
 ** Graphviz
 #+begin_src emacs-lisp
