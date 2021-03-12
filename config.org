@@ -5704,6 +5704,87 @@ sacrificing visual amenities with the =org-appear= package.
   ;; needs to be run after other hooks have acted.
   (run-at-time nil nil #'org-appear--set-elements))
 #+end_src
+**** Fontifying inline src blocks
+Org does lovely things with =#+begin_src= blocks, like using font-lock for
+language's major-mode behind the scenes and pulling out the lovely colourful
+results. By contrast, inline =src_= blocks are somewhat neglected.
+
+I am not the first person to feel this way, thankfully others have [[https://stackoverflow.com/questions/20309842/how-to-syntax-highlight-for-org-mode-inline-source-code-src-lang/28059832][taken to
+stackexchange]] to voice their desire for inline src fontification. I was going to
+steal their work, but unfortunately they didn't perform /true/ source code
+fontification, but simply applied the =org-code= face to the content.
+
+We can do better than that, and we shall! Using ~org-src-font-lock-fontify-block~
+we can apply language-appropriate syntax highlighting. Then, continuing on to
+={{{results(...)}}}= , it can have the =org-block= face applied to match, and then
+the value-surrounding constructs hidden by mimicking the behaviour of
+~prettify-symbols-mode~.
+
+
+#+begin_src emacs-lisp
+(defvar org-prettify-inline-results t
+  "Whether to use (ab)use prettify-symbols-mode on {{{results(...)}}}.")
+
+(defun org-fontify-inline-src-blocks (limit)
+  "Try to apply `org-fontify-inline-src-blocks-1'."
+  (condition-case nil
+      (org-fontify-inline-src-blocks-1 limit)
+    (error (message "Org mode fontification error in %S at %d"
+                    (current-buffer)
+                    (line-number-at-pos)))))
+
+(defun org-fontify-inline-src-blocks-1 (limit)
+  "Fontify inline src_LANG blocks, from  `point' up to LIMIT."
+  (let ((case-fold-search t))
+    (when (re-search-forward "\\_<src_\\([^ \t\n[{]+\\)[{[]?" limit t) ; stolen from `org-element-inline-src-block-parser'
+      (let ((beg (match-beginning 0))
+            pt
+            (lang-beg (match-beginning 1))
+            (lang-end (match-end 1)))
+        (remove-text-properties beg lang-end '(face nil))
+        (font-lock-append-text-property lang-beg lang-end 'face 'org-meta-line)
+        (font-lock-append-text-property beg lang-end 'face 'org-block-begin-line)
+        (setq pt (goto-char lang-end))
+        (when (org-element--parse-paired-brackets ?\[)
+          (remove-text-properties pt (point) '(face nil))
+          (font-lock-append-text-property pt (point) 'face 'org-block-begin-line)
+          (setq pt (point)))
+        (when (org-element--parse-paired-brackets ?\{)
+          (remove-text-properties pt (point) '(face nil))
+          (font-lock-append-text-property pt (1+ pt) 'face 'org-block-begin-line)
+          (unless (= (1+ pt) (1- (point)))
+            (if org-src-fontify-natively
+                (org-src-font-lock-fontify-block (buffer-substring-no-properties lang-beg lang-end) (1+ pt) (1- (point)))
+              (font-lock-append-text-property (1+ pt) (1- (point)) 'face 'org-block)))
+          (font-lock-append-text-property (1- (point)) (point) 'face 'org-block-begin-line)
+          (setq pt (point)))
+        (when (re-search-forward "\\= {{{results(" limit t)
+          (font-lock-append-text-property pt (1+ pt) 'face 'org-block)
+          (goto-char pt))))
+    (when (and org-prettify-inline-results (re-search-forward "{{{results(\\(.+?\\))}}}" limit t))
+      (remove-list-of-text-properties (match-beginning 0) (point)
+                                      '(composition
+                                        prettify-symbols-start
+                                        prettify-symbols-end))
+      (font-lock-append-text-property (match-beginning 0) (match-end 0) 'face 'org-block)
+      (let ((start (match-beginning 0)) (end (match-beginning 1)))
+        (with-silent-modifications
+          (compose-region start end "⟨")
+          (add-text-properties start end `(prettify-symbols-start ,start prettify-symbols-end ,end))))
+      (let ((start (match-end 1)) (end (point)))
+        (with-silent-modifications
+          (compose-region start end "⟩")
+          (add-text-properties start end `(prettify-symbols-start ,start prettify-symbols-end ,end)))))))
+
+(defun org-fontify-inline-src-blocks-enable ()
+  "Add inline src fontification to font-lock in Org.
+Must be run as part of `org-font-lock-set-keywords-hook'."
+  (setq org-font-lock-extra-keywords
+        (append org-font-lock-extra-keywords '((org-fontify-inline-src-blocks)))))
+
+(add-hook 'org-font-lock-set-keywords-hook #'org-fontify-inline-src-blocks-enable)
+#+end_src
+
 **** Symbols
 It's also nice to change the character used for collapsed items (by default ~…~),
 I think ~▾~ is better for indicating 'collapsed section'.
