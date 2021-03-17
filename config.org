@@ -7046,8 +7046,6 @@ Let's consider some other content we only want in certain situations.
 
 #+name: org-latex-checkbox-preamble
 #+begin_src LaTeX
-\\usepackage{pifont}
-\\usepackage{amssymb} % for \square
 \\newcommand{\\checkboxUnchecked}{$\\square$}
 \\newcommand{\\checkboxTransitive}{\\rlap{\\raisebox{-0.1ex}{\\hspace{0.35ex}\\Large\\textbf -}}$\\square$}
 \\newcommand{\\checkboxChecked}{\\rlap{\\raisebox{0.2ex}{\\hspace{0.35ex}\\scriptsize \\ding{52}}}$\\square$}
@@ -7056,7 +7054,6 @@ Let's consider some other content we only want in certain situations.
 #+name: org-latex-box-preamble
 #+begin_src LaTeX
 % args = #1 Name, #2 Colour, #3 Ding, #4 Label
-\\usepackage{pifont}
 \\newcommand{\\defsimplebox}[4]{%
   \\definecolor{#1}{HTML}{#2}
   \\newenvironment{#1}[1][]
@@ -7070,10 +7067,6 @@ Let's consider some other content we only want in certain situations.
     \\vspace{-0.5\\baselineskip}
   }%
 }
-\\defsimplebox{warning}{e66100}{\\ding{68}}{Warning}
-\\defsimplebox{info}{3584e4}{\\ding{68}}{Information}
-\\defsimplebox{success}{26a269}{\\ding{68}}{\\vspace{-\\baselineskip}}
-\\defsimplebox{error}{c01c28}{\\ding{68}}{Important}
 #+end_src
 
 Lastly, we will pass this content into some global variables we for ease of
@@ -7152,64 +7145,192 @@ exists.
    "\n"))
 #+end_src
 
-***** Implementation
-#+name: org-latex-conditional-preamble
-#+begin_src emacs-lisp
-(defvar org-latex-conditional-preambles
-  '((t . org-latex-universal-preamble)
-    ("^[ 	]*#\\+begin_src" . org-latex-embed-tangled-files)
-    ("\\[\\[file:\\(?:[^\\]]+?|\\\\\\]\\)\\.svg\\]\\]" . "\\usepackage{svg}")
-    ("\\[\\[file:\\(?:[^]]\\|\\\\\\]\\)+\\.\\(?:eps\\|pdf\\|png\\|jpeg\\|jpg\\|jbig2\\)\\]\\]" . "\\usepackage{graphicx}")
-    ("^[ 	]*|" . "\\usepackage{longtable}\n\\usepackage{booktabs}")
-    ("\\\\(\\|\\\\\\[\\|\\\\begin{\\(?:math\\|displaymath\\|equation\\|align\\|flalign\\|multiline\\|gather\\)[a-z]*\\*?}"
-     . "\\usepackage{bmc-maths}")
-    ("cref:\\|\\cref{" . "\\usepackage{cleveref}")
-    ("\\+[^ ].*[^ ]\\+\\|_[^ ].*[^ ]_\\|\\\\uu?line\\|\\\\uwave\\|\\\\sout\\|\\\\xout\\|\\\\dashuline\\|\\dotuline\\|\\markoverwith"
-     . "\\usepackage[normalem]{ulem}")
-    (":float wrap" . "\\usepackage{wrapfig}")
-    (":float sideways" . "\\usepackage{rotating}")
-    ("^[ 	]*#\\+caption:\\|\\\\caption" . org-latex-caption-preamble)
-    ("^[ 	]*\\(?:[-+*]\\|[0-9]+[.)]\\|[A-Za-z]+[.)]\\) \\[[ -X]\\]" . org-latex-checkbox-preamble)
-    ("^[ 	]*#\\+begin_\\(?:warning\\|info\\|success\\|error\\)\\|\\\\begin{\\(?:warning\\|info\\|success\\|error\\)}"
-     . org-latex-box-preamble))
-  "Snippets which are conditionally included in the preamble of a LaTeX export.
+***** Content-feature-preamble association
+Initially this idea was implemented with an alist that associated a construct
+that would search the current Org file for an indication that some feature was
+needed, with a LaTeX snippet to be inserted in the preamble which would provide
+that feature.
+This is all well and good when there is a bijection between detected features
+and the LaTeX code needed to support those features, but in many cases this
+relation is not injective.
 
-Alist where when the car results in a non-nil value, the cdr is inserted in
-the preamble.  The car may be a:
+To better model the reality of the situation, I add an extra layer to this
+process where each detected feature gives a list of required "feature flags".
+Simply be merging the lists of feature flags we no longer have to require
+injectivity to avoid LaTeX duplication. Then the extra layer forms a bijection
+between there feature flags and a specification which can be used to implement
+the feature.
+
+This model also provides a number of nice secondary benefits, such as a simple
+implementation of feature dependency.
+
+#+begin_src dot :file misc/org-latex-clever-preamble.svg :exports none
+digraph {
+    graph [bgcolor="transparent"];
+    node  [shape="underline" penwidth="2" width="1.3" style="rounded,filled" fillcolor="#efefef" color="#c9c9c9" fontcolor="#000000" fontname="overpass"];
+    edge  [arrowhead=none color="#aaaaaa" penwidth="1.2"]
+    rankdir=LR
+
+    "Checkboxes" [color="#2ec27e"]
+    "Fancy blocks" [color="#2ec27e"]
+    "Images" [color="#2ec27e"]
+    "Dingbats" [color="#f5c211"]
+    "Graphics" [color="#f5c211"]
+    "pifont" [color="#813d9c"]
+    "graphicx" [color="#813d9c"]
+
+    "Checkboxes" -> "Dingbats" -> "pifont"
+    "Fancy blocks" -> "Dingbats"
+    "Images" -> "Graphics" -> "graphicx"
+}
+#+end_src
+
+#+caption: Association between Org features, feature flags, and LaTeX snippets required.
+#+attr_html: :class invertible :alt Graph of possible Emacs task integrations :style max-width:min(24em,100%)
+[[file:misc/org-latex-clever-preamble.svg]]
+
+#+begin_src emacs-lisp
+(defvar org-latex-conditional-features
+  '((t . universal)
+    ("^[ 	]*#\\+begin_src" . embed-tangled)
+    ("\\[\\[file:\\(?:[^]]+?\\|\\\\\\]\\)\\.svg\\]\\]" . svg)
+    ("\\[\\[file:\\(?:[^]]\\|\\\\\\]\\)+?\\.\\(?:eps\\|pdf\\|png\\|jpeg\\|jpg\\|jbig2\\)\\]\\]" . image)
+    ("\\\\(\\|\\\\\\[\\|\\\\begin{\\(?:math\\|displaymath\\|equation\\|align\\|flalign\\|multiline\\|gather\\)[a-z]*\\*?}" . maths)
+    ("^[ 	]*|" . table)
+    ("cref:\\|\\cref{" . cleveref)
+    ("\\+[^ ].*[^ ]\\+\\|_[^ ].*[^ ]_\\|\\\\uu?line\\|\\\\uwave\\|\\\\sout\\|\\\\xout\\|\\\\dashuline\\|\\dotuline\\|\\markoverwith" . underline)
+    (":float wrap" . float-wrap)
+    (":float sideways" . rotate)
+    ("^[ 	]*#\\+caption:\\|\\\\caption" . caption)
+    ("^[ 	]*\\(?:[-+*]\\|[0-9]+[.)]\\|[A-Za-z]+[.)]\\) \\[[ -X]\\]" . checkbox)
+    ("^[ 	]*#\\+begin_warning\\|\\\\begin{warning}" . box-warning)
+    ("^[ 	]*#\\+begin_info\\|\\\\begin{info}"       . box-info)
+    ("^[ 	]*#\\+begin_success\\|\\\\begin{success}" . box-success)
+    ("^[ 	]*#\\+begin_error\\|\\\\begin{error}"     . box-error))
+"Org feature tests and associated LaTeX feature flags.
+
+Alist where the car is the feature test and may be a:
 - string, which is used as a regex search in the buffer
 - symbol, the value of which used
 - function, the result of the function is used
+- list, which passed to eval
 
-The cdr may be a:
-- string, which is inserted without processing
-- symbol, the value of which is inserted
-- function, the result of which is inserted")
+The cdr is either a single feature symbol or list of feature symbols.")
+#+end_src
 
+#+begin_src emacs-lisp
+(defvar org-latex-feature-implementations
+  '((universal     :snippet org-latex-universal-preamble)
+    (embed-tangled :snippet (org-latex-embed-tangled-files))
+    (image         :snippet "\\usepackage{graphicx}")
+    (svg           :snippet "\\usepackage{svg}")
+    (maths         :snippet "\\usepackage{bmc-maths}" :priority 0)
+    (table         :snippet "\\usepackage{longtable}\n\\usepackage{booktabs}")
+    (cleveref      :snippet "\\usepackage{cleveref}"  :priority -1)
+    (underline     :snippet "\\usepackage[normalem]{ulem}")
+    (float-wrap    :snippet "\\usepackage{wrapfig}")
+    (rotate        :snippet "\\usepackage{rotating}")
+    (caption       :snippet org-latex-caption-preamble)
+    (pifont        :snippet "\\usepackage{pifont}")
+    (checkbox      :requires pifont    :snippet (concat (unless (memq 'maths features)
+                                                          "\\usepackage{amssymb} % provides \\square")
+                                                        org-latex-checkbox-preamble))
+    (fancy-box     :requires pifont    :snippet org-latex-box-preamble)
+    (box-warning   :requires fancy-box :snippet "\\defsimplebox{warning}{e66100}{\\ding{68}}{Warning}")
+    (box-info      :requires fancy-box :snippet "\\defsimplebox{info}{3584e4}{\\ding{68}}{Information}")
+    (box-success   :requires fancy-box :snippet "\\defsimplebox{success}{26a269}{\\ding{68}}{\\vspace{-\\baselineskip}}")
+    (box-error     :requires fancy-box :snippet "\\defsimplebox{error}{c01c28}{\\ding{68}}{Important}"))
+  "LaTeX features and details required to implement them.
+
+List where the car is the feature symbol, and the rest forms a plist with the
+following keys:
+- :snippet, which may be either
+  - a string which should be included in the preamble
+  - a symbol, the value of which is included in the preamble
+  - a function, which is evaluated with the list of feature flags as its
+    single argument. The result of which is included in the preamble
+  - a list, which is passed to `eval', with a list of feature flags available
+    as \"features\".
+- :requires, a feature or list of features that must be available
+- :priority, for when ordering is important. Highest priority features are
+  considered first. The default priority is 0.")
+#+end_src
+
+***** Feature determination
+
+Now that we have ~org-latex-conditional-features~ defined, we need to use it to
+extract a list of features found in an Org buffer.
+
+#+begin_src emacs-lisp
+(defun org-latex-detect-features (&optional buffer)
+  "List features from `org-latex-conditional-features' detected in BUFFER."
+  (with-current-buffer (or buffer (current-buffer))
+    (delete-dups
+     (apply #'append
+            (mapcar (lambda (construct-feature)
+                      (when (pcase (car construct-feature)
+                              ((pred stringp) (save-excursion
+                                                (goto-char (point-min))
+                                                (search-forward-regexp (car construct-feature) nil t)))
+                              ((pred functionp) (funcall (car construct-feature)))
+                              ((pred listp) (eval (car construct-feature)))
+                              ((pred symbolp) (symbol-value (car construct-feature)))
+                              (_ (user-error "org-latex-conditional-features key %s unable to be used" (car construct-feature))))
+                        (if (listp (cdr construct-feature)) (cdr construct-feature) (list (cdr construct-feature)))))
+                    org-latex-conditional-features)))))
+#+end_src
+
+***** Preamble generation
+
+Once a list of required features has been determined, we want to use
+~org-latex-feature-implementations~ to generate the LaTeX which should be inserted
+into the preamble to provide those features.
+
+This is done in stages.
++ The dependencies for each listed feature are added to feature list (=:requires=).
++ The feature list is scrubbed of duplicates
++ The feature list is sorted by =:priority=
++ The value of each feature's =:snippet= parameter is concatenated
+
+#+begin_src emacs-lisp
+(defun org-latex-generate-features-preamble (features)
+  "Generate the LaTeX preamble content required to provide FEATURES.
+This is done according to `org-latex-feature-implementations'"
+  (dolist (feature features)
+    (unless (assoc feature org-latex-feature-implementations)
+      (error "Feature %s not provided in org-latex-feature-implementations" feature))
+    (when-let ((requirements (plist-get (cdr (assoc feature org-latex-feature-implementations)) :requires)))
+      (setf features (append (if (listp requirements) requirements (list requirements)) features))))
+  (mapconcat (lambda (feature)
+               (when-let ((snippet (plist-get (cdr (assoc feature org-latex-feature-implementations)) :snippet)))
+                 (concat
+                  (pcase snippet
+                    ((pred stringp) snippet)
+                    ((pred functionp) (funcall snippet features))
+                    ((pred listp) (eval `(let ((features ',features)) (,@snippet))))
+                    ((pred symbolp) (symbol-value snippet))
+                    (_ (user-error "org-latex-feature-implementations :snippet value %s unable to be used" snippet)))
+                  "\n")))
+             (sort (delete-dups features)
+                   (lambda (feat1 feat2)
+                     (if (> (or (plist-get (cdr (assoc feat1 org-latex-feature-implementations)) :priority) 0)
+                            (or (plist-get (cdr (assoc feat2 org-latex-feature-implementations)) :priority) 0))
+                         t nil)))
+             ""))
+#+end_src
+
+Then Org needs to be advised to actually use this generated preamble content.
+
+#+begin_src emacs-lisp
 (defadvice! org-latex-header-smart-preamble (orig-fn tpl def-pkg pkg snippets-p &optional extra)
   "Dynamically insert preamble content based on `org-latex-conditional-preambles'."
   :around #'org-splice-latex-header
   (let ((header (funcall orig-fn tpl def-pkg pkg snippets-p extra)))
     (if snippets-p header
       (concat header
-              (mapconcat (lambda (term-preamble)
-                           (when (pcase (car term-preamble)
-                                   ((pred stringp) (save-excursion
-                                                     (goto-char (point-min))
-                                                     (search-forward-regexp (car term-preamble) nil t)))
-                                   ((pred functionp) (funcall (car term-preamble)))
-                                   ((pred symbolp) (symbol-value (car term-preamble)))
-                                   (_ (user-error "org-latex-conditional-preambles key %s unable to be used" (car term-preamble))))
-                             (concat
-                              (pcase (cdr term-preamble)
-                                ((pred stringp) (cdr term-preamble))
-                                ((pred functionp) (funcall (cdr term-preamble)))
-                                ((pred symbolp) (symbol-value (cdr term-preamble)))
-                                (_ (user-error "org-latex-conditional-preambles value %s unable to be used" (cdr term-preamble))))
-                              "\n")))
-                         org-latex-conditional-preambles
-                         "") "\n"))))
+              (org-latex-generate-features-preamble (org-latex-detect-features))
+              "\n"))))
 #+end_src
-
 ***** Reduce default packages
 
 Thanks to our additions, we can remove a few packages from
@@ -7237,7 +7358,7 @@ exporting that as LaTeX commands.
 (setq org-latex-listings 'engraved) ; NOTE non-standard value
 #+end_src
 
-Thanks to ~org-latex-conditional-preambles~ and some copy-paste with the =minted=
+Thanks to ~org-latex-conditional-features~ and some copy-paste with the =minted=
 entry in ~org-latex-scr-block~ we can easily add this as a recognised
 ~org-latex-listings~ value.
 
@@ -7260,8 +7381,9 @@ entry in ~org-latex-scr-block~ we can easily add this as a recognised
 <<org-latex-engraved-code-preamble>>
 ")
 
-(add-to-list 'org-latex-conditional-preambles '("^[ 	]*#\\+BEGIN_SRC\\|#\\+begin_src" . org-latex-engraved-code-preamble) t)
-(add-to-list 'org-latex-conditional-preambles '("^[ 	]*#\\+BEGIN_SRC\\|#\\+begin_src" . engrave-faces-latex-gen-preamble) t)
+(add-to-list 'org-latex-feature-implementations '(engraved-code-setup :snippet org-latex-engraved-code-preamble :priority -2))
+(add-to-list 'org-latex-feature-implementations '(engraved-code :requires engraved-code-setup :snippet (engrave-faces-latex-gen-preamble) :priority -2.1))
+(add-to-list 'org-latex-conditional-features '("^[ 	]*#\\+BEGIN_SRC\\|^[ 	]*#\\+begin_src\\|src_[A-Za-z]" . engraved-code))
 
 (defun org-latex-scr-block--engraved (src-block contents info)
   (let* ((lang (org-element-property :language src-block))
