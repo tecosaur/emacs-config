@@ -6253,12 +6253,12 @@ Ignore if preceeded by \";\" (for manual prevention) or \"\\\" (for LaTeX comman
                ((equal (aref all-caps-str 0) ?\\) all-caps-str)
                (t (let* ((trailing-s (when (equal (aref all-caps-str (- (length all-caps-str) 2)) ?s)
                                        (pcase base-backend
-                                         ('latex "\\protect\\scalebox{.91}[.84]{s}")
+                                         ('latex "\\acrs{}")
                                          ('html "<small>s</small>"))))
                          (acr (substring all-caps-str 0 (if trailing-s -2 -1)))
                          (final-char (substring all-caps-str -1)))
                     (pcase base-backend
-                      ('latex (concat "\\textls*[70]{\\textsc{" (s-downcase acr) "}" trailing-s "}" final-char))
+                      ('latex (concat "\\acr{" (s-downcase acr) "}" trailing-s final-char))
                       ('html (concat "<span class='acr'>" acr "</span>" trailing-s final-char)))))))
        text t t))))
 
@@ -7220,6 +7220,7 @@ digraph {
     ("\\\\(\\|\\\\\\[\\|\\\\begin{\\(?:math\\|displaymath\\|equation\\|align\\|flalign\\|multiline\\|gather\\)[a-z]*\\*?}" . maths)
     ("^[ 	]*|" . table)
     ("cref:\\|\\cref{" . cleveref)
+    ("[;\\\\]?\\b[A-Z][A-Z]+s?[^A-Z]" . acronym)
     ("\\+[^ ].*[^ ]\\+\\|_[^ ].*[^ ]_\\|\\\\uu?line\\|\\\\uwave\\|\\\\sout\\|\\\\xout\\|\\\\dashuline\\|\\dotuline\\|\\markoverwith" . underline)
     (":float wrap" . float-wrap)
     (":float sideways" . rotate)
@@ -7253,6 +7254,7 @@ The cdr is either a single feature symbol or list of feature symbols.")
     (float-wrap    :snippet "\\usepackage{wrapfig}")
     (rotate        :snippet "\\usepackage{rotating}")
     (caption       :snippet org-latex-caption-preamble)
+    (acronym       :snippet "\\newcommand{\\acr}[1]{\\protect\\textls*[115]{\\scshape #1}}\n\\newcommand{\\acrs}{\\protect\\scalebox{.91}[.84]{\\hspace{0.15ex}s}}")
     (pifont        :snippet "\\usepackage{pifont}")
     (checkbox      :requires pifont    :snippet (concat (unless (memq 'maths features)
                                                           "\\usepackage{amssymb} % provides \\square")
@@ -7286,20 +7288,21 @@ extract a list of features found in an Org buffer.
 #+begin_src emacs-lisp
 (defun org-latex-detect-features (&optional buffer)
   "List features from `org-latex-conditional-features' detected in BUFFER."
-  (with-current-buffer (or buffer (current-buffer))
-    (delete-dups
-     (apply #'append
-            (mapcar (lambda (construct-feature)
-                      (when (pcase (car construct-feature)
-                              ((pred stringp) (save-excursion
-                                                (goto-char (point-min))
-                                                (search-forward-regexp (car construct-feature) nil t)))
-                              ((pred functionp) (funcall (car construct-feature)))
-                              ((pred listp) (eval (car construct-feature)))
-                              ((pred symbolp) (symbol-value (car construct-feature)))
-                              (_ (user-error "org-latex-conditional-features key %s unable to be used" (car construct-feature))))
-                        (if (listp (cdr construct-feature)) (cdr construct-feature) (list (cdr construct-feature)))))
-                    org-latex-conditional-features)))))
+  (let ((case-fold-search nil))
+    (with-current-buffer (or buffer (current-buffer))
+      (delete-dups
+       (apply #'append
+              (mapcar (lambda (construct-feature)
+                        (when (pcase (car construct-feature)
+                                ((pred stringp) (save-excursion
+                                                  (goto-char (point-min))
+                                                  (search-forward-regexp (car construct-feature) nil t)))
+                                ((pred functionp) (funcall (car construct-feature)))
+                                ((pred listp) (eval (car construct-feature)))
+                                ((pred symbolp) (symbol-value (car construct-feature)))
+                                (_ (user-error "org-latex-conditional-features key %s unable to be used" (car construct-feature))))
+                          (if (listp (cdr construct-feature)) (cdr construct-feature) (list (cdr construct-feature)))))
+                      org-latex-conditional-features))))))
 #+end_src
 
 ***** Preamble generation
