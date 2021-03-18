@@ -1,9 +1,9 @@
 #+title: Doom Emacs Configuration
 #+subtitle: The Methods, Management, and Menagerie of Madness
 #+author: tecosaur
-#+date: {{{modification-time(%Y-%m-%d %H:%M, t)}}} ;{{{timezone}}}, {{{git-rev}}}
+#+date: @@latex:\large@@ {{{modification-time(%Y-%m-%d %H:%M, t)}}} @@latex:\acr{\lowercase{@@{{{timezone}}}@@latex:}}@@, {{{git-rev}}}
 #+macro: timezone (eval (substring (shell-command-to-string "date +%Z") 0 -1))
-#+macro: git-rev (eval (format "@@html:<a href=\"https://github.com/tecosaur/emacs-config/commit/%1$s\" style=\"text-decoration: none\"><code style=\"padding: 0; color: var(--text-light); font-size: inherit; opacity: 0.7\">%1$s</code></a>@@@@latex:\\href{https://github.com/tecosaur/emacs-config/commit/%1$s}{%1$s}@@" (substring (shell-command-to-string "git rev-parse --short HEAD") 0 -1)))
+#+macro: git-rev (eval (format "@@html:<a href=\"https://github.com/tecosaur/emacs-config/commit/%1$s\" style=\"text-decoration: none\"><code style=\"padding: 0; color: var(--text-light); font-size: inherit; opacity: 0.7\">%1$s</code></a>@@@@latex:\\href{https://github.com/tecosaur/emacs-config/commit/%1$s}{\\normalsize\\texttt{%1$s}}@@" (substring (shell-command-to-string "git rev-parse --short HEAD") 0 -1)))
 #+startup: fold
 #+property: header-args:emacs-lisp :tangle yes :cache yes :results silent :comments link
 #+property: header-args:shell :tangle "setup.sh"
