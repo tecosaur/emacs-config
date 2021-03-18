@@ -5252,7 +5252,7 @@ Return nil otherwise."
   "Return the language of the last src-block, if it exists."
   (save-excursion
     (beginning-of-line)
-    (when (re-search-backward "^[ 	]*#\\+begin_src" nil t)
+    (when (re-search-backward "^[ \t]*#\\+begin_src" nil t)
       (org-element-property :language (org-element-context)))))
 
 (defun +yas/org-most-common-no-property-lang ()
@@ -5260,10 +5260,10 @@ Return nil otherwise."
   (let (src-langs header-langs)
     (save-excursion
       (goto-char (point-min))
-      (while (re-search-forward "^[ 	]*#\\+begin_src" nil t)
+      (while (re-search-forward "^[ \t]*#\\+begin_src" nil t)
         (push (+yas/org-src-lang) src-langs))
       (goto-char (point-min))
-      (while (re-search-forward "^[ 	]*#\\+property: +header-args" nil t)
+      (while (re-search-forward "^[ \t]*#\\+property: +header-args" nil t)
         (push (+yas/org-src-lang) header-langs)))
 
     (setq src-langs
@@ -5299,7 +5299,7 @@ It likely misses some edge cases, but should mostly work.
     (goto-char (point-min))
     (let ((count 0)
           (case-fold-search nil))
-      (while (re-search-forward "^[ 	]*#\\+[A-Z_]+" nil t)
+      (while (re-search-forward "^[ \t]*#\\+[A-Z_]+" nil t)
         (unless (s-matches-p "RESULTS" (match-string 0))
           (replace-match (downcase (match-string 0)) t)
           (setq count (1+ count))))
@@ -7212,22 +7212,22 @@ digraph {
 #+begin_src emacs-lisp
 (defvar org-latex-conditional-features
   '((t . universal)
-    ("^[ 	]*#\\+begin_src" . embed-tangled)
+    ("^[ \t]*#\\+begin_src" . embed-tangled)
     ("\\[\\[file:\\(?:[^]]+?\\|\\\\\\]\\)\\.svg\\]\\]" . svg)
     ("\\[\\[file:\\(?:[^]]\\|\\\\\\]\\)+?\\.\\(?:eps\\|pdf\\|png\\|jpeg\\|jpg\\|jbig2\\)\\]\\]" . image)
     ("\\\\(\\|\\\\\\[\\|\\\\begin{\\(?:math\\|displaymath\\|equation\\|align\\|flalign\\|multiline\\|gather\\)[a-z]*\\*?}" . maths)
-    ("^[ 	]*|" . table)
+    ("^[ \t]*|" . table)
     ("cref:\\|\\cref{" . cleveref)
     ("[;\\\\]?\\b[A-Z][A-Z]+s?[^A-Z]" . acronym)
     ("\\+[^ ].*[^ ]\\+\\|_[^ ].*[^ ]_\\|\\\\uu?line\\|\\\\uwave\\|\\\\sout\\|\\\\xout\\|\\\\dashuline\\|\\dotuline\\|\\markoverwith" . underline)
     (":float wrap" . float-wrap)
     (":float sideways" . rotate)
-    ("^[ 	]*#\\+caption:\\|\\\\caption" . caption)
-    ("^[ 	]*\\(?:[-+*]\\|[0-9]+[.)]\\|[A-Za-z]+[.)]\\) \\[[ -X]\\]" . checkbox)
-    ("^[ 	]*#\\+begin_warning\\|\\\\begin{warning}" . box-warning)
-    ("^[ 	]*#\\+begin_info\\|\\\\begin{info}"       . box-info)
-    ("^[ 	]*#\\+begin_success\\|\\\\begin{success}" . box-success)
-    ("^[ 	]*#\\+begin_error\\|\\\\begin{error}"     . box-error))
+    ("^[ \t]*#\\+caption:\\|\\\\caption" . caption)
+    ("^[ \t]*\\(?:[-+*]\\|[0-9]+[.)]\\|[A-Za-z]+[.)]\\) \\[[ -X]\\]" . checkbox)
+    ("^[ \t]*#\\+begin_warning\\|\\\\begin{warning}" . box-warning)
+    ("^[ \t]*#\\+begin_info\\|\\\\begin{info}"       . box-info)
+    ("^[ \t]*#\\+begin_success\\|\\\\begin{success}" . box-success)
+    ("^[ \t]*#\\+begin_error\\|\\\\begin{error}"     . box-error))
 "Org feature tests and associated LaTeX feature flags.
 
 Alist where the car is the feature test and may be a:
@@ -7406,7 +7406,7 @@ entry in ~org-latex-scr-block~ we can easily add this as a recognised
 
 (add-to-list 'org-latex-feature-implementations '(engraved-code-setup :snippet org-latex-engraved-code-preamble :priority -2))
 (add-to-list 'org-latex-feature-implementations '(engraved-code :requires engraved-code-setup :snippet (engrave-faces-latex-gen-preamble) :priority -2.1))
-(add-to-list 'org-latex-conditional-features '("^[ 	]*#\\+BEGIN_SRC\\|^[ 	]*#\\+begin_src\\|src_[A-Za-z]" . engraved-code))
+(add-to-list 'org-latex-conditional-features '("^[ \t]*#\\+BEGIN_SRC\\|^[ \t]*#\\+begin_src\\|src_[A-Za-z]" . engraved-code))
 
 (defun org-latex-scr-block--engraved (src-block contents info)
   (let* ((lang (org-element-property :language src-block))
