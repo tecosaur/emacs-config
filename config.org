@@ -6236,7 +6236,9 @@ exports are supported.
 (defun org-export-filter-text-acronym (text backend _info)
   "Wrap suspected acronyms in acronyms-specific formatting.
 Treat sequences of 2+ capital letters (optionally succeeded by \"s\") as an acronym.
-Ignore if preceeded by \";\" (for manual prevention) or \"\\\" (for LaTeX commands). "
+Ignore if preceeded by \";\" (for manual prevention) or \"\\\" (for LaTeX commands).
+
+TODO abstract backend implementations."
   (let ((base-backend
          (cond
           ((org-export-derived-backend-p backend 'latex) 'latex)
@@ -6248,18 +6250,14 @@ Ignore if preceeded by \";\" (for manual prevention) or \"\\\" (for LaTeX comman
       (replace-regexp-in-string
        "[;\\\\]?\\b[A-Z][A-Z]+s?[^A-Z]"
        (lambda (all-caps-str)
-         ;; only format as acronym if str doesn't start with ";" or "\" (for LaTeX commands)
-         (cond ((equal (aref all-caps-str 0) ?\;) (substring all-caps-str 1))
-               ((equal (aref all-caps-str 0) ?\\) all-caps-str)
-               (t (let* ((trailing-s (when (equal (aref all-caps-str (- (length all-caps-str) 2)) ?s)
-                                       (pcase base-backend
-                                         ('latex "\\acrs{}")
-                                         ('html "<small>s</small>"))))
+         (cond ((equal (aref all-caps-str 0) ?\\) all-caps-str)                ; don't format LaTeX commands
+               ((equal (aref all-caps-str 0) ?\;) (substring all-caps-str 1))  ; just remove not-acronym indicator char ";"
+               (t (let* ((trailing-s (equal (aref all-caps-str (- (length all-caps-str) 2)) ?s))
                          (acr (substring all-caps-str 0 (if trailing-s -2 -1)))
-                         (final-char (substring all-caps-str -1)))
+                         (final-char (substring all-caps-str -1))) ; needed to re-insert the [^A-Z] at the end
                     (pcase base-backend
-                      ('latex (concat "\\acr{" (s-downcase acr) "}" trailing-s final-char))
-                      ('html (concat "<span class='acr'>" acr "</span>" trailing-s final-char)))))))
+                      ('latex (concat "\\acr{" (s-downcase acr) "}" (when trailing-s "\\acrs{}") final-char))
+                      ('html (concat "<span class='acr'>" acr "</span>" (when trailing-s "<small>s</small>") final-char)))))))
        text t t))))
 
 (add-to-list 'org-export-filter-plain-text-functions
