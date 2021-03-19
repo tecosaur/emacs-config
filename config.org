@@ -8282,8 +8282,7 @@ Maths deliminators can be de-emphasised a bit
 #+begin_src emacs-lisp
 ;; Making \( \) less visible
 (defface unimportant-latex-face
-  '((t
-     :inherit font-lock-comment-face :family "Overpass" :weight light))
+  '((t :inherit font-lock-comment-face :weight extra-light))
   "Face used to make \\(\\), \\[\\] less visible."
   :group 'LaTeX-math)
 
