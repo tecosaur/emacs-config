@@ -34,9 +34,9 @@ RUN echo "\033[1;34mUpdate.\033[0m" &&\
   # Emacs 27.1 (nox)
   apt-get install -y emacs27-nox &&\
   echo "\033[1;34mInstalling TeX Live packages.\033[0m" &&\
-# install TeX Live and ghostscript as well as other tools
+# install TeX Live and ghostscript as well as other tools (inkscape for svg)
   git clone https://github.com/tecosaur/BMC.git /usr/share/texmf/tex/latex/bmc &&\
-  apt-get install -y texlive-base texlive-latex-recommended texlive-fonts-extra latexmk &&\
+  apt-get install -y texlive-base texlive-latex-recommended texlive-fonts-extra latexmk inkscape &&\
 # delete Tex Live sources and other potentially useless stuff
   echo "\033[1;34mDelete TeX Live sources and other useless stuff.\033[0m" &&\
   (rm -rf /usr/share/texmf/source || true) &&\
