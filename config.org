@@ -6249,7 +6249,7 @@ TODO abstract backend implementations."
         (case-fold-search nil))
     (when base-backend
       (replace-regexp-in-string
-       "[;\\\\]?\\b[A-Z][A-Z]+s?[^A-Z]"
+       "[;\\\\]?\\b[A-Z][A-Z]+s?[^A-Za-z]"
        (lambda (all-caps-str)
          (cond ((equal (aref all-caps-str 0) ?\\) all-caps-str)                ; don't format LaTeX commands
                ((equal (aref all-caps-str 0) ?\;) (substring all-caps-str 1))  ; just remove not-acronym indicator char ";"
@@ -7219,7 +7219,7 @@ digraph {
     ("\\\\(\\|\\\\\\[\\|\\\\begin{\\(?:math\\|displaymath\\|equation\\|align\\|flalign\\|multiline\\|gather\\)[a-z]*\\*?}" . maths)
     ("^[ \t]*|" . table)
     ("cref:\\|\\cref{" . cleveref)
-    ("[;\\\\]?\\b[A-Z][A-Z]+s?[^A-Z]" . acronym)
+    ("[;\\\\]?\\b[A-Z][A-Z]+s?[^A-Za-z]" . acronym)
     ("\\+[^ ].*[^ ]\\+\\|_[^ ].*[^ ]_\\|\\\\uu?line\\|\\\\uwave\\|\\\\sout\\|\\\\xout\\|\\\\dashuline\\|\\dotuline\\|\\markoverwith" . underline)
     (":float wrap" . float-wrap)
     (":float sideways" . rotate)
