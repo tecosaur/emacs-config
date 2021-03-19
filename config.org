@@ -7212,7 +7212,7 @@ digraph {
 #+begin_src emacs-lisp
 (defvar org-latex-conditional-features
   '((t . universal)
-    ("^[ \t]*#\\+begin_src" . embed-tangled)
+    ("^[ \t]*#\\+begin_src\\|^[ \t]*#\\+BEGIN_SRC" . embed-tangled)
     ("\\[\\[file:\\(?:[^]]+?\\|\\\\\\]\\)\\.svg\\]\\]" . svg)
     ("\\[\\[file:\\(?:[^]]\\|\\\\\\]\\)+?\\.\\(?:eps\\|pdf\\|png\\|jpeg\\|jpg\\|jbig2\\)\\]\\]" . image)
     ("\\\\(\\|\\\\\\[\\|\\\\begin{\\(?:math\\|displaymath\\|equation\\|align\\|flalign\\|multiline\\|gather\\)[a-z]*\\*?}" . maths)
@@ -7294,7 +7294,7 @@ extract a list of features found in an Org buffer.
                         (when (pcase (car construct-feature)
                                 ((pred stringp) (save-excursion
                                                   (goto-char (point-min))
-                                                  (search-forward-regexp (car construct-feature) nil t)))
+                                                  (re-search-forward (car construct-feature) nil t)))
                                 ((pred functionp) (funcall (car construct-feature)))
                                 ((pred listp) (eval (car construct-feature)))
                                 ((pred symbolp) (symbol-value (car construct-feature)))
@@ -7406,7 +7406,7 @@ entry in ~org-latex-scr-block~ we can easily add this as a recognised
 
 (add-to-list 'org-latex-feature-implementations '(engraved-code-setup :snippet org-latex-engraved-code-preamble :priority -2))
 (add-to-list 'org-latex-feature-implementations '(engraved-code :requires engraved-code-setup :snippet (engrave-faces-latex-gen-preamble) :priority -2.1))
-(add-to-list 'org-latex-conditional-features '("^[ \t]*#\\+BEGIN_SRC\\|^[ \t]*#\\+begin_src\\|src_[A-Za-z]" . engraved-code))
+(add-to-list 'org-latex-conditional-features '("^[ \t]*#\\+begin_src\\|^[ \t]*#\\+BEGIN_SRC\\|src_[A-Za-z]" . engraved-code) t)
 
 (defun org-latex-scr-block--engraved (src-block contents info)
   (let* ((lang (org-element-property :language src-block))
