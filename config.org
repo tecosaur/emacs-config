@@ -7241,13 +7241,13 @@ The cdr is either a single feature symbol or list of feature symbols.")
 
 #+begin_src emacs-lisp
 (defvar org-latex-feature-implementations
-  '((universal     :snippet org-latex-universal-preamble)
-    (embed-tangled :snippet (org-latex-embed-tangled-files))
+  '((universal     :snippet org-latex-universal-preamble    :order -2)
+    (embed-tangled :snippet (concat (org-latex-embed-tangled-files) "\n") :order -1)
     (image         :snippet "\\usepackage{graphicx}")
     (svg           :snippet "\\usepackage{svg}")
-    (maths         :snippet "\\usepackage{bmc-maths}" :priority 0)
+    (maths         :snippet "\\usepackage{bmc-maths}")
     (table         :snippet "\\usepackage{longtable}\n\\usepackage{booktabs}")
-    (cleveref      :snippet "\\usepackage{cleveref}"  :priority -1)
+    (cleveref      :snippet "\\usepackage{cleveref}" :order 1) ; after bmc-maths
     (underline     :snippet "\\usepackage[normalem]{ulem}")
     (float-wrap    :snippet "\\usepackage{wrapfig}")
     (rotate        :snippet "\\usepackage{rotating}")
@@ -7257,11 +7257,11 @@ The cdr is either a single feature symbol or list of feature symbols.")
     (checkbox      :requires pifont    :snippet (concat (unless (memq 'maths features)
                                                           "\\usepackage{amssymb} % provides \\square")
                                                         org-latex-checkbox-preamble))
-    (fancy-box     :requires pifont    :snippet org-latex-box-preamble)
-    (box-warning   :requires fancy-box :snippet "\\defsimplebox{warning}{e66100}{\\ding{68}}{Warning}")
-    (box-info      :requires fancy-box :snippet "\\defsimplebox{info}{3584e4}{\\ding{68}}{Information}")
-    (box-success   :requires fancy-box :snippet "\\defsimplebox{success}{26a269}{\\ding{68}}{\\vspace{-\\baselineskip}}")
-    (box-error     :requires fancy-box :snippet "\\defsimplebox{error}{c01c28}{\\ding{68}}{Important}"))
+    (fancy-box     :requires pifont    :snippet org-latex-box-preamble :order 2)
+    (box-warning   :requires fancy-box :snippet "\\defsimplebox{warning}{e66100}{\\ding{68}}{Warning}" :order 3)
+    (box-info      :requires fancy-box :snippet "\\defsimplebox{info}{3584e4}{\\ding{68}}{Information}" :order 3)
+    (box-success   :requires fancy-box :snippet "\\defsimplebox{success}{26a269}{\\ding{68}}{\\vspace{-\\baselineskip}}" :order 3)
+    (box-error     :requires fancy-box :snippet "\\defsimplebox{error}{c01c28}{\\ding{68}}{Important}" :order 3))
   "LaTeX features and details required to implement them.
 
 List where the car is the feature symbol, and the rest forms a plist with the
@@ -7274,8 +7274,8 @@ following keys:
   - a list, which is passed to `eval', with a list of feature flags available
     as \"features\".
 - :requires, a feature or list of features that must be available
-- :priority, for when ordering is important. Highest priority features are
-  considered first. The default priority is 0.")
+- :order, for when ordering is important. Lower values appear first.
+  The default is 0.")
 #+end_src
 
 ***** Feature determination
@@ -7312,7 +7312,7 @@ into the preamble to provide those features.
 This is done in stages.
 + The dependencies for each listed feature are added to feature list (=:requires=).
 + The feature list is scrubbed of duplicates
-+ The feature list is sorted by =:priority=
++ The feature list is sorted by =:order= (ascending)
 + The value of each feature's =:snippet= parameter is concatenated
 
 #+begin_src emacs-lisp
@@ -7336,8 +7336,8 @@ This is done according to `org-latex-feature-implementations'"
                   "\n")))
              (sort (delete-dups features)
                    (lambda (feat1 feat2)
-                     (if (> (or (plist-get (cdr (assoc feat1 org-latex-feature-implementations)) :priority) 0)
-                            (or (plist-get (cdr (assoc feat2 org-latex-feature-implementations)) :priority) 0))
+                     (if (< (or (plist-get (cdr (assoc feat1 org-latex-feature-implementations)) :order) 0)
+                            (or (plist-get (cdr (assoc feat2 org-latex-feature-implementations)) :order) 0))
                          t nil)))
              ""))
 #+end_src
@@ -7404,8 +7404,8 @@ entry in ~org-latex-scr-block~ we can easily add this as a recognised
 <<org-latex-engraved-code-preamble>>
 ")
 
-(add-to-list 'org-latex-feature-implementations '(engraved-code-setup :snippet org-latex-engraved-code-preamble :priority -2))
-(add-to-list 'org-latex-feature-implementations '(engraved-code :requires engraved-code-setup :snippet (engrave-faces-latex-gen-preamble) :priority -2.1))
+(add-to-list 'org-latex-feature-implementations '(engraved-code-setup :snippet org-latex-engraved-code-preamble :order 98) t)
+(add-to-list 'org-latex-feature-implementations '(engraved-code :requires engraved-code-setup :snippet (engrave-faces-latex-gen-preamble) :order 99) t)
 (add-to-list 'org-latex-conditional-features '("^[ \t]*#\\+begin_src\\|^[ \t]*#\\+BEGIN_SRC\\|src_[A-Za-z]" . engraved-code) t)
 
 (defun org-latex-scr-block--engraved (src-block contents info)
