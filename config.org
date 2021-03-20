@@ -7827,6 +7827,88 @@ locally binding ~auto-mode-alist~ to ~nil~.
   (let ((auto-mode-alist nil))
     (apply orig-fn args)))
 #+end_src
+**** Check for required packages
+
+For how I've setup Org's LaTeX export, the following packages are needed:
+#+name: org-latex-required-packages-list
++ adjustbox
++ amsmath
++ arev
++ booktabs
++ cancel
++ capt-of
++ caption
++ cleveref
++ embedall
++ fourier
++ fvextra
++ gillius
++ graphicx
++ hyperref
++ mathalpha
++ mathtools
++ microtype
++ newpxtext
++ pdfx
++ pifont
++ preview
++ siunitx
++ soul
++ sourcecodepro
++ subcaption
++ svg
++ tcolorbox
++ xcolor
++ xparse
+
+We can write a function which will check for each of these packages with
+=kpsewhich=, and then if any of them are missing we'll inject some advice into the
+generated config that gets a list of missing packages and warns us every time we
+export to a PDF.
+
+#+name: org-missing-latex-packages
+#+begin_src emacs-lisp :noweb-ref none :var org-latex-required-packages-list=org-latex-required-packages-list
+(setq org-required-latex-packages (mapcar #'car org-latex-required-packages-list))
+
+(defun check-for-latex-packages (packages)
+  (delq nil (mapcar (lambda (package)
+                      (unless
+                          (= 0 (shell-command (format "kpsewhich %s.sty" package)))
+                        package))
+                    packages)))
+
+(if-let ((missing-pkgs (check-for-latex-packages org-required-latex-packages)))
+    (concat
+     (pp-to-string `(setq org-required-latex-packages ',org-required-latex-packages))
+     (message ";; Detected missing LaTeX packages: %s\n" (mapconcat #'identity missing-pkgs ", "))
+     (pp-to-string
+      '(defun check-for-latex-packages (packages)
+         (delq nil (mapcar (lambda (package)
+                             (unless
+                                 (= 0 (shell-command (format "kpsewhich %s.sty" package)))
+                               package))
+                           packages))))
+     (pp-to-string
+      `(defadvice! org-warn-about-missing-latex-packages (&rest _)
+         :before #'org-latex-export-to-pdf
+         (message "Checking for missing LaTeX packages...")
+         (sleep-for 0.4)
+         (if-let (missing-pkgs (check-for-latex-packages org-required-latex-packages))
+             (message "%s You are missing the following LaTeX packages: %s."
+                      (propertize "Warning!" 'face '(bold warning))
+                      (mapconcat (lambda (pkg) (propertize pkg 'face 'font-lock-variable-name-face))
+                                 missing-pkgs
+                                 ", "))
+           (message "%s You have all the required LaTeX packages. Run %s to make this message go away."
+                    (propertize "Success!" 'face '(bold success))
+                    (propertize "doom sync" 'face 'font-lock-keyword-face)))
+         (sleep-for 1))))
+  "")
+#+end_src
+
+#+begin_src emacs-lisp :noweb no-export
+<<org-missing-latex-packages()>>
+#+end_src
 *** Beamer Export
 It's nice to use a different theme
 #+begin_src emacs-lisp
@@ -8050,7 +8132,6 @@ For use in the new-file template, let's set out a nice preamble we may want to u
 % microtype makes text look nicer
 
 \\usepackage{graphicx} % include graphics
-\\usepackage{grffile} % fix allowed graphicx filenames
 
 \\usepackage{booktabs} % nice table rules
 #+end_src
