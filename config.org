@@ -138,6 +138,7 @@ digraph {
 
 #+caption: Some sample workflow integrations that can be used within Emacs
 #+attr_html: :class invertible :alt Graph of possible Emacs task integrations :style max-width:min(24em,100%)
+#+attr_latex: :width 0.65\linewidth
 [[file:misc/emacs-platform.svg]]
 
 *** Some notably unique features
@@ -7209,6 +7210,7 @@ digraph {
 
 #+caption: Association between Org features, feature flags, and LaTeX snippets required.
 #+attr_html: :class invertible :alt Graph of possible Emacs task integrations :style max-width:min(24em,100%)
+#+attr_latex: :width 0.7\linewidth
 [[file:misc/org-latex-clever-preamble.svg]]
 
 #+begin_src emacs-lisp
