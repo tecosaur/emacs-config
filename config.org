@@ -6315,7 +6315,7 @@ the vast majority of the change in behaviour comes from switch statements in:
 There are quite a few instances where I want to modify variables defined in
 =ox-html=, so we'll wrap the contents of this section in an ~(after! ox-html ...)~
 block.
-#+begin_src emacs-lisp :noweb yes :noweb-ref org-conf
+#+begin_src emacs-lisp :noweb no-export :noweb-ref org-conf
 (after! ox-html
   <<ox-html-conf>>
 )
