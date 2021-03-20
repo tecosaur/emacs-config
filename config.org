@@ -215,7 +215,7 @@ editor) the following applications
 - Python IDLE
 - Komodo Edit
 - Brackets
-- ;VSCode
+- VSCode
 - and now, Emacs
 
 I have attempted to quantify aspects of my impressions of them below.
@@ -224,7 +224,7 @@ I have attempted to quantify aspects of my impressions of them below.
 | Editor      | Extensibility | Ecosystem | Ease of Use | Comfort | Completion | Performance |
 |-------------+---------------+-----------+-------------+---------+------------+-------------|
 | IDLE        |             1 |         1 |           3 |       1 |          1 |           2 |
-| ;VSCode     |             3 |         3 |           4 |     3.5 |          4 |           3 |
+| VSCode      |             3 |         3 |           4 |     3.5 |          4 |           3 |
 | Brackets    |           2.5 |         2 |           3 |       3 |        2.5 |           2 |
 | Emacs       |             4 |         4 |           2 |       4 |        3.5 |           3 |
 | Komodo Edit |             2 |         1 |           3 |       2 |          2 |           2 |
@@ -1387,7 +1387,7 @@ And some basic config
   (add-hook 'aas-post-snippet-expand-hook #'laas-tex-fold-maybe))
 #+end_src
 *** Org Mode
-Use HEAD for development.
+Use ~HEAD~ for development.
 #+begin_src emacs-lisp
 (unpin! org-mode)
 #+end_src
@@ -1579,6 +1579,7 @@ home-row for jumping. Very convenient ... except I'm using Colemak.
 #+end_src
 ** Calc
 *** Defaults
+
 Any sane person prefers radians and exact values.
 
 #+begin_src emacs-lisp
