@@ -6943,7 +6943,8 @@ We'll be setting up an nice preamble to use in a new default export class.
 
 #+name: latex-fancy-preamble
 #+begin_src LaTeX
-\\usepackage[osf,largesc,helvratio=0.9]{newpxtext}
+\\usepackage[osf,largesc]{newpxtext}
+\\usepackage{gillius}
 \\usepackage[scale=0.9]{sourcecodepro}
 
 \\usepackage[activate={true,nocompatibility},final,tracking=true,kerning=true,spacing=true,factor=2000]{microtype}
@@ -8037,7 +8038,8 @@ For use in the new-file template, let's set out a nice preamble we may want to u
 \\usepackage[a-2b]{pdfx} % why not be archival
 
 \\usepackage[T1]{fontenc}
-\\usepackage[osf,helvratio=0.9]{newpxtext} % pallatino
+\\usepackage[osf]{newpxtext}  % Palatino
+\\usepackage{gillius}
 \\usepackage[scale=0.9]{sourcecodepro}
 
 \\usepackage[varbb]{newpxmath}
