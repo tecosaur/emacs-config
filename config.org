@@ -717,6 +717,7 @@ aspects are nice, but on others I prefer Fira.
 (setq doom-font (font-spec :family "JetBrains Mono" :size 24)
       doom-big-font (font-spec :family "JetBrains Mono" :size 36)
       doom-variable-pitch-font (font-spec :family "Overpass" :size 24)
+      doom-unicode-font (font-spec :family "JuliaMono")
       doom-serif-font (font-spec :family "IBM Plex Mono" :weight 'light))
 #+end_src
 
@@ -5849,8 +5850,8 @@ It's also nice to make use of the Unicode characters for check boxes, and other 
             :beamer_header "↠"
             :attr_latex    "🄛"
             :attr_html     "🄗"
-            :begin_quote   "❮"
-            :end_quote     "❯"
+            :begin_quote   "❝"
+            :end_quote     "❞"
             :caption       "☰"
             :header        "›"
             :results       "🠶"
