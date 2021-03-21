@@ -136,7 +136,7 @@ digraph {
 
 #+caption: Some sample workflow integrations that can be used within Emacs
 #+attr_html: :class invertible :alt Graph of possible Emacs task integrations :style max-width:min(24em,100%)
-#+attr_latex: :width 0.65\linewidth
+#+attr_latex: :width 0.5\linewidth
 [[file:misc/emacs-platform.svg]]
 
 *** Some notably unique features
@@ -6943,16 +6943,32 @@ We'll be setting up an nice preamble to use in a new default export class.
 
 #+name: latex-fancy-preamble
 #+begin_src LaTeX
-\\usepackage[osf,largesc]{newpxtext}
-\\usepackage{gillius}
-\\usepackage[scale=0.9]{sourcecodepro}
+\\usepackage[osf]{Alegreya}
+\\usepackage{AlegreyaSans}
+\\usepackage[scale=0.88]{sourcecodepro}
+
+\\makeatletter
+% Kerning around the A needs adjusting
+\\DeclareRobustCommand{\\LaTeX}{L\\kern-.24em%
+        {\\sbox\\z@ T%
+         \\vbox to\\ht\\z@{\\hbox{\\check@mathfonts
+                              \\fontsize\\sf@size\\z@
+                              \\math@fontsfalse\\selectfont
+                              A}%
+                        \\vss}%
+        }%
+        \\kern-.10em%
+        \\TeX}
+% tabular lining figures in tables
+\\renewcommand{\\tabular}{\\AlegreyaTLF\\let\\@halignto\\@empty\\footnotesize\\@tabular}
+\\makeatother
 
 \\usepackage[activate={true,nocompatibility},final,tracking=true,kerning=true,spacing=true,factor=2000]{microtype}
 
 \\setlength{\\parskip}{\\baselineskip}
 \\setlength{\\parindent}{0pt}
 
-\\AtBeginEnvironment{quote}{\\itshape}
+\\renewcommand{\\quote}{\\list{}{\\rightmargin\\leftmargin}\\item\\relax\\em}
 #+end_src
 
 The =hyperref= setup needs to be handled separately however.
@@ -7209,7 +7225,7 @@ digraph {
 
 #+caption: Association between Org features, feature flags, and LaTeX snippets required.
 #+attr_html: :class invertible :alt Graph of possible Emacs task integrations :style max-width:min(24em,100%)
-#+attr_latex: :width 0.7\linewidth
+#+attr_latex: :width 0.6\linewidth
 [[file:misc/org-latex-clever-preamble.svg]]
 
 #+begin_src emacs-lisp
@@ -7255,7 +7271,7 @@ The cdr is either a single feature symbol or list of feature symbols.")
     (float-wrap    :snippet "\\usepackage{wrapfig}")
     (rotate        :snippet "\\usepackage{rotating}")
     (caption       :snippet org-latex-caption-preamble)
-    (acronym       :snippet "\\newcommand{\\acr}[1]{\\protect\\textls*[115]{\\scshape #1}}\n\\newcommand{\\acrs}{\\protect\\scalebox{.91}[.84]{\\hspace{0.15ex}s}}")
+    (acronym       :snippet "\\newcommand{\\acr}[1]{\\protect\\textls*[110]{\\scshape #1}}\n\\newcommand{\\acrs}{\\protect\\scalebox{.91}[.84]{\\hspace{0.15ex}s}}")
     (pifont        :snippet "\\usepackage{pifont}")
     (checkbox      :requires pifont    :snippet (concat (unless (memq 'maths features)
                                                           "\\usepackage{amssymb} % provides \\square")
@@ -7945,6 +7961,7 @@ locally binding ~auto-mode-alist~ to ~nil~.
 
 For how I've setup Org's LaTeX export, the following packages are needed:
 #+name: org-latex-required-packages-list
++ Alegreya
 + adjustbox
 + amsmath
 + arev
@@ -7962,7 +7979,7 @@ For how I've setup Org's LaTeX export, the following packages are needed:
 + mathalpha
 + mathtools
 + microtype
-+ newpxtext
++ newpxmath
 + pdfx
 + pifont
 + preview
