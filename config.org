@@ -7503,6 +7503,34 @@ This condition is applied when cover page option is set to auto.")
 (add-to-list 'org-latex-feature-implementations '(cover-page :snippet org-latex-cover-page-maketitle :order 9) t)
 (add-to-list 'org-latex-conditional-features '(org-latex-cover-page-p . cover-page) t)
 #+end_src
+**** Condensed lists
+LaTeX is generally pretty good by default, but it's /really/ generous with how
+much space it puts between list items by default. I'm generally not a fan.
+
+Thankfully this is easy to correct with a small snippet:
+#+name: latex-condense-lists
+#+begin_src LaTeX
+\\let\\olditemize\\itemize
+\\renewcommand\\itemize{\\olditemize\\setlength{\\itemsep}{-2ex}}
+\\let\\oldenumerate\\enumerate
+\\renewcommand\\enumerate{\\oldenumerate\\setlength{\\itemsep}{-2ex}}
+\\let\\olddescription\\description
+\\renewcommand\\description{\\olddescription\\setlength{\\itemsep}{-2ex}}
+#+end_src
+
+Then we can just hook this in with our clever preamble.
+
+#+begin_src emacs-lisp :noweb no-export
+(defvar org-latex-condense-lists t
+  "Reduce the space between list items.")
+(defvar org-latex-condensed-lists "
+<<latex-condense-lists>>
+")
+
+(add-to-list 'org-latex-conditional-features '(org-latex-condense-lists . condensed-lists) t)
+(add-to-list 'org-latex-feature-implementations '(condensed-lists :snippet org-latex-condensed-lists :order 5) t)
+#+end_src
+
 **** Pretty code blocks
 
 We could just use minted for syntax highlighting --- however, we can do better!
