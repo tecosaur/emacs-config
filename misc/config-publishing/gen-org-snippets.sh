@@ -13,13 +13,24 @@
 
 (defun rename (name)
   (let ((out
-  (string-trim
-   (replace-regexp-in-string
-    "[-_]" " "
-    name))))
-    (cond
-     ((string= "" out) "File Template")
-     (t out))))
+         (string-trim
+          (replace-regexp-in-string
+           "[-_]" " "
+           name))))
+    (if (string= "" out) "File template"
+      (let ((sentence (expand-text-abbrevs out)))
+        (concat (char-to-string (upcase (aref sentence 0)))
+                (substring sentence 1))))))
+
+(defun expand-text-abbrevs (str)
+  (mapconcat
+   (lambda (word)
+     (cond
+      ((string= word "src") "source")
+      ((string-match-p "args?" word) (replace-regexp-in-string "arg" "argument" word))
+      (t word)))
+   (split-string str)
+   " "))
 
 (princ
  (concat
