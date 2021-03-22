@@ -820,6 +820,28 @@ There are a few handy macros added by doom, namely
 - ~add-load-path!~ for adding directories to the ~load-path~ where ~Emacs~ looks when
   you load packages with ~require~ or ~use-package~
 - ~map!~ for binding new keys
+
+*** Allow babel execution in CLI actions
+
+In this config I sometimes generate code to include in my config.
+This works nicely, but for it to work with =doom sync= et. al. I need to make sure
+that Org doesn't try to confirm that I want to allow evaluation (I do!).
+
+Thankfully Doom supports =$DOOMDIR/cli.el= file which is sourced every time a CLI
+command is run, so we can just enable evaluation by setting
+~org-confirm-babel-evaluate~ to ~nil~ there.
+While we're at it, we should silence ~org-babel-execute-src-block~ to avoid
+polluting the output.
+
+#+begin_src emacs-lisp :tangle cli.el :comments none
+;;; cli.el -*- lexical-binding: t; -*-
+(setq org-confirm-babel-evaluate nil)
+
+(defun doom-shut-up-a (orig-fn &rest args)
+  (quiet! (apply orig-fn args)))
+
+(advice-add 'org-babel-execute-src-block :around #'doom-shut-up-a)
+#+end_src
 ** Other things
 *** Editor interaction
 **** Mouse buttons
