@@ -7031,7 +7031,7 @@ We'll be setting up an nice preamble to use in a new default export class.
         \\kern-.10em%
         \\TeX}
 % tabular lining figures in tables
-\\renewcommand{\\tabular}{\\AlegreyaTLF\\let\\@halignto\\@empty\\footnotesize\\@tabular}
+\\renewcommand{\\tabular}{\\AlegreyaTLF\\let\\@halignto\\@empty\\@tabular}
 \\makeatother
 
 \\usepackage[activate={true,nocompatibility},final,tracking=true,kerning=true,spacing=true,factor=2000]{microtype}
@@ -7320,13 +7320,20 @@ digraph {
     ("^[ \t]*#\\+begin_error\\|\\\\begin{error}"     . box-error))
 "Org feature tests and associated LaTeX feature flags.
 
-Alist where the car is the feature test and may be a:
-- string, which is used as a regex search in the buffer
-- symbol, the value of which used
-- function, the result of the function is used
-- list, which passed to eval
+Alist where the car is a test for the presense of the feature,
+and the cdr is either a single feature symbol or list of feature symbols.
 
-The cdr is either a single feature symbol or list of feature symbols.")
+When a string, it is used as a regex search in the buffer.
+The feature is registered as present when there is a match.
+
+The care can also be a
+- symbol, the value of which is fetched
+- function, which is called
+- list, which is `eval'uated
+
+If the symbol, function, or list produces a string: that is used as a regex
+search in the buffer. Otherwise any non-nil return value will indicate the
+existance of the feature.")
 #+end_src
 
 #+begin_src emacs-lisp
@@ -7342,16 +7349,16 @@ The cdr is either a single feature symbol or list of feature symbols.")
     (float-wrap    :snippet "\\usepackage{wrapfig}")
     (rotate        :snippet "\\usepackage{rotating}")
     (caption       :snippet org-latex-caption-preamble)
-    (acronym       :snippet "\\newcommand{\\acr}[1]{\\protect\\textls*[110]{\\scshape #1}}\n\\newcommand{\\acrs}{\\protect\\scalebox{.91}[.84]{\\hspace{0.15ex}s}}")
+    (acronym       :snippet "\\newcommand{\\acr}[1]{\\protect\\textls*[110]{\\scshape #1}}\n\\newcommand{\\acrs}{\\protect\\scalebox{.91}[.84]{\\hspace{0.15ex}s}}" :order 2)
     (pifont        :snippet "\\usepackage{pifont}")
     (checkbox      :requires pifont    :snippet (concat (unless (memq 'maths features)
                                                           "\\usepackage{amssymb} % provides \\square")
                                                         org-latex-checkbox-preamble))
-    (fancy-box     :requires pifont    :snippet org-latex-box-preamble :order 2)
-    (box-warning   :requires fancy-box :snippet "\\defsimplebox{warning}{e66100}{\\ding{68}}{Warning}" :order 3)
-    (box-info      :requires fancy-box :snippet "\\defsimplebox{info}{3584e4}{\\ding{68}}{Information}" :order 3)
-    (box-success   :requires fancy-box :snippet "\\defsimplebox{success}{26a269}{\\ding{68}}{\\vspace{-\\baselineskip}}" :order 3)
-    (box-error     :requires fancy-box :snippet "\\defsimplebox{error}{c01c28}{\\ding{68}}{Important}" :order 3))
+    (fancy-box     :requires pifont    :snippet org-latex-box-preamble :order 3)
+    (box-warning   :requires fancy-box :snippet "\\defsimplebox{warning}{e66100}{\\ding{68}}{Warning}" :order 4)
+    (box-info      :requires fancy-box :snippet "\\defsimplebox{info}{3584e4}{\\ding{68}}{Information}" :order 4)
+    (box-success   :requires fancy-box :snippet "\\defsimplebox{success}{26a269}{\\ding{68}}{\\vspace{-\\baselineskip}}" :order 4)
+    (box-error     :requires fancy-box :snippet "\\defsimplebox{error}{c01c28}{\\ding{68}}{Important}" :order 4))
   "LaTeX features and details required to implement them.
 
 List where the car is the feature symbol, and the rest forms a plist with the
@@ -7381,14 +7388,17 @@ extract a list of features found in an Org buffer.
       (delete-dups
        (apply #'append
               (mapcar (lambda (construct-feature)
-                        (when (pcase (car construct-feature)
-                                ((pred stringp) (save-excursion
-                                                  (goto-char (point-min))
-                                                  (re-search-forward (car construct-feature) nil t)))
-                                ((pred functionp) (funcall (car construct-feature)))
-                                ((pred listp) (eval (car construct-feature)))
-                                ((pred symbolp) (symbol-value (car construct-feature)))
-                                (_ (user-error "org-latex-conditional-features key %s unable to be used" (car construct-feature))))
+                        (when (let ((out (pcase (car construct-feature)
+                                           ((pred stringp) (car construct-feature))
+                                           ((pred functionp) (funcall (car construct-feature)))
+                                           ((pred listp) (eval (car construct-feature)))
+                                           ((pred symbolp) (symbol-value (car construct-feature)))
+                                           (_ (user-error "org-latex-conditional-features key %s unable to be used" (car construct-feature))))))
+                                (if (stringp out)
+                                    (save-excursion
+                                      (goto-char (point-min))
+                                      (re-search-forward out nil t))
+                                  out))
                           (if (listp (cdr construct-feature)) (cdr construct-feature) (list (cdr construct-feature)))))
                       org-latex-conditional-features))))))
 #+end_src
@@ -7581,12 +7591,9 @@ much space it puts between list items by default. I'm generally not a fan.
 Thankfully this is easy to correct with a small snippet:
 #+name: latex-condense-lists
 #+begin_src LaTeX
-\\let\\olditemize\\itemize
-\\renewcommand\\itemize{\\olditemize\\setlength{\\itemsep}{-2ex}}
-\\let\\oldenumerate\\enumerate
-\\renewcommand\\enumerate{\\oldenumerate\\setlength{\\itemsep}{-2ex}}
-\\let\\olddescription\\description
-\\renewcommand\\description{\\olddescription\\setlength{\\itemsep}{-2ex}}
+\\let\\tempa\\itemize\\renewcommand{\\itemize}{\\tempa\\setlength{\\itemsep}{-2ex}}
+\\let\\tempa\\enumerate\\renewcommand{\\enumerate}{\\tempa\\setlength{\\itemsep}{-2ex}}
+\\let\\tempa\\description\\renewcommand{\\description}{\\tempa\\setlength{\\itemsep}{-2ex}}
 #+end_src
 
 Then we can just hook this in with our clever preamble.
@@ -7598,8 +7605,8 @@ Then we can just hook this in with our clever preamble.
 <<latex-condense-lists>>
 ")
 
-(add-to-list 'org-latex-conditional-features '(org-latex-condense-lists . condensed-lists) t)
-(add-to-list 'org-latex-feature-implementations '(condensed-lists :snippet org-latex-condensed-lists :order 5) t)
+(add-to-list 'org-latex-conditional-features '((and org-latex-condense-lists "^[ \t]*[-+]\\|^[ \t]*[1Aa][.)] ") . condensed-lists) t)
+(add-to-list 'org-latex-feature-implementations '(condensed-lists :snippet org-latex-condensed-lists :order 2) t)
 #+end_src
 
 **** Pretty code blocks
