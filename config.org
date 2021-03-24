@@ -7638,13 +7638,24 @@ entry in ~org-latex-scr-block~ we can easily add this as a recognised
       (org-latex-inline-scr-block--engraved inline-src-block contents info)
     (funcall orig-fn src-block contents info)))
 
+(defvar-local org-export-has-code-p nil)
+
+(defadvice! org-export-expect-no-code (&rest _)
+  :before #'org-export-as
+  (setq org-export-has-code-p nil))
+
+(defadvice! org-export-register-code (&rest _)
+  :after #'org-latex-src-block-engraved
+  :after #'org-latex-inline-src-block-engraved
+  (setq org-export-has-code-p t))
+
 (setq org-latex-engraved-code-preamble "
 <<org-latex-engraved-code-preamble>>
 ")
 
 (add-to-list 'org-latex-feature-implementations '(engraved-code-setup :snippet org-latex-engraved-code-preamble :order 98) t)
 (add-to-list 'org-latex-feature-implementations '(engraved-code :requires engraved-code-setup :snippet (engrave-faces-latex-gen-preamble) :order 99) t)
-(add-to-list 'org-latex-conditional-features '("^[ \t]*#\\+begin_src\\|^[ \t]*#\\+BEGIN_SRC\\|src_[A-Za-z]" . engraved-code) t)
+(add-to-list 'org-latex-conditional-features '((and org-export-has-code-p "^[ \t]*#\\+begin_src\\|^[ \t]*#\\+BEGIN_SRC\\|src_[A-Za-z]") . engraved-code) t)
 
 (defun org-latex-scr-block--engraved (src-block contents info)
   (let* ((lang (org-element-property :language src-block))
