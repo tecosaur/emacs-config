@@ -7122,9 +7122,11 @@ The =hyperref= setup needs to be handled separately however.
 
 **** A cleverer preamble
 ***** Use case
-We always want some particular elements in the preamble, let's call this
-the "universal preamble"
-#+name: org-latex-universal-preamble
+We often want particular snippets of LaTeX in our documents preambles.
+It's a pain to have to work out / remember them every time.
+For example, I almost always want to include the snippet below.
+
+#+name: org-latex-embed-files-preamble
 #+begin_src LaTeX
 \\usepackage[main,include]{embedall}
 \\IfFileExists{./\\jobname.org}{\\embedfile[desc=The original file]{\\jobname.org}}{}
@@ -7134,13 +7136,21 @@ We could have every package we could possibly need in every one of
 ~org-latex-classes~, but that's /horribly/ inefficient and I don't want to think
 about maintaining that.
 
-Instead, we can have a "universal preamble" which contains a snippet which we
-want to /always/ appear, and then conditional preamble snippets, which are only
-included when a certain regex is successfully found in the Org buffer.
+Instead we can provide some granularity by splitting up the features we want,
+and then take the experience to a whole new level by implementing a system to
+automatically detect which features are desired and generating a preamble that
+provides these features.
 
 ***** Conditional Content
 
-Let's consider some other content we only want in certain situations.
+Let's consider content we want in particular situations.
+
+Captions could do with a bit of tweaking such that
++ You can easily have multiple captions
++ Links to figures take you to the /top/ of the figure (not the bottom)
++ Caption labels could do with being emphasised slightly more
++ Multiline captions should run ragged-right, but only when then span more than
+  one line
 
 #+name: org-latex-caption-preamble
 #+begin_src LaTeX
@@ -7149,9 +7159,10 @@ Let's consider some other content we only want in certain situations.
 \\setkomafont{caption}{\\sffamily\\small}
 \\setkomafont{captionlabel}{\\upshape\\bfseries}
 \\captionsetup{justification=raggedright,singlelinecheck=true}
-\\setcapindent{0pt}
 \\usepackage{capt-of} % required by Org
 #+end_src
+
+The default checkboxes look rather ugly, so let's provide some prettier alternatives.
 
 #+name: org-latex-checkbox-preamble
 #+begin_src LaTeX
@@ -7159,6 +7170,9 @@ Let's consider some other content we only want in certain situations.
 \\newcommand{\\checkboxTransitive}{\\rlap{\\raisebox{-0.1ex}{\\hspace{0.35ex}\\Large\\textbf -}}$\\square$}
 \\newcommand{\\checkboxChecked}{\\rlap{\\raisebox{0.2ex}{\\hspace{0.35ex}\\scriptsize \\ding{52}}}$\\square$}
 #+end_src
+
+It's nice to have "message blocks", things like info/warning/error/success.
+A LaTeX macro should make them trivial to create.
 
 #+name: org-latex-box-preamble
 #+begin_src LaTeX
@@ -7182,25 +7196,25 @@ Lastly, we will pass this content into some global variables we for ease of
 access.
 
 #+begin_src emacs-lisp :noweb no-export
-(defvar org-latex-universal-preamble "
-<<org-latex-universal-preamble>>
+(defvar org-latex-embed-files-preamble "
+<<org-latex-embed-files-preamble>>
 "
-  "Preamble to be included in every export.")
+  "Preamble that embeds files within the pdf.")
 
 (defvar org-latex-caption-preamble "
 <<org-latex-caption-preamble>>
 "
-  "Preamble to be included to improve captions.")
+  "Preamble that improves captions.")
 
 (defvar org-latex-checkbox-preamble "
 <<org-latex-checkbox-preamble>>
 "
-  "Preamble to be included to improve checkboxes.")
+  "Preamble that improves checkboxes.")
 
 (defvar org-latex-box-preamble "
 <<org-latex-box-preamble>>
 "
-  "Preamble to be included to improve boxes.")
+  "Preamble that provides a macro for custom boxes.")
 #+end_src
 
 In the "universal preamble", we already embed the source =.org= file, but it would
@@ -7277,34 +7291,52 @@ implementation of feature dependency.
 digraph {
     graph [bgcolor="transparent"];
     node  [shape="underline" penwidth="2" width="1.3" style="rounded,filled" fillcolor="#efefef" color="#c9c9c9" fontcolor="#000000" fontname="overpass"];
-    edge  [arrowhead=none color="#aaaaaa" penwidth="1.2"]
+    edge  [color="#aaaaaa" penwidth="1.2"]
     rankdir=LR
 
-    "Checkboxes" [color="#2ec27e"]
-    "Fancy blocks" [color="#2ec27e"]
-    "Images" [color="#2ec27e"]
-    "Dingbats" [color="#f5c211"]
-    "Graphics" [color="#f5c211"]
-    "pifont" [color="#813d9c"]
-    "graphicx" [color="#813d9c"]
+    node[group=a,color="#2ec27e"]
+    "file:*.jpeg"
+    "file:*.png"
+    "file:*.svg"
+    "#+caption"
+    "xkcd:*"
+    node[group=b,color="#f5c211"]
+    "image"
+    "svg"
+    "caption"
+    node[group=c,color="#813d9c"]
+    "(TeX) graphicx"
+    "(TeX) svg"
+    "(TeX) caption"
 
-    "Checkboxes" -> "Dingbats" -> "pifont"
-    "Fancy blocks" -> "Dingbats"
-    "Images" -> "Graphics" -> "graphicx"
+    "file:*.jpeg" -> "image" -> "(TeX) graphicx"
+    "file:*.png" -> "image"
+    "file:*.svg" -> "svg" -> "(TeX) svg"
+    "(TeX) svg":e -> "(TeX) graphicx":s [constraint=false]
+    "#+caption" -> "caption" -> "(TeX) caption"
+    "xkcd:*" -> "image"
+    "xkcd:*" -> "caption"
 }
 #+end_src
 
 #+caption: Association between Org features, feature flags, and LaTeX snippets required.
-#+attr_html: :class invertible :alt Graph of possible Emacs task integrations :style max-width:min(24em,100%)
+#+attr_html: :class invertible :alt DAG showing how Org features flow through to LaTeX :style max-width:min(24em,100%)
 #+attr_latex: :width 0.6\linewidth
 [[file:misc/org-latex-clever-preamble.svg]]
 
 #+begin_src emacs-lisp
+(defvar org-latex-embed-files t
+  "Embed the source .org, .tex, and any tangled files.")
+(defvar org-latex-use-microtype t
+  "Use the microtype pakage.")
+(defvar org-latex-italic-quotes t
+  "Make \"quote\" environments italic.")
+(defvar org-latex-par-sep t
+  "Vertically seperate paragraphs, and remove indentation.")
+
 (defvar org-latex-conditional-features
-  '((t . universal)
-    ("^[ \t]*#\\+begin_src\\|^[ \t]*#\\+BEGIN_SRC" . embed-tangled)
+  '(("\\[\\[file:\\(?:[^]]\\|\\\\\\]\\)+?\\.\\(?:eps\\|pdf\\|png\\|jpeg\\|jpg\\|jbig2\\)\\]\\]" . image)
     ("\\[\\[file:\\(?:[^]]+?\\|\\\\\\]\\)\\.svg\\]\\]" . svg)
-    ("\\[\\[file:\\(?:[^]]\\|\\\\\\]\\)+?\\.\\(?:eps\\|pdf\\|png\\|jpeg\\|jpg\\|jbig2\\)\\]\\]" . image)
     ("\\\\(\\|\\\\\\[\\|\\\\begin{\\(?:math\\|displaymath\\|equation\\|align\\|flalign\\|multiline\\|gather\\)[a-z]*\\*?}" . maths)
     ("^[ \t]*|" . table)
     ("cref:\\|\\cref{" . cleveref)
@@ -7313,12 +7345,18 @@ digraph {
     (":float wrap" . float-wrap)
     (":float sideways" . rotate)
     ("^[ \t]*#\\+caption:\\|\\\\caption" . caption)
+    ("\\[\\[xkcd:" . (image caption))
+    (org-latex-use-microtype . microtype)
+    ((and org-latex-italic-quotes "^[ \t]*#\\+begin_quote\\|\\\\begin{quote}") . italic-quotes)
+    (org-latex-par-sep . par-sep)
+    (org-latex-embed-tangled-files . embed-files)
+    ((and org-latex-embed-files "^[ \t]*#\\+begin_src\\|^[ \t]*#\\+BEGIN_SRC") . embed-tangled)
     ("^[ \t]*\\(?:[-+*]\\|[0-9]+[.)]\\|[A-Za-z]+[.)]\\) \\[[ -X]\\]" . checkbox)
     ("^[ \t]*#\\+begin_warning\\|\\\\begin{warning}" . box-warning)
     ("^[ \t]*#\\+begin_info\\|\\\\begin{info}"       . box-info)
     ("^[ \t]*#\\+begin_success\\|\\\\begin{success}" . box-success)
     ("^[ \t]*#\\+begin_error\\|\\\\begin{error}"     . box-error))
-"Org feature tests and associated LaTeX feature flags.
+  "Org feature tests and associated LaTeX feature flags.
 
 Alist where the car is a test for the presense of the feature,
 and the cdr is either a single feature symbol or list of feature symbols.
@@ -7326,7 +7364,7 @@ and the cdr is either a single feature symbol or list of feature symbols.
 When a string, it is used as a regex search in the buffer.
 The feature is registered as present when there is a match.
 
-The care can also be a
+The car can also be a
 - symbol, the value of which is fetched
 - function, which is called
 - list, which is `eval'uated
@@ -7338,18 +7376,21 @@ existance of the feature.")
 
 #+begin_src emacs-lisp
 (defvar org-latex-feature-implementations
-  '((universal     :snippet org-latex-universal-preamble    :order -2)
-    (embed-tangled :snippet (concat (org-latex-embed-tangled-files) "\n") :order -1)
-    (image         :snippet "\\usepackage{graphicx}")
+  '((image         :snippet "\\usepackage{graphicx}")
     (svg           :snippet "\\usepackage{svg}")
-    (maths         :snippet "\\usepackage{bmc-maths}")
+    (maths         :snippet "\\usepackage[nofont]{bmc-maths}")
     (table         :snippet "\\usepackage{longtable}\n\\usepackage{booktabs}")
     (cleveref      :snippet "\\usepackage{cleveref}" :order 1) ; after bmc-maths
     (underline     :snippet "\\usepackage[normalem]{ulem}")
     (float-wrap    :snippet "\\usepackage{wrapfig}")
     (rotate        :snippet "\\usepackage{rotating}")
     (caption       :snippet org-latex-caption-preamble)
+    (microtype     :snippet "\\usepackage[activate={true,nocompatibility},final,tracking=true,kerning=true,spacing=true,factor=2000]{microtype}\n")
+    (embed-files   :snippet org-latex-embed-files-preamble :order -2)
+    (embed-tangled :requires embed-files :snippet (concat (org-latex-embed-tangled-files) "\n") :order -1)
     (acronym       :snippet "\\newcommand{\\acr}[1]{\\protect\\textls*[110]{\\scshape #1}}\n\\newcommand{\\acrs}{\\protect\\scalebox{.91}[.84]{\\hspace{0.15ex}s}}" :order 2)
+    (italic-quotes :snippet "\\renewcommand{\\quote}{\\list{}{\\rightmargin\\leftmargin}\\item\\relax\\em}\n")
+    (par-sep       :snippet "\\setlength{\\parskip}{\\baselineskip}\n\\setlength{\\parindent}{0pt}\n")
     (pifont        :snippet "\\usepackage{pifont}")
     (checkbox      :requires pifont    :snippet (concat (unless (memq 'maths features)
                                                           "\\usepackage{amssymb} % provides \\square")
@@ -7371,8 +7412,13 @@ following keys:
   - a list, which is passed to `eval', with a list of feature flags available
     as \"features\".
 - :requires, a feature or list of features that must be available
+- :when, a feature or list of features that when all available should cause this
+    to be automatically enabled.
+- :prevents, a feature or list of features that should be masked
 - :order, for when ordering is important. Lower values appear first.
-  The default is 0.")
+    The default is 0.
+
+Features that start with ! will be eagerly loaded, i.e. without being detected.")
 #+end_src
 
 ***** Feature determination
@@ -7409,37 +7455,67 @@ Once a list of required features has been determined, we want to use
 ~org-latex-feature-implementations~ to generate the LaTeX which should be inserted
 into the preamble to provide those features.
 
-This is done in stages.
-+ The dependencies for each listed feature are added to feature list (=:requires=).
+First we want to process our fancy keywords in ~org-latex-feature-implementations~
+to produce an /expanded/ list of features. We'll do that by performing the
+following steps.
++ The dependencies for each listed feature are added to feature list
+  (=:requires=).
++ The =:when= conditions of each feature, and available features starting with =!=
+  are evaluated, and they are added/removed accordingly
++ Any features present in a =:prevents= value are removed
 + The feature list is scrubbed of duplicates
 + The feature list is sorted by =:order= (ascending)
-+ The value of each feature's =:snippet= parameter is concatenated
 
 #+begin_src emacs-lisp
-(defun org-latex-generate-features-preamble (features)
-  "Generate the LaTeX preamble content required to provide FEATURES.
-This is done according to `org-latex-feature-implementations'"
+(defun org-latex-expand-features (features)
+  "For each feature in FEATURES process :requires, :when, and :prevents keywords and sort according to :order."
   (dolist (feature features)
     (unless (assoc feature org-latex-feature-implementations)
       (error "Feature %s not provided in org-latex-feature-implementations" feature))
     (when-let ((requirements (plist-get (cdr (assoc feature org-latex-feature-implementations)) :requires)))
       (setf features (append (if (listp requirements) requirements (list requirements)) features))))
-  (mapconcat (lambda (feature)
-               (when-let ((snippet (plist-get (cdr (assoc feature org-latex-feature-implementations)) :snippet)))
-                 (concat
-                  (pcase snippet
-                    ((pred stringp) snippet)
-                    ((pred functionp) (funcall snippet features))
-                    ((pred listp) (eval `(let ((features ',features)) (,@snippet))))
-                    ((pred symbolp) (symbol-value snippet))
-                    (_ (user-error "org-latex-feature-implementations :snippet value %s unable to be used" snippet)))
-                  "\n")))
-             (sort (delete-dups features)
-                   (lambda (feat1 feat2)
-                     (if (< (or (plist-get (cdr (assoc feat1 org-latex-feature-implementations)) :order) 0)
-                            (or (plist-get (cdr (assoc feat2 org-latex-feature-implementations)) :order) 0))
-                         t nil)))
-             ""))
+  (dolist (potential-feature
+           (append features (delq nil (mapcar (lambda (feat)
+                                                (when (= ?! (aref (symbol-name (car feat)) 0))
+                                                  (car feat)))
+                                              org-latex-feature-implementations))))
+    (when-let ((prerequisites (plist-get (cdr (assoc potential-feature org-latex-feature-implementations)) :when)))
+      (setf features (if (cl-every (lambda (preq) (memq preq features)) prerequisites)
+                         (append (list potential-feature) features)
+                       (delq potential-feature features)))))
+  (dolist (feature features)
+    (when-let ((prevents (plist-get (cdr (assoc feature org-latex-feature-implementations)) :prevents)))
+      (setf features (cl-set-difference features (if (listp prevents) prevents (list prevents))))))
+  (sort (delete-dups features)
+        (lambda (feat1 feat2)
+          (if (< (or (plist-get (cdr (assoc feat1 org-latex-feature-implementations)) :order) 0)
+                 (or (plist-get (cdr (assoc feat2 org-latex-feature-implementations)) :order) 0))
+              t nil))))
+#+end_src
+
+Now that we have a nice list of the final features to use, we can just pull out
+their snippets and join the result together.
+
+#+begin_src emacs-lisp
+(defun org-latex-generate-features-preamble (features)
+  "Generate the LaTeX preamble content required to provide FEATURES.
+This is done according to `org-latex-feature-implementations'"
+  (let ((expanded-features (org-latex-expand-features features)))
+    (concat
+     (format "\n%% features: %s\n" expanded-features)
+     (mapconcat (lambda (feature)
+                  (when-let ((snippet (plist-get (cdr (assoc feature org-latex-feature-implementations)) :snippet)))
+                    (concat
+                     (pcase snippet
+                       ((pred stringp) snippet)
+                       ((pred functionp) (funcall snippet features))
+                       ((pred listp) (eval `(let ((features ',features)) (,@snippet))))
+                       ((pred symbolp) (symbol-value snippet))
+                       (_ (user-error "org-latex-feature-implementations :snippet value %s unable to be used" snippet)))
+                     "\n")))
+                expanded-features
+                "")
+     "% end features\n")))
 #+end_src
 
 Then Org needs to be advised to actually use this generated preamble content.
