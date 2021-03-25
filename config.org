@@ -1904,7 +1904,7 @@ table
     "✔"
     ;; Box drawing
     "▶" "◀")
-  "Charachters that should never be affected by `emojify-mode'.")
+  "Characters that should never be affected by `emojify-mode'.")
 
 (defadvice! emojify-delete-from-data ()
   "Ensure `emojify-disabled-emojis' don't appear in `emojify-emojis'."
@@ -2803,7 +2803,7 @@ configuration tweaks.
 #+end_src
 
 *** Org-style emphasis
-Let's do our *bold*, /italic/, and _underline_ in org-syntax, using IRC control charachters
+Let's do our *bold*, /italic/, and _underline_ in org-syntax, using IRC control characters
 #+name: org-emph-to-irc
 #+begin_src emacs-lisp
 (defun lui-org-to-irc ()
@@ -4229,7 +4229,7 @@ Entries of the form (subject . id)."
 #+begin_src emacs-lisp
 (setq org-directory "~/.org"                      ; let's put files here
       org-use-property-inheritance t              ; it's convenient to have properties inherited
-      org-log-done 'time                          ; having the time a item is done sounds convininet
+      org-log-done 'time                          ; having the time a item is done sounds convenient
       org-list-allow-alphabetical t               ; have a. A. a) A) list bullets
       org-export-in-background t                  ; run export processes in external emacs process
       org-catch-invisible-edits 'smart            ; try not to accidently do weird stuff in invisible regions
@@ -4960,7 +4960,7 @@ producing nice short links, like an inferior version of ~reftex-label~.
 and truncate individual words to conform to this budget.
 
 To arrive at a budget that accounts for words undershooting their requisite average length,
-the number of charachters in the budget freed by short words is distributed among the words
+the number of characters in the budget freed by short words is distributed among the words
 exceeding the average length.  This adjusts the per-word budget to be the maximum feasable for
 this particular situation, rather than the universal maximum average.
 
@@ -8624,7 +8624,7 @@ Then let's bind the content to a function, and define some nice helpers.
   (defvar tec/tex-last-delim-char nil
     "Last open delim expanded in a tex document")
   (defvar tec/tex-delim-dot-second t
-    "When the `tec/tex-last-delim-char' is . a second charachter (this) is prompted for")
+    "When the `tec/tex-last-delim-char' is . a second character (this) is prompted for")
   (defun tec/get-open-delim-char ()
     "Exclusivly read next char to tec/tex-last-delim-char"
     (setq tec/tex-delim-dot-second nil)
@@ -8694,7 +8694,7 @@ Let's enhance ~TeX-fold-math~ a bit
         ("≤" ("le"))
         ("≥" ("ge"))
         ("≠" ("ne"))
-        ;; conviniance shorts -- these don't work nicely ATM
+        ;; convenience shorts -- these don't work nicely ATM
         ;; ("‹" ("left"))
         ;; ("›" ("right"))
         ;; private macros
@@ -8712,8 +8712,8 @@ Let's enhance ~TeX-fold-math~ a bit
         (,(lambda (num den) (if (and (TeX-string-single-token-p num) (TeX-string-single-token-p den))
                                 (concat num "／" den)
                               (concat "❪" num "／" den "❫"))) ("frac"))
-        (,(lambda (arg) (concat "√" (TeX-fold-parenthesize-as-neccesary arg))) ("sqrt"))
-        (,(lambda (arg) (concat "⭡" (TeX-fold-parenthesize-as-neccesary arg))) ("vec"))
+        (,(lambda (arg) (concat "√" (TeX-fold-parenthesize-as-necessary arg))) ("sqrt"))
+        (,(lambda (arg) (concat "⭡" (TeX-fold-parenthesize-as-necessary arg))) ("vec"))
         ("‘{1}’" ("text"))
         ;; private commands
         ("|{1}|" ("abs"))
@@ -8761,7 +8761,7 @@ Let's enhance ~TeX-fold-math~ a bit
         ))
 
 (defun string-offset-roman-chars (offset word)
-  "Shift the codepoint of each charachter in WORD by OFFSET with an extra -6 shift if the letter is lowercase"
+  "Shift the codepoint of each character in WORD by OFFSET with an extra -6 shift if the letter is lowercase"
   (apply 'string
          (mapcar (lambda (c)
                    (string-offset-apply-roman-char-exceptions
@@ -8808,7 +8808,7 @@ Such special cases should be remapped to another value, as given in `string-offs
       (cdr (assoc char string-offset-roman-char-exceptions))
     char))
 
-(defun TeX-fold-parenthesize-as-neccesary (tokens &optional suppress-left suppress-right)
+(defun TeX-fold-parenthesize-as-necessary (tokens &optional suppress-left suppress-right)
   "Add ❪ ❫ parenthesis as if multiple LaTeX tokens appear to be present"
   (if (TeX-string-single-token-p tokens) tokens
     (concat (if suppress-left "" "❪")
@@ -8875,7 +8875,7 @@ but more convenient, like =;=.
      (?D    ("\\Delta"      "\\nabla"    "\\deg"))
      ;; no idea why \Phi isnt on 'F' in first place, \phi is on 'f'.
      (?F    ("\\Phi"))
-     ;; now just conveniance
+     ;; now just convenience
      (?.    ("\\cdot" "\\dots"))
      (?:    ("\\vdots" "\\ddots"))
      (?*    ("\\times" "\\star" "\\ast")))
