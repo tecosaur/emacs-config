@@ -7010,37 +7010,50 @@ commands below are defined.
 #+end_src
 
 **** Class templates
-We'll be setting up an nice preamble to use in a new default export class.
 
-#+name: latex-fancy-preamble
-#+begin_src LaTeX
-\\usepackage[osf]{Alegreya}
-\\usepackage{AlegreyaSans}
-\\usepackage[scale=0.88]{sourcecodepro}
+#+begin_src emacs-lisp :noweb no-export
+(after! ox-latex
+  (add-to-list 'org-latex-classes
+               '("scr-article"
+                 "\\documentclass{scrartcl}"
+                 ("\\section{%s}" . "\\section*{%s}")
+                 ("\\subsection{%s}" . "\\subsection*{%s}")
+                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                 ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                 ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+  (add-to-list 'org-latex-classes
+               '("blank"
+                 "[NO-DEFAULT-PACKAGES]\n[NO-PACKAGES]\n[EXTRA]"
+                 ("\\section{%s}" . "\\section*{%s}")
+                 ("\\subsection{%s}" . "\\subsection*{%s}")
+                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                 ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                 ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+  (add-to-list 'org-latex-classes
+               '("bmc-article"
+                 "\\documentclass[article,code,maths]{bmc}\n[NO-DEFAULT-PACKAGES]\n[NO-PACKAGES]\n[EXTRA]"
+                 ("\\section{%s}" . "\\section*{%s}")
+                 ("\\subsection{%s}" . "\\subsection*{%s}")
+                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                 ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                 ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+  (add-to-list 'org-latex-classes
+               '("bmc"
+                 "\\documentclass[code,maths]{bmc}\n[NO-DEFAULT-PACKAGES]\n[NO-PACKAGES]\n[EXTRA]"
+                 ("\\chapter{%s}" . "\\chapter*{%s}")
+                 ("\\section{%s}" . "\\section*{%s}")
+                 ("\\subsection{%s}" . "\\subsection*{%s}")
+                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                 ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                 ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))))
 
-\\makeatletter
-% Kerning around the A needs adjusting
-\\DeclareRobustCommand{\\LaTeX}{L\\kern-.24em%
-        {\\sbox\\z@ T%
-         \\vbox to\\ht\\z@{\\hbox{\\check@mathfonts
-                              \\fontsize\\sf@size\\z@
-                              \\math@fontsfalse\\selectfont
-                              A}%
-                        \\vss}%
-        }%
-        \\kern-.10em%
-        \\TeX}
-% tabular lining figures in tables
-\\renewcommand{\\tabular}{\\AlegreyaTLF\\let\\@halignto\\@empty\\@tabular}
-\\makeatother
-
-\\usepackage[activate={true,nocompatibility},final,tracking=true,kerning=true,spacing=true,factor=2000]{microtype}
-
-\\setlength{\\parskip}{\\baselineskip}
-\\setlength{\\parindent}{0pt}
-
-\\renewcommand{\\quote}{\\list{}{\\rightmargin\\leftmargin}\\item\\relax\\em}
+(setq org-latex-default-class "scr-article"
+      org-latex-tables-booktabs t
+      org-latex-hyperref-template "
+<<latex-fancy-hyperref>>
+")
 #+end_src
+
 
 The =hyperref= setup needs to be handled separately however.
 #+name: latex-fancy-hyperref
@@ -7062,62 +7075,6 @@ The =hyperref= setup needs to be handled separately however.
   urlcolor=link,
   citecolor=cite\n}
 \\urlstyle{same}
-#+end_src
-
-#+begin_src emacs-lisp :noweb no-export
-(after! ox-latex
-  (add-to-list 'org-latex-classes
-               '("fancy-article"
-                 "\\documentclass{scrartcl}\n
-[DEFAULT-PACKAGES]
-[PACKAGES]
-
-<<latex-fancy-preamble>>
-"
-                 ("\\section{%s}" . "\\section*{%s}")
-                 ("\\subsection{%s}" . "\\subsection*{%s}")
-                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-                 ("\\paragraph{%s}" . "\\paragraph*{%s}")
-                 ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
-  (add-to-list 'org-latex-classes
-               '("blank"
-                 "[NO-DEFAULT-PACKAGES]
-               [NO-PACKAGES]
-               [EXTRA]"
-                 ("\\section{%s}" . "\\section*{%s}")
-                 ("\\subsection{%s}" . "\\subsection*{%s}")
-                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-                 ("\\paragraph{%s}" . "\\paragraph*{%s}")
-                 ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
-  (add-to-list 'org-latex-classes
-               '("bmc-article"
-                 "\\documentclass[article,code,maths]{bmc}
-               [NO-DEFAULT-PACKAGES]
-               [NO-PACKAGES]
-               [EXTRA]"
-                 ("\\section{%s}" . "\\section*{%s}")
-                 ("\\subsection{%s}" . "\\subsection*{%s}")
-                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-                 ("\\paragraph{%s}" . "\\paragraph*{%s}")
-                 ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
-  (add-to-list 'org-latex-classes
-               '("bmc"
-                 "\\documentclass[code,maths]{bmc}
-               [NO-DEFAULT-PACKAGES]
-               [NO-PACKAGES]
-               [EXTRA]"
-                 ("\\chapter{%s}" . "\\chapter*{%s}")
-                 ("\\section{%s}" . "\\section*{%s}")
-                 ("\\subsection{%s}" . "\\subsection*{%s}")
-                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-                 ("\\paragraph{%s}" . "\\paragraph*{%s}")
-                 ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))))
-
-(setq org-latex-default-class "fancy-article"
-      org-latex-tables-booktabs t
-      org-latex-hyperref-template "
-<<latex-fancy-hyperref>>
-")
 #+end_src
 
 **** A cleverer preamble
@@ -7269,6 +7226,7 @@ exists.
 #+end_src
 
 ***** Content-feature-preamble association
+
 Initially this idea was implemented with an alist that associated a construct
 that would search the current Org file for an indication that some feature was
 needed, with a LaTeX snippet to be inserted in the preamble which would provide
@@ -7548,6 +7506,145 @@ There are also some obsolete entries in the default value, specifically
         ("" "xcolor" nil) ; Generally useful
         ("" "hyperref" nil)))
 #+end_src
+**** Font collections
+
+Using the lovely conditional preamble, I'll define a number of font collections
+that can be used for LaTeX exports. Who knows, maybe I'll use it with other
+export formats too at some point.
+
+To start with I'll create a default state variable and register =fontset= as part
+of =#+options=.
+
+#+begin_src emacs-lisp
+(defvar org-latex-default-fontset 'alegreya
+  "Fontset from `org-latex-fontsets' to use by default.
+As cm (computer modern) is TeX's default, that causes nothing
+to be added to the document.
+
+If \"nil\" no custom fonts will ever be used.")
+
+(eval '(cl-pushnew '(:latex-font-set nil "fontset" org-latex-default-fontset)
+                   (org-export-backend-options (org-export-get-backend 'latex))))
+#+end_src
+
+Then a function is needed to generate a LaTeX snippet which applies the fontset. It
+would be nice if this could be done for individual styles and use different
+styles as the main document font. If the individual typefaces for a fontset are
+defined individually as (=:serif=, =:sans=, =:mono=, and =:maths=). I can use those to
+generate LaTeX for subsets of the full fontset. Then, if I don't let any fontset
+names have =-= in them, I can use =-sans= and =-mono= as suffixes that specify the
+document font to use.
+
+#+begin_src emacs-lisp
+(defun org-latex-fontset-entry ()
+  "Get the fontset spec of the current file.
+Has format \"name\" or \"name-style\" where 'name' is one of
+the cars in `org-latex-fontsets'."
+  (let ((fontset-spec
+         (symbol-name
+          (or (car (delq nil
+                         (mapcar
+                          (lambda (opt-line)
+                            (plist-get (org-export--parse-option-keyword opt-line 'latex)
+                                       :latex-font-set))
+                          (cdar (org-collect-keywords '("OPTIONS"))))))
+              org-latex-default-fontset))))
+    (cons (intern (car (split-string fontset-spec "-")))
+          (when (cadr (split-string fontset-spec "-"))
+            (intern (concat ":" (cadr (split-string fontset-spec "-"))))))))
+
+(defun org-latex-fontset (&rest desired-styles)
+  "Generate a LaTeX preamble snippet which applies the current fontset for DESIRED-STYLES."
+  (let* ((fontset-spec (org-latex-fontset-entry))
+         (fontset (alist-get (car fontset-spec) org-latex-fontsets)))
+    (if fontset
+        (concat
+         (mapconcat
+          (lambda (style)
+            (when (plist-get fontset style)
+              (concat (plist-get fontset style) "\n")))
+          desired-styles
+          "")
+         (when (memq (cdr fontset-spec) desired-styles)
+           (pcase (cdr fontset-spec)
+             (:serif nil)
+             (:sans "\\renewcommand{\\familydefault}{\\sfdefault}\n")
+             (:mono "\\renewcommand{\\familydefault}{\\ttdefault}\n"))))
+      (error "Font-set %s is not provided in org-latex-fontsets" (car fontset-spec)))))
+#+end_src
+
+Now that all the functionality has been implemented, we should hook it into our
+preamble generation.
+
+#+begin_src emacs-lisp
+(add-to-list 'org-latex-conditional-features '(org-latex-default-fontset . custom-font) t)
+(add-to-list 'org-latex-feature-implementations '(custom-font :snippet (org-latex-fontset :serif :sans :mono)) t)
+(add-to-list 'org-latex-feature-implementations '(!custom-maths-font :when (custom-font maths) :snippet (org-latex-fontset :maths)) t)
+#+end_src
+
+Finally, we just need to add some fonts.
+
+#+begin_src emacs-lisp
+(defvar org-latex-fontsets
+  '((cm nil) ; computer modern
+    (ibm
+     :serif "\\usepackage{plex-serif}"
+     :sans "\\usepackage{plex-sans}"
+     :mono "\\usepackage{plex-mono}"
+     :maths "% maths TBD")
+    (newpx
+     :serif "\\usepackage{newpxtext}"
+     :sans "\\usepackage{gillius}"
+     :mono "\\usepackage[scale=0.9]{sourcecodepro}"
+     :maths "\\usepackage[varbb]{newpxmath}")
+    (kp
+     :serif "\\usepackage{kpfonts}")
+    (alegreya
+     :serif "\\usepackage[osf]{Alegreya}"
+     :sans "\\usepackage{AlegreyaSans}"
+     :mono "\\usepackage[scale=0.88]{sourcecodepro}"
+     :maths "\\usepackage[varbb]{newpxmath}"))
+  "Alist of fontset specifications.
+Each car is the name of the fontset (which cannot include \"-\").
+
+Each cdr is a plist with (optional) keys :serif, :sans, :mono, and :maths.
+A key's value is a LaTeX snippet which loads such a font.")
+#+end_src
+
+When we're using Alegreya we can apply a lovely little tweak to =tabular= which
+(locally) changes the figures used to lining fixed-width.
+
+#+begin_src emacs-lisp
+(add-to-list 'org-latex-conditional-features '((string= (car (org-latex-fontset-entry)) "alegreya") . alegreya-typeface))
+(add-to-list 'org-latex-feature-implementations '(alegreya-typeface) t)
+(add-to-list 'org-latex-feature-implementations '(!alegreya-tabular-figures :when (alegreya-typeface table) :snippet "
+\\makeatletter
+% tabular lining figures in tables
+\\renewcommand{\\tabular}{\\AlegreyaTLF\\let\\@halignto\\@empty\\@tabular}
+\\makeatother\n") t)
+#+end_src
+
+Due to the Alegreya's metrics, the =\LaTeX= symbol doesn't quite look right. We
+can correct for this by redefining it with subtlety shifted kerning.
+
+#+begin_src emacs-lisp
+(add-to-list 'org-latex-conditional-features '("LaTeX" . latex-symbol))
+(add-to-list 'org-latex-feature-implementations '(latex-symbol :when alegreya-typeface :snippet "
+\\makeatletter
+% Kerning around the A needs adjusting
+\\DeclareRobustCommand{\\LaTeX}{L\\kern-.24em%
+        {\\sbox\\z@ T%
+         \\vbox to\\ht\\z@{\\hbox{\\check@mathfonts
+                              \\fontsize\\sf@size\\z@
+                              \\math@fontsfalse\\selectfont
+                              A}%
+                        \\vss}%
+        }%
+        \\kern-.10em%
+        \\TeX}
+\\makeatother\n") t)
+#+end_src
+
 **** Cover page
 
 To make a nice cover page, a simple method that comes to mind is just redefining
@@ -7986,7 +8083,7 @@ Once the idea of having the look of the LaTeX document produced match the
 current Emacs theme, I was enraptured. The result is the pseudo-class ~chameleon~.
 #+begin_src emacs-lisp
 (after! ox
-  (defvar ox-chameleon-base-class "fancy-article"
+  (defvar ox-chameleon-base-class "scr-article"
     "The base class that chameleon builds on")
 
   (defvar ox-chameleon--p nil
