@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: Header arg - wrap
+# key: w
+# condition: (+yas/org-src-header-p)
+# --
+`(let ((out (+yas/org-prompt-header-arg :noweb "Wrap: " '("example" "export" "comment" "src")))) (if out (concat ":wrap " out " ") ""))`$0

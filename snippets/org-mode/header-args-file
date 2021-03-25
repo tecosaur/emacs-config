@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: Header arg - file
+# key: f
+# condition: (+yas/org-src-header-p)
+# --
+:file $0

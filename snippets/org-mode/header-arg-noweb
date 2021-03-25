@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: Header arg - noweb
+# key: n
+# condition: (+yas/org-src-header-p)
+# --
+`(let ((out (+yas/org-prompt-header-arg :noweb "Evaluate: " '("no" "yes" "tangle" "no-export" "strip-export" "eval")))) (if out (concat ":noweb " out " ") ""))`$0

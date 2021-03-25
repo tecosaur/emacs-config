@@ -2,6 +2,6 @@
 # name: inline math
 # key: m
 # condition: t
-# expand-env: ((yas-after-exit-snippet-hook (lambda () (org-edit-special) (evil-insert-state))))
+# expand-env: ((yas-after-exit-snippet-hook (lambda () (org-edit-latex-fragment) (evil-insert-state) (goto-char 3))))
 # --
 \\(`%`$0\\)
