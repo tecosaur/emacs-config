@@ -8137,8 +8137,7 @@ export to a PDF.
                                package))
                            packages))))
      (pp-to-string
-      `(defadvice! org-warn-about-missing-latex-packages (&rest _)
-         :before #'org-latex-export-to-pdf
+      '(defun +org-warn-about-missing-latex-packages (&rest _)
          (message "Checking for missing LaTeX packages...")
          (sleep-for 0.4)
          (if-let (missing-pkgs (check-for-latex-packages org-required-latex-packages))
@@ -8149,8 +8148,11 @@ export to a PDF.
                                  ", "))
            (message "%s You have all the required LaTeX packages. Run %s to make this message go away."
                     (propertize "Success!" 'face '(bold success))
-                    (propertize "doom sync" 'face 'font-lock-keyword-face)))
-         (sleep-for 1))))
+                    (propertize "doom sync" 'face 'font-lock-keyword-face))
+           (advice-remove 'org-latex-export-to-pdf #'+org-warn-about-missing-latex-packages))
+         (sleep-for 1)))
+     (pp-to-string
+      '(advice-add 'org-latex-export-to-pdf :before #'+org-warn-about-missing-latex-packages)))
   ";; No missing LaTeX packags detected")
 #+end_src
 
