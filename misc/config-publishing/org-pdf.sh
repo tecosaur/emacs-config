@@ -29,6 +29,10 @@
     (insert (shell-command-to-string (expand-file-name "./gen-org-snippets.sh" script-root)))
     (message "[33] Exporting %s" (buffer-file-name))
     (org-mode)
+    ;; There isn't actually any Julia code in config.org
+    (setq org-latex-conditional-features
+          (delq (rassq 'julia-code org-latex-conditional-features)
+                org-latex-conditional-features))
     (org-latex-export-to-pdf)))
 
 (publish "config.pdf")

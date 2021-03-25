@@ -7992,6 +7992,49 @@ Treating the verbatim (no syntax highlighting) result as a baseline; this
 rudimentary test suggest that =engrave-faces= is around eight times faster than
 =pygments=, and takes three times as long as no syntax highlighting (verbatim).
 
+**** Julia code blocks
+
+Julia code has fantastic support for unicode! The downside is that =pdflatex= is
+/still/ a pain to use with unicode symbols. The solution --- =lualatex=. Now we just
+need to make it automatic
+
+#+begin_src emacs-lisp
+(defadvice! org-latex-pick-compiler (_contents info)
+  :before #'org-latex-template
+  (when (and org-export-has-code-p (memq 'julia-code (org-latex-detect-features)))
+    (setf info (plist-put
+                (if (member #'+org-latex-replace-non-ascii-chars (plist-get info :filter-final-output))
+                    (plist-put info :filter-final-output
+                               (delq #'+org-latex-replace-non-ascii-chars (plist-get info :filter-final-output)))
+                  info)
+                :latex-compiler "lualatex"))))
+#+end_src
+
+Then a font with unicode support must be used. JuliaMono is the obvious choice,
+and we can use it with the =fontspec= package. In future it may be nice to set
+this just as a fallback font (when it isn't a pain to do so).
+
+#+name: julia-mono-fontspec
+#+begin_src LaTeX
+\\usepackage{fontspec}
+\\newfontfamily\\JuliaMono{JuliaMono-Regular.ttf}[Path=/usr/share/fonts/truetype/, Extension=.ttf]
+\\newfontface\\JuliaMonoRegular{JuliaMono-Regular}
+\\setmonofont{JuliaMonoRegular}[Contextuals=Alternate, Scale=MatchLowercase]
+#+end_src
+
+Now all that remains is to hook this into the preamble generation.
+
+#+begin_src emacs-lisp :noweb no-export
+(setq org-latex-julia-mono-fontspec "
+<<julia-mono-fontspec>>
+")
+
+(add-to-list 'org-latex-feature-implementations '(julia-code :snippet org-latex-julia-mono-fontspec :order 2) t)
+(add-to-list 'org-latex-conditional-features '((and org-export-has-code-p "^[ \t]*#\\+begin_src julia\\|^[ \t]*#\\+BEGIN_SRC julia\\|src_julia") . julia-code) t)
+
+(add-to-list 'org-latex-feature-implementations '(!microtype-lualatex :when (microtype julia-code) :prevents microtype :snippet "\\usepackage[activate={true,nocompatibility},final,tracking=true,factor=2000]{microtype}\n"))
+#+end_src
+
 **** Remove non-ascii chars
 
 When using ~pdflatex~, almost non-ascii characters are generally problematic, and
