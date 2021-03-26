@@ -27,7 +27,7 @@
     (org-mode)
     (org-html-export-to-html)))
 
-(publish "config.html" "misc/*.svg")
+(publish "config.html" "misc/*.svg" "misc/splash-images/*")
 
 (make-symbolic-link (expand-file-name "config.html" publish-dir)
                     (expand-file-name "index.html" publish-dir) t)

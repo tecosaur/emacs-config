@@ -104,16 +104,17 @@
 
 (defun publish (&rest files)
   "Move each file into `publish'.
-Names containing \"*\" are treate as a glob."
+Names containing \"*\" are treated as a glob."
   (dolist (file files)
     (if (string-match-p "\\*" file)
         (apply #'publish
                (directory-files (expand-file-name (or (file-name-directory file) "./") config-root)
                                 t
                                 (dired-glob-regexp (file-name-nondirectory file))))
-      (message (concat (when message-colour "[34] ") "Publishing %s") file)
-      (let ((target (replace-regexp-in-string (regexp-quote config-root)
-                                              publish-dir
-                                              (expand-file-name file config-root))))
-        (ensure-dir-exists target)
-        (copy-file (expand-file-name file config-root) target t)))))
+      (unless (string-match-p "/\\.\\.?$" file)
+        (message (concat (when message-colour "[34] ") "Publishing %s") file)
+        (let ((target (replace-regexp-in-string (regexp-quote config-root)
+                                                publish-dir
+                                                (expand-file-name file config-root))))
+          (ensure-dir-exists target)
+          (copy-file (expand-file-name file config-root) target t))))))
