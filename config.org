@@ -7353,7 +7353,8 @@ introduce an =:order= keyword. Using this I'll arrange snippets as follows.
 + =0= Typography
   - =0= Fonts themselves
   - =0.1= Typographic tweaks (=microtype=)
-  - =0.2= Extra maths
+  - =0.2= Maths setup
+  - =0.3= Maths font
   - =0.4= Extra text shaping (~\acr~)
   - =0.5-0.9= Miscellaneous text modifications, trying to put shorter snippets first
 + =1= (/default/)
@@ -7597,7 +7598,7 @@ the cars in `org-latex-fontsets'."
           "")
          (when (memq (cdr fontset-spec) desired-styles)
            (pcase (cdr fontset-spec)
-             (:serif nil)
+             (:serif "\\renewcommand{\\familydefault}{\\rmdefault}\n")
              (:sans "\\renewcommand{\\familydefault}{\\sfdefault}\n")
              (:mono "\\renewcommand{\\familydefault}{\\ttdefault}\n"))))
       (error "Font-set %s is not provided in org-latex-fontsets" (car fontset-spec)))))
@@ -7609,7 +7610,7 @@ preamble generation.
 #+begin_src emacs-lisp
 (add-to-list 'org-latex-conditional-features '(org-latex-default-fontset . custom-font) t)
 (add-to-list 'org-latex-feature-implementations '(custom-font :snippet (org-latex-fontset :serif :sans :mono) :order 0) t)
-(add-to-list 'org-latex-feature-implementations '(.custom-maths-font :eager t :when (custom-font maths) :snippet (org-latex-fontset :maths) :order 0.1) t)
+(add-to-list 'org-latex-feature-implementations '(.custom-maths-font :eager t :when (custom-font maths) :snippet (org-latex-fontset :maths) :order 0.3) t)
 #+end_src
 
 Finally, we just need to add some fonts.
@@ -7617,23 +7618,46 @@ Finally, we just need to add some fonts.
 #+begin_src emacs-lisp
 (defvar org-latex-fontsets
   '((cm nil) ; computer modern
-    (ibm
-     :serif "\\usepackage{plex-serif}"
-     :sans "\\usepackage{plex-sans}"
-     :mono "\\usepackage{plex-mono}"
-     :maths "% maths TBD")
+    (alegreya
+     :serif "\\usepackage[osf]{Alegreya}"
+     :sans "\\usepackage{AlegreyaSans}"
+     :mono "\\usepackage[scale=0.88]{sourcecodepro}"
+     :maths "\\usepackage[varbb]{newpxmath}")
+    (biolinum
+     :serif "\\usepackage[osf]{libertineRoman}"
+     :sans "\\usepackage[sfdefault,osf]{biolinum}"
+     :mono "\\usepackage[scale=0.88]{sourcecodepro}"
+     :maths "\\usepackage[libertine,varvw]{newtxmath}")
+    (fira
+     :sans "\\usepackage[sfdefault,scale=0.85]{FiraSans}"
+     :mono "\\usepackage[scale=0.80]{FiraMono}"
+     :maths "\\usepackage{newtxsf} % change to firamath in future?")
+    (kp
+     :serif "\\usepackage{kpfonts}")
     (newpx
      :serif "\\usepackage{newpxtext}"
      :sans "\\usepackage{gillius}"
      :mono "\\usepackage[scale=0.9]{sourcecodepro}"
      :maths "\\usepackage[varbb]{newpxmath}")
-    (kp
-     :serif "\\usepackage{kpfonts}")
-    (alegreya
-     :serif "\\usepackage[osf]{Alegreya}"
-     :sans "\\usepackage{AlegreyaSans}"
-     :mono "\\usepackage[scale=0.88]{sourcecodepro}"
-     :maths "\\usepackage[varbb]{newpxmath}"))
+    (noto
+     :serif "\\usepackage[osf]{noto-serif}"
+     :sans "\\usepackage[osf]{noto-sans}"
+     :mono "\\usepackage[scale=0.96]{noto-mono}"
+     ;; Wait till TeXlive 2021 is released, use notomath
+     :maths "\\usepackage{newtxmath}")
+    (plex
+     :serif "\\usepackage{plex-serif}"
+     :sans "\\usepackage{plex-sans}"
+     :mono "\\usepackage[scale=0.95]{plex-mono}"
+     :maths "\\usepackage{newtxmath}") ; may be plex-based in future
+    (source
+     :serif "\\usepackage[osf]{sourceserifpro}"
+     :sans "\\usepackage[osf]{sourcesanspro}"
+     :mono "\\usepackage[scale=0.95]{sourcecodepro}"
+     :maths "\\usepackage{newtxmath}") ; may be sourceserifpro-based in future
+    (times
+     :serif "\\usepackage{newtxtext}"
+     :maths "\\usepackage{newtxmath}"))
   "Alist of fontset specifications.
 Each car is the name of the fontset (which cannot include \"-\").
 
@@ -8327,10 +8351,9 @@ locally binding ~auto-mode-alist~ to ~nil~.
 
 For how I've setup Org's LaTeX export, the following packages are needed:
 #+name: org-latex-required-packages-list
-+ Alegreya
 + adjustbox
-+ amsmath
 + arev
++ amsmath
 + booktabs
 + cancel
 + capt-of
@@ -8345,18 +8368,37 @@ For how I've setup Org's LaTeX export, the following packages are needed:
 + mathalpha
 + mathtools
 + microtype
-+ newpxmath
 + pdfx
 + pifont
 + preview
 + siunitx
 + soul
-+ sourcecodepro
 + subcaption
 + svg
 + tcolorbox
 + xcolor
 + xparse
+
+Then for the various fontsets:
+#+name: org-latex-font-packages-list
++ Alegreya
++ biolinum
++ FiraMono
++ FiraSans
++ kpfonts
++ libertine
++ newpxmath
++ newpxtext
++ newtxmath
++ newtxtext
++ newtxsf
++ noto
++ plex-mono
++ plex-sans
++ plex-serif
++ sourcecodepro
++ sourcesanspro
++ sourceserifpro
 
 We can write a function which will check for each of these packages with
 =kpsewhich=, and then if any of them are missing we'll inject some advice into the
@@ -8364,8 +8406,9 @@ generated config that gets a list of missing packages and warns us every time we
 export to a PDF.
 
 #+name: org-missing-latex-packages
-#+begin_src emacs-lisp :noweb-ref none :var org-latex-required-packages-list=org-latex-required-packages-list
-(setq org-required-latex-packages (mapcar #'car org-latex-required-packages-list))
+#+begin_src emacs-lisp :noweb-ref none :var org-latex-required-packages-list=org-latex-required-packages-list :var org-latex-font-packages-list=org-latex-font-packages-list
+(setq org-required-latex-packages (append (mapcar #'car org-latex-required-packages-list)
+                                          (mapcar #'car org-latex-font-packages-list)))
 
 (defun check-for-latex-packages (packages)
   (delq nil (mapcar (lambda (package)
