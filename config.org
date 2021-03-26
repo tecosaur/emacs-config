@@ -7253,24 +7253,24 @@ digraph {
     rankdir=LR
 
     node[group=a,color="#2ec27e"]
+    "file:*.svg"
     "file:*.jpeg"
     "file:*.png"
-    "file:*.svg"
     "#+caption"
     "xkcd:*"
     node[group=b,color="#f5c211"]
-    "image"
     "svg"
+    "image"
     "caption"
     node[group=c,color="#813d9c"]
-    "(TeX) graphicx"
     "(TeX) svg"
+    "(TeX) graphicx"
     "(TeX) caption"
 
+    "file:*.svg" -> "svg" -> "(TeX) svg"
     "file:*.jpeg" -> "image" -> "(TeX) graphicx"
     "file:*.png" -> "image"
-    "file:*.svg" -> "svg" -> "(TeX) svg"
-    "(TeX) svg":e -> "(TeX) graphicx":s [constraint=false]
+    "(TeX) svg":s -> "(TeX) graphicx":n [constraint=false]
     "#+caption" -> "caption" -> "(TeX) caption"
     "xkcd:*" -> "image"
     "xkcd:*" -> "caption"
@@ -7281,6 +7281,10 @@ digraph {
 #+attr_html: :class invertible :alt DAG showing how Org features flow through to LaTeX :style max-width:min(24em,100%)
 #+attr_latex: :width 0.6\linewidth
 [[file:misc/org-latex-clever-preamble.svg]]
+
+First we will implement the feature detection component of this model. I'd like
+this to be able to use as much state information as possible, so the feature
+tests should be very versatile.
 
 #+begin_src emacs-lisp
 (defvar org-latex-embed-files t
@@ -7332,32 +7336,58 @@ search in the buffer. Otherwise any non-nil return value will indicate the
 existance of the feature.")
 #+end_src
 
+Then we provide a way to generate the preamble that provides those features.
+In addition to the features named in ~org-latex-conditional-features~ we'll also
+create /meta-features/, which can be required by other features (with =:requires=),
+or be active by default (=:eager t=). For further control I some features may only
+be used when certain other features are active (with =:when=), and masked by other
+features (with =:prevents=). I will use the convention of starting meta-features
+with =.=, and =:eager= features with =!= to make their nature more readily apparent.
+
+Another consideration in LaTeX is load order, which matters in some cases.
+Beyond that, it's nice to have some sort of sensible ordering. For this I'll
+introduce an =:order= keyword. Using this I'll arrange snippets as follows.
+
++ =-2= Embed files setup
++ =-1= Extra file embedding
++ =0= Typography
+  - =0= Fonts themselves
+  - =0.1= Typographic tweaks (=microtype=)
+  - =0.2= Extra maths
+  - =0.4= Extra text shaping (~\acr~)
+  - =0.5-0.9= Miscellaneous text modifications, trying to put shorter snippets first
++ =1= (/default/)
++ =2= Tables and figures
++ =3= Miscellaneous short content
++ =4= Fancy boxes
+
 #+begin_src emacs-lisp
 (defvar org-latex-feature-implementations
-  '((image         :snippet "\\usepackage{graphicx}")
-    (svg           :snippet "\\usepackage{svg}")
-    (maths         :snippet "\\usepackage[nofont]{bmc-maths}")
-    (table         :snippet "\\usepackage{longtable}\n\\usepackage{booktabs}")
+  '((image         :snippet "\\usepackage{graphicx}" :order 2)
+    (svg           :snippet "\\usepackage{svg}" :order 2)
+    (maths         :snippet "\\usepackage[nofont]{bmc-maths}" :order 0.2)
+    (table         :snippet "\\usepackage{longtable}\n\\usepackage{booktabs}" :order 2)
     (cleveref      :snippet "\\usepackage{cleveref}" :order 1) ; after bmc-maths
-    (underline     :snippet "\\usepackage[normalem]{ulem}")
-    (float-wrap    :snippet "\\usepackage{wrapfig}")
-    (rotate        :snippet "\\usepackage{rotating}")
-    (caption       :snippet org-latex-caption-preamble)
-    (microtype     :snippet "\\usepackage[activate={true,nocompatibility},final,tracking=true,kerning=true,spacing=true,factor=2000]{microtype}\n")
+    (underline     :snippet "\\usepackage[normalem]{ulem}" :order 0.5)
+    (float-wrap    :snippet "\\usepackage{wrapfig}" :order 2)
+    (rotate        :snippet "\\usepackage{rotating}" :order 2)
+    (caption       :snippet org-latex-caption-preamble :order 2.1)
+    (microtype     :snippet "\\usepackage[activate={true,nocompatibility},final,tracking=true,kerning=true,spacing=true,factor=2000]{microtype}\n" :order 0.1)
     (embed-files   :snippet org-latex-embed-files-preamble :order -2)
     (embed-tangled :requires embed-files :snippet (concat (org-latex-embed-tangled-files) "\n") :order -1)
-    (acronym       :snippet "\\newcommand{\\acr}[1]{\\protect\\textls*[110]{\\scshape #1}}\n\\newcommand{\\acrs}{\\protect\\scalebox{.91}[.84]{\\hspace{0.15ex}s}}" :order 2)
-    (italic-quotes :snippet "\\renewcommand{\\quote}{\\list{}{\\rightmargin\\leftmargin}\\item\\relax\\em}\n")
-    (par-sep       :snippet "\\setlength{\\parskip}{\\baselineskip}\n\\setlength{\\parindent}{0pt}\n")
-    (pifont        :snippet "\\usepackage{pifont}")
-    (checkbox      :requires pifont    :snippet (concat (unless (memq 'maths features)
-                                                          "\\usepackage{amssymb} % provides \\square")
-                                                        org-latex-checkbox-preamble))
-    (fancy-box     :requires pifont    :snippet org-latex-box-preamble :order 3)
-    (box-warning   :requires fancy-box :snippet "\\defsimplebox{warning}{e66100}{\\ding{68}}{Warning}" :order 4)
-    (box-info      :requires fancy-box :snippet "\\defsimplebox{info}{3584e4}{\\ding{68}}{Information}" :order 4)
-    (box-success   :requires fancy-box :snippet "\\defsimplebox{success}{26a269}{\\ding{68}}{\\vspace{-\\baselineskip}}" :order 4)
-    (box-error     :requires fancy-box :snippet "\\defsimplebox{error}{c01c28}{\\ding{68}}{Important}" :order 4))
+    (acronym       :snippet "\\newcommand{\\acr}[1]{\\protect\\textls*[110]{\\scshape #1}}\n\\newcommand{\\acrs}{\\protect\\scalebox{.91}[.84]{\\hspace{0.15ex}s}}" :order 0.4)
+    (italic-quotes :snippet "\\renewcommand{\\quote}{\\list{}{\\rightmargin\\leftmargin}\\item\\relax\\em}\n" :order 0.5)
+    (par-sep       :snippet "\\setlength{\\parskip}{\\baselineskip}\n\\setlength{\\parindent}{0pt}\n" :order 0.5)
+    (.pifont       :snippet "\\usepackage{pifont}")
+    (checkbox      :requires .pifont :order 3
+                   :snippet (concat (unless (memq 'maths features)
+                                      "\\usepackage{amssymb} % provides \\square")
+                                    org-latex-checkbox-preamble))
+    (.fancy-box    :requires .pifont    :snippet org-latex-box-preamble :order 3.9)
+    (box-warning   :requires .fancy-box :snippet "\\defsimplebox{warning}{e66100}{\\ding{68}}{Warning}" :order 4)
+    (box-info      :requires .fancy-box :snippet "\\defsimplebox{info}{3584e4}{\\ding{68}}{Information}" :order 4)
+    (box-success   :requires .fancy-box :snippet "\\defsimplebox{success}{26a269}{\\ding{68}}{\\vspace{-\\baselineskip}}" :order 4)
+    (box-error     :requires .fancy-box :snippet "\\defsimplebox{error}{c01c28}{\\ding{68}}{Important}" :order 4))
   "LaTeX features and details required to implement them.
 
 List where the car is the feature symbol, and the rest forms a plist with the
@@ -7418,8 +7448,8 @@ to produce an /expanded/ list of features. We'll do that by performing the
 following steps.
 + The dependencies for each listed feature are added to feature list
   (=:requires=).
-+ The =:when= conditions of each feature, and available features starting with =!=
-  are evaluated, and they are added/removed accordingly
++ The =:when= conditions of each feature, and available features with =:eager t=,
+  are evaluated, and added/removed accordingly
 + Any features present in a =:prevents= value are removed
 + The feature list is scrubbed of duplicates
 + The feature list is sorted by =:order= (ascending)
@@ -7434,7 +7464,7 @@ following steps.
       (setf features (append (if (listp requirements) requirements (list requirements)) features))))
   (dolist (potential-feature
            (append features (delq nil (mapcar (lambda (feat)
-                                                (when (= ?! (aref (symbol-name (car feat)) 0))
+                                                (when (plist-get (cdr feat) :eager)
                                                   (car feat)))
                                               org-latex-feature-implementations))))
     (when-let ((prerequisites (plist-get (cdr (assoc potential-feature org-latex-feature-implementations)) :when)))
@@ -7448,8 +7478,8 @@ following steps.
       (setf features (cl-set-difference features (if (listp prevents) prevents (list prevents))))))
   (sort (delete-dups features)
         (lambda (feat1 feat2)
-          (if (< (or (plist-get (cdr (assoc feat1 org-latex-feature-implementations)) :order) 0)
-                 (or (plist-get (cdr (assoc feat2 org-latex-feature-implementations)) :order) 0))
+          (if (< (or (plist-get (cdr (assoc feat1 org-latex-feature-implementations)) :order) 1)
+                 (or (plist-get (cdr (assoc feat2 org-latex-feature-implementations)) :order) 1))
               t nil))))
 #+end_src
 
@@ -7578,8 +7608,8 @@ preamble generation.
 
 #+begin_src emacs-lisp
 (add-to-list 'org-latex-conditional-features '(org-latex-default-fontset . custom-font) t)
-(add-to-list 'org-latex-feature-implementations '(custom-font :snippet (org-latex-fontset :serif :sans :mono)) t)
-(add-to-list 'org-latex-feature-implementations '(!custom-maths-font :when (custom-font maths) :snippet (org-latex-fontset :maths)) t)
+(add-to-list 'org-latex-feature-implementations '(custom-font :snippet (org-latex-fontset :serif :sans :mono) :order 0) t)
+(add-to-list 'org-latex-feature-implementations '(.custom-maths-font :eager t :when (custom-font maths) :snippet (org-latex-fontset :maths) :order 0.1) t)
 #+end_src
 
 Finally, we just need to add some fonts.
@@ -7617,7 +7647,7 @@ When we're using Alegreya we can apply a lovely little tweak to =tabular= which
 #+begin_src emacs-lisp
 (add-to-list 'org-latex-conditional-features '((string= (car (org-latex-fontset-entry)) "alegreya") . alegreya-typeface))
 (add-to-list 'org-latex-feature-implementations '(alegreya-typeface) t)
-(add-to-list 'org-latex-feature-implementations '(!alegreya-tabular-figures :when (alegreya-typeface table) :snippet "
+(add-to-list 'org-latex-feature-implementations'(.alegreya-tabular-figures :eager t :when (alegreya-typeface table) :order 0.5 :snippet "
 \\makeatletter
 % tabular lining figures in tables
 \\renewcommand{\\tabular}{\\AlegreyaTLF\\let\\@halignto\\@empty\\@tabular}
@@ -7629,7 +7659,7 @@ can correct for this by redefining it with subtlety shifted kerning.
 
 #+begin_src emacs-lisp
 (add-to-list 'org-latex-conditional-features '("LaTeX" . latex-symbol))
-(add-to-list 'org-latex-feature-implementations '(latex-symbol :when alegreya-typeface :snippet "
+(add-to-list 'org-latex-feature-implementations '(latex-symbol :when alegreya-typeface :order 0.5 :snippet "
 \\makeatletter
 % Kerning around the A needs adjusting
 \\DeclareRobustCommand{\\LaTeX}{L\\kern-.24em%
@@ -7781,7 +7811,7 @@ Then we can just hook this in with our clever preamble.
 ")
 
 (add-to-list 'org-latex-conditional-features '((and org-latex-condense-lists "^[ \t]*[-+]\\|^[ \t]*[1Aa][.)] ") . condensed-lists) t)
-(add-to-list 'org-latex-feature-implementations '(condensed-lists :snippet org-latex-condensed-lists :order 2) t)
+(add-to-list 'org-latex-feature-implementations '(condensed-lists :snippet org-latex-condensed-lists :order 0.7) t)
 #+end_src
 
 **** Pretty code blocks
@@ -7828,9 +7858,9 @@ entry in ~org-latex-scr-block~ we can easily add this as a recognised
 <<org-latex-engraved-code-preamble>>
 ")
 
-(add-to-list 'org-latex-feature-implementations '(engraved-code-setup :snippet org-latex-engraved-code-preamble :order 98) t)
-(add-to-list 'org-latex-feature-implementations '(engraved-code :requires engraved-code-setup :snippet (engrave-faces-latex-gen-preamble) :order 99) t)
 (add-to-list 'org-latex-conditional-features '((and org-export-has-code-p "^[ \t]*#\\+begin_src\\|^[ \t]*#\\+BEGIN_SRC\\|src_[A-Za-z]") . engraved-code) t)
+(add-to-list 'org-latex-feature-implementations '(engraved-code :requires engraved-code-setup :snippet (engrave-faces-latex-gen-preamble) :order 99) t)
+(add-to-list 'org-latex-feature-implementations '(engraved-code-setup :snippet org-latex-engraved-code-preamble :order 98) t)
 
 (defun org-latex-scr-block--engraved (src-block contents info)
   (let* ((lang (org-element-property :language src-block))
@@ -8029,10 +8059,11 @@ Now all that remains is to hook this into the preamble generation.
 <<julia-mono-fontspec>>
 ")
 
-(add-to-list 'org-latex-feature-implementations '(julia-code :snippet org-latex-julia-mono-fontspec :order 2) t)
+(add-to-list 'org-latex-feature-implementations '(julia-code :snippet org-latex-julia-mono-fontspec :order 0) t)
 (add-to-list 'org-latex-conditional-features '((and org-export-has-code-p "^[ \t]*#\\+begin_src julia\\|^[ \t]*#\\+BEGIN_SRC julia\\|src_julia") . julia-code) t)
 
-(add-to-list 'org-latex-feature-implementations '(!microtype-lualatex :when (microtype julia-code) :prevents microtype :snippet "\\usepackage[activate={true,nocompatibility},final,tracking=true,factor=2000]{microtype}\n"))
+(add-to-list 'org-latex-feature-implementations '(.microtype-lualatex :eager t :when (microtype julia-code) :prevents microtype :order 0.1 :snippet "\\usepackage[activate={true,nocompatibility},final,tracking=true,factor=2000]{microtype}\n"))
+(add-to-list 'org-latex-feature-implementations '(.custom-font-no-mono :eager t :prevents custom-font :order 0 :snippet (org-latex-fontset :serif :sans)) t)
 #+end_src
 
 **** Remove non-ascii chars
