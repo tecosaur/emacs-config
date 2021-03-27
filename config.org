@@ -810,6 +810,16 @@ I'd like some slightly nicer default buffer names
 (setq doom-fallback-buffer-name "► Doom"
       +doom-dashboard-name "► Doom")
 #+end_src
+
+Lastly, the doom dashboard "useful commands" are no longer useful to me.
+So, we'll disable them and then for a particularly /clean/ look disable
+~hl-line-mode~ and hide the cursor.
+
+#+begin_src emacs-lisp
+(remove-hook '+doom-dashboard-functions #'doom-dashboard-widget-shortmenu)
+(add-hook! '+doom-dashboard-functions (hl-line-mode -1))
+(setq-hook! '+doom-dashboard-mode-hook evil-normal-state-cursor (list nil))
+#+end_src
 *** Some helper macros
 There are a few handy macros added by doom, namely
 - ~load!~ for loading external ~.el~ files relative to this one
@@ -867,41 +877,34 @@ For example when I open my config file it the window will be titled =config.org 
 doom= then as soon as I make a change it will become =config.org ◉ doom=.
 *** Splash screen
 Emacs can render an image as the splash screen, and [[https://github.com/MarioRicalde][@MarioRicalde]] came up with a
-cracker! He's also provided me with a nice Emacs-style /E/, which is good for
-smaller windows. *@MarioRicalde* you have my sincere thanks, you're great!
-[[file:misc/splash-images/blackhole-lines.svg]]
+cracker! He's also provided me with a nice Emacs-style /E/. I was using the
+blackhole image, but as I've stripped down the splash screen I've switched to
+just using the /E/.
 
-By incrementally stripping away the outer layers of the logo one can obtain
-quite a nice resizing effect.
+#+attr_latex: :width 0.2\linewidth
+#+attr_html: :style width:20% :alt Fancy Emacs "E"
+[[file:misc/splash-images/emacs-e.svg]]
+
+Now we just make it theme-appropriate, and resize with the frame.
+
 #+begin_src emacs-lisp
 (defvar fancy-splash-image-template
-  (expand-file-name "misc/splash-images/blackhole-lines-template.svg" doom-private-dir)
+  (expand-file-name "misc/splash-images/emacs-e-template.svg" doom-private-dir)
   "Default template svg used for the splash image, with substitutions from ")
-(defvar fancy-splash-image-nil
-  (expand-file-name "misc/splash-images/transparent-pixel.png" doom-private-dir)
-  "An image to use at minimum size, usually a transparent pixel")
-
-(setq fancy-splash-sizes
-      `((:height 500 :min-height 50 :padding (0 . 4) :template ,(expand-file-name "misc/splash-images/blackhole-lines-0.svg" doom-private-dir))
-        (:height 440 :min-height 42 :padding (1 . 4) :template ,(expand-file-name "misc/splash-images/blackhole-lines-0.svg" doom-private-dir))
-        (:height 400 :min-height 38 :padding (1 . 4) :template ,(expand-file-name "misc/splash-images/blackhole-lines-1.svg" doom-private-dir))
-        (:height 350 :min-height 36 :padding (1 . 3) :template ,(expand-file-name "misc/splash-images/blackhole-lines-2.svg" doom-private-dir))
-        (:height 300 :min-height 34 :padding (1 . 3) :template ,(expand-file-name "misc/splash-images/blackhole-lines-3.svg" doom-private-dir))
-        (:height 250 :min-height 32 :padding (1 . 2) :template ,(expand-file-name "misc/splash-images/blackhole-lines-4.svg" doom-private-dir))
-        (:height 200 :min-height 30 :padding (1 . 2) :template ,(expand-file-name "misc/splash-images/blackhole-lines-5.svg" doom-private-dir))
-        (:height 100 :min-height 24 :padding (1 . 2) :template ,(expand-file-name "misc/splash-images/emacs-e-template.svg" doom-private-dir))
-        (:height 0   :min-height 0  :padding (0 . 0) :file ,fancy-splash-image-nil)))
 
 (defvar fancy-splash-sizes
-  `((:height 500 :min-height 50 :padding (0 . 2))
-    (:height 440 :min-height 42 :padding (1 . 4))
-    (:height 330 :min-height 35 :padding (1 . 3))
-    (:height 200 :min-height 30 :padding (1 . 2))
-    (:height 0   :min-height 0  :padding (0 . 0) :file ,fancy-splash-image-nil))
+  `((:height 300 :min-height 50 :padding (0 . 2))
+    (:height 250 :min-height 42 :padding (2 . 4))
+    (:height 200 :min-height 35 :padding (3 . 3))
+    (:height 150 :min-height 28 :padding (3 . 3))
+    (:height 100 :min-height 20 :padding (2 . 2))
+    (:height 75  :min-height 15 :padding (2 . 1))
+    (:height 50  :min-height 10 :padding (1 . 0))
+    (:height 1   :min-height 0  :padding (0 . 0)))
   "list of plists with the following properties
   :height the height of the image
   :min-height minimum `frame-height' for image
-  :padding `+doom-dashboard-banner-padding' to apply
+  :padding `+doom-dashboard-banner-padding' (top . bottom) to apply
   :template non-default template file
   :file file to use instead of template")
 
@@ -942,8 +945,7 @@ quite a nice resizing effect.
   "Perform `fancy-splash-generate-image' in bulk"
   (dolist (size fancy-splash-sizes)
     (unless (plist-get size :file)
-      (fancy-splash-generate-image (or (plist-get size :file)
-                                       (plist-get size :template)
+      (fancy-splash-generate-image (or (plist-get size :template)
                                        fancy-splash-image-template)
                                    (plist-get size :height)))))
 
@@ -978,6 +980,103 @@ quite a nice resizing effect.
 (add-hook 'window-size-change-functions #'set-appropriate-splash)
 (add-hook 'doom-load-theme-hook #'set-appropriate-splash)
 #+end_src
+
+Now the only thing missing is a an extra interesting line, whether that be some
+corporate BS, an developer excuse, or a fun (useless) fact.
+
+The following is rather long, but it essentially
++ fetches a phrase from an API
++ inserts it into the dashboard (asynchronously)
++ moves ~point~ to the phrase
++ re-uses the last phrase for requests within a few seconds of it being fetched
+
+#+begin_src emacs-lisp
+(defvar phrase-api-url
+  (nth (random 3)
+       '(("https://corporatebs-generator.sameerkumar.website/" :phrase)
+         ("https://useless-facts.sameerkumar.website/api" :data)
+         ("https://dev-excuses-api.herokuapp.com/" :text))))
+
+(defmacro phrase-generate-callback (token &optional format-fn ignore-read-only callback buffer-name)
+  `(lambda (status)
+     (unless (plist-get status :error)
+       (goto-char url-http-end-of-headers)
+       (let ((phrase (plist-get (json-parse-buffer :object-type 'plist) (cadr phrase-api-url)))
+             (inhibit-read-only ,(when (eval ignore-read-only) t)))
+         (setq phrase-last (cons phrase (float-time)))
+         (with-current-buffer ,(or (eval buffer-name) (buffer-name (current-buffer)))
+           (save-excursion
+             (goto-char (point-min))
+             (when (search-forward ,token nil t)
+               (with-silent-modifications
+                 (replace-match "")
+                 (insert ,(if format-fn format-fn 'phrase)))))
+           ,callback)))))
+
+(defvar phrase-last nil)
+(defvar phrase-timeout 5)
+
+(defmacro phrase-insert-async (&optional format-fn token ignore-read-only callback buffer-name)
+  `(let ((inhibit-message t))
+     (if (and phrase-last
+              (> phrase-timeout (- (float-time) (cdr phrase-last))))
+         (let ((phrase (car phrase-last)))
+           ,(if format-fn format-fn 'phrase))
+       (url-retrieve (car phrase-api-url)
+                     (phrase-generate-callback ,(or token "\ufeff") ,format-fn ,ignore-read-only ,callback ,buffer-name))
+       ;; For reference, \ufeff = Zero-width no-break space / BOM
+       ,(or token "\ufeff"))))
+
+(defun doom-dashboard-phrase ()
+  (phrase-insert-async
+   (progn
+     (setq-local phrase-position (point))
+     (mapconcat
+      (lambda (line)
+        (+doom-dashboard--center
+         +doom-dashboard--width
+         (with-temp-buffer
+           (insert-text-button
+            line
+            'action
+            (lambda (_)
+              (setq phrase-last nil)
+              (+doom-dashboard-reload t))
+            'face 'doom-dashboard-menu-title
+            'mouse-face 'doom-dashboard-menu-title
+            'help-echo "Random phrase"
+            'follow-link t)
+           (buffer-string))))
+      (split-string
+       (with-temp-buffer
+         (insert phrase)
+         (setq fill-column (min 70 (/ (* 2 (window-width)) 3)))
+         (fill-region (point-min) (point-max))
+         (buffer-string))
+       "\n")
+      "\n"))
+   nil t
+   (progn
+     (goto-char phrase-position)
+     (forward-whitespace 1))
+   +doom-dashboard-name))
+
+(defadvice! doom-dashboard-widget-loaded-with-phrase ()
+  :override #'doom-dashboard-widget-loaded
+  (setq line-spacing 0.2)
+  (insert
+   "\n\n"
+   (propertize
+    (+doom-dashboard--center
+     +doom-dashboard--width
+     (doom-display-benchmark-h 'return))
+    'face 'doom-dashboard-loaded)
+   "\n"
+   (doom-dashboard-phrase)
+   "\n"))
+#+end_src
+
+At the end, we have a minimal but rather nice splash screen.
 
 #+attr_html: :class invertible :alt The splash screen, just loaded.
 [[https://tecosaur.com/lfs/emacs-config/screenshots/splash-screen.png]]
