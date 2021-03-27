@@ -7917,9 +7917,9 @@ much space it puts between list items by default. I'm generally not a fan.
 Thankfully this is easy to correct with a small snippet:
 #+name: latex-condense-lists
 #+begin_src LaTeX
-\\let\\tempa\\itemize\\renewcommand{\\itemize}{\\tempa\\setlength{\\itemsep}{-2ex}}
-\\let\\tempa\\enumerate\\renewcommand{\\enumerate}{\\tempa\\setlength{\\itemsep}{-2ex}}
-\\let\\tempa\\description\\renewcommand{\\description}{\\tempa\\setlength{\\itemsep}{-2ex}}
+\\let\\olditem\\itemize\\renewcommand{\\itemize}{\\olditem\\setlength{\\itemsep}{-2ex}}
+\\let\\oldenum\\enumerate\\renewcommand{\\enumerate}{\\oldenum\\setlength{\\itemsep}{-2ex}}
+\\let\\olddesc\\description\\renewcommand{\\description}{\\olddesc\\setlength{\\itemsep}{-2ex}}
 #+end_src
 
 Then we can just hook this in with our clever preamble.
