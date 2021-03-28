@@ -1093,6 +1093,31 @@ At the end, we have a minimal but rather nice splash screen.
 #+attr_html: :class invertible :alt The splash screen, just loaded.
 [[https://tecosaur.com/lfs/emacs-config/screenshots/splash-screen.png]]
 
+I haven't forgotten about the ASCII banner though! Once again we're going for
+something simple.
+
+#+begin_src emacs-lisp
+(defun doom-dashboard-draw-ascii-emacs-banner-fn ()
+  (let* ((banner
+          '(",---.,-.-.,---.,---.,---."
+            "|---'| | |,---||    `---."
+            "`---'` ' '`---^`---'`---'"))
+         (longest-line (apply #'max (mapcar #'length banner))))
+    (put-text-property
+     (point)
+     (dolist (line banner (point))
+       (insert (+doom-dashboard--center
+                +doom-dashboard--width
+                (concat
+                 line (make-string (max 0 (- longest-line (length line)))
+                                   32)))
+               "\n"))
+     'face 'doom-dashboard-banner)))
+
+(setq +doom-dashboard-ascii-banner-fn #'doom-dashboard-draw-ascii-emacs-banner-fn)
+#+end_src
+
+
 *** Systemd daemon
 For running a systemd service for a Emacs server I have the following
 #+name: emacsclient service
