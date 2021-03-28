@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 ":"; exec emacs --quick --script "$0" -- "$@" # -*- mode: emacs-lisp; lexical-binding: t; -*-
 
-(setq log-file (format "%s-log.txt" (file-name-base load-file-name)))
+(setq log-file (expand-file-name (format "%s-log.txt" (file-name-base load-file-name))))
 
 (load (expand-file-name "initialise.el" (file-name-directory load-file-name)) nil t)
 (initialise t)

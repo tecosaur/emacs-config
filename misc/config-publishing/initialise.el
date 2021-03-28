@@ -84,6 +84,8 @@
     (explain-pause-mode -1))
 
   (setq emojify-download-emojis-p t)
+  (unless (boundp 'image-types) ; why on earth is this needed?
+    (setq image-types '(svg png gif tiff jpeg xpm xbm pbm)))
 
   (after! undo-tree
     (global-undo-tree-mode -1)

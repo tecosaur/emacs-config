@@ -751,16 +751,17 @@ if the system doesn't have any of those fonts.
 
 (if missing-fonts
     (pp-to-string
-     `(add-hook! 'doom-init-ui-hook
-        (run-at-time nil nil
-                     (lambda ()
-                       (message "%s missing the following fonts: %s"
-                                (propertize "Warning!" 'face '(bold warning))
-                                (mapconcat (lambda (font)
-                                             (propertize font 'face 'font-lock-variable-name-face))
-                                           ',missing-fonts
-                                           ", "))
-                       (sleep-for 0.5)))))
+     `(unless noninteractive
+        (add-hook! 'doom-init-ui-hook
+          (run-at-time nil nil
+                       (lambda ()
+                         (message "%s missing the following fonts: %s"
+                                  (propertize "Warning!" 'face '(bold warning))
+                                  (mapconcat (lambda (font)
+                                               (propertize font 'face 'font-lock-variable-name-face))
+                                             ',missing-fonts
+                                             ", "))
+                         (sleep-for 0.5))))))
   ";; No missing fonts detected")
 #+end_src
 
