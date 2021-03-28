@@ -1552,6 +1552,12 @@ And some basic config
       (+latex-fold-last-macro-a)))
   (add-hook 'aas-post-snippet-expand-hook #'laas-tex-fold-maybe))
 #+end_src
+
+I think the latest AucTeX may be a bit dodgy, so
+#+begin_src emacs-lisp
+(package! auctex :pin "384c4b989192087144512a528bcc1949c2ab3e5b")
+#+end_src
+
 *** Org Mode
 Use ~HEAD~ for development.
 #+begin_src emacs-lisp
