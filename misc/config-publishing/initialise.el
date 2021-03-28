@@ -83,6 +83,8 @@
   (add-hook! 'doom-debug-mode-hook
     (explain-pause-mode -1))
 
+  (setq emojify-download-emojis-p t)
+
   (after! undo-tree
     (global-undo-tree-mode -1)
     (advice-add 'undo-tree-mode :override #'ignore)

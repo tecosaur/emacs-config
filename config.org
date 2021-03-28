@@ -1986,7 +1986,7 @@ icon. Then we'll redefine two functions used to generate the modeline.
 ** Emojify
 
 For starters, twitter's emojis look nicer than emoji-one.
-Other than that, this is pretty great OOTB.
+Other than that, this is pretty great OOTB 😀.
 
 #+begin_src emacs-lisp
 (setq emojify-emoji-set "twemoji-v2")
@@ -8192,6 +8192,84 @@ Now all that remains is to hook this into the preamble generation.
 (add-to-list 'org-latex-feature-implementations '(.microtype-lualatex :eager t :when (microtype julia-code) :prevents microtype :order 0.1 :snippet "\\usepackage[activate={true,nocompatibility},final,tracking=true,factor=2000]{microtype}\n"))
 (add-to-list 'org-latex-feature-implementations '(.custom-font-no-mono :eager t :prevents custom-font :order 0 :snippet (org-latex-fontset :serif :sans)) t)
 #+end_src
+**** Emojis
+It would be nice to actually include emojis where used.
+Thanks to =emojify=, we have a folder of emoji images just sitting and waiting to
+be used 🙂.
+
+First up, we want to detect when emojis are actually present. We can try
+checking the unicode ranges with a collection of =[?-?]= regex groups, but Emojis
+are actually spread around a fair bit and so this isn't very straightforward.
+Instead I can iterate thorough non-ASCII characters and check if any have the
+text property =emojified=.
+
+#+begin_src emacs-lisp
+(defun emojify-emoji-in-buffer-p ()
+  "Determine if any emojis are present in the current buffer, using `emojify-mode'."
+  (unless emojify-mode
+    (emojify-mode 1)
+    (emojify-display-emojis-in-region (point-min) (point-max)))
+  (let (emoji-found end)
+    (save-excursion
+      (goto-char (point-min))
+      (while (not (or emoji-found end))
+        (if-let ((pos (re-search-forward "[^[:ascii:]]" nil t)))
+            (when (get-text-property (1- pos) 'emojified)
+              (setq emoji-found t))
+          (setq end t))))
+    emoji-found))
+#+end_src
+
+Once we know that there are emojis present we can add a bit of preamble to the
+buffer to make insertion easier.
+
+#+begin_src emacs-lisp
+(defun org-latex-emoji-setup ()
+  (format "\\newcommand\\emoji[1]{\\raisebox{-0.3ex}{\\includegraphics[height=1.8ex]{%s/#1}}}" (emojify-image-dir)))
+
+(add-to-list 'org-latex-conditional-features '(emojify-emoji-in-buffer-p . emoji) t)
+(add-to-list 'org-latex-feature-implementations '(emoji :requires image :snippet (org-latex-emoji-setup) :order 3 ))
+#+end_src
+
+Once again making use of =emojify=, we can generate LaTeX commands for our emojis
+fairly easily.
+
+#+begin_src emacs-lisp
+(defun emojify-latexify-emoji-in-buffer ()
+  (unless emojify-mode
+    (emojify-mode 1)
+    (emojify-display-emojis-in-region (point-min) (point-max)))
+  (let (end)
+    (save-excursion
+      (goto-char (point-min))
+      (while (not end)
+        (if-let ((pos (re-search-forward "[^[:ascii:]]\\{1,2\\}" nil t)))
+            (when-let ((char (get-text-property (1- pos) 'emojify-text))
+                       (emoji (emojify-get-emoji char)))
+              (replace-match (format "\\\\emoji{%s}" (file-name-sans-extension (ht-get emoji "image")))))
+          (setq end t))))))
+#+end_src
+
+Now we just need to hook this handy function into Org's export.
+We can't use standard string-replacement as we rely on the buffer modifications
+enacted by =(emojify-mode)=.
+
+As I have not yet implemented a nice way of sharing feature detection
+information outside of =(org-latex-generate-features-preamble)=, we'll
+use the same check before attempting to LaTeXify emojis and hope that nothing
+strange happens.
+
+#+begin_src emacs-lisp
+(defun +org-latex-convert-emojis (text backend _info)
+  (when (org-export-derived-backend-p backend 'latex)
+    (with-temp-buffer
+      (insert text)
+      (when (emojify-emoji-in-buffer-p)
+        (emojify-latexify-emoji-in-buffer)
+        (buffer-string)))))
+
+(add-to-list 'org-export-filter-final-output-functions #'+org-latex-convert-emojis)
+#+end_src
 
 **** Remove non-ascii chars
 
@@ -8202,6 +8280,9 @@ which wasn't displayed as opposed to nothing.
 So, as a basic first-pass we replace every non-ascii char with =¿=. In future I
 could add sensible replacements (e.g. turn =§= into =\S=, and =…= into =\ldots=).
 
+We just need to make sure this is appended to the list of filter functions,
+since we want to let emoji processing occur first.
+
 #+begin_src emacs-lisp
 (defun +org-latex-replace-non-ascii-chars (text backend info)
   "Replace non-ascii chars with \\char\"XYZ forms."
@@ -8209,7 +8290,7 @@ could add sensible replacements (e.g. turn =§= into =\S=, and =…= into =\ldot
              (string= (plist-get info :latex-compiler) "pdflatex"))
     (replace-regexp-in-string "[^[:ascii:]]" "¿" text)))
 
-(add-to-list 'org-export-filter-final-output-functions #'+org-latex-replace-non-ascii-chars)
+(add-to-list 'org-export-filter-final-output-functions #'+org-latex-replace-non-ascii-chars t)
 #+end_src
 **** Extra special strings
 LaTeX already recognises =---= and =--= as em/en-dashes, =\-= as a shy hyphen, and the
