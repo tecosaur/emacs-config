@@ -6,16 +6,15 @@
 #+html: <a href="https://raw.githubusercontent.com/tecosaur/emacs-config/gh-pages/misc/upgradable-packages.txt"><img src="https://raw.githubusercontent.com/tecosaur/emacs-config/gh-pages/misc/pkg-status.svg"></a>
 
 Here you may find my config. There is only one significant file:
-- [[file:config.org][config.org]], my configuration file
++ =config.org=, my configuration file --- see the [[https://tecosaur.github.io/emacs-config/config.html][HTML]] or [[https://tecosaur.github.io/emacs-config/config.pdf][PDF]] export.
 
-What you *really* want is the =M-x org-html-export-to-html= version of ~config.org~ ,
-or the =M-x org-latex-export-to-pdf= version (linked in the title).
+[[file:misc/screenshots/splash-screen.png]]
 
-In addition to the =html= export, this /produces/ the [[https://tecosaur.github.io/emacs-config/init.el.html][init.el]], [[https://tecosaur.github.io/emacs-config/config.el.html][config.el]], and [[https://tecosaur.github.io/emacs-config/packages.el.html][packages.el]] files.
+=config.org= /generates/ the [[https://tecosaur.github.io/emacs-config/init.el.html][init.el]], [[https://tecosaur.github.io/emacs-config/config.el.html][config.el]], and [[https://tecosaur.github.io/emacs-config/packages.el.html][packages.el]] files, as well as
+about a dozen others.
 
-Other than that, snippets are (currently) sourced from the [[file:snippets/][snippets]] folder,
-resources are put in [[file:misc/][misc]], and you may find submodules for packages of mine in
-[[file:lisp/][lisp]], along with extra major modes.
+Other than that, resources are put in [[file:misc/][misc]], and you may find submodules for
+packages of mine in [[file:lisp/][lisp]].
 
 * Installation
 
