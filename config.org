@@ -1786,8 +1786,7 @@ everyone else!?
   (add-hook 'calc-mode-hook #'calctex-mode)
   :config
   (setq calctex-additional-latex-packages "
-\\usepackage[usenames]{color}
-\\usepackage{xcolor}
+\\usepackage[usenames]{xcolor}
 \\usepackage{soul}
 \\usepackage{adjustbox}
 \\usepackage{amsmath}
@@ -6137,7 +6136,7 @@ functionality from =bmc-maths=, so we'll load that too.
 
 #+begin_src emacs-lisp
 (setq org-format-latex-header "\\documentclass{article}
-\\usepackage[usenames]{color}
+\\usepackage[usenames]{xcolor}
 
 \\usepackage[T1]{fontenc}
 
