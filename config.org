@@ -1360,7 +1360,7 @@ With all our fancy Emacs themes, my terminal is missing out!
 What's even the point of using Emacs unless you're constantly telling everyone
 about it?
 #+begin_src emacs-lisp
-(package! elcord :pin "01b26d1af2f33a7c7c5a1c24d8bfb6d40115a7b0")
+(package! elcord :pin "25531186c10b74a10ee24990f9e967296cc70342")
 #+end_src
 
 For some reason, I find myself demoing Emacs every now and then. Showing what
@@ -1453,13 +1453,13 @@ This is a nice extension to ~calc~
 **** ESS
 View data frames better with
 #+begin_src emacs-lisp
-(package! ess-view :pin "d4e5a340b7bcc58c434867b97923094bd0680283")
+(package! ess-view :pin "925cafd876e2cc37bc756bb7fcf3f34534b457e2")
 #+end_src
 **** Magit Delta
 [[https://github.com/dandavison/delta/][Delta]] is a git diff syntax highlighter written in rust. The author also wrote a
 package to hook this into the magit diff view. This requires the ~delta~ binary.
 #+begin_src emacs-lisp
-;; (package! magit-delta :recipe (:host github :repo "dandavison/magit-delta") :pin "fc4de96e3faa1c983728239c5e41cc9f074b73a2")
+;; (package! magit-delta :recipe (:host github :repo "dandavison/magit-delta") :pin "1164a6c3e501e944f1a6a2e91f15374a193bb8d3")
 #+end_src
 **** Info colours
 This makes manual pages nicer to look at :)
@@ -1510,12 +1510,12 @@ For managing my ebooks, I'll hook into the well-established ebook library
 manager [[https://calibre-ebook.com/][calibre]]. A number of Emacs clients for this exist, but this seems like a
 good option.
 #+begin_src emacs-lisp
-(package! calibredb :pin "1f38fc34a8c159846450d18b1ee50cc960349ee7")
+(package! calibredb :pin "a3b04c0c37b1e8ceff2472e21a3579e64e944528")
 #+end_src
 
 Then for reading them, the only currently viable options seems to be [[https://depp.brause.cc/nov.el/][nov.el]].
 #+begin_src emacs-lisp
-(package! nov :pin "b6138895ace3042ed78140b6f4859e544fbca27e")
+(package! nov :pin "b3c7cc28e95fe25ce7b443e5f49e2e45360944a3")
 #+end_src
 
 Together these should give me a rather good experience reading ebooks.
@@ -1546,7 +1546,7 @@ file uploading script (which I've renamed to ~upload~).
 For mathematical convenience, WIP
 #+begin_src emacs-lisp
 (package! aas :recipe (:host github :repo "ymarco/auto-activating-snippets")
-  :pin "dd58b7601ec536980a14540bddac53f5d1c1da08")
+  :pin "e2b3edafd7aafa8c47833a70984d7404c607626c")
 (package! laas :recipe (:local-repo "lisp/LaTeX-auto-activating-snippets"))
 #+end_src
 And some basic config
@@ -1608,7 +1608,7 @@ For automatically toggling LaTeX fragment previews there's this nice package
 Then for pretty markers
 #+begin_src emacs-lisp
 (package! org-appear :recipe (:host github :repo "awth13/org-appear")
-  :pin "845be82b7a452e32caee0895e3388d5939f48eb5")
+  :pin "0b3b029d5851c77ee792727b280f062eaf2c22c7")
 #+end_src
 
 ~org-superstar-mode~ is great. While we're at it we may as well make tags prettier as well :)
@@ -1641,7 +1641,7 @@ features that GitHub has.
 
 Now and then citations need to happen
 #+begin_src emacs-lisp
-(package! org-ref :pin "7dbe3ace9bf8ba9bd7c28c73ff960b4732d09071")
+(package! org-ref :pin "3ca9beb744621f007d932deb8a4197467012c23a")
 #+end_src
 
 Came across this and ... it's cool
@@ -1669,7 +1669,7 @@ to make that right again, and this package makes that even easier to do.
 Org-roam is nice by itself, but there are so /extra/ nice packages which integrate
 with it.
 #+begin_src emacs-lisp
-(package! org-roam-server :pin "2093ea5a1a1f2d128dd377778472a481913717b4")
+(package! org-roam-server :pin "2122a61e9e9be205355c7e2c1e4b65986d6985a5")
 #+end_src
 #+begin_src emacs-lisp :tangle yes
 (use-package org-roam-server
