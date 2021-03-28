@@ -219,7 +219,7 @@ editor) the following applications
 
 I have attempted to quantify aspects of my impressions of them below.
 
-#+plot: transpose:yes type:radar min:0 max:4 ticks:4 file:"misc/editor-comparison.png"
+#+plot: transpose:yes type:radar min:0 max:4 ticks:4 file:"misc/editor-comparison.svg"
 | Editor      | Extensibility | Ecosystem | Ease of Use | Comfort | Completion | Performance |
 |-------------+---------------+-----------+-------------+---------+------------+-------------|
 | IDLE        |             1 |         1 |           3 |       1 |          1 |           2 |
@@ -229,7 +229,8 @@ I have attempted to quantify aspects of my impressions of them below.
 | Komodo Edit |             2 |         1 |           3 |       2 |          2 |           2 |
 
 #+attr_html: :class invertible :alt Radar chart comparing my thoughts on a few editors.
-[[https://tecosaur.com/lfs/emacs-config/editor-comparison.png]]
+#+attr_latex: :options inkscapelatex=false
+[[file:misc/editor-comparison.svg]]
 
 ** Notes for the unwary adventurer
 If you like the look of this, that's marvellous, and I'm really happy that I've
@@ -4166,17 +4167,19 @@ It's nice to see ANSI colour codes displayed
 :intro:
 I really like org mode, I've given some thought to why, and below is the result.
 
-#+plot: transpose:yes type:radar min:0 max:4 file:"misc/document-format-comparison.png"
-| Format            | Fine-grained-control | Initial Effort | Syntax simplicity | Editor Support | Integrations | Ease-of-referencing | Versatility |
-|-------------------+----------------------+----------------+-------------------+----------------+--------------+---------------------+-------------|
-| Word              |                    2 |              4 |                 4 |              2 |            3 |                   2 |           2 |
-| LaTeX             |                    4 |              1 |                 1 |              3 |            2 |                   4 |           3 |
-| Org Mode          |                    4 |              2 |               3.5 |              1 |            4 |                   4 |           4 |
-| Markdown          |                    1 |              3 |                 3 |              4 |            3 |                   3 |           1 |
-| Markdown + Pandoc |                  2.5 |            2.5 |               2.5 |              3 |            3 |                   3 |           2 |
+#+attr_latex: :align *{8}{p{0.105\linewidth}} :font \small
+#+plot: transpose:yes type:radar min:0 max:4 file:"misc/document-format-comparison.svg"
+| Format            | Fine-grained control | Initial ease of use | Syntax simplicity | Editor Support | Integrations | Ease-of-referencing | Versatility |
+|-------------------+----------------------+---------------------+-------------------+----------------+--------------+---------------------+-------------|
+| Word              |                    2 |                   4 |                 4 |              2 |            3 |                   2 |           2 |
+| LaTeX             |                    4 |                   1 |                 1 |              3 |            2 |                   4 |           3 |
+| Org Mode          |                    4 |                   2 |               3.5 |              1 |            4 |                   4 |           4 |
+| Markdown          |                    1 |                   3 |                 3 |              4 |            3 |                   3 |           1 |
+| Markdown + Pandoc |                  2.5 |                 2.5 |               2.5 |              3 |            3 |                   3 |           2 |
 
 #+attr_html: :class invertible :alt Radar chart comparing my opinions of document formats.
-[[https://tecosaur.com/lfs/emacs-config/document-format-comparison.png]]
+#+attr_latex: :options inkscapelatex=false
+[[file:misc/document-format-comparison.svg]]
 
 Beyond the elegance in the markup language, tremendously rich integrations with
 Emacs allow for some fantastic [[https://orgmode.org/features.html][features]], such as what seems to be the best
