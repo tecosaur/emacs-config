@@ -7476,7 +7476,7 @@ tests should be very versatile.
     (org-latex-use-microtype . microtype)
     ((and org-latex-italic-quotes "^[ \t]*#\\+begin_quote\\|\\\\begin{quote}") . italic-quotes)
     (org-latex-par-sep . par-sep)
-    (org-latex-embed-tangled-files . embed-files)
+    ((org-latex-embed-tangled-files) . embed-files)
     ((and org-latex-embed-files "^[ \t]*#\\+begin_src\\|^[ \t]*#\\+BEGIN_SRC") . embed-tangled)
     ("^[ \t]*\\(?:[-+*]\\|[0-9]+[.)]\\|[A-Za-z]+[.)]\\) \\[[ -X]\\]" . checkbox)
     ("^[ \t]*#\\+begin_warning\\|\\\\begin{warning}" . box-warning)
@@ -7493,7 +7493,7 @@ The feature is registered as present when there is a match.
 
 The car can also be a
 - symbol, the value of which is fetched
-- function, which is called
+- function, which is called with info as an argument
 - list, which is `eval'uated
 
 If the symbol, function, or list produces a string: that is used as a regex
@@ -7581,7 +7581,7 @@ Now that we have ~org-latex-conditional-features~ defined, we need to use it to
 extract a list of features found in an Org buffer.
 
 #+begin_src emacs-lisp
-(defun org-latex-detect-features (&optional buffer)
+(defun org-latex-detect-features (&optional buffer info)
   "List features from `org-latex-conditional-features' detected in BUFFER."
   (let ((case-fold-search nil))
     (with-current-buffer (or buffer (current-buffer))
@@ -7590,7 +7590,7 @@ extract a list of features found in an Org buffer.
               (mapcar (lambda (construct-feature)
                         (when (let ((out (pcase (car construct-feature)
                                            ((pred stringp) (car construct-feature))
-                                           ((pred functionp) (funcall (car construct-feature)))
+                                           ((pred functionp) (funcall (car construct-feature) info))
                                            ((pred listp) (eval (car construct-feature)))
                                            ((pred symbolp) (symbol-value (car construct-feature)))
                                            (_ (user-error "org-latex-conditional-features key %s unable to be used" (car construct-feature))))))
@@ -7677,15 +7677,26 @@ This is done according to `org-latex-feature-implementations'"
 Then Org needs to be advised to actually use this generated preamble content.
 
 #+begin_src emacs-lisp
-(defadvice! org-latex-header-smart-preamble (orig-fn tpl def-pkg pkg snippets-p &optional extra)
+(defvar info--tmp nil)
+
+(defadvice! org-latex-save-info (info &optional t_ s_)
+  :before #'org-latex-make-preamble
+  (setq info--tmp info))
+
+(defadvice! org-splice-latex-header-and-generated-preamble-a (orig-fn tpl def-pkg pkg snippets-p &optional extra)
   "Dynamically insert preamble content based on `org-latex-conditional-preambles'."
   :around #'org-splice-latex-header
   (let ((header (funcall orig-fn tpl def-pkg pkg snippets-p extra)))
     (if snippets-p header
       (concat header
-              (org-latex-generate-features-preamble (org-latex-detect-features))
+              (org-latex-generate-features-preamble (org-latex-detect-features nil info--tmp))
               "\n"))))
 #+end_src
+
+My use of ~info--tmp~ is somewhat hacky. When I try to upstream this, this should
+become much cleaner as I can pass info through by directly modifying
+~org-latex-make-preamble~.
+
 ***** Reduce default packages
 
 Thanks to our additions, we can remove a few packages from
@@ -7977,7 +7988,7 @@ This condition is applied when cover page option is set to auto.")
     (setf info (plist-put info :latex-subtitle-format org-latex-subtitle-coverpage-format))))
 
 (add-to-list 'org-latex-feature-implementations '(cover-page :snippet org-latex-cover-page-maketitle :order 9) t)
-(add-to-list 'org-latex-conditional-features '(org-latex-cover-page-p . cover-page) t)
+(add-to-list 'org-latex-conditional-features '((org-latex-cover-page-p) . cover-page) t)
 #+end_src
 **** Condensed lists
 LaTeX is generally pretty good by default, but it's /really/ generous with how
@@ -8290,7 +8301,7 @@ buffer to make insertion easier.
 (defun org-latex-emoji-setup ()
   (format "\\newcommand\\emoji[1]{\\raisebox{-0.3ex}{\\includegraphics[height=1.8ex]{%s/#1}}}" (emojify-image-dir)))
 
-(add-to-list 'org-latex-conditional-features '(emojify-emoji-in-buffer-p . emoji) t)
+(add-to-list 'org-latex-conditional-features '((emojify-emoji-in-buffer-p) . emoji) t)
 (add-to-list 'org-latex-feature-implementations '(emoji :requires image :snippet (org-latex-emoji-setup) :order 3 ))
 #+end_src
 
