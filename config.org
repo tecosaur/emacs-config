@@ -8714,10 +8714,15 @@ It's nice to use a different theme
 #+begin_src emacs-lisp
 (setq org-beamer-theme "[progressbar=foot]metropolis")
 #+end_src
-Then customise it a bit
-#+begin_src emacs-lisp
 
+#+begin_src emacs-lisp
+(defun org-beamer-p (info)
+  (eq 'beamer (and (plist-get info :back-end) (org-export-backend-name (plist-get info :back-end)))))
+
+(add-to-list 'org-latex-conditional-features '(org-beamer-p . beamer) t)
+(add-to-list 'org-latex-feature-implementations '(beamer :prevents (italic-quotes condensed-lists)) t)
 #+end_src
+
 And I think that it's natural to divide a presentation into sections, e.g.
 Introduction, Overview... so let's set bump up the headline level that becomes a
 frame from ~1~ to ~2~.
