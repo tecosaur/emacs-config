@@ -5942,7 +5942,9 @@ If you have any idea what's going on or how to fix this /please/ get in touch.
 
 #+begin_src emacs-lisp
 (defvar org-prettify-inline-results t
-  "Whether to use (ab)use prettify-symbols-mode on {{{results(...)}}}.")
+  "Whether to use (ab)use prettify-symbols-mode on {{{results(...)}}}.
+Either t or a cons cell of strings which are used as substitutions
+for the start and end of inline results, respectively.")
 
 (defvar org-fontify-inline-src-blocks-max-length 200
   "Maximum content length of an inline src block that will be fontified.")
@@ -5957,8 +5959,9 @@ If you have any idea what's going on or how to fix this /please/ get in touch.
 
 (defun org-fontify-inline-src-blocks-1 (limit)
   "Fontify inline src_LANG blocks, from `point' up to LIMIT."
-  (let ((case-fold-search t))
-    (when (re-search-forward "\\_<src_\\([^ \t\n[{]+\\)[{[]?" limit t) ; stolen from `org-element-inline-src-block-parser'
+  (let ((case-fold-search t)
+        (initial-point (point)))
+    (while (re-search-forward "\\_<src_\\([^ \t\n[{]+\\)[{[]?" limit t) ; stolen from `org-element-inline-src-block-parser'
       (let ((beg (match-beginning 0))
             pt
             (lang-beg (match-beginning 1))
@@ -5989,20 +5992,25 @@ If you have any idea what's going on or how to fix this /please/ get in touch.
         (when (and org-prettify-inline-results (re-search-forward "\\= {{{results(" limit t))
           (font-lock-append-text-property pt (1+ pt) 'face 'org-block)
           (goto-char pt))))
-    (when (and org-prettify-inline-results (re-search-forward "{{{results(\\(.+?\\))}}}" limit t))
-      (remove-list-of-text-properties (match-beginning 0) (point)
-                                      '(composition
-                                        prettify-symbols-start
-                                        prettify-symbols-end))
-      (font-lock-append-text-property (match-beginning 0) (match-end 0) 'face 'org-block)
-      (let ((start (match-beginning 0)) (end (match-beginning 1)))
-        (with-silent-modifications
-          (compose-region start end "⟨")
-          (add-text-properties start end `(prettify-symbols-start ,start prettify-symbols-end ,end))))
-      (let ((start (match-end 1)) (end (point)))
-        (with-silent-modifications
-          (compose-region start end "⟩")
-          (add-text-properties start end `(prettify-symbols-start ,start prettify-symbols-end ,end)))))))
+    (when org-prettify-inline-results
+      (goto-char initial-point)
+      (org-fontify-inline-src-results limit))))
+
+(defun org-fontify-inline-src-results (limit)
+  (while (re-search-forward "{{{results(\\(.+?\\))}}}" limit t)
+    (remove-list-of-text-properties (match-beginning 0) (point)
+                                    '(composition
+                                      prettify-symbols-start
+                                      prettify-symbols-end))
+    (font-lock-append-text-property (match-beginning 0) (match-end 0) 'face 'org-block)
+    (let ((start (match-beginning 0)) (end (match-beginning 1)))
+      (with-silent-modifications
+        (compose-region start end (if (eq org-prettify-inline-results t) "⟨" (car org-prettify-inline-results)))
+        (add-text-properties start end `(prettify-symbols-start ,start prettify-symbols-end ,end))))
+    (let ((start (match-end 1)) (end (point)))
+      (with-silent-modifications
+        (compose-region start end (if (eq org-prettify-inline-results t) "⟩" (cdr org-prettify-inline-results)))
+        (add-text-properties start end `(prettify-symbols-start ,start prettify-symbols-end ,end))))))
 
 (defun org-fontify-inline-src-blocks-enable ()
   "Add inline src fontification to font-lock in Org.
