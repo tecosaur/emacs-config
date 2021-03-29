@@ -1,7 +1,8 @@
 #+title: Doom Emacs Configuration --- [[https://tecosaur.github.io/emacs-config/config.html][HTML Version]], [[https://tecosaur.github.io/emacs-config/config.pdf][PDF]]
 #+author: tecosaur
 
-#+html: <a href="https://www.gnu.org/software/emacs/emacs.html#Releases"><img src="https://img.shields.io/badge/Emacs-27.1-blueviolet.svg?style=flat-square&logo=GNU%20Emacs&logoColor=white"></a>
+#+html: <a href="https://www.gnu.org/software/emacs/emacs.html#Releases"><img src="https://img.shields.io/badge/Emacs-27.1%20%E2%80%93%2028.0.50-blueviolet.svg?style=flat-square&logo=GNU%20Emacs&logoColor=white"></a>
+#+html: <a href="https://orgmode.org"><img src="https://img.shields.io/badge/Org-literate%20config-%2377aa99?style=flat-square&logo=org&logoColor=white"></a>
 #+html: <a href="https://github.com/tecosaur/emacs-config/actions"><img src="https://img.shields.io/github/workflow/status/tecosaur/emacs-config/Publish/master.svg?style=flat-square&label=publish&logo=buffer"></a>
 #+html: <a href="https://raw.githubusercontent.com/tecosaur/emacs-config/gh-pages/misc/upgradable-packages.txt"><img src="https://raw.githubusercontent.com/tecosaur/emacs-config/gh-pages/misc/pkg-status.svg"></a>
 
