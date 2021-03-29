@@ -8266,6 +8266,7 @@ Now all that remains is to hook this into the preamble generation.
 (add-to-list 'org-latex-feature-implementations '(.microtype-lualatex :eager t :when (microtype julia-code) :prevents microtype :order 0.1 :snippet "\\usepackage[activate={true,nocompatibility},final,tracking=true,factor=2000]{microtype}\n"))
 (add-to-list 'org-latex-feature-implementations '(.custom-font-no-mono :eager t :prevents custom-font :order 0 :snippet (org-latex-fontset :serif :sans)) t)
 #+end_src
+
 **** Emojis
 It would be nice to actually include emojis where used.
 Thanks to =emojify=, we have a folder of emoji images just sitting and waiting to
@@ -8343,6 +8344,84 @@ strange happens.
         (buffer-string)))))
 
 (add-to-list 'org-export-filter-final-output-functions #'+org-latex-convert-emojis)
+#+end_src
+
+This works fairly nicely, there's just one little QOL upgrade that we can
+perform. =emojify= downloads the ~72x72~ versions of Twemoji, however SVG versions
+are also produced. We could use ~inkscape~ to convert those to PDFs, which would
+likely be best for including.
+
+First, it's worth checking whether =.pdf= graphics files will be prioritised over
+=.png= files. If so, that would be ideal as no extra effort is required past
+fetching and converting the files.
+
+#+begin_src shell :tangle no :exports both :results output verbatim :wrap example
+texdef -t pdflatex -p graphicx Gin@extensions
+#+end_src
+
+#+RESULTS:
+#+begin_example
+\Gin@extensions:
+macro:->.pdf,.png,.jpg,.mps,.jpeg,.jbig2,.jb2,.PDF,.PNG,.JPG,.JPEG,.JBIG2,.JB2,.eps
+#+end_example
+
+Fantastic! We can see that =.pdf= actually comes first in the priority list. So
+now we just need to fetch and convert those SVGs --- ideally with a handy
+command to do so for us.
+
+#+begin_src emacs-lisp
+(defun org-latex-emoji-install-vector-graphics ()
+  "Dowload, convert, and install vector emojis for use with LaTeX."
+  (interactive)
+  (let ((dir (org-latex-emoji-install-vector-graphics--download)))
+    (org-latex-emoji-install-vector-graphics--convert dir)
+    (org-latex-emoji-install-vector-graphics--install dir))
+  (message "Vector emojis installed."))
+
+(defun org-latex-emoji-install-vector-graphics--download ()
+  (message "Locating latest emojis...")
+  (let* ((twemoji-url (substring (shell-command-to-string "echo \"https://github.com$(curl -sL https://github.com/twitter/twemoji/releases/latest | grep '.zip\"' | cut -d '\"' -f 2)\"") 0 -1))
+         (twemoji-version (replace-regexp-in-string "^.*tags/v\\(.*\\)\\.zip" "\\1" twemoji-url))
+         (twemoji-dest-folder (make-temp-file "twemoji-" t)))
+    (message "Downloading Twemoji v%s" twemoji-version)
+    (let ((default-directory twemoji-dest-folder))
+      (call-process "curl" nil nil nil "-L" twemoji-url "--output" "twemoji.zip")
+      (message "Unzipping")
+      (call-process "unzip" nil nil nil "twemoji.zip")
+      (concat twemoji-dest-folder "/twemoji-" twemoji-version "/assets/svg"))))
+
+(defun org-latex-emoji-install-vector-graphics--convert (dir)
+  (let ((default-directory dir))
+    (if (executable-find "cairosvg") ; cairo's PDFs are ~10% smaller
+        (let* ((images (directory-files dir nil ".*.svg"))
+               (num-images (length images))
+               (index 0)
+               (max-threads (1- (string-to-number (shell-command-to-string "nproc"))))
+               (threads 0))
+          (while (< index num-images)
+            (setf threads (1+ threads))
+            (message "Converting emoji %d/%d (%s)" (1+ index) num-images (nth index images))
+            (make-process :name "cairosvg"
+                          :command (list "cairosvg" (nth index images) "-o" (concat (file-name-sans-extension (nth index images)) ".pdf"))
+                          :sentinel (lambda (proc msg)
+                                      (when (memq (process-status proc) '(exit signal))
+                                        (setf threads (1- threads)))))
+            (setq index (1+ index))
+            (while (> threads max-threads)
+              (sleep-for 0.01)))
+          (while (> threads 0)
+            (sleep-for 0.01))
+          (message "Finished conversion!")))
+    (shell-command "inkscape --batch-process --export-type='pdf' *.svg")))
+
+(defun org-latex-emoji-install-vector-graphics--install (dir)
+  (message "Installing vector emojis into emoji directory")
+  (let ((images (directory-files dir t ".*.pdf"))
+        (emoji-dir (concat (emojify-image-dir) "/")))
+    (mapcar
+     (lambda (image)
+       (rename-file image emoji-dir t))
+     images)))
 #+end_src
 
 **** Remove non-ascii chars
