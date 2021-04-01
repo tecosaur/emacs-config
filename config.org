@@ -7626,9 +7626,14 @@ following steps.
   "For each feature in FEATURES process :requires, :when, and :prevents keywords and sort according to :order."
   (dolist (feature features)
     (unless (assoc feature org-latex-feature-implementations)
-      (error "Feature %s not provided in org-latex-feature-implementations" feature))
-    (when-let ((requirements (plist-get (cdr (assoc feature org-latex-feature-implementations)) :requires)))
-      (setf features (append (if (listp requirements) requirements (list requirements)) features))))
+      (error "Feature %s not provided in org-latex-feature-implementations" feature)))
+  (setq current features)
+  (while current
+    (when-let ((requirements (plist-get (cdr (assq (car current) org-latex-feature-implementations)) :requires)))
+      (setcdr current (if (listp requirements)
+                          (append requirements (cdr current))
+                        (cons requirements (cdr current)))))
+    (setq current (cdr current)))
   (dolist (potential-feature
            (append features (delq nil (mapcar (lambda (feat)
                                                 (when (plist-get (cdr feat) :eager)
