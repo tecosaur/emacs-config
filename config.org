@@ -6485,13 +6485,17 @@ TODO abstract backend implementations."
         (case-fold-search nil))
     (when base-backend
       (replace-regexp-in-string
-       "[;\\\\]?\\b[A-Z][A-Z]+s?[^A-Za-z]"
+       "[;\\\\]?\\b[A-Z][A-Z]+s?\\(?:[^A-Za-z]\\|\\b\\)"
        (lambda (all-caps-str)
          (cond ((equal (aref all-caps-str 0) ?\\) all-caps-str)                ; don't format LaTeX commands
                ((equal (aref all-caps-str 0) ?\;) (substring all-caps-str 1))  ; just remove not-acronym indicator char ";"
-               (t (let* ((trailing-s (equal (aref all-caps-str (- (length all-caps-str) 2)) ?s))
-                         (acr (substring all-caps-str 0 (if trailing-s -2 -1)))
-                         (final-char (substring all-caps-str -1))) ; needed to re-insert the [^A-Z] at the end
+               (t (let* ((final-char (if (string-match-p "[^A-Za-z]" (substring all-caps-str -1 (length all-caps-str)))
+                                         (substring all-caps-str -1 (length all-caps-str))
+                                       nil)) ; needed to re-insert the [^A-Za-z] at the end
+                         (trailing-s (equal (aref all-caps-str (- (length all-caps-str) (if final-char 2 1))) ?s))
+                         (acr (if final-char
+                                  (substring all-caps-str 0 (if trailing-s -2 -1))
+                                (substring all-caps-str 0 (+ (if trailing-s -1 (length all-caps-str)))))))
                     (pcase base-backend
                       ('latex (concat "\\acr{" (s-downcase acr) "}" (when trailing-s "\\acrs{}") final-char))
                       ('html (concat "<span class='acr'>" acr "</span>" (when trailing-s "<small>s</small>") final-char)))))))
