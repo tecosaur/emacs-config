@@ -1169,6 +1169,10 @@ with it, so I may as well eat the load time at startup. We also want to keep
 It would be good to start the IRC client (=circe=) too, but that seems to have
 issues when started in a non-graphical session.
 
+Lastly, while I'm not sure quite why it happens, but after a bit it seems that
+new Emacsclient frames start on the =*scratch*= buffer instead of the dashboard.
+I prefer the dashboard, so let's ensure that's always switched to in new frames.
+
 #+name: daemon initialisation
 #+begin_src emacs-lisp
 (defun greedily-do-daemon-setup ()
@@ -1184,7 +1188,8 @@ issues when started in a non-graphical session.
     (run-at-time nil (* 8 60 60) #'elfeed-update)))
 
 (when (daemonp)
-  (add-hook 'emacs-startup-hook #'greedily-do-daemon-setup))
+  (add-hook 'emacs-startup-hook #'greedily-do-daemon-setup)
+  (add-hook! 'server-after-make-frame-hook (switch-to-buffer +doom-dashboard-name)))
 #+end_src
 *** Emacs client wrapper
 I frequently want to make use of Emacs while in a terminal emulator. To make
