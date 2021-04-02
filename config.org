@@ -247,9 +247,6 @@ external setup (i.e. outside of this config).
 + dictionary :: I've downloaded a custom [[http://app.aspell.com/create][SCOWL]] dictionary, which I use in [[*Ispell][ispell]].
   If this causes issues, just delete the src_elisp{(setq ispell-dictionary ...)}
   bit.
-+ uni-units file :: I've got a file in =~/.org/.uni-units= which I use in ~org-capture~
-  If this causes issues, just remove the reference to that file in [[*Capture][Capture]] and
-  instances of ~unit-prompt~ used in src_elisp{(doct ...)}.
 
 Oh, did I mention that I started this config when I didn't know any =elisp=, and
 this whole thing is a hack job? If you can suggest any improvements, please do
@@ -4614,10 +4611,6 @@ Let's setup some org-capture templates, and make them visually nice to access.
 
 (after! org-capture
   <<prettify-capture>>
-  (setq +org-capture-uni-units (condition-case nil
-                                   (split-string (f-read-text "~/.org/.uni-units"))
-                                 (error nil))
-        +org-capture-recipies  "~/Desktop/TEC/Organisation/recipies.org")
 
   (defun +doct-icon-declaration-to-icon (declaration)
     "Convert :icon declaration to icon"
@@ -4659,33 +4652,7 @@ Let's setup some org-capture templates, and make them visually nice to access.
                    :headline "Inbox"
                    :type entry
                    :template ("* %?"
-                              "%i %a")
-                   )
-                  ("University" :keys "u"
-                   :icon ("graduation-cap" :set "faicon" :color "purple")
-                   :file +org-capture-todo-file
-                   :headline "University"
-                   :unit-prompt ,(format "%%^{Unit|%s}" (string-join +org-capture-uni-units "|"))
-                   :prepend t
-                   :type entry
-                   :children (("Test" :keys "t"
-                               :icon ("timer" :set "material" :color "red")
-                               :template ("* TODO [#C] %{unit-prompt} %? :uni:tests:"
-                                          "SCHEDULED: %^{Test date:}T"
-                                          "%i %a"))
-                              ("Assignment" :keys "a"
-                               :icon ("library_books" :set "material" :color "orange")
-                               :template ("* TODO [#B] %{unit-prompt} %? :uni:assignments:"
-                                          "DEADLINE: %^{Due date:}T"
-                                          "%i %a"))
-                              ("Lecture" :keys "l"
-                               :icon ("keynote" :set "fileicon" :color "orange")
-                               :template ("* TODO [#C] %{unit-prompt} %? :uni:lecture:"
-                                          "%i %a"))
-                              ("Miscellaneous task" :keys "u"
-                               :icon ("list" :set "faicon" :color "yellow")
-                               :template ("* TODO [#D] %{unit-prompt} %? :uni:"
-                                          "%i %a"))))
+                              "%i %a"))
                   ("Email" :keys "e"
                    :icon ("envelope" :set "faicon" :color "blue")
                    :file +org-capture-todo-file
