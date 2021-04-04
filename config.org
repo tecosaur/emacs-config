@@ -5893,6 +5893,25 @@ sacrificing visual amenities with the =org-appear= package.
   ;; needs to be run after other hooks have acted.
   (run-at-time nil nil #'org-appear--set-elements))
 #+end_src
+
+Org files can be rather nice to look at, particularly with some of the
+customisations here. This comes at a cost however, expensive font-lock.
+Feeling like you're typing through molasses in large files is no fun, but there
+is a way I can defer font-locking when typing to make the experience more
+responsive.
+#+begin_src emacs-lisp
+(defun locally-defer-font-lock ()
+  "Set jit-lock defer and stealth, when buffer is over a certain size."
+  (when (> (buffer-size) 50000)
+    (setq-local jit-lock-defer-time 0.05
+                jit-lock-stealth-time 1)))
+
+(add-hook 'org-mode-hook #'locally-defer-font-lock)
+#+end_src
+Apparently this causes issues with some people, but I haven't noticed anything
+problematic beyond the expected slight delay in some fontification, so until I
+do I'll use the above.
+
 **** Fontifying inline src blocks
 Org does lovely things with =#+begin_src= blocks, like using font-lock for
 language's major-mode behind the scenes and pulling out the lovely colourful
