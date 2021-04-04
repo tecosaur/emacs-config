@@ -3219,12 +3219,12 @@ module. Let's just try to patch on the main things I like the look of.
     "Enhances an elfeed entry's readability by wrapping it to a width of
 `fill-column' and centering it with `visual-fill-column-mode'."
     :override #'+rss-elfeed-wrap-h
+    (setq-local truncate-lines nil
+                shr-width 120
+                visual-fill-column-center-text t
+                default-text-properties '(line-height 1.1))
     (let ((inhibit-read-only t)
           (inhibit-modification-hooks t))
-      (setq-local truncate-lines nil)
-      (setq-local shr-width 120)
-      (setq-local line-spacing 0.2)
-      (setq-local visual-fill-column-center-text t)
       (visual-fill-column-mode)
       ;; (setq-local shr-current-font '(:family "Merriweather" :height 1.2))
       (set-buffer-modified-p nil)))
