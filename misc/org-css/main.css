@@ -1436,6 +1436,33 @@ dl a {
   text-shadow: none;
   text-decoration: none; }
 
+div.link-preview {
+  border: 1px solid var(--back-medium);
+  border-radius: 0.5em;
+  overflow: hidden;
+  position: relative;
+  max-height: 5em;
+  padding-left: 0.5em; }
+  div.link-preview a {
+    color: initial;
+    text-decoration: none; }
+  div.link-preview img {
+    border-right: 1px solid var(--back-medium);
+    float: left;
+    height: 5em;
+    margin-left: -0.5em;
+    margin-right: 0.5em; }
+  div.link-preview p {
+    margin: 0;
+    font-size: 10pt; }
+    div.link-preview p b {
+      font-size: 11pt; }
+  div.link-preview small {
+    float: right;
+    font-family: sans;
+    color: var(--text-light);
+    margin: 0.45em 0.6em; }
+
 ul, ol, dl {
   list-style: none;
   list-style-position: outside;

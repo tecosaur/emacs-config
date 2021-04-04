@@ -7064,6 +7064,93 @@ I want to add GitHub-style links on hover for headings.
 (add-to-list 'org-export-filter-headline-functions
              'org-export-html-headline-anchor)
 #+end_src
+**** Link previews
+Sometimes it's nice to make a link particularly prominent, an embed/preview like
+Twitter does would be nice I think.
+
+We can do this without too much trouble by adding a new link type ever so
+slightly different from =https= --- =Https=.
+
+#+begin_src emacs-lisp
+(org-link-set-parameters "Https"
+                         :follow (lambda (url arg) (browse-url (concat "https:" url) arg))
+                         :export #'org-url-fancy-export)
+#+end_src
+
+Then, if we can fetch a plist of the form src_elisp{(:title "..." :description
+"..." :image "...")} for such links via a function ~org-url-unfurl-metadata~, we
+can make a fancy export.
+
+#+begin_src emacs-lisp
+(defun org-url-fancy-export (url _desc backend)
+  (let ((metadata (org-url-unfurl-metadata (concat "https:" url))))
+    (cond
+     ((org-export-derived-backend-p backend 'html)
+      (concat
+       "<div class=\"link-preview\">"
+       (format "<a href=\"%s\">" (concat "https:" url))
+       (when (plist-get metadata :image)
+         (format "<img src=\"%s\"/>" (plist-get metadata :image)))
+       "<small>"
+       (replace-regexp-in-string "//\\(?:www\\.\\)?\\([^/]+\\)/?.*" "\\1" url)
+       "</small><p>"
+       (when (plist-get metadata :title)
+         (concat "<b>" (org-html-encode-plain-text (plist-get metadata :title)) "</b></br>"))
+       (when (plist-get metadata :description)
+         (org-html-encode-plain-text (plist-get metadata :description)))
+       "</p></a></div>"))
+     (t url))))
+#+end_src
+
+Now we just need to actually implement that metadata extraction function.
+#+begin_src emacs-lisp
+(setq org-url-unfurl-metadata--cache nil)
+(defun org-url-unfurl-metadata (url)
+  (cdr (or (assoc url org-url-unfurl-metadata--cache)
+           (car (push
+                 (cons
+                  url
+                  (let* ((head-data
+                          (-filter #'listp
+                                   (cdaddr
+                                    (with-current-buffer (progn (message "Fetching metadata from %s" url)
+                                                                (url-retrieve-synchronously url t t 5))
+                                      (goto-char (point-min))
+                                      (delete-region (point-min) (- (search-forward "<head>") 6))
+                                      (delete-region (search-forward "</head>") (point-max))
+                                      (goto-char (point-min))
+                                      (while (re-search-forward "<script[^\u2800]+?</script>" nil t)
+                                        (replace-match ""))
+                                      (goto-char (point-min))
+                                      (while (re-search-forward "<style[^\u2800]+?</style>" nil t)
+                                        (replace-match ""))
+                                      (libxml-parse-html-region (point-min) (point-max))))))
+                         (meta (delq nil
+                                     (mapcar
+                                      (lambda (tag)
+                                        (when (eq 'meta (car tag))
+                                          (cons (or (cdr (assoc 'name (cadr tag)))
+                                                    (cdr (assoc 'property (cadr tag))))
+                                                (cdr (assoc 'content (cadr tag))))))
+                                      head-data))))
+                    (let ((title (or (cdr (assoc "og:title" meta))
+                                     (cdr (assoc "twitter:title" meta))
+                                     (nth 2 (assq 'title head-data))))
+                          (description (or (cdr (assoc "og:description" meta))
+                                           (cdr (assoc "twitter:description" meta))
+                                           (cdr (assoc "description" meta))))
+                          (image (or (cdr (assoc "og:image" meta))
+                                     (cdr (assoc "twitter:image" meta)))))
+                      (when image
+                        (setq image (replace-regexp-in-string
+                                     "^/" (concat "https://" (replace-regexp-in-string "//\\([^/]+\\)/?.*" "\\1" url) "/")
+                                     (replace-regexp-in-string
+                                      "^//" "https://"
+                                      image))))
+                      (list :title title :description description :image image))))
+                 org-url-unfurl-metadata--cache)))))
+#+end_src
+
 **** LaTeX Rendering
 ***** Pre-rendered
 I consider ~dvisvgm~ to be a rather compelling option. However this isn't scaled

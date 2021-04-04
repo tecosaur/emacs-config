@@ -130,3 +130,36 @@ dl a {
 .image-link, .image-link:hover {
   @include link-reset();
 }
+
+div.link-preview {
+  border: 1px solid $back-medium;
+  border-radius: 0.5em;
+  overflow: hidden;
+  position: relative;
+  max-height: 5em;
+  padding-left: 0.5em;
+  a {
+    color: initial;
+    text-decoration: none;
+  }
+  img {
+    border-right: 1px solid $back-medium;
+    float: left;
+    height: 5em;
+    margin-left: -0.5em;
+    margin-right: 0.5em;
+  }
+  p {
+    margin: 0;
+    font-size: 10pt;
+    b {
+      font-size: 11pt;
+    }
+  }
+  small {
+    float: right;
+    font-family: sans;
+    color: $text-light;
+    margin: 0.45em 0.6em;
+  }
+}
