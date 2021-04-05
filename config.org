@@ -1619,7 +1619,7 @@ set up org-capture.
 **** Visuals
 Org tables aren't the prettiest thing to look at. This package is supposed to
 redraw them in the buffer with box-drawing characters. Sounds like an
-improvement to me! Just need to get it working...
+improvement to me! We'll make use of this with =writeroom-mode=.
 #+begin_src emacs-lisp
 (package! org-pretty-table
   :recipe (:host github :repo "Fuco1/org-pretty-table") :pin "474ad84a8fe5377d67ab7e491e8e68dac6e37a11")
@@ -1629,18 +1629,20 @@ improvement to me! Just need to get it working...
   :commands (org-pretty-table-mode global-org-pretty-table-mode))
 #+end_src
 
-For automatically toggling LaTeX fragment previews there's this nice package
+For automatically toggling LaTeX fragment previews as the cursor moves in and
+out of them there's this nice package
 #+begin_src emacs-lisp
 (package! org-fragtog :pin "0151cabc7aa9f244f82e682b87713b344d780c23")
 #+end_src
 
-Then for pretty markers
+Then for showing org formatting markers (=*/=~=)  when inside such a region, we
+have =org-appear=.
 #+begin_src emacs-lisp
 (package! org-appear :recipe (:host github :repo "awth13/org-appear")
   :pin "0b3b029d5851c77ee792727b280f062eaf2c22c7")
 #+end_src
 
-~org-superstar-mode~ is great. While we're at it we may as well make tags prettier as well :)
+~org-superstar-mode~ is great. While we're at it we may as well make tags prettier as well 🙂
 #+begin_src emacs-lisp
 (package! org-pretty-tags :pin "5c7521651b35ae9a7d3add4a66ae8cc176ae1c76")
 #+end_src
