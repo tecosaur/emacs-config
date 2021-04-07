@@ -8262,11 +8262,15 @@ better) we add bit to the preamble:
   breaksymbol=\\color{white!60!black}\\tiny\\ensuremath{\\hookrightarrow}}
 \\renewcommand\\theFancyVerbLine{\\footnotesize\\color{black!40!white}\\arabic{FancyVerbLine}}
 
+\\definecolor{codebackground}{HTML}{f7f7f7}
+\\definecolor{codeborder}{HTML}{f0f0f0}
+
 % TODO have code boxes keep line vertical alignment
 \\usepackage[breakable,xparse]{tcolorbox}
 \\DeclareTColorBox[]{Code}{o}%
-{colback=white!97!black, colframe=white!94!black,
-  fontupper=\\color{EFD}\\footnotesize,
+{colback=codebackground, colframe=codeborder,
+  fontupper=\\footnotesize,
+  colupper=EFD,
   IfNoValueTF={#1}%
   {boxsep=2pt, arc=2.5pt, outer arc=2.5pt,
     boxrule=0.5pt, left=2pt}%
@@ -8642,11 +8646,11 @@ current Emacs theme, I was enraptured. The result is the pseudo-class ~chameleon
 
   (defadvice! ox-chameleon-org-latex-export (orig-fn info &optional template snippet?)
     :around #'org-latex-make-preamble
-    (funcall orig-fn info)
-    (if (not ox-chameleon--p)
-        (funcall orig-fn info template snippet?)
-      (concat (funcall orig-fn info template snippet?)
-              (ox-chameleon-generate-colourings))))
+    (if ox-chameleon--p
+        (let ((engrave-faces-preset-styles (engrave-faces-generate-preset)))
+          (concat (funcall orig-fn info template snippet?)
+                  (ox-chameleon-generate-colourings)))
+      (funcall orig-fn info template snippet?)))
 
   (defun ox-chameleon-generate-colourings ()
     (apply #'format
@@ -8666,6 +8670,8 @@ current Emacs theme, I was enraptured. The result is the pseudo-class ~chameleon
 \\definecolor{cyan}{HTML}{%s}
 \\definecolor{dark-cyan}{HTML}{%s}
 
+\\definecolor{documentTitle}{HTML}{%s}
+\\definecolor{documentInfo}{HTML}{%s}
 \\definecolor{level1}{HTML}{%s}
 \\definecolor{level2}{HTML}{%s}
 \\definecolor{level3}{HTML}{%s}
@@ -8681,9 +8687,16 @@ current Emacs theme, I was enraptured. The result is the pseudo-class ~chameleon
 \\definecolor{code}{HTML}{%s}
 \\definecolor{verbatim}{HTML}{%s}
 
+\\definecolor{codebackground}{HTML}{%s}
+\\colorlet{EFD}{fg}
+\\definecolor{codeborder}{HTML}{%s}
+
 \\pagecolor{bg}
 \\color{fg}
 
+\\addtokomafont{title}{\\color{documentTitle}}
+\\addtokomafont{author}{\\color{documentInfo}}
+\\addtokomafont{date}{\\color{documentInfo}}
 \\addtokomafont{section}{\\color{level1}}
 \\newkomafont{sectionprefix}{\\color{level1}}
 \\addtokomafont{subsection}{\\color{level2}}
@@ -8728,6 +8741,8 @@ current Emacs theme, I was enraptured. The result is the pseudo-class ~chameleon
                     (doom-color 'cyan)
                     (doom-color 'dark-cyan)
                     ;;
+                    (face-attribute 'org-document-title :foreground)
+                    (face-attribute 'org-document-info :foreground)
                     (face-attribute 'outline-1 :foreground)
                     (face-attribute 'outline-2 :foreground)
                     (face-attribute 'outline-3 :foreground)
@@ -8742,8 +8757,11 @@ current Emacs theme, I was enraptured. The result is the pseudo-class ~chameleon
                     (face-attribute 'org-list-dt :foreground)
                     (face-attribute 'org-code :foreground)
                     (face-attribute 'org-verbatim :foreground)
-                    ))))
-  )
+                    ;;
+                    (face-attribute 'default :background)
+                    (doom-blend (face-attribute 'default :background)
+                                (face-attribute 'default :foreground)
+                                0.95))))))
 #+end_src
 **** Make verbatim different to code
 Since have just gone to so much effort above let's make the most of it by making
