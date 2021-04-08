@@ -8526,21 +8526,102 @@ When using ~pdflatex~, almost non-ascii characters are generally problematic, an
 don't appear in the pdf. It's preferable to see that there was /some/ character
 which wasn't displayed as opposed to nothing.
 
-So, as a basic first-pass we replace every non-ascii char with =¿=. In future I
-could add sensible replacements (e.g. turn =§= into =\S=, and =…= into =\ldots=).
+We check every non-ascii character to make sure it's not a character encoded by
+the =inputenc= packages when loaded with the =utf8= option. Finally, we see if we
+have our own LaTeX conversion we can apply and if there is none we replace the
+non-ascii char with =¿=.
+
+No to make sure we only remove characters that can't be displayed, we check
+=/usr/share/texmf/tex/latex/base/utf8enc.dfu=.
 
 We just need to make sure this is appended to the list of filter functions,
 since we want to let emoji processing occur first.
 
 #+begin_src emacs-lisp
+(defvar +org-pdflatex-inputenc-encoded-chars
+    "[[:ascii:]\u00A0-\u01F0\u0218-\u021BȲȳȷˆˇ˜˘˙˛˝\u0400-\u04FFḂḃẞ\u200C\u2010-\u201E†‡•…‰‱‹›※‽⁄⁎⁒₡₤₦₩₫€₱℃№℗℞℠™Ω℧℮←↑→↓〈〉␢␣◦◯♪⟨⟩Ḡḡ\uFB00-\uFB06]")
+
 (defun +org-latex-replace-non-ascii-chars (text backend info)
   "Replace non-ascii chars with \\char\"XYZ forms."
   (when (and (org-export-derived-backend-p backend 'latex)
              (string= (plist-get info :latex-compiler) "pdflatex"))
-    (replace-regexp-in-string "[^[:ascii:]]" "¿" text)))
+    (replace-regexp-in-string "[^[:ascii:]]"
+                              (lambda (nonascii)
+                                (if (string-match-p +org-pdflatex-inputenc-encoded-chars nonascii) nonascii
+                                  (or (cdr (assoc nonascii +org-latex-non-ascii-char-substitutions)) "¿")))
+                              text)))
 
 (add-to-list 'org-export-filter-final-output-functions #'+org-latex-replace-non-ascii-chars t)
 #+end_src
+
+Now, there are some symbols that aren't included in =inputenc=, but we should be
+able to handle anyway. For them we define a table of LaTeX translations
+
+#+name: latex-non-ascii-char-substitutions
+| Character | LaTeX |
+|-----------+-------|
+| ɑ         | \(\alpha\) |
+| β         | \(\beta\) |
+| γ         | \(\gamma\) |
+| δ         | \(\delta\) |
+| ε         | \(\epsilon\) |
+| ϵ         | \(\varepsilon\) |
+| ζ         | \(\zeta\) |
+| η         | \(\eta\) |
+| θ         | \(\theta\) |
+| ϑ         | \(\vartheta\) |
+| ι         | \(\iota\) |
+| κ         | \(\kappa\) |
+| λ         | \(\lambda\) |
+| μ         | \(\mu\) |
+| ν         | \(\nu\) |
+| ξ         | \(\xi\) |
+| π         | \(\pi\) |
+| ϖ         | \(\varpi\) |
+| ρ         | \(\rho\) |
+| ϱ         | \(\varrho\) |
+| σ         | \(\sigma\) |
+| ς         | \(\varsigma\) |
+| τ         | \(\tau\) |
+| υ         | \(\upsilon\) |
+| ϕ         | \(\phi\) |
+| φ         | \(\varphi\) |
+| ψ         | \(\psi\) |
+| ω         | \(\omega\) |
+| Γ         | \(\Gamma\) |
+| Δ         | \(\Delta\) |
+| Θ         | \(\Theta\) |
+| Λ         | \(\Lambda\) |
+| Ξ         | \(\Xi\) |
+| Π         | \(\Pi\) |
+| Σ         | \(\Sigma\) |
+| Υ         | \(\Upsilon\) |
+| Φ         | \(\Phi\) |
+| Ψ         | \(\Psi\) |
+| Ω         | \(\Omega\) |
+| א         | \(\aleph\) |
+| ב         | \(\beth\) |
+| ד         | \(\daleth\) |
+| ג         | \(\gimel\) |
+
+#+name: gen-latex-non-ascii-char-substitutions
+#+begin_src emacs-lisp :noweb-ref none :var latex-non-ascii-char-substitutions=latex-non-ascii-char-substitutions
+(replace-regexp-in-string
+ " '((" "\n   '(("
+ (replace-regexp-in-string
+  ") (" ")\n     ("
+  (prin1-to-string
+   `(defvar +org-latex-non-ascii-char-substitutions
+      ',(mapcar
+         (lambda (entry)
+           (cons (car entry) (replace-regexp-in-string "\\\\" "\\\\\\\\" (cadr entry))))
+         latex-non-ascii-char-substitutions)))))
+#+end_src
+
+#+begin_src emacs-lisp :noweb no-export
+<<gen-latex-non-ascii-char-substitutions()>>
+#+end_src
+
 **** Extra special strings
 LaTeX already recognises =---= and =--= as em/en-dashes, =\-= as a shy hyphen, and the
 conversion of =...= to =\ldots{}= is hardcoded into ~org-latex-plain-text~ (unlike
