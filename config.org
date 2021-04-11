@@ -9000,6 +9000,63 @@ frame from ~1~ to ~2~.
 #+begin_src emacs-lisp
 (setq org-beamer-frame-level 2)
 #+end_src
+*** ASCII export
+
+To start with, why settle for ASCII when UTF-8 exists?
+#+begin_src emacs-lisp
+(setq org-ascii-charset 'utf-8)
+#+end_src
+
+The ASCII export is generally fairly nice. I think the main aspect that could
+benefit from improvement is the appearance of LaTeX fragments. There's a nice
+utility we can use to create unicode representation, which are much nicer.
+It's called ~latex2text~, and it's part of the =pylatexenc= package, and it's [[https://repology.org/project/python:pylatexenc/versions][not
+really packaged]]. So, we'll resort to installing it with =pip=.
+
+#+begin_src shell :tangle (if (executable-find "latex2text") "no" "setup.sh")
+sudo python3 -m pip install pylatexenc
+#+end_src
+
+With that installed, we can override the src_elisp{(org-ascii-latex-fragment)} and
+src_elisp{(org-ascii-latex-environment)} functions, which are conveniently very
+slim --- just extracting the content, and indenting. We'll only do something
+different when =utf-8= is set.
+
+#+begin_src emacs-lisp :noweb-ref (if (executable-find "latex2text") "org-conf" "none")
+(after! ox-ascii
+  (defvar org-ascii-convert-latex t
+    "Use latex2text to convert LaTeX elements to unicode.")
+
+  (defadvice! org-ascii-latex-environment-unicode-a (latex-environment _contents info)
+    "Transcode a LATEX-ENVIRONMENT element from Org to ASCII, converting to unicode.
+CONTENTS is nil.  INFO is a plist holding contextual
+information."
+    :override #'org-ascii-latex-environment
+    (when (plist-get info :with-latex)
+      (org-ascii--justify-element
+       (org-remove-indentation
+        (let* ((latex (org-element-property :value latex-environment))
+               (unicode (and (eq (plist-get info :ascii-charset) 'utf-8)
+                             org-ascii-convert-latex
+                             (ignore-errors (doom-exec-process "latex2text" "-q" "--code" latex)))))
+          (if (= (car unicode) 0) ; utf-8 set, and sucessfully ran latex2text
+              (cdr unicode) latex)))
+       latex-environment info)))
+
+  (defadvice! org-ascii-latex-fragment-unicode-a (latex-fragment _contents info)
+    "Transcode a LATEX-FRAGMENT object from Org to ASCII, converting to unicode.
+CONTENTS is nil.  INFO is a plist holding contextual
+information."
+    :override #'org-ascii-latex-fragment
+    (when (plist-get info :with-latex)
+      (let* ((latex (org-element-property :value latex-fragment))
+             (unicode (and (eq (plist-get info :ascii-charset) 'utf-8)
+                           org-ascii-convert-latex
+                           (ignore-errors (doom-exec-process "latex2text" "-q" "--code" latex)))))
+        (if (= (car unicode) 0) ; utf-8 set, and sucessfully ran latex2text
+            (cdr unicode) latex)))))
+#+end_src
+
 *** Markdown Export
 When I want to paste exported markdown somewhere (for example when using [[Emacs Everywhere][Emacs
 Everywhere]]), it can be preferable to have unicode characters for =---= etc. instead
