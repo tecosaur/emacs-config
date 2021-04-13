@@ -5848,7 +5848,17 @@ allowfullscreen>%s</iframe>" path (or "" desc)))
          (format "\\href{https://youtu.be/%s}{%s}" path (or desc "youtube")))
         (t (format "https://youtu.be/%s" path))))
 #+end_src
+**** Fix problematic hooks
+When one of the src_elisp{org-mode-hook} functions errors, it halts the hook
+execution. This is problematic, and there are two hooks in particular which
+cause issues. Let's make their failure less eventful.
 
+#+begin_src emacs-lisp
+(defadvice! shut-up-org-problematic-hooks (orig-fn &rest args)
+  :around #'org-fancy-priorities-mode
+  :around #'org-superstar-mode
+  (ignore-errors (apply orig-fn args)))
+#+end_src
 *** Visuals
 
 Here I try to do two things: improve the styling of the various documents, via
