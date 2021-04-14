@@ -9046,7 +9046,7 @@ src_elisp{(org-ascii-latex-environment)} functions, which are conveniently very
 slim --- just extracting the content, and indenting. We'll only do something
 different when =utf-8= is set.
 
-#+begin_src emacs-lisp :noweb-ref (if (executable-find "latex2text") "org-conf" "none")
+#+begin_src emacs-lisp :noweb-ref none :tangle (if (executable-find "latex2text") "yes" "no")
 (after! ox-ascii
   (defvar org-ascii-convert-latex t
     "Use latex2text to convert LaTeX elements to unicode.")
@@ -9062,7 +9062,7 @@ information."
         (let* ((latex (org-element-property :value latex-environment))
                (unicode (and (eq (plist-get info :ascii-charset) 'utf-8)
                              org-ascii-convert-latex
-                             (ignore-errors (doom-exec-process "latex2text" "-q" "--code" latex)))))
+                             (doom-call-process "latex2text" "-q" "--code" latex))))
           (if (= (car unicode) 0) ; utf-8 set, and sucessfully ran latex2text
               (cdr unicode) latex)))
        latex-environment info)))
@@ -9076,7 +9076,7 @@ information."
       (let* ((latex (org-element-property :value latex-fragment))
              (unicode (and (eq (plist-get info :ascii-charset) 'utf-8)
                            org-ascii-convert-latex
-                           (ignore-errors (doom-exec-process "latex2text" "-q" "--code" latex)))))
+                             (doom-call-process "latex2text" "-q" "--code" latex))))
         (if (= (car unicode) 0) ; utf-8 set, and sucessfully ran latex2text
             (cdr unicode) latex)))))
 #+end_src
