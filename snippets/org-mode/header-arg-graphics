@@ -1,6 +1,6 @@
 # -*- mode: snippet -*-
 # name: Header arg - graphics
-# key: s
+# key: g
 # condition: (+yas/org-src-header-p)
 # --
 :results file graphics $0

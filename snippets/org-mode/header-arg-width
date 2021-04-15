@@ -1,6 +1,6 @@
 # -*- mode: snippet -*-
-# name: Header arg - silent
-# key: S
+# name: Header arg - width
+# key: W
 # condition: (+yas/org-src-header-p)
 # --
-:results silent $0
+:width $0
