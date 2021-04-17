@@ -20,5 +20,5 @@ sassc main.scss main.css
 Then for combining the JS
 
 #+begin_src shell
-cat _*.js > main.js
+ls _*.js | sort -V | xargs cat > main.js
 #+end_src
