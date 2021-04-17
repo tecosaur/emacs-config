@@ -1,4 +1,5 @@
 #+title: Pile Theme
+#+property: header-args:shell :tangle build.sh :shebang "#!/usr/bin/env bash" :comments none
 
 A sass-based set of styles to be used by Org when exporting to HTML.
 =main.scss= is compiled to =main.css= which is then inserted into the ~<head>~ of
@@ -15,6 +16,14 @@ To build =main.css= and =main.js=, I simply run
 
 #+begin_src shell
 sassc main.scss main.css
+#+end_src
+
+A minified CSS file would be nice to have too.
+#+begin_src shell
+sassc --style compressed main.scss main.min.css
+if command -v csso &> /dev/null; then
+    csso main.min.css -o main.min.css
+fi
 #+end_src
 
 Then for combining the JS

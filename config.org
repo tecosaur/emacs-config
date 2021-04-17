@@ -6789,7 +6789,7 @@ Suffice to say I've snatched it, with a few of my own tweaks applied.
                 "<script>\n"
                 (f-read-text (expand-file-name "misc/org-css/main.js" doom-private-dir))
                 "</script>\n<style>\n"
-                (f-read-text (expand-file-name "misc/org-css/main.css" doom-private-dir))
+                (f-read-text (expand-file-name "misc/org-css/main.min.css" doom-private-dir))
                 "</style>"))
   (when org-fancy-html-export-mode
     (setq org-html-style-default org-html-style-fancy)))
