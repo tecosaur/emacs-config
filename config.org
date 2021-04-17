@@ -848,6 +848,19 @@ avoid polluting the output.
 
 (advice-add 'org-babel-execute-src-block :around #'doom-shut-up-a)
 #+end_src
+*** Asyncronous config tangling
+Doom adds an =org-mode= hook ~+literate-enable-recompile-h~. This is a nice idea,
+but it's too blocking for my taste. Since I trust my tangling to be fairly
+straightforward, I'll just redefine it to a simpler, async, function.
+#+begin_src emacs-lisp
+(defadvice! +literate-tangle-async-h ()
+  "A very simplified version of `+literate-tangle-h', but async."
+  :override #'+literate-tangle-h
+  (let ((default-directory doom-private-dir))
+    (async-shell-command
+     (format "emacs --batch --eval \"(progn (require 'org) (setq org-confirm-babel-evaluate nil) (org-babel-tangle-file \\\"%s\\\"))\""
+             +literate-config-file))))
+#+end_src
 ** Other things
 *** Editor interaction
 **** Mouse buttons
