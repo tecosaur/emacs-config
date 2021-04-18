@@ -4472,7 +4472,32 @@ Occasionally I want to cite something.
 (use-package! org-ref
   :after org
   :config
-  (setq org-ref-completion-library 'org-ref-ivy-cite))
+  (setq org-ref-completion-library 'org-ref-ivy-cite)
+  (defadvice! org-ref-open-bibtex-pdf-a ()
+    :override #'org-ref-open-bibtex-pdf
+    (save-excursion
+      (bibtex-beginning-of-entry)
+      (let* ((bibtex-expand-strings t)
+             (entry (bibtex-parse-entry t))
+             (key (reftex-get-bib-field "=key=" entry))
+             (pdf (or
+                   (car (-filter (lambda (f) (string-match-p "\\.pdf$" f))
+                                 (split-string (reftex-get-bib-field "file" entry) ";")))
+                   (funcall org-ref-get-pdf-filename-function key))))
+        (if (file-exists-p pdf)
+            (org-open-file pdf)
+          (ding)))))
+  (defadvice! org-ref-open-pdf-at-point-a ()
+    "Open the pdf for bibtex key under point if it exists."
+    :override #'org-ref-open-pdf-at-point
+    (interactive)
+    (let* ((results (org-ref-get-bibtex-key-and-file))
+           (key (car results))
+           (pdf-file (funcall org-ref-get-pdf-filename-function key)))
+      (with-current-buffer (find-file-noselect (cdr results))
+        (save-excursion
+          (bibtex-search-entry (car results))
+          (org-ref-open-bibtex-pdf))))))
 #+end_src
 ***** cdlatex
 It's also nice to be able to use ~cdlatex~.
