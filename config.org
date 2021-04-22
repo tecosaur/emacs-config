@@ -6749,6 +6749,14 @@ of contents as a string, or nil if it is empty."
 
 Lastly, let's pile on some metadata. This gives my pages nice embeds.
 #+begin_src emacs-lisp
+(defvar org-html-meta-tags-opengraph-image
+  '(:image "https://tecosaur.com/resources/org/nib.png"
+    :type "image/png"
+    :width "200"
+    :height "200"
+    :alt "Green fountain pen nib")
+  "Plist of og:image:PROP properties and their value, for use in `org-html-meta-tags-fancy'.")
+
 (defun org-html-meta-tags-fancy (info)
   "Use the INFO plist to construct the meta tags, as described in `org-html-meta-tags'."
   (let ((title (org-html-plain-text
@@ -6758,29 +6766,44 @@ Lastly, let's pile on some metadata. This gives my pages nice embeds.
                        ;; Return raw Org syntax.
                        (and auth (org-html-plain-text
                                   (org-element-interpret-data auth) info))))))
-    (list
-     (when (org-string-nw-p author)
-       (list "name" "author" author))
-     (when (org-string-nw-p (plist-get info :description))
-       (list "name" "description"
-             (plist-get info :description)))
-     '("name" "generator" "org mode")
-     '("name" "theme-color" "#77aa99")
-     '("property" "og:type" "article")
-     (list "property" "og:title" title)
-     (let ((subtitle (org-export-data (plist-get info :subtitle) info)))
-       (when (org-string-nw-p subtitle)
-         (list "property" "og:description" subtitle)))
-     '("property" "og:image" "https://tecosaur.com/resources/org/nib.png")
-     '("property" "og:image:type" "image/png")
-     '("property" "og:image:width" "200")
-     '("property" "og:image:height" "200")
-     '("property" "og:image:alt" "Green fountain pen nib")
-     (when (org-string-nw-p author)
-       (list "property" "og:article:author:first_name" (car (s-split-up-to " " author 2))))
-     (when (and (org-string-nw-p author) (s-contains-p " " author))
-       (list "property" "og:article:author:last_name" (cadr (s-split-up-to " " author 2))))
-     (list "property" "og:article:published_time" (format-time-string "%FT%T%z")))))
+    (append
+     (list
+      (when (org-string-nw-p author)
+        (list "name" "author" author))
+      (when (org-string-nw-p (plist-get info :description))
+        (list "name" "description"
+              (plist-get info :description)))
+      '("name" "generator" "org mode")
+      '("name" "theme-color" "#77aa99")
+      '("property" "og:type" "article")
+      (list "property" "og:title" title)
+      (let ((subtitle (org-export-data (plist-get info :subtitle) info)))
+        (when (org-string-nw-p subtitle)
+          (list "property" "og:description" subtitle))))
+     (when org-html-meta-tags-opengraph-image
+       (list (list "property" "og:image" (plist-get org-html-meta-tags-opengraph-image :image))
+             (list "property" "og:image:type" (plist-get org-html-meta-tags-opengraph-image :type))
+             (list "property" "og:image:width" (plist-get org-html-meta-tags-opengraph-image :width))
+             (list "property" "og:image:height" (plist-get org-html-meta-tags-opengraph-image :height))
+             (list "property" "og:image:alt" (plist-get org-html-meta-tags-opengraph-image :alt))))
+     (list
+      (when (org-string-nw-p author)
+        (list "property" "og:article:author:first_name" (car (s-split-up-to " " author 2))))
+      (when (and (org-string-nw-p author) (s-contains-p " " author))
+        (list "property" "og:article:author:last_name" (cadr (s-split-up-to " " author 2))))
+      (list "property" "og:article:published_time"
+            (format-time-string
+             "%FT%T%z"
+             (or
+              (when-let ((date-str (cadar (org-collect-keywords '("DATE")))))
+                (unless (string= date-str (format-time-string "%F"))
+                  (ignore-errors (encode-time (org-parse-time-string date-str)))))
+              (if buffer-file-name
+                  (file-attribute-modification-time (file-attributes buffer-file-name))
+                (current-time)))))
+      (when buffer-file-name
+        (list "property" "og:article:modified_time"
+              (format-time-string "%FT%T%z" (file-attribute-modification-time (file-attributes buffer-file-name)))))))))
 
 (unless (functionp #'org-html-meta-tags-default)
   (defalias 'org-html-meta-tags-default #'ignore))
