@@ -208,7 +208,7 @@ body {
   display: flex;
   flex-direction: column;
   font-size: 16px;
-  font-family: "Merriweather"; }
+  font-family: "Merriweather", serif; }
 
 #page {
   color: var(--text-dark);
@@ -245,7 +245,7 @@ body {
       margin: 0; }
 
 .page-meta {
-  font-family: "Open Sans";
+  font-family: "Open Sans", sans;
   font-weight: normal;
   font-style: normal;
   font-size: 12px;
@@ -253,7 +253,7 @@ body {
   color: var(--text-light); }
 
 header .site-nav {
-  font-family: "Open Sans";
+  font-family: "Open Sans", sans;
   font-weight: normal;
   font-style: normal;
   font-size: 12px;
@@ -292,7 +292,7 @@ header > div {
 
 .site-header nav a {
   color: var(--text-light);
-  font-family: "Open Sans";
+  font-family: "Open Sans", sans;
   font-size: 12px;
   font-weight: bold;
   text-transform: uppercase; }
@@ -320,7 +320,7 @@ header > div {
     margin-right: auto; } }
 
 #content .page-intro {
-  font-family: "Open Sans";
+  font-family: "Open Sans", sans;
   font-weight: normal;
   font-size: 15px;
   line-height: 1.6;
@@ -354,7 +354,7 @@ header > div {
 aside {
   background-color: var(--code-background);
   border-radius: 5px;
-  font-family: "Open Sans";
+  font-family: "Open Sans", sans;
   font-weight: normal;
   font-size: 15px;
   line-height: 1.6;
@@ -364,7 +364,7 @@ aside {
   padding-bottom: 10px;
   line-height: 1.6 !important; }
   aside p {
-    font-family: "Open Sans";
+    font-family: "Open Sans", sans;
     font-weight: normal;
     font-size: 15px;
     line-height: 1.6;
@@ -397,7 +397,7 @@ blockquote {
     display: inline;
     font-size: 13px; }
   blockquote footer {
-    font-family: "Open Sans";
+    font-family: "Open Sans", sans;
     font-weight: normal;
     font-style: normal;
     font-size: 12px;
@@ -536,15 +536,15 @@ div.error::before {
   border-top-style: solid;
   border-top-width: 1px;
   border-color: var(--back-light);
-  font-family: "Open Sans";
-  font-family: "Open Sans";
+  font-family: "Open Sans", sans;
+  font-family: "Open Sans", sans;
   font-weight: normal;
   font-size: 20px;
   line-height: 1.6;
   color: var(--text-gray); }
 
 .org-ref-bib {
-  font-family: "Open Sans";
+  font-family: "Open Sans", sans;
   font-weight: normal;
   font-size: 15px;
   line-height: 1.6;
@@ -558,7 +558,7 @@ div.error::before {
       text-shadow: none;
       text-decoration: none; }
   .org-ref-bib .bib-link {
-    font-family: "Open Sans";
+    font-family: "Open Sans", sans;
     font-weight: normal;
     font-style: normal;
     font-size: 12px;
@@ -639,7 +639,7 @@ details.code {
     margin-left: -10px;
     z-index: 1;
     outline: none;
-    font-family: "Open Sans";
+    font-family: "Open Sans", sans;
     font-weight: normal;
     font-style: normal;
     font-size: 12px;
@@ -1017,13 +1017,13 @@ figure {
   text-align: center; }
   figure figcaption {
     margin-top: 10px;
-    font-family: "Open Sans";
+    font-family: "Open Sans", sans;
     font-weight: normal;
     font-size: 15px;
     line-height: 1.6;
     color: var(--text-gray); }
     figure figcaption .figure-number {
-      font-family: "Open Sans";
+      font-family: "Open Sans", sans;
       font-weight: normal;
       font-style: normal;
       font-size: 12px;
@@ -1047,13 +1047,13 @@ img, object[type="image/svg+xml"] {
   border-top-style: solid;
   border-top-width: 1px;
   border-color: var(--back-light);
-  font-family: "Open Sans";
+  font-family: "Open Sans", sans;
   font-weight: normal;
   font-size: 15px;
   line-height: 1.6;
   color: var(--text-gray); }
   #footnotes p, #footnotes li {
-    font-family: "Open Sans";
+    font-family: "Open Sans", sans;
     font-weight: normal;
     font-size: 15px;
     line-height: 1.6;
@@ -1061,7 +1061,7 @@ img, object[type="image/svg+xml"] {
   #footnotes h2.footnotes {
     margin-top: 0;
     margin-bottom: 30px;
-    font-family: "Open Sans";
+    font-family: "Open Sans", sans;
     font-size: 18px;
     letter-spacing: 5px;
     display: none; }
@@ -1074,7 +1074,7 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: "et-book";
+  font-family: "et-book", serif;
   font-weight: normal;
   margin-bottom: 0;
   margin-top: 60px; }
@@ -1148,7 +1148,7 @@ h6 {
 .section-number-4,
 .section-number-5,
 .section-number-6 {
-  font-family: "Open Sans";
+  font-family: "Open Sans", sans;
   font-weight: normal;
   font-style: normal;
   font-size: 12px;
@@ -1193,7 +1193,7 @@ table a,
 li a,
 dl a {
   background-image: linear-gradient(var(--text-dark), var(--text-dark));
-  background-size: 1px 1px;
+  background-size: 1px 1px !important;
   background-repeat: repeat-x;
   background-position: 0% 95%;
   border-radius: 1px;
@@ -1251,7 +1251,7 @@ dl a {
     opacity: 0.9;
     filter: drop-shadow(1px 1px 1px var(--back-white));
     background-image: linear-gradient(var(--text-dark), var(--text-dark));
-    background-size: 1px 1px;
+    background-size: 1px 1px !important;
     background-repeat: repeat-x;
     background-position: 0% 95%;
     background-image: url("data:image/svg+xml;charset=utf8,%3Csvg id='squiggle-link' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:ev='http://www.w3.org/2001/xml-events' viewBox='0 0 20 4'%3E%3Cstyle type='text/css'%3E.squiggle{animation:shift .3s linear infinite;}@keyframes shift {from {transform:translateX(0);}to {transform:translateX(-20px);}}%3C/style%3E%3Cpath fill='none' stroke='%23000000' stroke-width='2' class='squiggle' d='M0,3.5 c 5,0,5,-3,10,-3 s 5,3,10,3 c 5,0,5,-3,10,-3 s 5,3,10,3'/%3E%3C/svg%3E");
@@ -1272,7 +1272,7 @@ dl a {
   li a[href^="#"],
   dl a[href^="#"] {
     background-image: linear-gradient(var(--text-gray), var(--text-gray));
-    background-size: 1px 1px;
+    background-size: 1px 1px !important;
     background-repeat: repeat-x;
     background-position: 0% 95%; }
     figcaption a[href^="#"]::selection,
@@ -1291,7 +1291,7 @@ dl a {
       opacity: 0.9;
       filter: drop-shadow(1px 1px 1px var(--back-white));
       background-image: linear-gradient(var(--text-medium), var(--text-medium));
-      background-size: 1px 1px;
+      background-size: 1px 1px !important;
       background-repeat: repeat-x;
       background-position: 0% 95%; }
       figcaption a[href^="#"]:hover::selection,
@@ -1329,7 +1329,7 @@ dl a {
 #content .page-intro p a,
 #footnotes a {
   background-image: linear-gradient(var(--text-gray), var(--text-gray));
-  background-size: 1px 1px;
+  background-size: 1px 1px !important;
   background-repeat: repeat-x;
   background-position: 0% 95%;
   border-radius: 1px;
@@ -1353,7 +1353,7 @@ dl a {
   #content .page-intro p a:hover,
   #footnotes a:hover {
     background-image: linear-gradient(var(--text-gray), var(--text-gray));
-    background-size: 1px 1px;
+    background-size: 1px 1px !important;
     background-repeat: repeat-x;
     background-position: 0% 95%;
     border-radius: 1px;
@@ -1381,7 +1381,7 @@ dl a {
   border-width: 1px;
   border-color: var(--back-light);
   border-radius: 1px;
-  font-family: "Open Sans";
+  font-family: "Open Sans", sans;
   font-variant: all-small-caps;
   font-size: 14px;
   font-style: normal;
@@ -1403,7 +1403,7 @@ dl a {
   border-width: 1px;
   border-color: var(--back-light);
   border-radius: 1px;
-  font-family: "Open Sans";
+  font-family: "Open Sans", sans;
   font-variant: all-small-caps;
   font-size: 12px;
   font-style: normal;
@@ -1470,7 +1470,7 @@ ul, ol, dl {
   ul li::before, ul dt::before, ol li::before, ol dt::before, dl li::before, dl dt::before {
     display: inline-block;
     width: 1em;
-    font-family: "Open Sans";
+    font-family: "Open Sans", sans;
     font-weight: normal;
     font-size: 15px;
     line-height: 1.6;
@@ -1592,8 +1592,9 @@ li.off > .checkbox::after {
 .outline-3 .section-number-3 {
   font-size: 24px; }
 
-.timestamp, .timestamp-kwd {
-  font-family: "Open Sans";
+.timestamp,
+.timestamp-kwd {
+  font-family: "Open Sans", sans;
   font-weight: normal;
   font-style: normal;
   font-size: 12px;
@@ -1602,13 +1603,14 @@ li.off > .checkbox::after {
   background-color: var(--back-white);
   border-radius: 1px; }
 
-.todo, .done {
+.todo,
+.done {
   padding: 0.1em 0.2em;
   border-style: solid;
   border-width: 1px;
   border-color: var(--back-light);
   border-radius: 1px;
-  font-family: "Open Sans";
+  font-family: "Open Sans", sans;
   font-variant: all-small-caps;
   font-size: max(0.4em, 10px);
   font-style: normal;
@@ -1622,24 +1624,35 @@ li.off > .checkbox::after {
   background-color: transparent;
   border: none;
   font-weight: bold; }
-  .todo:hover, .done:hover {
+  .todo:hover,
+  .done:hover {
     background-color: var(--back-light);
     background-image: none; }
-  .todo:not(.active), .done:not(.active) {
+  .todo:not(.active),
+  .done:not(.active) {
     border-color: var(--back-white); }
-  .todo.active, .done.active {
+  .todo.active,
+  .done.active {
     text-shadow: none;
     text-decoration: none;
     color: var(--back-white);
     background-color: var(--code-foreground); }
-    .todo.active:hover, .done.active:hover {
+    .todo.active:hover,
+    .done.active:hover {
       background-color: var(--back-light);
       background-image: none;
       color: var(--text-dark); }
 
-.outline-2, .outline-3, .outline-4 {
+.outline-2,
+.outline-3,
+.outline-4 {
   contain: layout; }
-  .outline-2 .todo, .outline-2 .done, .outline-3 .todo, .outline-3 .done, .outline-4 .todo, .outline-4 .done {
+  .outline-2 .todo,
+  .outline-2 .done,
+  .outline-3 .todo,
+  .outline-3 .done,
+  .outline-4 .todo,
+  .outline-4 .done {
     font-size: 18px; }
 
 .todo {
@@ -1654,7 +1667,7 @@ li.off > .checkbox::after {
   border-width: 1px;
   border-color: var(--back-light);
   border-radius: 1px;
-  font-family: "Open Sans";
+  font-family: "Open Sans", sans;
   font-variant: all-small-caps;
   font-size: max(0.4em, 10px);
   font-style: normal;
@@ -1724,14 +1737,14 @@ span.acr {
   justify-content: center;
   align-items: center;
   flex-wrap: wrap; }
-  .music-track > img {
-    height: 6rem; }
-  .music-track > span {
-    margin-left: 2rem;
-    min-width: 30%; }
-    .music-track > span > a {
-      color: inherit;
-      text-decoration: none; }
+  .music-track img {
+    height: 6rem;
+    margin-right: 2rem; }
+  .music-track a {
+    color: inherit;
+    text-decoration: none; }
+  .music-track span {
+    min-width: 35%; }
 
 div.table {
   position: relative; }
@@ -1750,11 +1763,11 @@ table {
   border-width: 2px;
   border-collapse: collapse;
   font-size: 15px;
-  font-family: "Open Sans";
+  font-family: "Open Sans", sans;
   margin: 20px;
   padding: 20px; }
   table thead {
-    font-family: "Open Sans";
+    font-family: "Open Sans", sans;
     font-weight: normal;
     font-style: normal;
     font-size: 12px;
@@ -1775,13 +1788,13 @@ table {
     line-height: 1.9; }
   table caption {
     margin-bottom: 10px;
-    font-family: "Open Sans";
+    font-family: "Open Sans", sans;
     font-weight: normal;
     font-size: 15px;
     line-height: 1.6;
     color: var(--text-gray); }
     table caption .table-number {
-      font-family: "Open Sans";
+      font-family: "Open Sans", sans;
       font-weight: normal;
       font-style: normal;
       font-size: 12px;
@@ -1914,7 +1927,7 @@ table {
   border-width: 1px;
   border-color: var(--back-light);
   border-radius: 1px;
-  font-family: "Open Sans";
+  font-family: "Open Sans", sans;
   font-variant: all-small-caps;
   font-size: max(0.4em, 10px);
   font-style: normal;

@@ -22,21 +22,26 @@
   font-size: 24px;
 }
 
-.timestamp, .timestamp-kwd {
+.timestamp,
+.timestamp-kwd {
   @include light-meta();
   background-color: $back-white;
   border-radius: 1px;
 }
 
-.todo, .done {
+.todo,
+.done {
   @include tag();
   background-color: transparent;
   border: none;
   font-weight: bold;
 }
-.outline-2, .outline-3, .outline-4 {
+.outline-2,
+.outline-3,
+.outline-4 {
   contain: layout;
-  .todo, .done {
+  .todo,
+  .done {
     font-size: 18px;
   }
 }
@@ -59,24 +64,38 @@
   font-family: $code-font;
 }
 
-.footref  {
+.footref {
   text-shadow: none;
 }
 .footpara {
   display: inline;
 }
-.footdef:last-of-type  {
+.footdef:last-of-type {
   margin-bottom: 1em;
 }
 
-th.org-right  { text-align: center; }
-th.org-left   { text-align: center; }
-th.org-center { text-align: center; }
-td.org-right  { text-align: right;  }
-td.org-left   { text-align: left;   }
-td.org-center { text-align: center; }
+th.org-right {
+  text-align: center;
+}
+th.org-left {
+  text-align: center;
+}
+th.org-center {
+  text-align: center;
+}
+td.org-right {
+  text-align: right;
+}
+td.org-left {
+  text-align: left;
+}
+td.org-center {
+  text-align: center;
+}
 
-div.org-center { text-align: center; }
+div.org-center {
+  text-align: center;
+}
 
 // custom org acronym element
 
@@ -90,15 +109,15 @@ span.acr {
   justify-content: center;
   align-items: center;
   flex-wrap: wrap;
-  & > img {
+  img {
     height: 6rem;
+    margin-right: 2rem;
   }
-  & > span {
-    margin-left: 2rem;
-    min-width: 30%;
-    & > a {
-      color: inherit;
-      text-decoration: none;
-    }
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+  span {
+    min-width: 35%;
   }
 }

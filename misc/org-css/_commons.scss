@@ -23,14 +23,14 @@
 @include font-face('et-book', 'etbookot-italic-webfont', normal, italic)
 
 // Face variables
-$sans-font: 'Open Sans';
-$body-font: 'Merriweather';
-$title-font: 'et-book';
+$sans-font: 'Open Sans',sans;
+$body-font: 'Merriweather',serif;
+$title-font: 'et-book',serif;
 $code-font: SFMono-Regular,Consolas,Liberation Mono,Menlo,monospace;
 
 @mixin text-background($color-bg, $color-text) {
   background-image: linear-gradient($color-text, $color-text);
-  background-size: 1px 1px;
+  background-size: 1px 1px !important;
   background-repeat: repeat-x;
   background-position: 0% 95%;
 }
