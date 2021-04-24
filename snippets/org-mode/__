@@ -1,7 +1,7 @@
 # -*- mode: snippet -*-
 # name: Org template
 # --
-#+title: ${1:`(s-titleized-words (file-name-base (or buffer-file-name "new buffer")))`}
+#+title: ${1:`(s-titleized-words (replace-regexp-in-string "^[0-9]\\{4\\}-[0-9][0-9]-[0-9][0-9]-" "" (file-name-base (or buffer-file-name "new buffer"))))`}
 #+author: ${2:`(user-full-name)`}
 #+date: ${3:`(format-time-string "%Y-%m-%d")`}
 
