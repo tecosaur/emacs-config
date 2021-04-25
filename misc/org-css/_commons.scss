@@ -30,7 +30,7 @@ $code-font: SFMono-Regular,Consolas,Liberation Mono,Menlo,monospace;
 
 @mixin text-background($color-bg, $color-text) {
   background-image: linear-gradient($color-text, $color-text);
-  background-size: 1px 1px !important;
+  background-size: 1px 1px;
   background-repeat: repeat-x;
   background-position: 0% 95%;
 }

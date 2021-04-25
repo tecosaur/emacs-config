@@ -1192,7 +1192,7 @@ table a,
 li a,
 dl a {
   background-image: linear-gradient(var(--text-dark), var(--text-dark));
-  background-size: 1px 1px !important;
+  background-size: 1px 1px;
   background-repeat: repeat-x;
   background-position: 0% 95%;
   border-radius: 1px;
@@ -1250,10 +1250,10 @@ dl a {
     opacity: 0.9;
     filter: drop-shadow(1px 1px 1px var(--back-white));
     background-image: linear-gradient(var(--text-dark), var(--text-dark));
-    background-size: 1px 1px !important;
+    background-size: 1px 1px;
     background-repeat: repeat-x;
     background-position: 0% 95%;
-    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg id='squiggle-link' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:ev='http://www.w3.org/2001/xml-events' viewBox='0 0 20 4'%3E%3Cstyle type='text/css'%3E.squiggle{animation:shift .3s linear infinite;}@keyframes shift {from {transform:translateX(0);}to {transform:translateX(-20px);}}%3C/style%3E%3Cpath fill='none' stroke='%23000000' stroke-width='2' class='squiggle' d='M0,3.5 c 5,0,5,-3,10,-3 s 5,3,10,3 c 5,0,5,-3,10,-3 s 5,3,10,3'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg id='squiggle-link' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:ev='http://www.w3.org/2001/xml-events' viewBox='0 0 20 4'%3E%3Cstyle type='text/css'%3E.squiggle{animation:shift .3s linear infinite;}@keyframes shift {from {transform:translateX(0);}to {transform:translateX(-20px);}}%3C/style%3E%3Cpath fill='none' stroke='%23000000' stroke-width='2' class='squiggle' d='M0,3.5 c 5,0,5,-3,10,-3 s 5,3,10,3 c 5,0,5,-3,10,-3 s 5,3,10,3'/%3E%3C/svg%3E") !important;
     background-position: 0% 100%;
     background-size: 0.8em auto;
     text-decoration: none; }
@@ -1271,7 +1271,7 @@ dl a {
   li a[href^="#"],
   dl a[href^="#"] {
     background-image: linear-gradient(var(--text-gray), var(--text-gray));
-    background-size: 1px 1px !important;
+    background-size: 1px 1px;
     background-repeat: repeat-x;
     background-position: 0% 95%; }
     figcaption a[href^="#"]::selection,
@@ -1290,7 +1290,7 @@ dl a {
       opacity: 0.9;
       filter: drop-shadow(1px 1px 1px var(--back-white));
       background-image: linear-gradient(var(--text-medium), var(--text-medium));
-      background-size: 1px 1px !important;
+      background-size: 1px 1px;
       background-repeat: repeat-x;
       background-position: 0% 95%; }
       figcaption a[href^="#"]:hover::selection,
@@ -1328,7 +1328,7 @@ dl a {
 #content .page-intro p a,
 #footnotes a {
   background-image: linear-gradient(var(--text-gray), var(--text-gray));
-  background-size: 1px 1px !important;
+  background-size: 1px 1px;
   background-repeat: repeat-x;
   background-position: 0% 95%;
   border-radius: 1px;
@@ -1352,7 +1352,7 @@ dl a {
   #content .page-intro p a:hover,
   #footnotes a:hover {
     background-image: linear-gradient(var(--text-gray), var(--text-gray));
-    background-size: 1px 1px !important;
+    background-size: 1px 1px;
     background-repeat: repeat-x;
     background-position: 0% 95%;
     border-radius: 1px;
