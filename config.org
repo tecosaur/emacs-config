@@ -1707,6 +1707,19 @@ Now and then citations need to happen
 (package! ob-julia :recipe (:host github :repo "nico202/ob-julia" :files ("*.el" "julia")))
 #+end_src
 
+There's a really cool package in development to /transclude/ Org document content.
+#+begin_src emacs-lisp
+(package! org-transclusion :recipe (:host github :repo "nobiot/org-transclusion")
+  :pin "daa18df6de26b74badab0372e8a64fbde6a7be71")
+#+end_src
+#+begin_src emacs-lisp :tangle yes
+(use-package! org-transclusion
+  :commands org-transclusion-mode
+  :init
+  (map! :after org :map org-mode-map
+        "<f12>" #'org-transclusion-mode))
+#+end_src
+
 Came across this and ... it's cool
 #+begin_src emacs-lisp
 (package! org-graph-view :recipe (:host github :repo "alphapapa/org-graph-view") :pin "13314338d70d2c19511efccc491bed3ca0758170")
