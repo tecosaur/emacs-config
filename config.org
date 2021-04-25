@@ -1702,6 +1702,11 @@ Now and then citations need to happen
 (package! org-ref :pin "3ca9beb744621f007d932deb8a4197467012c23a")
 #+end_src
 
+=ob-julia= is currently a bit borked, but there's an effort to improve this.
+#+begin_src emacs-lisp
+(package! ob-julia :recipe (:host github :repo "nico202/ob-julia" :files ("*.el" "julia")))
+#+end_src
+
 Came across this and ... it's cool
 #+begin_src emacs-lisp
 (package! org-graph-view :recipe (:host github :repo "alphapapa/org-graph-view") :pin "13314338d70d2c19511efccc491bed3ca0758170")
