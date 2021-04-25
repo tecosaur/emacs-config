@@ -5317,6 +5317,17 @@ made unique when necessary."
 
 (add-hook 'org-load-hook #'unpackaged/org-export-html-with-useful-ids-mode)
 #+end_src
+We also need to redefine src_elisp{(org-export-format-reference)} as it now may
+be passed a string as well as a number.
+#+begin_src emacs-lisp
+(defadvice! org-export-format-reference-a (reference)
+  "Format REFERENCE into a string.
+
+REFERENCE is a either a string or a number representing a reference,
+as returned by `org-export-new-reference'."
+  :override #'org-export-format-reference
+  (if (stringp reference) reference (format "org%07x" reference)))
+#+end_src
 **** Nicer ~org-return~
 Once again, from [[https://github.com/alphapapa/unpackaged.el#org-return-dwim][unpackaged.el]]
 #+begin_src emacs-lisp
