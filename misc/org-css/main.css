@@ -611,7 +611,7 @@ code {
 
 kbd {
   display: inline-block;
-  padding: 3px 5px;
+  padding: 0.25em 0.35em;
   font: 80% SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace;
   line-height: normal;
   line-height: 80%;
@@ -619,7 +619,7 @@ kbd {
   vertical-align: middle;
   background-color: var(--back-light);
   border: 1px solid #91959a88;
-  border-radius: 3px;
+  border-radius: 0.35em;
   box-shadow: inset 0 -1px 0 #91959a88; }
 
 li code {
