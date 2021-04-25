@@ -1185,6 +1185,9 @@ hr {
   margin-bottom: 30px;
   margin-top: 40px; }
 
+a {
+  color: inherit; }
+
 figcaption a,
 p a,
 .page-tags a,
@@ -1196,7 +1199,6 @@ dl a {
   background-repeat: repeat-x;
   background-position: 0% 95%;
   border-radius: 1px;
-  color: var(--text-dark);
   text-decoration: none; }
   figcaption a::selection,
   p a::selection,
@@ -1332,7 +1334,6 @@ dl a {
   background-repeat: repeat-x;
   background-position: 0% 95%;
   border-radius: 1px;
-  color: var(--text-gray);
   text-decoration: none; }
   #content .page-intro p a::selection,
   #footnotes a::selection {
@@ -1356,7 +1357,6 @@ dl a {
     background-repeat: repeat-x;
     background-position: 0% 95%;
     border-radius: 1px;
-    color: var(--text-gray);
     text-decoration: none; }
     #content .page-intro p a:hover::selection,
     #footnotes a:hover::selection {
@@ -1740,7 +1740,6 @@ span.acr {
     height: 6rem;
     margin-right: 2rem; }
   .music-track a {
-    color: inherit;
     text-decoration: none; }
   .music-track span {
     min-width: 35%; }
