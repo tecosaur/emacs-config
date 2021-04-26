@@ -7062,6 +7062,7 @@ font-locking are /not/ loaded, and so do not impact the result.
 By enabling these modes in ~htmlize-before-hook~ we can correct this behaviour.
 
 #+begin_src emacs-lisp
+(autoload #'highlight-numbers--turn-on "highlight-numbers")
 (add-hook 'htmlize-before-hook #'highlight-numbers--turn-on)
 #+end_src
 
