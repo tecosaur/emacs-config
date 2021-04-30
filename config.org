@@ -5130,9 +5130,20 @@ the [[*Window title][Window title]].
 **** Nicer generated heading IDs
 Thanks to alphapapa's [[https://github.com/alphapapa/unpackaged.el#export-to-html-with-useful-anchors][unpackaged.el]].
 
-By default, ~url-hexify-string~ seemed to cause me some issues. Replacing that in
-~a53899~ resolved this for me. To go one step further, I create a function for
-producing nice short links, like an inferior version of ~reftex-label~.
+By default, Org generated heading IDs like =#org80fc2a5= which ... works, but has
+two issues
++ It's completely uninformative, I have no idea what's being referenced
++ If I export the same file, everything will change.
+  Now, while without hardcoded values it's impossible to set references in
+  stone, it would be nice for there to be a decent chance of staying the same.
+
+Both of these issues can be addressed by generating IDs like
+=#language-configuration=, which is what I'll do here.
+
+It's worth noting that alphapapa's use of ~url-hexify-string~ seemed to cause me
+some issues. Replacing that in ~a53899~ resolved this for me. To go one step
+further, I create a function for producing nice short links, like an inferior
+version of ~reftex-label~.
 
 #+begin_src emacs-lisp
 (defvar org-reference-contraction-max-words 3
@@ -5192,8 +5203,10 @@ truncated to fit within the limit using `org-reference-contraction-truncate-word
                         downcase
                         (replace-regexp-in-string "\\[\\[[^]]+\\]\\[\\([^]]+\\)\\]\\]" "\\1") ; get description from org-link
                         (replace-regexp-in-string "[-/ ]+" " ") ; replace seperator-type chars with space
-                        (replace-regexp-in-string "[^a-z0-9 ]" "") ; strip chars which need %-encoding in a uri
-                        ) " "))))
+                        puny-encode-string
+                        (replace-regexp-in-string "^xn--\\(.*?\\) ?-?\\([a-z0-9]+\\)$" "\\2 \\1") ; rearrange punycode
+                        (replace-regexp-in-string "[^A-Za-z0-9 ]" "") ; strip chars which need %-encoding in a uri
+                        ) " +"))))
     (when (> (length reference-words)
              org-reference-contraction-max-words)
       (setq reference-words
