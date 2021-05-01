@@ -1707,6 +1707,21 @@ have =org-appear=.
 (package! org-pretty-tags :pin "5c7521651b35ae9a7d3add4a66ae8cc176ae1c76")
 #+end_src
 
+Speaking of headlines, a nice package for viewing and managing the headline
+structure has come to my attention.
+#+begin_src emacs-lisp
+(package! org-ol-tree :recipe (:host github :repo "Townk/org-ol-tree")
+  :pin "207c748aa5fea8626be619e8c55bdb1c16118c25")
+#+end_src
+#+begin_src emacs-lisp :tangle yes
+(use-package! org-ol-tree
+  :commands org-ol-tree)
+(map! :map org-mode-map
+      :after org
+      :localleader
+      :desc "Outline" "O" #'org-ol-tree)
+#+end_src
+
 There's this nice package that can provide nice syntax highlighting with LaTeX
 exports.
 #+begin_src emacs-lisp
