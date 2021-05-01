@@ -6788,9 +6788,17 @@ compared to the default implementation."
              (html5-fancy (org-html--html5-fancy-p info)))
          (when title
            (format
-            "<div class='page-header'><div class='page-meta'>%s, %s</div><h1 class=\"title\">%s%s</h1></div>\n"
-            (org-export-data (plist-get info :date) info)
-            (org-export-data (plist-get info :author) info)
+            "<div class='page-header'><div class='page-meta'>%s</div><h1 class=\"title\">%s%s</h1></div>\n"
+            (if (or (plist-get info :with-date)
+                    (plist-get info :with-author))
+                (concat "<div class='page-meta'>"
+                        (when (plist-get info :with-date)
+                          (org-export-data (plist-get info :date) info))
+                        (when (and (plist-get info :with-date) (plist-get info :with-author)) ", ")
+                        (when (plist-get info :with-author)
+                          (org-export-data (plist-get info :author) info))
+                        "</div>")
+              "")
             (org-export-data title info)
             (if subtitle
                 (format
