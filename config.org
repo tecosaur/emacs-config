@@ -6535,26 +6535,6 @@ the final documents.
 (ox-extras-activate '(ignore-headlines))
 #+end_src
 
-**** Accept verbatim text in headings
-
-LaTeX doesn't like it when =\verb= is used inside the argument of other commands
-apparently. This means that when it's used in a =\section= command (or similar)
-compilation fails. This is rather disappointing. So, let's change any instances
-to use =\texttt=. We'll actually hook this in the [[*Acronym formatting][Acronym formatting]] section, so
-we'll just define a function to perform this transformation for now.
-
-#+begin_src emacs-lisp
-(defun org-latex-substitute-verb-with-texttt (content)
-  "Replace instances of \\verb with \\texttt{}."
-  (replace-regexp-in-string
-   "\\\\verb\\(.\\).+?\\1"
-   (lambda (verb-string)
-     (replace-regexp-in-string
-      "\\\\" "\\\\\\\\" ; Why elisp, why?
-      (org-latex--text-markup (substring verb-string 6 -1) 'code '(:latex-text-markup-alist ((code . protectedtexttt))))))
-   content))
-#+end_src
-
 **** Acronym formatting
 I like automatically using spaced small caps for acronyms. For strings I want to
 be unaffected let's use ~;~ as a prefix to prevent the transformation --- i.e.
@@ -6610,8 +6590,7 @@ TODO abstract backend implementations."
 (defun org-latex-format-headline-acronymised (todo todo-type priority text tags info)
   "Like `org-latex-format-headline-default-function', but with acronym formatting."
   (org-latex-format-headline-default-function
-   todo todo-type priority (org-latex-substitute-verb-with-texttt
-                            (org-export-filter-text-acronym text 'latex info)) tags info))
+   todo todo-type priority (org-export-filter-text-acronym text 'latex info) tags info))
 (setq org-latex-format-headline-function #'org-latex-format-headline-acronymised)
 #+end_src
 
