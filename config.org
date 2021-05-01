@@ -858,7 +858,9 @@ straightforward, I'll just redefine it to a simpler, async, function.
   :override #'+literate-tangle-h
   (let ((default-directory doom-private-dir))
     (async-shell-command
-     (format "emacs --batch --eval \"(progn (require 'org) (setq org-confirm-babel-evaluate nil) (org-babel-tangle-file \\\"%s\\\"))\""
+     (format "emacs --batch --eval \"(progn \
+(require 'org) (setq org-confirm-babel-evaluate nil) \
+(org-babel-tangle-file \\\"%s\\\"))\""
              +literate-config-file))))
 #+end_src
 ** Other things
@@ -2238,6 +2240,11 @@ syntax-highlighting-love though which is a bit sad. Thankfully
 Unfortunately this seems to mess things up, which is something I'll want to look
 into later.
 ** Mixed pitch
+
+As mixed pitch uses the variable =mixed-pitch-face=, we can create a new function
+to apply mixed pitch with a serif face instead of the default. This was created
+for writeroom mode.
+
 #+begin_src emacs-lisp
 (autoload #'mixed-pitch-serif-mode "mixed-pitch"
   "Change the default face of the current buffer to a serifed variable pitch, while keeping some faces fixed pitch." t)
@@ -4265,7 +4272,7 @@ It's nice to see ANSI colour codes displayed
              (with-silent-modifications
                (ansi-color-apply-on-region (point-min) (point-max)))))
 #+end_src
-** Org Mode
+** Org
 :PROPERTIES:
 :CUSTOM_ID: org
 :header-args:emacs-lisp: :tangle no :noweb-ref org-conf
@@ -4516,7 +4523,12 @@ I think it makes sense to have list bullets change with depth
 (setq org-list-demote-modify-bullet '(("+" . "-") ("-" . "+") ("*" . "+") ("1." . "a.")))
 #+end_src
 ***** Citation
-Occasionally I want to cite something.
+Occasionally I want to cite something, and =org-ref= is /the/ package for that.
+
+Unfortunately, it ignores the ~file = {...}~ =.bib= keys though. Let's fix that.
+I separate files on =;=, which may just be a Zotero/BetterBibLaTeX thing, but it's
+a good idea in my case at least.
+
 #+begin_src emacs-lisp
 (use-package! org-ref
   :after org
@@ -5250,6 +5262,7 @@ truncated to fit within the limit using `org-reference-contraction-truncate-word
 
     (string-join reference-words org-reference-contraction-joining-char)))
 #+end_src
+
 Now here's alphapapa's subtly tweaked mode.
 #+begin_src emacs-lisp
 (define-minor-mode unpackaged/org-export-html-with-useful-ids-mode
@@ -5367,7 +5380,7 @@ be passed a string as well as a number.
 (defadvice! org-export-format-reference-a (reference)
   "Format REFERENCE into a string.
 
-REFERENCE is a either a string or a number representing a reference,
+REFERENCE is a either a number or a string representing a reference,
 as returned by `org-export-new-reference'."
   :override #'org-export-format-reference
   (if (stringp reference) reference (format "org%07x" reference)))
@@ -6249,7 +6262,7 @@ It's also nice to make use of the Unicode characters for check boxes, and other 
   :latex_header  "#+latex_header:"
   :beamer_header "#+beamer_header:"
   :attr_latex    "#+attr_latex:"
-  :attr_html     "#+attr_latex:"
+  :attr_html     "#+attr_html:"
   :begin_quote   "#+begin_quote"
   :end_quote     "#+end_quote"
   :caption       "#+caption:"
@@ -7275,7 +7288,7 @@ Now we just need to actually implement that metadata extraction function.
                                     (with-current-buffer (progn (message "Fetching metadata from %s" url)
                                                                 (url-retrieve-synchronously url t t 5))
                                       (goto-char (point-min))
-                                      (delete-region (point-min) (- (search-forward "<head>") 6))
+                                      (delete-region (point-min) (- (search-forward "<head") 6))
                                       (delete-region (search-forward "</head>") (point-max))
                                       (goto-char (point-min))
                                       (while (re-search-forward "<script[^\u2800]+?</script>" nil t)
@@ -7789,7 +7802,8 @@ following keys:
   - a function, which is evaluated with the list of feature flags as its
     single argument. The result of which is included in the preamble
   - a list, which is passed to `eval', with a list of feature flags available
-    as \"features\".
+    as \"features\"
+
 - :requires, a feature or list of features that must be available
 - :when, a feature or list of features that when all available should cause this
     to be automatically enabled.
