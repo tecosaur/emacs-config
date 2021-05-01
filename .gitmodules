@@ -19,6 +19,3 @@
 [submodule "emacs-everywhere"]
 	path = lisp/emacs-everywhere
 	url = https://github.com/tecosaur/emacs-everywhere.git
-[submodule "mixed-pitch"]
-	path = lisp/mixed-pitch
-	url = https://gitlab.com/tecosaur/mixed-pitch.git

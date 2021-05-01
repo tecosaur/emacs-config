@@ -1402,7 +1402,7 @@ With all our fancy Emacs themes, my terminal is missing out!
 What's even the point of using Emacs unless you're constantly telling everyone
 about it?
 #+begin_src emacs-lisp
-(package! elcord :pin "25531186c10b74a10ee24990f9e967296cc70342")
+(package! elcord :pin "6608e0392b46324fc09a5b5f4457c15ac1394f80")
 #+end_src
 
 For some reason, I find myself demoing Emacs every now and then. Showing what
@@ -1439,7 +1439,7 @@ let's just make sure this is lazy-loaded appropriately.
 
 In a similar manner, [[https://gitlab.com/ambrevar/emacs-gif-screencast][gif-screencast]] may come in handy.
 #+begin_src emacs-lisp
-(package! gif-screencast :pin "1145e676b160e7b1e5756f5b0f30dd31de252e1f")
+(package! gif-screencast :pin "fa81e915c256271fa10b807a2935d5eaa4700dff")
 #+end_src
 
 We can lazy load this using the start/stop commands.
@@ -1486,7 +1486,7 @@ This is a nice extension to ~calc~
 #+begin_src emacs-lisp
 (package! calctex :recipe (:host github :repo "johnbcoughlin/calctex"
                            :files ("*.el" "calctex/*.el" "calctex-contrib/*.el" "org-calctex/*.el" "vendor"))
-  :pin "7fa2673c64e259e04aef684ccf09ef85570c388b")
+  :pin "784cf911bc96aac0f47d529e8cee96ebd7cc31c9")
 #+end_src
 **** Emacs everywhere
 #+begin_src emacs-lisp
@@ -1561,12 +1561,7 @@ Then for reading them, the only currently viable options seems to be [[https://d
 #+end_src
 
 Together these should give me a rather good experience reading ebooks.
-**** My mixed-pitch fork
-I'd rather like to be able to use multiple faces with mixed-pitch, so I'll have
-to use my own branch for now.
-#+begin_src emacs-lisp
-(package! mixed-pitch :recipe (:local-repo "lisp/mixed-pitch") :pin nil)
-#+end_src
+
 **** Screenshots
 This makes it a breeze to take lovely screenshots.
 #+begin_src emacs-lisp
@@ -1602,7 +1597,7 @@ these as horizontal rules.
 For mathematical convenience, WIP
 #+begin_src emacs-lisp
 (package! aas :recipe (:host github :repo "ymarco/auto-activating-snippets")
-  :pin "e2b3edafd7aafa8c47833a70984d7404c607626c")
+  :pin "3076cefea0f6ae9d7757f13c27b5602e007b58ec")
 (package! laas :recipe (:local-repo "lisp/LaTeX-auto-activating-snippets"))
 #+end_src
 And some basic config
@@ -1621,13 +1616,13 @@ And some basic config
 
 I think the latest AucTeX may be a bit dodgy, so
 #+begin_src emacs-lisp
-(package! auctex :pin "384c4b989192087144512a528bcc1949c2ab3e5b")
+(package! auctex :pin "6440ec5964dcbe58155e28f00f84ec0118d8fb7b")
 #+end_src
 
 *** Org Mode
 Use ~HEAD~ for development.
 #+begin_src emacs-lisp
-(unpin! org-mode)
+(package! org-mode :pin nil)
 #+end_src
 
 **** Improve agenda/capture
@@ -1641,7 +1636,7 @@ set up org-capture.
 #+begin_src emacs-lisp
 (package! doct
   :recipe (:host github :repo "progfolio/doct")
-  :pin "8ac08633ae413a6605b6506d2739eece7475272e")
+  :pin "67fc46c8a68989b932bce879fbaa62c6a2456a1f")
 #+end_src
 **** Visuals
 Org tables aren't the prettiest thing to look at. This package is supposed to
@@ -1649,7 +1644,7 @@ redraw them in the buffer with box-drawing characters. Sounds like an
 improvement to me! We'll make use of this with =writeroom-mode=.
 #+begin_src emacs-lisp
 (package! org-pretty-table
-  :recipe (:host github :repo "Fuco1/org-pretty-table") :pin "474ad84a8fe5377d67ab7e491e8e68dac6e37a11")
+  :recipe (:host github :repo "Fuco1/org-pretty-table") :pin "87772a9469d91770f87bfa788580fca69b9e697a")
 #+end_src
 #+begin_src emacs-lisp :tangle yes
 (use-package! org-pretty-table
@@ -1666,7 +1661,7 @@ Then for showing org formatting markers (=*/=~=)  when inside such a region, we
 have =org-appear=.
 #+begin_src emacs-lisp
 (package! org-appear :recipe (:host github :repo "awth13/org-appear")
-  :pin "0b3b029d5851c77ee792727b280f062eaf2c22c7")
+  :pin "6ee49875f8bdefafbde849f5628d673e9740cf8c")
 #+end_src
 
 ~org-superstar-mode~ is great. While we're at it we may as well make tags prettier as well 🙂
