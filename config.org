@@ -1638,7 +1638,6 @@ correct package statement needed.
 
 #+name: org-pkg-statement
 #+begin_src emacs-lisp :tangle no
-(setq doom-first-input-hook nil) ; HACK temporary bugfix
 (load (expand-file-name "core/core.el" user-emacs-directory) nil t) ; for `doom-local-dir'
 (let ((dev-key (and (file-exists-p "~/.ssh/id_ed25519.pub")
                     (= 0 (shell-command "cat ~/.ssh/id_ed25519.pub | grep -q AAAAC3NzaC1lZDI1NTE5AAAAIOZZqcJOLdN+QFHKyW8ST2zz750+8TdvO9IT5geXpQVt"))))
