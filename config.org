@@ -4503,8 +4503,7 @@ Entries of the form (subject . id)."
       org-list-allow-alphabetical t               ; have a. A. a) A) list bullets
       org-export-in-background t                  ; run export processes in external emacs process
       org-catch-invisible-edits 'smart            ; try not to accidently do weird stuff in invisible regions
-      org-export-with-sub-superscripts '{}        ; don't treat lone _ / ^ as sub/superscripts, require _{} / ^{}
-      org-re-reveal-root "https://cdn.jsdelivr.net/npm/reveal.js")
+      org-export-with-sub-superscripts '{})       ; don't treat lone _ / ^ as sub/superscripts, require _{} / ^{}
 #+end_src
 I also like the src_elisp{:comments} header-argument, so let's make that a
 default.
@@ -7266,6 +7265,7 @@ I want to add GitHub-style links on hover for headings.
 #+begin_src emacs-lisp
 (defun org-export-html-headline-anchor (text backend info)
   (when (and (org-export-derived-backend-p backend 'html)
+             (not (org-export-derived-backend-p backend 're-reveal))
              org-fancy-html-export-mode)
     (unless (bound-and-true-p org-msg-export-in-progress)
       (replace-regexp-in-string
@@ -9191,6 +9191,16 @@ Introduction, Overview... so let's set bump up the headline level that becomes a
 frame from ~1~ to ~2~.
 #+begin_src emacs-lisp
 (setq org-beamer-frame-level 2)
+#+end_src
+*** Reveal export
+
+By default reveal is rather nice, there are just a few tweaks that I consider a
+good idea.
+
+#+begin_src emacs-lisp
+(setq org-re-reveal-theme "white"
+      org-re-reveal-transition "slide"
+      org-re-reveal-plugins '(markdown notes math search zoom))
 #+end_src
 *** ASCII export
 
