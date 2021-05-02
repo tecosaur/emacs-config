@@ -1654,8 +1654,8 @@ correct package statement needed.
           `(package! org-mode
              :recipe (:host nil :repo "git@code.orgmode.org:bzg/org-mode.git"
                       :files ("*.el" "lisp/*.el" "contrib/lisp/*.el" "contrib/scripts"))
-             :pin nil)
-          (t `(package! org-mode :pin nil))))))
+             :pin nil))
+         (t `(package! org-mode :pin nil)))))
 #+end_src
 
 #+begin_src emacs-lisp :noweb no-export
