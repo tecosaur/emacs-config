@@ -1648,18 +1648,22 @@ correct package statement needed.
    (cond ((and dev-key dev-pkg)
           `(package! org-mode
              :recipe (:local-repo ,(expand-file-name "straight/repos/org-mode" doom-local-dir)
-                      :files ("*.el" "lisp/*.el" "contrib/lisp/*.el" "contrib/scripts"))
+                      :files ("*.el" "lisp/*.el"))
              :pin nil))
          (dev-key
           `(package! org-mode
              :recipe (:host nil :repo "git@code.orgmode.org:bzg/org-mode.git"
-                      :files ("*.el" "lisp/*.el" "contrib/lisp/*.el" "contrib/scripts"))
+                      :files ("*.el" "lisp/*.el"))
              :pin nil))
          (t `(package! org-mode :pin nil)))))
 #+end_src
 
 #+begin_src emacs-lisp :noweb no-export
 <<org-pkg-statement()>>
+(package! org-contrib
+  :recipe (:host nil :repo "https://git.sr.ht/~bzg/org-contrib"
+           :files ("lisp/*.el"))
+  :pin "b18928c973d1de7d05df73f454c7952317919a1c")
 #+end_src
 
 **** Improve agenda/capture
