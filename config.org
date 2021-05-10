@@ -343,14 +343,13 @@ the following:
 (setq undo-limit 80000000                         ; Raise undo-limit to 80Mb
       evil-want-fine-undo t                       ; By default while in insert all changes are one big blob. Be more granular
       auto-save-default t                         ; Nobody likes to loose work, I certainly don't
-      truncate-string-ellipsis "…")               ; Unicode ellispis are nicer than "...", and also save /precious/ space
+      truncate-string-ellipsis "…"                ; Unicode ellispis are nicer than "...", and also save /precious/ space
+      password-cache-expiry nil)                  ; I can trust my computers ... can't I?
 
 (display-time-mode 1)                             ; Enable time in the mode-line
 
-(if (equal "Battery status not available"
-           (battery))
-    (display-battery-mode 1)                        ; On laptops it's nice to know how much power you have
-  (setq password-cache-expiry nil))               ; I can trust my desktops ... can't I? (no battery = desktop)
+(unless (string-match-p "^Power N/A" (battery))   ; On laptops...
+  (display-battery-mode 1))                       ; it's nice to know how much power you have
 
 (global-subword-mode 1)                           ; Iterate through CamelCase words
 #+end_src
