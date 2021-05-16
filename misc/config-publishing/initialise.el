@@ -21,18 +21,17 @@
 
 ;;; Messaging
 
+(defvar log-messages t)
+
+(defun logged-string (str &optional _term)
+  (let ((inhibit-message t)
+        (coding-system-for-write 'utf-8))
+    (append-to-file str nil log-file)))
+
+(when log-messages
+  (advice-add 'send-string-to-terminal :after #'logged-message))
+
 (defvar message-colour t)
-
-(defun logged-message (msg)
-  (unless inhibit-message
-    (let ((inhibit-message t)
-          (coding-system-for-write 'utf-8))
-      (princ #'external-debugging-output #'ignore)
-      (append-to-file msg nil log-file)
-      (append-to-file "\n" nil log-file)))
-  msg)
-
-(advice-add 'message :filter-return #'logged-message)
 
 (defun red-error (orig-fn &rest args)
   (message "\033[0;31m" 'unmodified)
@@ -60,7 +59,8 @@
 
 (when message-colour
   (advice-add 'debug :around #'red-error)
-  (advice-add 'message :around #'timed-coloured-message))
+  (advice-add 'message :around #'timed-coloured-message)
+  (advice-add 'doom--print :around #'timed-coloured-message))
 
 ;;; Initialisation
 
@@ -75,6 +75,9 @@
     (load (expand-file-name "core/core.el" user-emacs-directory) nil t)
     (require 'core-cli)
     (doom-initialize))
+
+  (setq doom-cli-log-error-file log-file)
+  (write-region "" nil log-file nil :silent)
 
   (defalias 'y-or-n-p #'ignore)
 
