@@ -438,7 +438,7 @@ have flags applied to tweak their behaviour.
 
 #+name: init.el
 #+attr_html: :collapsed t
-#+begin_src emacs-lisp :tangle "init.el" :noweb no-export :comments none
+#+begin_src emacs-lisp :tangle "init.el" :noweb no-export :comments no
 ;;; init.el -*- lexical-binding: t; -*-
 
 ;; This file controls what Doom modules are enabled and what order they load in.
@@ -838,7 +838,7 @@ command is run, so we can just enable evaluation by setting
 While we're at it, we should silence ~org-babel-execute-src-block~ to
 avoid polluting the output.
 
-#+begin_src emacs-lisp :tangle cli.el :comments none
+#+begin_src emacs-lisp :tangle cli.el :comments no
 ;;; cli.el -*- lexical-binding: t; -*-
 (setq org-confirm-babel-evaluate nil)
 
@@ -1225,7 +1225,7 @@ convenient, so I'll raise the requirement to =bash=. Since arrays are the only
 'extra' compared to =sh=, other shells like =csh= etc. should work too.
 
 #+name: e
-#+begin_src shell :tangle ~/.local/bin/e :mkdirp yes :tangle-mode (identity #o755) :comments none
+#+begin_src shell :tangle ~/.local/bin/e :mkdirp yes :tangle-mode (identity #o755) :comments no
 #!/usr/bin/env bash
 force_tty=false
 force_wait=false
@@ -1385,7 +1385,7 @@ amuse oneself. Introducing: typewriter sounds!
 
 Hey, let's get the weather in here while we're at it.
 Unfortunately this seems slightly unmaintained ([[https://github.com/bcbcarl/emacs-wttrin/pulls][few open bugfix PRs]]) so let's
-roll our [[file:lisp/wttrin.el][own version]].
+roll our [[file:lisp/wttrin/wttrin.el][own version]].
 #+begin_src emacs-lisp
 (package! wttrin :recipe (:local-repo "lisp/wttrin"))
 #+end_src
@@ -4393,7 +4393,7 @@ in an src_elisp{(after! ...)} block.
 Org mode isn't recognised as it's own mime type by default, but that can easily
 be changed with the following file. For system-wide changes try
 ~/usr/share/mime/packages/org.xml~.
-#+begin_src xml :tangle ~/.local/share/mime/packages/org.xml :mkdirp yes :comments none
+#+begin_src xml :tangle ~/.local/share/mime/packages/org.xml :mkdirp yes :comments no
 <mime-info xmlns='http://www.freedesktop.org/standards/shared-mime-info'>
   <mime-type type="text/org">
     <comment>Emacs Org-mode File</comment>
