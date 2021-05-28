@@ -2539,19 +2539,15 @@ tweaks. Namely:
 (after! writeroom-mode
   (defvar-local +zen--original-org-indent-mode-p nil)
   (defvar-local +zen--original-mixed-pitch-mode-p nil)
-  (defvar-local +zen--original-solaire-mode-p nil)
   (defvar-local +zen--original-org-pretty-table-mode-p nil)
   (defun +zen-enable-mixed-pitch-mode-h ()
     "Enable `mixed-pitch-mode' when in `+zen-mixed-pitch-modes'."
     (when (apply #'derived-mode-p +zen-mixed-pitch-modes)
       (if writeroom-mode
           (progn
-            (setq +zen--original-solaire-mode-p solaire-mode)
-            (solaire-mode -1)
             (setq +zen--original-mixed-pitch-mode-p mixed-pitch-mode)
             (funcall (if +zen-serif-p #'mixed-pitch-serif-mode #'mixed-pitch-mode) 1))
-        (funcall #'mixed-pitch-mode (if +zen--original-mixed-pitch-mode-p 1 -1))
-        (when +zen--original-solaire-mode-p (solaire-mode 1)))))
+        (funcall #'mixed-pitch-mode (if +zen--original-mixed-pitch-mode-p 1 -1)))))
   (pushnew! writeroom--local-variables
             'display-line-numbers
             'visual-fill-column-width
