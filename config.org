@@ -4569,6 +4569,17 @@ Let's also make creating an org buffer just that little bit easier.
       (:prefix "b"
        :desc "New empty ORG buffer" "o" #'evil-buffer-org-new))
 #+end_src
+***** The utility of zero-width spaces
+Occasionally in Org you run into annoyances where you want to have two seperate
+blocks right together without a space. For example, to *emp​h*​asise part of a word,
+or put a currency symbol immediately before an inline source block.
+There is a solution to this, it just sounds slightly hacky --- zero width spaces.
+Because this is Emacs, we can make this feel much less hacky by making a minor
+addition to the Org key map 🙂.
+#+begin_src emacs-lisp
+(map! :map org-mode-map
+      :nie "M-SPC M-SPC" (cmd! (insert "\u200B")))
+#+end_src
 ***** List bullet sequence
 I think it makes sense to have list bullets change with depth
 #+begin_src emacs-lisp
