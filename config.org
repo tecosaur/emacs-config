@@ -4325,6 +4325,11 @@ It would also be nice to change the name pre-filled in =From:= when drafting.
   (let ((user-full-name mu4e-from-name))
     (funcall orig-fn)))
 #+end_src
+
+We can also use this a signature,
+#+begin_src emacs-lisp
+(setq message-signature mu4e-from-name)
+#+end_src
 *** Org Msg
 Doom does a fantastic stuff with the defaults with this, so we only make a few
 minor tweaks.
