@@ -786,6 +786,8 @@ listing the missing fonts should appear for at least half a second.
 nice selection doom provides there's no reason for me to want the defaults.
 #+begin_src emacs-lisp
 (setq doom-theme 'doom-vibrant)
+(remove-hook 'window-setup-hook #'doom-init-theme-h)
+(add-hook 'after-init-hook #'doom-init-theme-h 'append)
 (delq! t custom-theme-load-path)
 #+end_src
 However, by default ~red~ text is used in the ~modeline~, so let's make that orange
