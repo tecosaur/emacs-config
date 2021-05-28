@@ -1222,7 +1222,7 @@ to add a few bells and whistles --- namely:
 
 I would use =sh=, but using arrays for argument manipulation is just too
 convenient, so I'll raise the requirement to =bash=. Since arrays are the only
-'extra' compared to =sh=, other shells like =csh= etc. should work too.
+'extra' compared to =sh=, other shells like =ksh= etc. should work too.
 
 #+name: e
 #+begin_src shell :tangle ~/.local/bin/e :mkdirp yes :tangle-mode (identity #o755) :comments no
@@ -8927,7 +8927,7 @@ tempfile, this can provide a caching mechanism.
             (org-latex--inline-image link info))))
 #+end_src
 **** Chameleon --- aka. match theme
-Once the idea of having the look of the LaTeX document produced match the
+Once I had the idea of having the look of the LaTeX document produced match the
 current Emacs theme, I was enraptured. The result is the pseudo-class ~chameleon~.
 #+begin_src emacs-lisp
 (after! ox
