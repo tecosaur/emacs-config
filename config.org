@@ -1593,7 +1593,12 @@ these as horizontal rules.
 (use-package! page-break-lines
   :commands page-break-lines-mode
   :init
-  (autoload 'turn-on-page-break-lines-mode "page-break-lines"))
+  (autoload 'turn-on-page-break-lines-mode "page-break-lines")
+  :config
+  (setq page-break-lines-max-width fill-column)
+  (map! :prefix "g"
+        :desc "Prev page break" :nv "[" #'backward-page
+        :desc "Next page break" :nv "]" #'forward-page))
 #+end_src
 ** Language packages
 *** LaTeX
