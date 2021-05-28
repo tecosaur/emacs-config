@@ -2195,8 +2195,6 @@ the mode on startup, let's prevent installation of the package.
   :commands (info-colors-fontify-node))
 
 (add-hook 'Info-selection-hook 'info-colors-fontify-node)
-
-(add-hook 'Info-mode-hook #'mixed-pitch-mode)
 #+end_src
 
 #+attr_html: :class invertible :alt Example colourised info page
@@ -2268,6 +2266,26 @@ syntax-highlighting-love though which is a bit sad. Thankfully
 Unfortunately this seems to mess things up, which is something I'll want to look
 into later.
 ** Mixed pitch
+
+We'd like to use mixed pitch in certain modes. If we simply add a hook, when
+directly opening a file with (a new) Emacs =mixed-pitch-mode= runs before UI
+initialisation, which is problematic. To resolve this, we create a hook that
+runs after UI initialisation and both
++ conditionally enables =mixed-pitch-mode=
++ sets up the mixed pitch hooks
+
+#+begin_src emacs-lisp
+(defvar mixed-pitch-modes '(org-mode LaTeX-mode markdown-mode gfm-mode Info-mode)
+  "Modes that `mixed-pitch-mode' should be enabled in, but only after UI initialisation.")
+(defun init-mixed-pitch-h ()
+  "Hook `mixed-pitch-mode' into each mode in `mixed-pitch-hooks'.
+Also immediately enables `mixed-pitch-hooks' if currently in one of the modes."
+  (when (memq major-mode mixed-pitch-hooks)
+    (mixed-pitch-mode 1))
+  (dolist (hook mixed-pitch-hooks)
+    (add-hook (intern (concat (symbol-name hook) "-hook")) #'mixed-pitch-mode)))
+(add-hook 'doom-init-ui-hook #'init-mixed-pitch-h)
+#+end_src
 
 As mixed pitch uses the variable =mixed-pitch-face=, we can create a new function
 to apply mixed pitch with a serif face instead of the default. This was created
@@ -6056,7 +6074,7 @@ font changes etc, and also propagate colours from the current theme.
 **** Font Display
 Mixed pitch is great. As is ~+org-pretty-mode~, let's use them.
 #+begin_src emacs-lisp
-(add-hook! 'org-mode-hook #'+org-pretty-mode #'mixed-pitch-mode)
+(add-hook 'org-mode-hook #'+org-pretty-mode)
 #+end_src
 
 Let's make headings a bit bigger
@@ -9590,10 +9608,6 @@ Then let's bind the content to a function, and define some nice helpers.
     (yas-expand-snippet (yas-lookup-snippet "_deliminators" 'latex-mode) (point) (+ (point) (if (tec/tex-next-char-smart-close-delim open-char) 2 1)))))
 #+end_src
 *** Editor visuals
-Once again, /all hail mixed pitch mode!/
-#+begin_src emacs-lisp
-(add-hook 'LaTeX-mode-hook #'mixed-pitch-mode)
-#+end_src
 
 Let's enhance ~TeX-fold-math~ a bit
 #+begin_src emacs-lisp
@@ -10015,10 +10029,6 @@ Julia server. The pseudo-fix is rather simple at least
   :after graphviz-dot-mode)
 #+end_src
 ** Markdown
-Let's use mixed pitch, because it's great
-#+begin_src emacs-lisp
-(add-hook! (gfm-mode markdown-mode) #'mixed-pitch-mode)
-#+end_src
 
 Most of the time when I write markdown, it's going into some app/website which
 will do it's own line wrapping, hence we /only/ want to use visual line wrapping. No hard stuff.
