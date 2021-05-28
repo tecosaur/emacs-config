@@ -4112,7 +4112,7 @@ suggest msmtp to be a better choice. I have seen the following points raised
 + ~msmtp~ is a maintained alternative to ~ssmtp~
 + ~msmtp~ is easier to configure
 
-The config file is [[file:~/.msmtprc][~/.msmtprc]]
+The config file is [[file:~/.config/msmtp/config][~/.config/msmtp/config]].
 
 **** System hackery
 Unfortunately, I seem to have run into a [[https://bugs.archlinux.org/task/44994][bug]] present in my packaged version, so
