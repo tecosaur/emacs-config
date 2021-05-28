@@ -1850,12 +1850,14 @@ Graphviz is a nice method of visualising simple graphs, based on plaintext
 (package! graphviz-dot-mode :pin "3642a0a5f41a80c8ecef7c6143d514200b80e194")
 #+end_src
 *** Authinfo
-#+begin_src emacs-lisp
+My patch giving my patch giving =authinfo-mode= syntax highlighting is only
+available in Emacs28+. For older versions, I've got a package I can use.
+#+begin_src emacs-lisp :tangle (if (< emacs-major-version 28) "packages.el" "no")
 (package! authinfo-color-mode
   :recipe (:local-repo "lisp/authinfo-color-mode"))
 #+end_src
 Now we just need to load it appropriately.
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp :tangle (if (< emacs-major-version 28) "yes" "no")
 (use-package! authinfo-color-mode
   :mode ("authinfo.gpg\\'" . authinfo-color-mode)
   :init (advice-add 'authinfo-mode :override #'authinfo-color-mode))
