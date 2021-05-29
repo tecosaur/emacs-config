@@ -7951,21 +7951,20 @@ extract a list of features found in an Org buffer.
   (let ((case-fold-search nil))
     (with-current-buffer (or buffer (current-buffer))
       (delete-dups
-       (apply #'append
-              (mapcar (lambda (construct-feature)
-                        (when (let ((out (pcase (car construct-feature)
-                                           ((pred stringp) (car construct-feature))
-                                           ((pred functionp) (funcall (car construct-feature) info))
-                                           ((pred listp) (eval (car construct-feature)))
-                                           ((pred symbolp) (symbol-value (car construct-feature)))
-                                           (_ (user-error "org-latex-conditional-features key %s unable to be used" (car construct-feature))))))
-                                (if (stringp out)
-                                    (save-excursion
-                                      (goto-char (point-min))
-                                      (re-search-forward out nil t))
-                                  out))
-                          (if (listp (cdr construct-feature)) (cdr construct-feature) (list (cdr construct-feature)))))
-                      org-latex-conditional-features))))))
+       (mapcan (lambda (construct-feature)
+                 (when (let ((out (pcase (car construct-feature)
+                                    ((pred stringp) (car construct-feature))
+                                    ((pred functionp) (funcall (car construct-feature) info))
+                                    ((pred listp) (eval (car construct-feature)))
+                                    ((pred symbolp) (symbol-value (car construct-feature)))
+                                    (_ (user-error "org-latex-conditional-features key %s unable to be used" (car construct-feature))))))
+                         (if (stringp out)
+                             (save-excursion
+                               (goto-char (point-min))
+                               (re-search-forward out nil t))
+                           out))
+                   (if (listp (cdr construct-feature)) (cdr construct-feature) (list (cdr construct-feature)))))
+               org-latex-conditional-features)))))
 #+end_src
 
 ***** Preamble generation
