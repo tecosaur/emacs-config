@@ -1651,17 +1651,22 @@ correct package statement needed.
                     (= 0 (shell-command "cat ~/.ssh/id_ed25519.pub | grep -q AAAAC3NzaC1lZDI1NTE5AAAAIOZZqcJOLdN+QFHKyW8ST2zz750+8TdvO9IT5geXpQVt"))))
       (dev-pkg (let ((default-directory (expand-file-name "straight/repos/org-mode" doom-local-dir)))
                  (and (file-exists-p default-directory)
-                      (string= "git@code.orgmode.org:bzg/org-mode.git\n" (shell-command-to-string "git remote get-url origin"))))))
+                      (string= "git@code.orgmode.org:bzg/org-mode.git\n" (shell-command-to-string "git remote get-url origin")))))
+      (recipe-common '(:files ("*.el" "lisp/*.el")
+                       :pre-build
+                       (with-temp-file (doom-path (straight--repos-dir "org-mode") "org-version.el")
+                         (insert "(fset 'org-release (lambda () \"9.5\"))\n"
+                                 "(fset 'org-git-version #'ignore)\n"
+                                 "(provide 'org-version)\n"))
+                       :includes org)))
   (prin1-to-string
    (cond ((and dev-key dev-pkg)
           `(package! org-mode
-             :recipe (:local-repo ,(expand-file-name "straight/repos/org-mode" doom-local-dir)
-                      :files ("*.el" "lisp/*.el"))
+             :recipe (:local-repo ,(expand-file-name "straight/repos/org-mode" doom-local-dir) ,@recipe-common)
              :pin nil))
          (dev-key
           `(package! org-mode
-             :recipe (:host nil :repo "git@code.orgmode.org:bzg/org-mode.git"
-                      :files ("*.el" "lisp/*.el"))
+             :recipe (:host nil :repo "git@code.orgmode.org:bzg/org-mode.git" ,@recipe-common)
              :pin nil))
          (t `(package! org-mode :pin nil)))))
 #+end_src
