@@ -12,4 +12,4 @@
   (+yas/org-prompt-header-arg :results "Result output: " '("silent " "replace " "append " "prepend "))))))
   (if (string= out "") ""
   (concat ":results " out " ")))
-`$0
+`

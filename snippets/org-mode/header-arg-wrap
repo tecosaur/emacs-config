@@ -3,4 +3,4 @@
 # key: w
 # condition: (+yas/org-src-header-p)
 # --
-`(let ((out (+yas/org-prompt-header-arg :noweb "Wrap: " '("example" "export" "comment" "src")))) (if out (concat ":wrap " out " ") ""))`$0
+`(let ((out (+yas/org-prompt-header-arg :noweb "Wrap: " '("example" "export" "comment" "src")))) (if out (concat ":wrap " out " ") ""))`

@@ -3,4 +3,4 @@
 # key: v
 # condition: (+yas/org-src-header-p)
 # --
-`(let ((out (+yas/org-prompt-header-arg :eval "Evaluate: " '("no" "query" "no-export" "query-export")))) (if out (concat ":eval " out " ") ""))`$0
+`(let ((out (+yas/org-prompt-header-arg :eval "Evaluate: " '("no" "query" "no-export" "query-export")))) (if out (concat ":eval " out " ") ""))`
