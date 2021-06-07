@@ -1668,7 +1668,7 @@ correct package statement needed.
           `(package! org-mode
              :recipe (:host nil :repo "git@code.orgmode.org:bzg/org-mode.git" ,@recipe-common)
              :pin nil))
-         (t `(package! org-mode :pin nil)))))
+         (t `(unpin! org-mode)))))
 #+end_src
 
 #+begin_src emacs-lisp :noweb no-export
