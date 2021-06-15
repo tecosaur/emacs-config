@@ -1892,6 +1892,15 @@ have the following.
   (setq abbrev-file-name (expand-file-name "abbrev.el" doom-private-dir))
   (setq save-abbrevs 'silently))
 #+end_src
+** All the icons
+=all-the-icons= does a generally great job giving file names icons. One minor
+niggle I have is that when /I/ open a =.m= file, it's much more likely to be Matlab
+than Objective-C. As such, it'll be switching the icon associated with =.m=.
+#+begin_src emacs-lisp
+(after! all-the-icons
+  (setcdr (assoc "m" all-the-icons-extension-icon-alist)
+          (cdr (assoc "matlab" all-the-icons-extension-icon-alist))))
+#+end_src
 ** Avy
 What a wonderful way to jump to buffer positions, and it uses the QWERTY
 home-row for jumping. Very convenient ... except I'm using Colemak.
