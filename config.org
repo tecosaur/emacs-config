@@ -1656,7 +1656,8 @@ correct package statement needed.
                        :pre-build
                        (with-temp-file (doom-path (straight--repos-dir "org-mode") "org-version.el")
                          (insert "(fset 'org-release (lambda () \"9.5\"))\n"
-                                 "(fset 'org-git-version #'ignore)\n"
+                                 (format "(fset 'org-git-version (lambda () \"%s\"))\n"
+                                         (substring (shell-command-to-string "git rev-parse --short HEAD") 0 -1))
                                  "(provide 'org-version)\n"))
                        :includes org)))
   (prin1-to-string
@@ -6725,6 +6726,13 @@ the final documents.
 #+begin_src emacs-lisp
 (require 'ox-extra)
 (ox-extras-activate '(ignore-headlines))
+#+end_src
+
+Since I (roughly) track Org ~HEAD~, it makes sense to include the git version in
+the creator string.
+#+begin_src emacs-lisp
+(setq org-export-creator-string
+      (format "Emacs %s (Org mode %s %s)" emacs-version (org-release) (org-git-version)))
 #+end_src
 
 **** Acronym formatting
