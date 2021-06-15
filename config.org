@@ -1661,15 +1661,15 @@ correct package statement needed.
                                  "(provide 'org-version)\n"))
                        :includes org)))
   (prin1-to-string
-   (cond ((and dev-key dev-pkg)
-          `(package! org-mode
-             :recipe (:local-repo ,(expand-file-name "straight/repos/org-mode" doom-local-dir) ,@recipe-common)
-             :pin nil))
-         (dev-key
-          `(package! org-mode
-             :recipe (:host nil :repo "git@code.orgmode.org:bzg/org-mode.git" ,@recipe-common)
-             :pin nil))
-         (t `(unpin! org-mode)))))
+   `(package! org-mode
+      :recipe (,@(cond ((and dev-key dev-pkg)
+                        (list :host nil :repo nil :local-repo (expand-file-name "straight/repos/org-mode" doom-local-dir)))
+                       (dev-key
+                        (list :host nil :repo "git@code.orgmode.org:bzg/org-mode.git"))
+                       (t
+                        (list :host 'github :repo "emacs-straight/org-mode")))
+               ,@recipe-common)
+      :pin nil)))
 #+end_src
 
 #+begin_src emacs-lisp :noweb no-export
