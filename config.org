@@ -7614,7 +7614,8 @@ commands below are defined.
       org-latex-tables-booktabs t
       org-latex-hyperref-template "
 <<latex-fancy-hyperref>>
-")
+"
+      org-latex-reference-command "\\cref{%s}")
 #+end_src
 
 
@@ -7831,7 +7832,7 @@ tests should be very versatile.
     ("\\[\\[\\(?:file\\|https?\\):\\(?:[^]]+?\\|\\\\\\]\\)\\.svg\\]\\]" . svg)
     ("\\\\(\\|\\\\\\[\\|\\\\begin{\\(?:math\\|displaymath\\|equation\\|align\\|flalign\\|multiline\\|gather\\)[a-z]*\\*?}" . maths)
     ("^[ \t]*|" . table)
-    ("cref:\\|\\cref{" . cleveref)
+    ("cref:\\|\\cref{\\|\\[\\[[^\\]]+\\]\\]" . cleveref)
     ("[;\\\\]?\\b[A-Z][A-Z]+s?[^A-Za-z]" . acronym)
     ("\\+[^ ].*[^ ]\\+\\|_[^ ].*[^ ]_\\|\\\\uu?line\\|\\\\uwave\\|\\\\sout\\|\\\\xout\\|\\\\dashuline\\|\\dotuline\\|\\markoverwith" . underline)
     (":float wrap" . float-wrap)
