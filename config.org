@@ -7912,7 +7912,7 @@ introduce an =:order= keyword. Using this I'll arrange snippets as follows.
     (svg           :snippet "\\usepackage{svg}" :order 2)
     (maths         :snippet "\\usepackage[nofont]{bmc-maths}" :order 0.2)
     (table         :snippet "\\usepackage{longtable}\n\\usepackage{booktabs}" :order 2)
-    (cleveref      :snippet "\\usepackage{cleveref}" :order 1) ; after bmc-maths
+    (cleveref      :snippet "\\usepackage[capitalize]{cleveref}" :order 1) ; after bmc-maths
     (underline     :snippet "\\usepackage[normalem]{ulem}" :order 0.5)
     (float-wrap    :snippet "\\usepackage{wrapfig}" :order 2)
     (rotate        :snippet "\\usepackage{rotating}" :order 2)
