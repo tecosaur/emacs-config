@@ -4637,6 +4637,17 @@ addition to the Org key map 🙂.
 (map! :map org-mode-map
       :nie "M-SPC M-SPC" (cmd! (insert "\u200B")))
 #+end_src
+
+We then want to stop the space from being included in exports, which can be done
+with a little filter.
+#+begin_src emacs-lisp
+(defun +org-export-remove-zero-width-space (text _backend _info)
+  "Remove zero width spaces from TEXT."
+  (unless (org-export-derived-backend-p 'org)
+    (replace-regexp-in-string "\u200B" "" text)))
+
+(add-to-list 'org-export-filter-final-output-functions #'+org-export-remove-zero-width-space t)
+#+end_src
 ***** List bullet sequence
 I think it makes sense to have list bullets change with depth
 #+begin_src emacs-lisp
