@@ -8205,8 +8205,7 @@ Finally, we just need to add some fonts.
      :serif "\\usepackage[osf]{noto-serif}"
      :sans "\\usepackage[osf]{noto-sans}"
      :mono "\\usepackage[scale=0.96]{noto-mono}"
-     ;; Wait till TeXlive 2021 is released, use notomath
-     :maths "\\usepackage{newtxmath}")
+     :maths "\\usepackage{notomath}")
     (plex
      :serif "\\usepackage{plex-serif}"
      :sans "\\usepackage{plex-sans}"
