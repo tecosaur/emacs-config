@@ -9356,7 +9356,7 @@ information."
              (unicode (and (eq (plist-get info :ascii-charset) 'utf-8)
                            org-ascii-convert-latex
                              (doom-call-process "latex2text" "-q" "--code" latex))))
-        (if (= (car unicode) 0) ; utf-8 set, and sucessfully ran latex2text
+        (if (and unicode (= (car unicode) 0)) ; utf-8 set, and sucessfully ran latex2text
             (cdr unicode) latex)))))
 #+end_src
 
