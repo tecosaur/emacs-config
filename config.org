@@ -8179,6 +8179,7 @@ Finally, we just need to add some fonts.
 #+begin_src emacs-lisp
 (defvar org-latex-fontsets
   '((cm nil) ; computer modern
+    (## nil) ; no font set
     (alegreya
      :serif "\\usepackage[osf]{Alegreya}"
      :sans "\\usepackage{AlegreyaSans}"
