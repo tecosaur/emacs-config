@@ -6440,6 +6440,7 @@ can avoid advising that entire function by just adding another face with
 Inspecting ~org-do-latex-and-related~ shows that ="latex"= is the language argument
 passed, and so we can override the background as discussed above.
 #+begin_src emacs-lisp
+(require 'org-src)
 (add-to-list 'org-src-block-faces '("latex" (:inherit default :extend t)))
 #+end_src
 
