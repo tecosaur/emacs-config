@@ -1674,6 +1674,7 @@ correct package statement needed.
 
 #+begin_src emacs-lisp :noweb no-export
 <<org-pkg-statement()>>
+(unpin! org-mode) ; there be bugs
 (package! org-contrib
   :recipe (:host nil :repo "https://git.sr.ht/~bzg/org-contrib"
            :files ("lisp/*.el"))
