@@ -4383,7 +4383,7 @@ on that.
   (add-hook! 'text-mode-hook
              ;; Apply ANSI color codes
              (with-silent-modifications
-               (ansi-color-apply-on-region (point-min) (point-max)))))
+               (ansi-color-apply-on-region (point-min) (point-max) t))))
 #+end_src
 ** Org
 :PROPERTIES:
