@@ -389,16 +389,11 @@ First, we'll enter the new window
       evil-split-window-below t)
 #+end_src
 
-Then, we'll pull up ~ivy~
+Then, we'll pull up a buffer prompt.
 #+begin_src emacs-lisp
 (defadvice! prompt-for-buffer (&rest _)
   :after '(evil-window-split evil-window-vsplit)
-  (+ivy/switch-buffer))
-#+end_src
-
-Oh, and previews are nice
-#+begin_src emacs-lisp
-(setq +ivy-buffer-preview t)
+  (consult-buffer))
 #+end_src
 
 Window rotation is nice, and can be found under =SPC w r= and =SPC w R=.
@@ -507,9 +502,10 @@ I reckon enabling half the modules Doom provides should do it.
  +childframe)                ; ... when your children are better than you
 ;;helm                       ; the *other* search engine for love and life
 ;;ido                        ; the other *other* search engine...
-(ivy                         ; a search engine for love and life
- +icons                      ; ... icons are nice
- +prescient)                 ; ... I know what I want(ed)
+;; (ivy                      ; a search engine for love and life
+;;  +icons                   ; ... icons are nice
+;;  +prescient)              ; ... I know what I want(ed)
+(vertico +icons)             ; the search engine of the future
 #+end_src
 
 #+name: doom-ui
@@ -2280,20 +2276,6 @@ nearby (also means that if I change the 'main' dictionary I keep my addition).
 #+begin_src emacs-lisp
 (setq ispell-personal-dictionary (expand-file-name ".ispell_personal" doom-private-dir))
 #+end_src
-** Ivy
-While in an ivy mini-buffer =C-o= shows a list of all possible actions one may take.
-By default this is src_elisp{#'ivy-read-action-by-key} however a better
-interface to this is using Hydra.
-#+begin_src emacs-lisp
-(setq ivy-read-action-function #'ivy-hydra-read-action)
-#+end_src
-
-I currently have ~40k functions. This seems like sufficient motivation to
-increase the maximum number of items ivy will sort to 40k + a bit, this way
-=SPC h f= et al. will continue to function as expected.
-#+begin_src emacs-lisp
-(setq ivy-sort-max-size 50000)
-#+end_src
 ** Magit
 Magit is pretty nice by default. The diffs don't get any
 syntax-highlighting-love though which is a bit sad. Thankfully
@@ -2641,17 +2623,17 @@ Let's also extend the functionality a whole bunch.
   (require 'emacsql-sqlite)
 
   (defun +xkcd-select ()
-    "Prompt the user for an xkcd using `ivy-read' and `+xkcd-select-format'. Return the xkcd number or nil"
+    "Prompt the user for an xkcd using `completing-read' and `+xkcd-select-format'. Return the xkcd number or nil"
     (let* (prompt-lines
            (-dummy (maphash (lambda (key xkcd-info)
                               (push (+xkcd-select-format xkcd-info) prompt-lines))
                             +xkcd-stored-info))
-           (num (ivy-read (format "xkcd (%s): " xkcd-latest) prompt-lines)))
+           (num (completing-read (format "xkcd (%s): " xkcd-latest) prompt-lines)))
       (if (equal "" num) xkcd-latest
         (string-to-number (replace-regexp-in-string "\\([0-9]+\\).*" "\\1" num)))))
 
   (defun +xkcd-select-format (xkcd-info)
-    "Creates each ivy-read line from an xkcd info plist. Must start with the xkcd number"
+    "Creates each completing-read line from an xkcd info plist. Must start with the xkcd number"
     (format "%-4s  %-30s %s"
             (propertize (number-to-string (plist-get xkcd-info :num))
                         'face 'counsel-key-binding)
@@ -4295,9 +4277,9 @@ Let's send emails too.
         message-send-mail-function #'message-send-mail-with-sendmail))
 #+end_src
 
-It's also nice to avoid accidentally sending emails with the wrong account.
-If we can send from the address in the ~To~ field, let's do that. Opening an ~ivy~
-prompt otherwise also seems sensible.
+It's also nice to avoid accidentally sending emails with the wrong account. If
+we can send from the address in the ~To~ field, let's do that. Opening a prompt
+otherwise also seems sensible.
 
 We can register Emacs as a potential email client with the following desktop
 file, thanks to Etienne Deparis's [[https://etienne.depar.is/emacs.d/mu4e.html][Mu4e customization]].
@@ -4541,9 +4523,9 @@ Entries of the form (subject . id)."
                            org-ml--cache-timestamp (float-time)))
                    org-ml--cache))
         msg-id)
-    (ivy-read "Thread: "
-              patches
-              :action (lambda (m) (setq msg-id (cdr m))))
+    (consult--read "Thread: "
+                   patches
+                   :action (lambda (m) (setq msg-id (cdr m))))
     (+workspace-switch +mu4e-workspace-name)
     (mu4e-view-message-with-message-id msg-id)
     (add-to-list 'mu4e-view-actions
@@ -4667,7 +4649,6 @@ a good idea in my case at least.
 (use-package! org-ref
   :after org
   :config
-  (setq org-ref-completion-library 'org-ref-ivy-cite)
   (defadvice! org-ref-open-bibtex-pdf-a ()
     :override #'org-ref-open-bibtex-pdf
     (save-excursion
@@ -5688,7 +5669,7 @@ or no selection is made: nil is returned."
                                       (propertize "(default)" 'face 'font-lock-doc-face)))
                       value))
                   values))
-    (let ((selection (ivy-read question values :preselect default-value)))
+    (let ((selection (consult--read question values :default default-value)))
       (unless (or (string-match-p "(default)$" selection)
                   (string= "" selection))
         selection))))
@@ -9582,7 +9563,7 @@ Then let's bind the content to a function, and define some nice helpers.
 
 (defun tec/yas-latex-get-class-choice ()
   "Prompt user for LaTeX class choice"
-  (setq tec/yas-latex-class-choice (ivy-read "Select document class: " '("article" "scrartcl" "bmc") :def "bmc")))
+  (setq tec/yas-latex-class-choice (completing-read "Select document class: " '("article" "scrartcl" "bmc"))))
 
 (defun tec/yas-latex-preamble-if ()
   "Based on class choice prompt for insertion of default preamble"
