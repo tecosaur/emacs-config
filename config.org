@@ -7767,7 +7767,7 @@ mapping each tangled file to a form which embeds the file if it exists.
                (replace-regexp-in-string "\\\\" "\\\\\\\\")
                (replace-regexp-in-string "~" "\\\\string~"))
              (cdr tangle-file)))
-   (mapcar (lambda (f-block) (cons (car f-block) (caadr f-block)))
+   (mapcar (lambda (f-block) (cons (or (car f-block) (caddr (cadr f-block))) (caadr f-block)))
            (org-babel-tangle-collect-blocks)) ; all files being tangled to
    "\n"))
 #+end_src
