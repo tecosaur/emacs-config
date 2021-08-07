@@ -1648,7 +1648,7 @@ correct package statement needed.
       (dev-pkg (let ((default-directory (expand-file-name "straight/repos/org-mode" doom-local-dir)))
                  (and (file-exists-p default-directory)
                       (string= "git@code.orgmode.org:bzg/org-mode.git\n" (shell-command-to-string "git remote get-url origin")))))
-      (recipe-common '(:files ("*.el" "lisp/*.el")
+      (recipe-common '(:files ("*.el" "lisp/*.el" "etc")
                        :pre-build
                        (with-temp-file (doom-path (straight--repos-dir "org-mode") "org-version.el")
                          (insert "(fset 'org-release (lambda () \"9.5\"))\n"
