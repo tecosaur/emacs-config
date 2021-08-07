@@ -667,7 +667,7 @@ markdown                     ; writing docs for people to ignore
  +gnuplot                    ; who doesn't like pretty pictures
  ;;+pomodoro                 ; be fruitful with the tomato technique
  +present                    ; using org-mode for presentations
- +roam)                      ; wander around notes
+ +roam2)                     ; wander around notes
 ;;perl                       ; write code no one else can comprehend
 ;;php                        ; perl's insecure younger brother
 ;;plantuml                   ; diagrams for confusing people more
@@ -1807,24 +1807,24 @@ to make that right again, and this package makes that even easier to do.
 Org-roam is nice by itself, but there are so /extra/ nice packages which integrate
 with it.
 #+begin_src emacs-lisp
-(package! org-roam-server :pin "2122a61e9e9be205355c7e2c1e4b65986d6985a5")
+(package! org-roam-ui :recipe (:host github :repo "org-roam/org-roam-ui" :files ("*.el" "out")) :pin "870fef3389a896c6d5c7ba22cef381be9d1ea95a")
+(package! websocket :pin "fda4455333309545c0787a79d73c19ddbeb57980") ; dependency of `org-roam-ui'
 #+end_src
 #+begin_src emacs-lisp :tangle yes
-(use-package org-roam-server
-  :after (org-roam server)
+(use-package! websocket
+  :after org-roam)
+
+(use-package! org-roam-ui
+  :after org-roam
+  :commands org-roam-ui-open
+  :hook (org-roam . org-roam-ui-mode)
   :config
-  (setq org-roam-server-host "127.0.0.1"
-        org-roam-server-port 8078
-        org-roam-server-export-inline-images t
-        org-roam-server-authenticate nil
-        org-roam-server-network-label-truncate t
-        org-roam-server-network-label-truncate-length 60
-        org-roam-server-network-label-wrap-length 20)
-  (defun org-roam-server-open ()
+  (require 'org-roam) ; in case autoloaded
+  (defun org-roam-ui-open ()
     "Ensure the server is active, then open the roam graph."
     (interactive)
-    (org-roam-server-mode 1)
-    (browse-url-xdg-open (format "http://localhost:%d" org-roam-server-port))))
+    (unless org-roam-ui-mode (org-roam-ui-mode 1))
+    (browse-url-xdg-open (format "http://localhost:%d" org-roam-ui-port))))
 #+end_src
 *** Systemd
 For editing systemd unit files
@@ -5149,128 +5149,6 @@ Since we don't want to trigger errors (which will happen as soon as roam tries
 to initialise), let's not load roam.
 #+begin_src emacs-lisp :noweb-ref none :tangle (if (file-exists-p "~/Desktop/TEC/Organisation/Roam/") "no" "packages.el")
 (package! org-roam :disable t)
-#+end_src
-***** Registering roam protocol
-The recommended method of registering a protocol is by registering a desktop
-application, which seems reasonable.
-#+begin_src conf :tangle ~/.local/share/applications/org-protocol.desktop :mkdirp yes
-[Desktop Entry]
-Name=Org-Protocol
-Exec=emacsclient %u
-Icon=emacs-icon
-Type=Application
-Terminal=false
-MimeType=x-scheme-handler/org-protocol
-#+end_src
-To associate ~org-protocol://~ links with the desktop file,
-#+begin_src shell :tangle (if (string= (shell-command-to-string "xdg-mime query default x-scheme-handler/org-protocol") "org-protocol.desktop\n") "no" "setup.sh")
-xdg-mime default org-protocol.desktop x-scheme-handler/org-protocol
-#+end_src
-***** Graph Behaviour
-By default, clicking on an ~org-protocol://~ link messes with the =svg= view. To fix
-this we can use an ~iframe~, however that requires shifting to an =html= file.
-Hence, we need to do a bit of overriding.
-#+begin_src html :tangle misc/org-roam-template.html
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <title>Roam Graph</title>
-    <meta name="viewport" content="width=device-width">
-    <style type="text/css">
-      body {
-      background: white;
-      }
-
-      svg {
-      position: relative;
-      top: 50vh;
-      left: 50vw;
-      transform: translate(-50%, -50%);
-      width: 95vw;
-      }
-
-      a > polygon {
-      transition-duration: 200ms;
-      transition-property: fill;
-      }
-
-      a > polyline {
-      transition-duration: 400ms;
-      transition-property: stroke;
-      }
-
-      a:hover > polygon {
-      fill: #d4d4d4;
-      }
-      a:hover > polyline {
-      stroke: #888;
-      }
-    </style>
-    <script>
-      function create_iframe (url) {
-      i = document.createElement('iframe');
-      i.setAttribute('src', url);
-      i.style.setProperty('display', 'none');
-      document.body.append(i);
-      }
-      function listen_on_all_a () {
-      document.querySelectorAll("svg a").forEach(elem => {
-      elem.addEventListener('click', (e) => {
-      e.preventDefault();
-      create_iframe(elem.href.baseVal);
-      });
-      });
-      }
-    </script>
-  </head>
-  <body onload="listen_on_all_a()">
-    %s
-  </body>
-</html>
-#+end_src
-
-#+begin_src emacs-lisp
-(after! org-roam
-  (setq org-roam-graph-node-extra-config
-        '(("shape"      . "underline")
-          ("style"      . "rounded,filled")
-          ("fillcolor"  . "#EEEEEE")
-          ("color"      . "#C9C9C9")
-          ("fontcolor"  . "#111111")
-          ("fontname"   . "Overpass")))
-
-  (setq +org-roam-graph--html-template
-        (replace-regexp-in-string "%\\([^s]\\)" "%%\\1"
-                                  (f-read-text (concat doom-private-dir "misc/org-roam-template.html"))))
-
-  (defadvice! +org-roam-graph--build-html (&optional node-query callback)
-    "Generate a graph showing the relations between nodes in NODE-QUERY. HTML style."
-    :override #'org-roam-graph--build
-    (unless (stringp org-roam-graph-executable)
-      (user-error "`org-roam-graph-executable' is not a string"))
-    (unless (executable-find org-roam-graph-executable)
-      (user-error (concat "Cannot find executable %s to generate the graph.  "
-                          "Please adjust `org-roam-graph-executable'")
-                  org-roam-graph-executable))
-    (let* ((node-query (or node-query
-                           `[:select [file titles] :from titles
-                             ,@(org-roam-graph--expand-matcher 'file t)]))
-           (graph      (org-roam-graph--dot node-query))
-           (temp-dot   (make-temp-file "graph." nil ".dot" graph))
-           (temp-graph (make-temp-file "graph." nil ".svg"))
-           (temp-html  (make-temp-file "graph." nil ".html")))
-      (org-roam-message "building graph")
-      (make-process
-       :name "*org-roam-graph--build-process*"
-       :buffer "*org-roam-graph--build-process*"
-       :command `(,org-roam-graph-executable ,temp-dot "-Tsvg" "-o" ,temp-graph)
-       :sentinel (progn
-                   (lambda (process _event)
-                     (when (= 0 (process-exit-status process))
-                       (write-region (format +org-roam-graph--html-template (f-read-text temp-graph)) nil temp-html)
-                       (when callback
-                         (funcall callback temp-html)))))))))
 #+end_src
 ***** Modeline file name
 All those numbers! It's messy. Let's adjust this in a similar way that I have in
