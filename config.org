@@ -1403,7 +1403,7 @@ With all our fancy Emacs themes, my terminal is missing out!
 What's even the point of using Emacs unless you're constantly telling everyone
 about it?
 #+begin_src emacs-lisp
-(package! elcord :pin "6608e0392b46324fc09a5b5f4457c15ac1394f80")
+(package! elcord :pin "64545671174f9ae307c0bd0aa9f1304d04236421")
 #+end_src
 
 For some reason, I find myself demoing Emacs every now and then. Showing what
@@ -1414,7 +1414,7 @@ having something that doesn't cover up screen content is nice.
 [[https://tecosaur.com/lfs/emacs-config/screenshots/keycast.png]]
 
 #+begin_src emacs-lisp
-(package! keycast :pin "a3a0798349adf3e33277091fa8dee63173b68edf")
+(package! keycast :pin "04ba7519f34421c235bac458f0192c130f732f12")
 #+end_src
 let's just make sure this is lazy-loaded appropriately.
 #+begin_src emacs-lisp :tangle yes
@@ -1440,7 +1440,7 @@ let's just make sure this is lazy-loaded appropriately.
 
 In a similar manner, [[https://gitlab.com/ambrevar/emacs-gif-screencast][gif-screencast]] may come in handy.
 #+begin_src emacs-lisp
-(package! gif-screencast :pin "fa81e915c256271fa10b807a2935d5eaa4700dff")
+(package! gif-screencast :pin "5517a557a17d8016c9e26b0acb74197550f829b9")
 #+end_src
 
 We can lazy load this using the start/stop commands.
@@ -1491,7 +1491,8 @@ This is a nice extension to ~calc~
 #+end_src
 **** Emacs everywhere
 #+begin_src emacs-lisp
-(package! emacs-everywhere :recipe (:local-repo "lisp/emacs-everywhere") :pin nil)
+(package! emacs-everywhere :recipe (:local-repo "lisp/emacs-everywhere"))
+(unpin! emacs-everywhere)
 #+end_src
 **** ESS
 View data frames better with
@@ -1502,7 +1503,7 @@ View data frames better with
 [[https://github.com/dandavison/delta/][Delta]] is a git diff syntax highlighter written in rust. The author also wrote a
 package to hook this into the magit diff view. This requires the ~delta~ binary.
 #+begin_src emacs-lisp
-;; (package! magit-delta :recipe (:host github :repo "dandavison/magit-delta") :pin "1164a6c3e501e944f1a6a2e91f15374a193bb8d3")
+;; (package! magit-delta :recipe (:host github :repo "dandavison/magit-delta") :pin "56cdffd377279589aa0cb1df99455c098f1848cf")
 #+end_src
 **** Info colours
 This makes manual pages nicer to look at :)
@@ -1553,7 +1554,7 @@ For managing my ebooks, I'll hook into the well-established ebook library
 manager [[https://calibre-ebook.com/][calibre]]. A number of Emacs clients for this exist, but this seems like a
 good option.
 #+begin_src emacs-lisp
-(package! calibredb :pin "a3b04c0c37b1e8ceff2472e21a3579e64e944528")
+(package! calibredb :pin "cb93563d0ec9e0c653210bc574f9546d1e7db437")
 #+end_src
 
 Then for reading them, the only currently viable options seems to be [[https://depp.brause.cc/nov.el/][nov.el]].
@@ -1603,7 +1604,7 @@ these as horizontal rules.
 For mathematical convenience, WIP
 #+begin_src emacs-lisp
 (package! aas :recipe (:host github :repo "ymarco/auto-activating-snippets")
-  :pin "3076cefea0f6ae9d7757f13c27b5602e007b58ec")
+  :pin "118ed7fc948b6d91eea727df35a1639521bf5fdb")
 (package! laas :recipe (:local-repo "lisp/LaTeX-auto-activating-snippets"))
 #+end_src
 And some basic config
@@ -1622,7 +1623,7 @@ And some basic config
 
 I think the latest AucTeX may be a bit dodgy, so
 #+begin_src emacs-lisp
-(package! auctex :pin "6440ec5964dcbe58155e28f00f84ec0118d8fb7b")
+(package! auctex :pin "ea410dce4f24908b46649b77a4881f7454a9de04")
 #+end_src
 
 *** Org Mode
@@ -1674,13 +1675,13 @@ correct package statement needed.
 (package! org-contrib
   :recipe (:host nil :repo "https://git.sr.ht/~bzg/org-contrib"
            :files ("lisp/*.el"))
-  :pin "b18928c973d1de7d05df73f454c7952317919a1c")
+  :pin "fc81309cf6756607a836f93049a9393c2967c4e0")
 #+end_src
 
 **** Improve agenda/capture
 The agenda is nice, but a souped up version is nicer.
 #+begin_src emacs-lisp
-(package! org-super-agenda :pin "f5e80e4d0da6b2eeda9ba21e021838fa6a495376")
+(package! org-super-agenda :pin "a5557ea4f51571ee9def3cd9a1ab1c38f1a27af7")
 #+end_src
 
 Similarly ~doct~ (Declarative Org Capture Templates) seems to be a nicer way to
@@ -1706,14 +1707,14 @@ improvement to me! We'll make use of this with =writeroom-mode=.
 For automatically toggling LaTeX fragment previews as the cursor moves in and
 out of them there's this nice package
 #+begin_src emacs-lisp
-(package! org-fragtog :pin "0151cabc7aa9f244f82e682b87713b344d780c23")
+(package! org-fragtog :pin "479e0a1c3610dfe918d89a5f5a92c8aec37f131d")
 #+end_src
 
 Then for showing org formatting markers (=*/=~=)  when inside such a region, we
 have =org-appear=.
 #+begin_src emacs-lisp
 (package! org-appear :recipe (:host github :repo "awth13/org-appear")
-  :pin "6ee49875f8bdefafbde849f5628d673e9740cf8c")
+  :pin "148aa124901ae598f69320e3dcada6325cdc2cf0")
 #+end_src
 
 ~org-superstar-mode~ is great. While we're at it we may as well make tags prettier as well 🙂
@@ -1772,7 +1773,7 @@ Now and then citations need to happen
 There's a really cool package in development to /transclude/ Org document content.
 #+begin_src emacs-lisp
 (package! org-transclusion :recipe (:host github :repo "nobiot/org-transclusion")
-  :pin "daa18df6de26b74badab0372e8a64fbde6a7be71")
+  :pin "8cbbade1e3237200c2140741f39ff60176e703e7")
 #+end_src
 #+begin_src emacs-lisp :tangle yes
 (use-package! org-transclusion
@@ -1790,7 +1791,7 @@ Came across this and ... it's cool
 I *need* this in my life. It take a URL to a recipe from a common site, and
 inserts an org-ified version at point. Isn't that just great.
 #+begin_src emacs-lisp
-(package! org-chef :pin "5b461ed7d458cdcbff0af5013fbdbe88cbfb13a4")
+(package! org-chef :pin "a97232b4706869ecae16a1352487a99bc3cf97af")
 #+end_src
 
 Sometimes I'm given non-org files, that's very sad. Luckily Pandoc offers a way
@@ -1807,7 +1808,7 @@ to make that right again, and this package makes that even easier to do.
 Org-roam is nice by itself, but there are so /extra/ nice packages which integrate
 with it.
 #+begin_src emacs-lisp
-(package! org-roam-ui :recipe (:host github :repo "org-roam/org-roam-ui" :files ("*.el" "out")) :pin "870fef3389a896c6d5c7ba22cef381be9d1ea95a")
+(package! org-roam-ui :recipe (:host github :repo "org-roam/org-roam-ui" :files ("*.el" "out")) :pin "c745d07018a46b1a20b9f571d999ecf7a092c2e1")
 (package! websocket :pin "fda4455333309545c0787a79d73c19ddbeb57980") ; dependency of `org-roam-ui'
 #+end_src
 #+begin_src emacs-lisp :tangle yes
@@ -1868,7 +1869,7 @@ Now we just need to load it appropriately.
 *** Beancount (accounting)
 #+begin_src emacs-lisp
 (package! beancount :recipe (:host github :repo "beancount/beancount-mode")
-  :pin "3c04745fa539c25dc007683ad257239067c24cfe")
+  :pin "5be04a37d6a189f1680cb47d022a85d9faeba8fc")
 #+end_src
 * Package configuration
 ** Abbrev mode
