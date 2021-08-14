@@ -9336,73 +9336,53 @@ current Emacs theme, I was enraptured. The result is the pseudo-class ~chameleon
     :around #'org-export-install-filters
     (setq ox-chameleon--p (when (equal (plist-get info :latex-class)
                                        "chameleon")
-                            (plist-put info :latex-class ox-chameleon-base-class)
+                            (plist-put info :latex-class
+                                       (if (plist-get info :beamer-theme) "beamer"
+                                         ox-chameleon-base-class))
                             t))
     (funcall orig-fun info))
 
   (defadvice! ox-chameleon-org-latex-export (orig-fn info &optional template snippet?)
     :around #'org-latex-make-preamble
-    (if ox-chameleon--p
+    (setq .info info)
+    (if (and ox-chameleon--p (not snippet?))
         (let ((engrave-faces-preset-styles (engrave-faces-generate-preset)))
           (concat (funcall orig-fn info template snippet?)
-                  (ox-chameleon-generate-colourings)))
+                  (ox-chameleon-generate-colourings info)))
       (funcall orig-fn info template snippet?)))
 
-  (defun ox-chameleon-generate-colourings ()
+  (defun ox-chameleon-generate-colourings (info)
+    (concat
+     "\n%% make document follow Emacs theme\n"
+     (ox-chameleon--generate-fgbg-colours)
+     (if (plist-get info :beamer-theme)
+         (concat (ox-chameleon--generate-beamer-colourings)
+                 (ox-chameleon--generate-beamer-list-colourings))
+       (concat "\n\\pagecolor{obg}\n\\color{ofg}\n"
+               (ox-chameleon--generate-list-colourings)
+               (ox-chameleon--generate-koma-structural-colourings)))
+     (ox-chameleon--generate-text-colourings)
+     (ox-chameleon--generate-src-colourings)
+     "\n%% end customisations\n\n"))
+
+  (defun ox-chameleon--generate-fgbg-colours ()
     (apply #'format
-           "%% make document follow Emacs theme
-\\definecolor{bg}{HTML}{%s}
-\\definecolor{fg}{HTML}{%s}
+           "\n\\definecolor{obg}{HTML}{%s}\n\\definecolor{ofg}{HTML}{%s}\n"
+           (mapcar (doom-rpartial #'substring 1)
+                   (list
+                    (face-attribute 'default :background)
+                    (face-attribute 'default :foreground)))))
 
-\\definecolor{red}{HTML}{%s}
-\\definecolor{orange}{HTML}{%s}
-\\definecolor{green}{HTML}{%s}
-\\definecolor{teal}{HTML}{%s}
-\\definecolor{yellow}{HTML}{%s}
-\\definecolor{blue}{HTML}{%s}
-\\definecolor{dark-blue}{HTML}{%s}
-\\definecolor{magenta}{HTML}{%s}
-\\definecolor{violet}{HTML}{%s}
-\\definecolor{cyan}{HTML}{%s}
-\\definecolor{dark-cyan}{HTML}{%s}
-
-\\definecolor{documentTitle}{HTML}{%s}
-\\definecolor{documentInfo}{HTML}{%s}
-\\definecolor{level1}{HTML}{%s}
-\\definecolor{level2}{HTML}{%s}
-\\definecolor{level3}{HTML}{%s}
-\\definecolor{level4}{HTML}{%s}
-\\definecolor{level5}{HTML}{%s}
-\\definecolor{level6}{HTML}{%s}
-\\definecolor{level7}{HTML}{%s}
-\\definecolor{level8}{HTML}{%s}
+  (defun ox-chameleon--generate-text-colourings ()
+    (apply #'format
+           "
+%% textual elements
 
 \\definecolor{link}{HTML}{%s}
 \\definecolor{cite}{HTML}{%s}
 \\definecolor{itemlabel}{HTML}{%s}
 \\definecolor{code}{HTML}{%s}
 \\definecolor{verbatim}{HTML}{%s}
-
-\\definecolor{codebackground}{HTML}{%s}
-\\colorlet{EFD}{fg}
-\\definecolor{codeborder}{HTML}{%s}
-
-\\pagecolor{bg}
-\\color{fg}
-
-\\addtokomafont{title}{\\color{documentTitle}}
-\\addtokomafont{author}{\\color{documentInfo}}
-\\addtokomafont{date}{\\color{documentInfo}}
-\\addtokomafont{section}{\\color{level1}}
-\\newkomafont{sectionprefix}{\\color{level1}}
-\\addtokomafont{subsection}{\\color{level2}}
-\\newkomafont{subsectionprefix}{\\color{level2}}
-\\addtokomafont{subsubsection}{\\color{level3}}
-\\newkomafont{subsubsectionprefix}{\\color{level3}}
-\\addtokomafont{paragraph}{\\color{level4}}
-\\newkomafont{paragraphprefix}{\\color{level4}}
-\\addtokomafont{subparagraph}{\\color{level5}}
-\\newkomafont{subparagraphprefix}{\\color{level5}}
 
 \\renewcommand{\\labelitemi}{\\textcolor{itemlabel}{\\textbullet}}
 \\renewcommand{\\labelitemii}{\\textcolor{itemlabel}{\\normalfont\\bfseries \\textendash}}
@@ -9418,25 +9398,81 @@ current Emacs theme, I was enraptured. The result is the pseudo-class ~chameleon
 \\makeatletter
 \\def\\verbatim@font{\\color{verbatim}\\normalfont\\ttfamily}
 \\makeatother
-%% end customisations
 "
            (mapcar (doom-rpartial #'substring 1)
                    (list
-                    (face-attribute 'default :background)
-                    (face-attribute 'default :foreground)
-                    ;;
-                    (doom-color 'red)
-                    (doom-color 'orange)
-                    (doom-color 'green)
-                    (doom-color 'teal)
-                    (doom-color 'yellow)
-                    (doom-color 'blue)
-                    (doom-color 'dark-blue)
-                    (doom-color 'magenta)
-                    (doom-color 'violet)
-                    (doom-color 'cyan)
-                    (doom-color 'dark-cyan)
-                    ;;
+                    (face-attribute 'link :foreground)
+                    (face-attribute 'org-cite :foreground)
+                    (face-attribute 'org-list-dt :foreground)
+                    (face-attribute 'org-code :foreground)
+                    (face-attribute 'org-verbatim :foreground)))))
+
+  (defun ox-chameleon--generate-list-colourings ()
+    (format "
+%% list labels
+
+\\definecolor{itemlabel}{HTML}{%s}
+
+\\renewcommand{\\labelitemi}{\\textcolor{itemlabel}{\\textbullet}}
+\\renewcommand{\\labelitemii}{\\textcolor{itemlabel}{\\normalfont\\bfseries \\textendash}}
+\\renewcommand{\\labelitemiii}{\\textcolor{itemlabel}{\\textasteriskcentered}}
+\\renewcommand{\\labelitemiv}{\\textcolor{itemlabel}{\\textperiodcentered}}
+
+\\renewcommand{\\labelenumi}{\\textcolor{itemlabel}{\\theenumi.}}
+\\renewcommand{\\labelenumii}{\\textcolor{itemlabel}{(\\theenumii)}}
+\\renewcommand{\\labelenumiii}{\\textcolor{itemlabel}{\\theenumiii.}}
+\\renewcommand{\\labelenumiv}{\\textcolor{itemlabel}{\\theenumiv.}}
+"
+            (substring (face-attribute 'org-list-dt :foreground) 1)))
+
+  (defun ox-chameleon--generate-src-colourings ()
+    (apply #'format
+           "
+%% code blocks
+
+\\definecolor{codebackground}{HTML}{%s}
+\\colorlet{EFD}{ofg}
+\\definecolor{codeborder}{HTML}{%s}
+"
+           (mapcar (doom-rpartial #'substring 1)
+                   (list
+                    (face-attribute 'solaire-default-face :background)
+                    (doom-blend (face-attribute 'solaire-default-face :background)
+                                (face-attribute 'default :foreground)
+                                0.95)))))
+
+  (defun ox-chameleon--generate-koma-structural-colourings ()
+    (apply #'format
+           "
+%% structural elements
+
+\\definecolor{documentTitle}{HTML}{%s}
+\\definecolor{documentInfo}{HTML}{%s}
+\\definecolor{level1}{HTML}{%s}
+\\definecolor{level2}{HTML}{%s}
+\\definecolor{level3}{HTML}{%s}
+\\definecolor{level4}{HTML}{%s}
+\\definecolor{level5}{HTML}{%s}
+\\definecolor{level6}{HTML}{%s}
+\\definecolor{level7}{HTML}{%s}
+\\definecolor{level8}{HTML}{%s}
+
+\\addtokomafont{title}{\\color{documentTitle}}
+\\addtokomafont{author}{\\color{documentInfo}}
+\\addtokomafont{date}{\\color{documentInfo}}
+\\addtokomafont{section}{\\color{level1}}
+\\newkomafont{sectionprefix}{\\color{level1}}
+\\addtokomafont{subsection}{\\color{level2}}
+\\newkomafont{subsectionprefix}{\\color{level2}}
+\\addtokomafont{subsubsection}{\\color{level3}}
+\\newkomafont{subsubsectionprefix}{\\color{level3}}
+\\addtokomafont{paragraph}{\\color{level4}}
+\\newkomafont{paragraphprefix}{\\color{level4}}
+\\addtokomafont{subparagraph}{\\color{level5}}
+\\newkomafont{subparagraphprefix}{\\color{level5}}
+"
+           (mapcar (doom-rpartial #'substring 1)
+                   (list
                     (face-attribute 'org-document-title :foreground)
                     (face-attribute 'org-document-info :foreground)
                     (face-attribute 'outline-1 :foreground)
@@ -9446,18 +9482,34 @@ current Emacs theme, I was enraptured. The result is the pseudo-class ~chameleon
                     (face-attribute 'outline-5 :foreground)
                     (face-attribute 'outline-6 :foreground)
                     (face-attribute 'outline-7 :foreground)
-                    (face-attribute 'outline-8 :foreground)
-                    ;;
-                    (face-attribute 'link :foreground)
-                    (face-attribute 'org-cite :foreground)
-                    (face-attribute 'org-list-dt :foreground)
-                    (face-attribute 'org-code :foreground)
-                    (face-attribute 'org-verbatim :foreground)
-                    ;;
-                    (face-attribute 'solaire-default-face :background)
-                    (doom-blend (face-attribute 'solaire-default-face :background)
-                                (face-attribute 'default :foreground)
-                                0.95))))))
+                    (face-attribute 'outline-8 :foreground)))))
+
+  (defun ox-chameleon--generate-beamer-colourings ()
+    (format
+     "
+%% beamer
+
+\\definecolor{builtin}{HTML}{%s}
+
+\\NewCommandCopy{\\oldusetheme}{\\usetheme}
+\\renewcommand*{\\usetheme}[2][]{\\oldusetheme[#1]{#2}
+  \\setbeamercolor{normal text}{fg=ofg, bg=obg}
+  \\setbeamercolor{alerted text}{fg=builtin}
+  \\setbeamercolor{progress bar}{fg=builtin}
+  \\setbeamercolor{title separator}{fg=builtin}
+  \\setbeamercolor{progress bar in head/foot}{fg=builtin}
+  \\setbeamercolor{progress bar in section page}{fg=builtin}}
+"
+     (substring (face-attribute 'font-lock-builtin-face :foreground) 1)))
+
+  (defun ox-chameleon--generate-beamer-list-colourings ()
+    (format "
+%% beamer list labels
+
+\\definecolor{itemlabel}{HTML}{%s}
+\\setbeamercolor*{item}{fg=itemlabel}
+"
+            (substring (face-attribute 'org-list-dt :foreground) 1))))
 #+end_src
 **** Make verbatim different to code
 Since have just gone to so much effort above let's make the most of it by making
