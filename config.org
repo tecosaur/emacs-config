@@ -9658,7 +9658,7 @@ It's nice to use a different theme
 
 (add-to-list 'org-latex-conditional-features '(org-beamer-p . beamer) t)
 (add-to-list 'org-latex-feature-implementations '(beamer :requires .missing-koma :prevents (italic-quotes condensed-lists)) t)
-(add-to-list 'org-latex-feature-implementations '(.missing-koma :snippet "\\usepackage{scrextend}" :order 3) t)
+(add-to-list 'org-latex-feature-implementations '(.missing-koma :snippet "\\usepackage{scrextend}" :order 2) t)
 #+end_src
 
 And I think that it's natural to divide a presentation into sections, e.g.
