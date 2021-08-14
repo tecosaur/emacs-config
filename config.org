@@ -9422,7 +9422,7 @@ current Emacs theme, I was enraptured. The result is the pseudo-class ~chameleon
 "
            (mapcar (doom-rpartial #'substring 1)
                    (list
-                    (face-attribute 'solaire-default-face :background)
+                    (face-attribute 'default :background)
                     (face-attribute 'default :foreground)
                     ;;
                     (doom-color 'red)
@@ -9449,13 +9449,13 @@ current Emacs theme, I was enraptured. The result is the pseudo-class ~chameleon
                     (face-attribute 'outline-8 :foreground)
                     ;;
                     (face-attribute 'link :foreground)
-                    (or (face-attribute 'org-ref-cite-face :foreground) (doom-color 'yellow))
+                    (face-attribute 'org-cite :foreground)
                     (face-attribute 'org-list-dt :foreground)
                     (face-attribute 'org-code :foreground)
                     (face-attribute 'org-verbatim :foreground)
                     ;;
-                    (face-attribute 'default :background)
-                    (doom-blend (face-attribute 'default :background)
+                    (face-attribute 'solaire-default-face :background)
+                    (doom-blend (face-attribute 'solaire-default-face :background)
                                 (face-attribute 'default :foreground)
                                 0.95))))))
 #+end_src
