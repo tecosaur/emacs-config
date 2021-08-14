@@ -10429,6 +10429,7 @@ As mentioned in [[https://github.com/non-Jedi/lsp-julia/issues/35][lsp-julia#35]
 Julia server. The pseudo-fix is rather simple at least
 #+begin_src emacs-lisp
 (after! julia-mode
+  (add-hook 'julia-mode-hook #'rainbow-delimiters-mode-enable)
   (add-hook! 'julia-mode-hook
     (setq-local lsp-enable-folding t
                 lsp-folding-range-limit 100)))
