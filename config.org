@@ -8156,7 +8156,7 @@ tests should be very versatile.
     ("\\[\\[\\(?:file\\|https?\\):\\(?:[^]]+?\\|\\\\\\]\\)\\.svg\\]\\]" . svg)
     ("\\\\(\\|\\\\\\[\\|\\\\begin{\\(?:math\\|displaymath\\|equation\\|align\\|flalign\\|multiline\\|gather\\)[a-z]*\\*?}" . maths)
     ("^[ \t]*|" . table)
-    ("cref:\\|\\cref{\\|\\[\\[[^\\]]+\\]\\]" . cleveref)
+    ("cref:\\|\\cref{\\|\\[\\[[^\\]+\n?[^\\]\\]\\]" . cleveref)
     ("[;\\\\]?\\b[A-Z][A-Z]+s?[^A-Za-z]" . acronym)
     ("\\+[^ ].*[^ ]\\+\\|_[^ ].*[^ ]_\\|\\\\uu?line\\|\\\\uwave\\|\\\\sout\\|\\\\xout\\|\\\\dashuline\\|\\dotuline\\|\\markoverwith" . underline)
     (":float wrap" . float-wrap)
