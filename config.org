@@ -4931,7 +4931,7 @@ Unfortunately, it ignores the ~file = {...}~ =.bib= keys though. Let's fix that.
 I separate files on =;=, which may just be a Zotero/BetterBibLaTeX thing, but it's
 a good idea in my case at least.
 
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp :noweb-ref none
 (use-package! org-ref
   ;; :after org
   :defer t
@@ -5434,7 +5434,7 @@ set up org-capture.
 #+end_src
 It would also be nice to improve how the capture dialogue looks
 #+name: prettify-capture
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp :noweb-ref none
 (defun org-capture-select-template-prettier (&optional keys)
   "Select a capture template, in a prettier way than default
 Lisp programs can force the template by setting KEYS to a string."
