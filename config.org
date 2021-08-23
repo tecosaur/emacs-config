@@ -4768,11 +4768,11 @@ Now and then citations need to happen
 
 ***** Julia support
 =ob-julia= is currently a bit borked, but there's an effort to improve this.
-#+begin_src emacs-lisp :tangle packages.el
+#+begin_src emacs-lisp
 (package! ob-julia :recipe (:local-repo "lisp/ob-julia" :files ("*.el" "julia")))
 #+end_src
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle yes
 (use-package! ob-julia
   :commands org-babel-execute:julia)
 #+end_src
@@ -4977,7 +4977,7 @@ To improve =org-cite=.
 (package! org-cite-csl-activate :recipe (:host github :repo "andras-simonyi/org-cite-csl-activate") :pin "032e765a4cf634fc56abcd18488510d3d5b1ee09")
 #+end_src
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :noweb-ref none :tangle yes
 (use-package! bibtex-completion
   :defer t
   :config
