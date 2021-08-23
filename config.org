@@ -8179,6 +8179,7 @@ tests should be very versatile.
     ("^[ \t]*\\(?:[-+*]\\|[0-9]+[.)]\\|[A-Za-z]+[.)]\\) \\[[ -X]\\]" . checkbox)
     ("^[ \t]*#\\+begin_warning\\|\\\\begin{warning}" . box-warning)
     ("^[ \t]*#\\+begin_info\\|\\\\begin{info}"       . box-info)
+    ("^[ \t]*#\\+begin_notes\\|\\\\begin{notes}"     . box-notes)
     ("^[ \t]*#\\+begin_success\\|\\\\begin{success}" . box-success)
     ("^[ \t]*#\\+begin_error\\|\\\\begin{error}"     . box-error))
   "Org feature tests and associated LaTeX feature flags.
@@ -8250,6 +8251,7 @@ introduce an =:order= keyword. Using this I'll arrange snippets as follows.
     (.fancy-box    :requires .pifont    :snippet org-latex-box-preamble :order 3.9)
     (box-warning   :requires .fancy-box :snippet "\\defsimplebox{warning}{e66100}{\\ding{68}}{Warning}" :order 4)
     (box-info      :requires .fancy-box :snippet "\\defsimplebox{info}{3584e4}{\\ding{68}}{Information}" :order 4)
+    (box-notes     :requires .fancy-box :snippet "\\defsimplebox{notes}{26a269}{\\ding{43}}{Notes}" :order 4)
     (box-success   :requires .fancy-box :snippet "\\defsimplebox{success}{26a269}{\\ding{68}}{\\vspace{-\\baselineskip}}" :order 4)
     (box-error     :requires .fancy-box :snippet "\\defsimplebox{error}{c01c28}{\\ding{68}}{Important}" :order 4))
   "LaTeX features and details required to implement them.
