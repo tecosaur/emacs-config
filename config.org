@@ -9,6 +9,7 @@
 #+property: header-args:elisp :exports code
 #+property: header-args:shell :tangle "setup.sh"
 #+property: header-args :tangle no :results silent :eval no-export
+#+embed: LICENCE :description MIT licence file
 #+options: coverpage:yes
 #+startup: fold
 
@@ -8073,20 +8074,43 @@ access.
 In the "universal preamble", we already embed the source =.org= file, but it would
 be nice to embed all the tangled files. This is fairly easy to accomplish by
 mapping each tangled file to a form which embeds the file if it exists.
+Considering we're going this far, why not add a dedicated =#+emded= keyword, so we
+can embed whatever we want.
+
 #+begin_src emacs-lisp
-(defun org-latex-embed-tangled-files ()
+(defun org-latex-embed-extra-files ()
   "Return a string that uses embedfile to embed all tangled files."
   (mapconcat
-   (lambda (tangle-file)
-     (format "\\IfFileExists{%1$s}{\\embedfile[desc=Tangled %2$s file]{%1$s}}{}"
-             (->> (car tangle-file)
+   (lambda (file-desc)
+     (format "\\IfFileExists{%1$s}{\\embedfile[desc=%2$s]{%1$s}}{}"
+             (thread-last (car file-desc)
                (replace-regexp-in-string "\\\\" "\\\\\\\\")
                (replace-regexp-in-string "~" "\\\\string~"))
-             (cdr tangle-file)))
-   (mapcar (lambda (f-block) (cons (or (car f-block) (caddr (cadr f-block))) (caadr f-block)))
-           (org-babel-tangle-collect-blocks)) ; all files being tangled to
+             (cdr file-desc)))
+   (append
+    (mapcar (lambda (f-block)
+              (let ((file-lang (cons (or (car f-block) (caddr (cadr f-block))) (caadr f-block))))
+                (cons (car file-lang) (format "Tangled %s file" (cdr file-lang)))))
+            (org-babel-tangle-collect-blocks)) ; all files being tangled to
+    (let (extra-files)
+      (save-excursion
+        (goto-char (point-min))
+        (while (re-search-forward "^[ \t]*#\\+embed:" nil t)
+          (let* ((file-desc (split-string (org-element-property :value (org-element-at-point)) " :desc\\(?:ription\\)? ")))
+            (push (cons (car file-desc) (or (cdr file-desc) "Extra file")) extra-files))))
+      (nreverse extra-files)))
    "\n"))
 #+end_src
+
+Now all tangled files will be embedded, and we can embed arbitrary files like
+so:
+#+begin_src org
+,#+embed: some-file :description flavour text about the file
+#+end_src
+
+This currently won't complete or anything like that, as we haven't told Org that
+it's a keyword yet. It's also LaTeX-specific, so maybe it should be changed to
+=#+latex_embed= or something like that.
 
 ***** Content-feature-preamble association
 
@@ -8174,7 +8198,7 @@ tests should be very versatile.
     (org-latex-use-microtype . microtype)
     ((and org-latex-italic-quotes "^[ \t]*#\\+begin_quote\\|\\\\begin{quote}") . italic-quotes)
     (org-latex-par-sep . par-sep)
-    ((org-latex-embed-tangled-files) . embed-files)
+    ((org-latex-embed-extra-files) . embed-files)
     ((and org-latex-embed-files "^[ \t]*#\\+begin_src\\|^[ \t]*#\\+BEGIN_SRC") . embed-tangled)
     ("^[ \t]*\\(?:[-+*]\\|[0-9]+[.)]\\|[A-Za-z]+[.)]\\) \\[[ -X]\\]" . checkbox)
     ("^[ \t]*#\\+begin_warning\\|\\\\begin{warning}" . box-warning)
@@ -8239,7 +8263,7 @@ introduce an =:order= keyword. Using this I'll arrange snippets as follows.
     (caption       :snippet org-latex-caption-preamble :order 2.1)
     (microtype     :snippet "\\usepackage[activate={true,nocompatibility},final,tracking=true,kerning=true,spacing=true,factor=2000]{microtype}\n" :order 0.1)
     (embed-files   :snippet org-latex-embed-files-preamble :order -2)
-    (embed-tangled :requires embed-files :snippet (concat (org-latex-embed-tangled-files) "\n") :order -1)
+    (embed-tangled :requires embed-files :snippet (concat (org-latex-embed-extra-files) "\n") :order -1)
     (acronym       :snippet "\\newcommand{\\acr}[1]{\\protect\\textls*[110]{\\scshape #1}}\n\\newcommand{\\acrs}{\\protect\\scalebox{.91}[.84]{\\hspace{0.15ex}s}}" :order 0.4)
     (italic-quotes :snippet "\\renewcommand{\\quote}{\\list{}{\\rightmargin\\leftmargin}\\item\\relax\\em}\n" :order 0.5)
     (par-sep       :snippet "\\setlength{\\parskip}{\\baselineskip}\n\\setlength{\\parindent}{0pt}\n" :order 0.5)
