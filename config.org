@@ -6987,6 +6987,10 @@ set linetype 6 lw 2 lc rgb '%s' # yellow
 set linetype 7 lw 2 lc rgb '%s' # teal
 set linetype 8 lw 2 lc rgb '%s' # violet
 
+# border styles
+set tics out nomirror
+set border 3
+
 # palette
 set palette maxcolors 8
 set palette defined ( 0 '%s',\
