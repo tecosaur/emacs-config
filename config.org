@@ -4982,8 +4982,9 @@ There's also the new =org-cite= though. It would be nice to try that out.
 To improve =org-cite=.
 
 #+begin_src emacs-lisp :noweb-ref none :tangle packages.el
-(package! citeproc :pin "d6fd7534f0e4dba3f8af1b54461d72827b03ffd6")
-(package! bibtex-actions :pin "f6bce7c2868bde07cfd5441978a88c4f9a24e3c8")
+(package! citeproc :pin "299e52b2dda37960d609efa78c40e255001d163a")
+(package! bibtex-completion :pin "12079bb09f203dda5cc2dd003bd60a6ad490f762")
+(package! bibtex-actions :pin "0e825fafe4f5843f9af4aed0bff8cc393fcae9f2")
 (package! org-cite-csl-activate :recipe (:host github :repo "andras-simonyi/org-cite-csl-activate") :pin "032e765a4cf634fc56abcd18488510d3d5b1ee09")
 #+end_src
 
@@ -4995,7 +4996,7 @@ To improve =org-cite=.
         bibtex-completion-pdf-field "file")) ; This tell bibtex-completion to look at the File field of the bibtex to figure out which pdf to open
 
 (use-package! bibtex-actions
-  :after embark
+  :after embark bibtex-completion
   :config
   (add-to-list 'embark-keymap-alist '(bibtex . bibtex-actions-map)))
 
@@ -5005,17 +5006,20 @@ To improve =org-cite=.
 ;;; Org-Cite configuration
 
 (use-package! oc
-  :after org bibtex-completion
-  :init
+  :after org bibtex-completion bibtex-actions
   :config
+  (require 'ox)
+  (map! :map org-mode-map
+        :localleader
+        :desc "Insert citation" "@" #'org-cite-insert)
+  (defvar bibtex-actions-bibliography nil)
   (setq org-cite-global-bibliography
-        (let ((paths bibtex-completion-bibliography))
+        (let ((paths (or bibtex-actions-bibliography
+                         bibtex-completion-bibliography)))
           ;; Always return bibliography paths as list for org-cite.
           (if (stringp paths) (list paths) paths)))
   ;; setup export processor; default csl/citeproc-el, with biblatex for latex
-  (setq org-cite-export-processors
-        '((latex (biblatex windycity nil))
-          (t csl))))
+  (setq org-cite-export-processors '((t csl))))
 
 ;;; Org-cite processors
 
@@ -5037,25 +5041,27 @@ To improve =org-cite=.
 
 ;;;; Third-party
 
-;; (use-package! org-ref-cite-activate
-;;   ;; Make available everywhere, but document how to change.
-;;   :after oc)
-
 (use-package! oc-csl-activate
   :after oc
   :config
-  ;; (setq org-cite-activate-processor 'csl-activate)
-  ;; (add-hook! 'org-mode-hook '((lambda () (cursor-sensor-mode 1)) org-cite-csl-activate-render-all))
-  )
+  (defun +org-cite-csl-activate/enable ()
+    (interactive)
+    (setq org-cite-activate-processor 'csl-activate)
+    (add-hook! 'org-mode-hook '((lambda () (cursor-sensor-mode 1)) org-cite-csl-activate-render-all))
+    (when (eq major-mode 'org-mode)
+      (save-excursion
+        (goto-char (point-min))
+        (org-cite-activate (point-max)))
+      (org-cite-csl-activate-render-all))))
 
 (use-package! oc-bibtex-actions
   :when (featurep! :completion vertico)
-  :after oc bibtex-actions
+  :after oc
   :demand t
   :config
   (setq org-cite-insert-processor 'oc-bibtex-actions
         org-cite-follow-processor 'oc-bibtex-actions
-        org-cite-activate-processor 'org-ref-cite-activate))
+        org-cite-activate-processor 'basic))
 #+end_src
 
 I think it would be nice to have a function to convert =org-ref= citations to
