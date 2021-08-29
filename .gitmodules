@@ -19,6 +19,9 @@
 [submodule "emacs-everywhere"]
 	path = lisp/emacs-everywhere
 	url = https://github.com/tecosaur/emacs-everywhere.git
+[submodule "ox-chameleon"]
+	path = lisp/ox-chameleon
+	url = https://github.com/tecosaur/ox-chameleon.git
 [submodule "ob-julia"]
 	path = lisp/ob-julia
 	url = https://github.com/nico202/ob-julia.git
