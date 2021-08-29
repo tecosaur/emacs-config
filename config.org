@@ -4775,7 +4775,16 @@ Now and then citations need to happen
 
 #+begin_src emacs-lisp :tangle yes
 (use-package! ob-julia
-  :commands org-babel-execute:julia)
+  :commands org-babel-execute:julia
+  :config
+  (setq org-babel-julia-command-arguments
+        `("--sysimage"
+          ,(when-let ((img "~/.local/lib/julia.so")
+                      (exists? (file-exists-p img)))
+             (expand-file-name img))
+          "--threads"
+          ,(number-to-string (- (doom-system-cpus) 2))
+          "--banner=no")))
 #+end_src
 ***** HTTP requests
 
