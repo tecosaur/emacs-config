@@ -4618,18 +4618,17 @@ Entries of the form (subject . id)."
 (defun org-ml-select-patch-thread ()
   "Find and apply a proposed Org patch."
   (interactive)
-  (let ((current-workspace (+workspace-current))
-        (patches (progn
-                   (when (or (not org-ml--cache)
-                             (> (- (float-time) org-ml--cache-timestamp)
-                                org-ml-max-age))
-                     (setq org-ml--cache (org-ml-current-patches)
-                           org-ml--cache-timestamp (float-time)))
-                   org-ml--cache))
-        msg-id)
-    (consult--read "Thread: "
-                   patches
-                   :action (lambda (m) (setq msg-id (cdr m))))
+  (let* ((current-workspace (+workspace-current))
+         (patches (progn
+                    (when (or (not org-ml--cache)
+                              (> (- (float-time) org-ml--cache-timestamp)
+                                 org-ml-max-age))
+                      (setq org-ml--cache (org-ml-current-patches)
+                            org-ml--cache-timestamp (float-time)))
+                    org-ml--cache))
+         (msg-id (cdr (assoc (completing-read
+                              "Thread: " (mapcar #'car patches))
+                             patches))))
     (+workspace-switch +mu4e-workspace-name)
     (mu4e-view-message-with-message-id msg-id)
     (add-to-list 'mu4e-view-actions
