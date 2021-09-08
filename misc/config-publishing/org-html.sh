@@ -15,6 +15,11 @@
 (require 'org)
 (require 'ox-html)
 
+;; For some faces
+(require 'highlight-numbers)
+(require 'highlight-quoted)
+(require 'rainbow-delimiters)
+
 (with-temp-buffer
   (let ((default-directory config-root)
         (buffer-file-name (expand-file-name "config.org" config-root))
