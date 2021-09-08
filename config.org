@@ -3604,18 +3604,18 @@ Doom already loads =define-word=, and provides it's own definition service using
 advantages, namely:
 + speed
 + integration of multiple dictionaries
-[[http://goldendict.org/][GoldenDict]] seems like the best option currently avalible, but lacks a CLI.
+[[http://goldendict.org/][GoldenDict]] seems like the best option currently available, but lacks a CLI.
 Hence, we'll fall back to [[https://dushistov.github.io/sdcv/][sdcv]] (a CLI version of StarDict) for now.
 To interface with this, we'll use a my =lexic= package.
 
 #+attr_html: :class invertible :alt Screenshot of the lexic-mode view of "literate"
 [[https://tecosaur.com/lfs/emacs-config/screenshots/lexic.png]]
 
-#+begin_src emacs-lisp :tangle packages.el
+#+begin_src emacs-lisp :tangle (if (executable-find "sdcv") "packages.el" "no")
 (package! lexic :recipe (:local-repo "lisp/lexic"))
 #+end_src
 
-Given that a request for a CLI is the most upvoted issue on GitHub for
+Given that a request for a CLI is the [[https://github.com/goldendict/goldendict/issues/37][most upvoted issue]] on GitHub for
 GoldenDict, it's likely we'll be able to switch from ~sdcv~ to that in the future.
 
 Since GoldenDict supports StarDict files, I expect this will be a relatively
@@ -3623,7 +3623,7 @@ painless switch.
 
 We start off by loading =lexic=, then we'll integrate it into pre-existing
 definition functionality (like ~+lookup/dictionary-definition~).
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle (if (executable-find "sdcv") "yes" "no")
 (use-package! lexic
   :commands lexic-search lexic-list-dictionary
   :config
@@ -3647,7 +3647,7 @@ definition functionality (like ~+lookup/dictionary-definition~).
 #+end_src
 
 Now let's use this instead of wordnet.
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle (if (executable-find "sdcv") "yes" "no")
 (defadvice! +lookup/dictionary-definition-lexic (identifier &optional arg)
   "Look up the definition of the word at point (or selection) using `lexic-search'."
   :override #'+lookup/dictionary-definition
@@ -3657,6 +3657,23 @@ Now let's use this instead of wordnet.
          current-prefix-arg))
   (lexic-search identifier nil nil t))
 #+end_src
+
+Lastly, I want to make sure I have some dictionaries set up. I've put a tarball
+of dictionaries online which we can download if none seem to be present on the
+system.
+#+begin_src shell :tangle (if (and (executable-find "sdsv") (not (file-exists-p (concat (or (getenv "STARDICT_DATA_DIR") (concat (or "~/.local/share" (getenv "XDG_DATA_HOME")) "/stardict")) "/dic")))) "setup.sh" "no")
+DIC_FOLDER=${STARDICT_DATA_DIR:-${XDG_DATA_HOME:-$HOME/.local/share}/stardict}/dic
+if [ ! -d "$DIC_FOLDER" ]; then
+    TMP="$(mktemp -d /tmp/dict-XXX)"
+    cd "$TMP"
+    curl -A "Mozilla/4.0" -o "stardict.tar.gz" "https://tecosaur.com/resources/config/stardict.tar.gz"
+    tar -xf "stardict.tar.gz"
+    rm "stardict.tar.gz"
+    mkdir -p "$DIC_FOLDER"
+    mv * "$DIC_FOLDER"
+fi
+#+end_src
+
 ** Mail
 [[xkcd:1467]]
 
