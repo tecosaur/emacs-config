@@ -320,9 +320,9 @@ It's useful to have some basic personal information
 #+end_src
 Apparently this is used by ~GPG~, and all sorts of other things.
 
-Speaking of ~GPG~, I want to use =~/.authsource.gpg= instead of the default in
+Speaking of ~GPG~, I want to use =~/.authinfo.gpg= instead of the default in
 =~/.emacs.d=. Why? Because my home directory is already cluttered, so this won't
-make a difference, and I don't want to accidentaly purge this file (I have done
+make a difference, and I don't want to accidentally purge this file (I have done
 src_shell{rm -rf~/.emac.d~ before}. I also want to cache as much as possible, as
 my home machine is pretty safe, and my laptop is shutdown a lot.
 #+begin_src emacs-lisp
