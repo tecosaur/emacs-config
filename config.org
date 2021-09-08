@@ -1363,8 +1363,6 @@ from Doom or MELPA/ELPA/Emacsmirror:
 #+end_src
 
 Specify a ~:branch~ to install a package from a particular branch or tag.
-This is required for some packages whose default branch isn't 'master' (which
-our package manager can't deal with; see [[https://github.com/raxod502/straight.el/issues/279][raxod502/straight.el#279]])
 #+begin_src emacs-lisp
 (package! builtin-package :recipe (:branch "develop"))
 #+end_src
