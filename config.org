@@ -857,8 +857,23 @@ I think an elisp REPL sounds like a fun idea, even if not a particularly useful
 one 😛. We can do this by adding a new command in =cli.el=.
 
 #+begin_src emacs-lisp :tangle cli.el
-(defcli! repl ()
+(defcli! repl ((in-rlwrap-p ["--rl"] "For internal use only."))
   "Start an elisp REPL."
+  (when (and (executable-find "rlwrap") (not in-rlwrap-p))
+    ;; For autocomplete
+    (setq autocomplete-file "/tmp/doom_elisp_repl_symbols")
+    (unless (file-exists-p autocomplete-file)
+      (princ "\e[0;33mInitialising autocomplete list...\e[0m\n")
+      (with-temp-buffer
+        (cl-do-all-symbols (s)
+          (let ((sym (symbol-name s)))
+            (when (string-match-p "\\`[[:ascii:]][[:ascii:]]+\\'" sym)
+              (insert sym "\n"))))
+        (write-region nil nil autocomplete-file)))
+    (princ "\e[F")
+    (throw 'exit (list "rlwrap" "-f" autocomplete-file
+                       (concat doom-emacs-dir "bin/doom") "repl" "--rl")))
+
   (doom-initialize-packages)
   (require 'engrave-faces-ansi)
   (setq engrave-faces-ansi-color-mode '3-bit)
