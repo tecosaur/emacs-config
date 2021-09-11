@@ -1866,6 +1866,38 @@ With all our fancy Emacs themes, my terminal is missing out!
 (package! theme-magic :pin "844c4311bd26ebafd4b6a1d72ddcc65d87f074e3")
 #+end_src
 
+Theme magic takes a look at a number of faces, the saturation levels, and colour
+differences to try to cleverly pick eight colours to use. However, it uses the
+same colours for the light variants, and doesn't always make the best picks.
+Since we're using =doom-themes=, our life is a little easier and we can use the
+colour utilities from Doom themes to easily grab sensible colours and generate
+lightened versions --- let's do that.
+
+#+begin_src emacs-lisp
+(use-package! theme-magic
+  :commands theme-magic-from-emacs
+  :config
+  (defadvice! theme-magic--auto-extract-16-doom-colors ()
+    :override #'theme-magic--auto-extract-16-colors
+    (list
+     (face-attribute 'default :background)
+     (doom-color 'error)
+     (doom-color 'success)
+     (doom-color 'type)
+     (doom-color 'keywords)
+     (doom-color 'constants)
+     (doom-color 'functions)
+     (face-attribute 'default :foreground)
+     (face-attribute 'shadow :foreground)
+     (doom-blend 'base8 'error 0.1)
+     (doom-blend 'base8 'success 0.1)
+     (doom-blend 'base8 'type 0.1)
+     (doom-blend 'base8 'keywords 0.1)
+     (doom-blend 'base8 'constants 0.1)
+     (doom-blend 'base8 'functions 0.1)
+     (face-attribute 'default :foreground))))
+#+end_src
+
 Let's automatically update terminals on theme change (as long as ~pywal~ is available).
 
 Unfortunately, as the theme is set on startup this causes the hook to be run
