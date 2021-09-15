@@ -4998,6 +4998,18 @@ to make that right again, and this package makes that even easier to do.
 (use-package! org-pandoc-import
   :after org)
 #+end_src
+
+***** Document comparison
+It's quite nice to compare Org files, and the richest way to compare content is
+probably =latexdiff=. There are a few annoying steps involved here, and so I've
+written a package to streamline the process.
+
+#+begin_src emacs-lisp
+(package! orgdiff :recipe (:local-repo "lisp/orgdiff"))
+#+end_src
+
+#+begin_src emacs-lisp :tangle yes
+(use-package! orgdiff :defer t)
 #+end_src
 *** Behaviour
 [[xkcd:1319]]

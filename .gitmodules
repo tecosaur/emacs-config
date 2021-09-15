@@ -25,6 +25,9 @@
 [submodule "pdftotext"]
 	path = lisp/pdftotext
 	url = https://github.com/tecosaur/pdftotext.el.git
+[submodule "orgdiff"]
+	path = lisp/orgdiff
+	url = https://github.com/tecosaur/orgdiff.git
 [submodule "ob-julia"]
 	path = lisp/ob-julia
 	url = https://github.com/nico202/ob-julia.git
