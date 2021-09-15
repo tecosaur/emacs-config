@@ -10433,22 +10433,28 @@ sure =pdf-tools= doesn't take priority.
 (defconst pdf-text-auto-mode-alist-entry
   '("\\.[pP][dD][fF]\\'" . pdf-text-mode)
   "The entry to use for `auto-mode-alist'.")
+(defconst pdf-text-magic-mode-alist-entry
+  '("%PDF" . pdf-text-mode)
+  "The entry to use for `magic-mode-alist'.")
 
 (defun pdf-text-install ()
   "Add a \".pdf\" associaton for all future buffers."
   (interactive)
   (add-to-list 'auto-mode-alist pdf-text-auto-mode-alist-entry)
+  (add-to-list 'magic-mode-alist pdf-text-magic-mode-alist-entry)
   (when (featurep 'pdf-tools)
     (setq-default auto-mode-alist
                   (remove pdf-tools-auto-mode-alist-entry auto-mode-alist))
     (setq-default magic-mode-alist
                   (remove pdf-tools-magic-mode-alist-entry magic-mode-alist))))
 
-(defun pdf-tools-uninstall ()
+(defun pdf-text-uninstall ()
   "Remove the \".pdf\" associaton for all future buffers."
   (interactive)
   (setq-default auto-mode-alist
-                (remove pdf-text-auto-mode-alist-entry auto-mode-alist)))
+                (remove pdf-text-auto-mode-alist-entry auto-mode-alist))
+  (setq-default magic-mode-alist
+                (remove pdf-text-magic-mode-alist-entry auto-mode-alist)))
 #+end_src
 
 Lastly, whenever Emacs is non-graphical (i.e. a TUI), we want to use this by default.
