@@ -10313,156 +10313,39 @@ priority of =mypyls=
 
 Sometimes I'm in a terminal and I still want to see the content. Additionally,
 sometimes I'd like to act on the textual content and so would like a plaintext version.
-
-#+begin_info
-This is a candidate for a dedicated package.
-Let me know if you'd like to see this.
-#+end_info
-
-Thanks to src_shell{pdftotext} we have a convenient way of performing this
-conversion.
-
-#+begin_src emacs-lisp
-(defun pdf-text--update (&optional _window)
-  (when (eq major-mode 'pdf-text-mode)
-    (let* ((converted-file (expand-file-name (concat
-                                              (file-name-base buffer-file-name)
-                                              "-"
-                                              (substring (secure-hash 'sha1 (expand-file-name buffer-file-name)) 0 6)
-                                              ".txt")
-                                             temporary-file-directory))
-           (width (number-to-string (- (min (window-width) fill-column)
-                                       (if display-line-numbers display-line-numbers-width 0))))
-           (width-adjusted-file (concat (file-name-sans-extension converted-file) "-w" width ".txt")))
-      (unless (and (file-exists-p converted-file)
-                   (> (time-convert (file-attribute-modification-time (file-attributes converted-file)) 'integer)
-                      (time-convert (file-attribute-modification-time (file-attributes buffer-file-name)) 'integer)))
-        (call-process "pdftotext" nil nil nil "-layout" "-eol" "unix" buffer-file-name converted-file))
-      (unless (and (file-exists-p width-adjusted-file)
-                   (>= (time-convert (file-attribute-modification-time (file-attributes width-adjusted-file)) 'integer)
-                       (time-convert (file-attribute-modification-time (file-attributes converted-file)) 'integer)))
-        (call-process "fmt" nil (list :file width-adjusted-file) nil "-w" width converted-file))
-      (unless (and (boundp 'pdf-text--file)
-                   (string= pdf-text--file width-adjusted-file))
-        (let ((pos (when (boundp 'pdf-text--file) (pdf-text--position-info))))
-          (with-silent-modifications
-            (let ((inhibit-read-only t)
-                  (coding-system-for-read 'utf-8))
-              (erase-buffer)
-              (insert-file-contents width-adjusted-file)
-              (while (re-search-forward "\n?\f\n?" nil t)
-                (replace-match "\n\f\n"))
-              (goto-char (point-min)))
-            (setq-local pdf-text--file width-adjusted-file))
-          (setq-default saved-pos pos)
-          (when pos (ignore-errors (pdf-text--goto-pos pos))))))))
+Thanks to src_shell{pdftotext} we have a convenient way of performing this conversion.
+I've integrated this into a little package, =pdftotext.el=.
+#+begin_src emacs-lisp :tangle packages.el
+(package! pdftotext :recipe (:local-repo "lisp/pdftotext"))
 #+end_src
-
-Now we just need to make a mode to use this.
-
-#+begin_src emacs-lisp
-(define-derived-mode pdf-text-mode so-long-mode "PDF Text" ; so-long for the initial buffer load time
-  "Major mode for viewing the plaintext version of a PDF."
-  (set-buffer-multibyte t)
-  (read-only-mode t)
-  (add-hook 'before-save-hook (lambda () (user-error "Will not overwrite PDF with plaintext version")))
-  (dolist (hook '(window-configuration-change-hook
-                  window-size-change-functions
-                  display-line-numbers-mode-hook))
-    (add-hook hook 'pdf-text--update))
-  (pdf-text--update)
-  (text-mode)
-  (setq mode-name "PDF Text"))
-#+end_src
-
-In src_elisp{(pdf-text--update)} there's mention of position saving and
-restoring. This needs to be implemented, and it's a bit difficult since the line
-numbers and buffer positions are liable to change. So, instead we can try to
-take note of some markers (such as the line breaks) and try to make our way to
-them.
-
-#+begin_src emacs-lisp
-(defun pdf-text--position-info ()
-  (list :page-no (let ((current-point (point))
-                       (page-no 0))
-                   (save-excursion
-                     (while (search-forward "\f" current-point t)
-                       (setq page-no (1+ page-no))))
-                   page-no)
-        :par-start (save-excursion
-                     (forward-paragraph -1)
-                     (forward-line 1)
-                     (thing-at-point 'line t))
-        :previous-line-content (save-excursion
-                                 (forward-line -1)
-                                 (thing-at-point 'line t))))
-
-(defun pdf-text--goto-pos (pos)
-  (goto-char (point-min))
-  (search-forward "\f" nil nil (plist-get pos :page-no))
-  (re-search-forward (replace-regexp-in-string " +" "[ \n]+" (regexp-quote (plist-get pos :par-start))))
-  (unless (string= (plist-get pos :par-start)
-                   (plist-get pos :previous-line-content))
-    (re-search-forward (replace-regexp-in-string " +" "[ \n]+" (regexp-quote (plist-get pos :previous-line-content)))
-                       (save-excursion (forward-paragraph 1) (point)))))
-#+end_src
-
-Unfortunately while in isolated testing this position restoring works well, for
-some reason as it's currently used it doesn't seem to work at all.
 
 The output can be slightly nicer without spelling errors, and with prettier page
 feeds (=^L= by default).
 
 #+begin_src emacs-lisp
-(add-hook 'pdf-text-mode-hook #'spell-fu-mode-disable)
-(add-hook 'pdf-text-mode-hook (lambda () (page-break-lines-mode 1)))
 #+end_src
 
 This is very nice, now we just need to associate it with =.pdf= files, and make
 sure =pdf-tools= doesn't take priority.
 
-#+begin_src emacs-lisp
-(defconst pdf-text-auto-mode-alist-entry
-  '("\\.[pP][dD][fF]\\'" . pdf-text-mode)
-  "The entry to use for `auto-mode-alist'.")
-(defconst pdf-text-magic-mode-alist-entry
-  '("%PDF" . pdf-text-mode)
-  "The entry to use for `magic-mode-alist'.")
-
-(defun pdf-text-install ()
-  "Add a \".pdf\" associaton for all future buffers."
-  (interactive)
-  (add-to-list 'auto-mode-alist pdf-text-auto-mode-alist-entry)
-  (add-to-list 'magic-mode-alist pdf-text-magic-mode-alist-entry)
-  (when (featurep 'pdf-tools)
-    (setq-default auto-mode-alist
-                  (remove pdf-tools-auto-mode-alist-entry auto-mode-alist))
-    (setq-default magic-mode-alist
-                  (remove pdf-tools-magic-mode-alist-entry magic-mode-alist))))
-
-(defun pdf-text-uninstall ()
-  "Remove the \".pdf\" associaton for all future buffers."
-  (interactive)
-  (setq-default auto-mode-alist
-                (remove pdf-text-auto-mode-alist-entry auto-mode-alist))
-  (setq-default magic-mode-alist
-                (remove pdf-text-magic-mode-alist-entry auto-mode-alist)))
-#+end_src
-
 Lastly, whenever Emacs is non-graphical (i.e. a TUI), we want to use this by default.
 
 #+begin_src emacs-lisp :tangle (if (executable-find "pdftotext") "yes" "no")
-(unless (display-graphic-p)
-  (pdf-text-install)
-  ;; From Doom's :tools pdf (use-package! pdf-tools)
-  (setq-default auto-mode-alist
-                (remove '("\\.pdf\\'" . pdf-view-mode) auto-mode-alist))
-  (setq-default magic-mode-alist
-                (remove '("%PDF" . pdf-view-mode) magic-mode-alist))
+(use-package! pdftotext
+  :init
+  (unless (display-graphic-p)
+    (add-to-list 'auto-mode-alist '("\\.[pP][dD][fF]\\'" . pdftotext-mode))
+    (add-to-list 'magic-mode-alist '("%PDF" . pdftotext-mode)))
+  :config
+  (unless (display-graphic-p) (after! pdf-tools (pdftotext-install)))
+  ;; For prettyness
+  (add-hook 'pdftotext-mode-hook #'spell-fu-mode-disable)
+  (add-hook 'pdftotext-mode-hook (lambda () (page-break-lines-mode 1)))
   ;; I have no idea why this is needed
-  (map! :map pdf-text-mode-map
+  (map! :map pdftotext-mode-map
         "<mouse-4>" (cmd! (scroll-down mouse-wheel-scroll-amount-horizontal))
         "<mouse-5>" (cmd! (scroll-up mouse-wheel-scroll-amount-horizontal))))
+
 #+end_src
 
 ** R
