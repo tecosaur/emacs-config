@@ -9548,22 +9548,6 @@ This gives the same advantages as mentioned in the [[*Make verbatim different to
         (underline . "\\uline{%s}")
         (verbatim . verb)))
 #+end_src
-**** No AucTeX please
-For some reason, the way that ~org-export-to-file~ works, I find that =latex-mode=
-is called on the produced buffer prior to saving. This has two undesirable
-side-effects:
-+ I get unwanted warnings from AuxTeX
-+ A spurious =.auctex-auto= folder is produced.
-
-There are a few ways I could try to avoid this, but the most obvious to me is
-locally binding ~auto-mode-alist~ to ~nil~.
-#+begin_src emacs-lisp
-(defadvice! no-auto-mode-alist (orig-fn &rest args)
-  "Wrap ORIG-FN in a let-binding that sets `auto-mode-alist' to nil."
-  :around #'org-export-to-file
-  (let ((auto-mode-alist nil))
-    (apply orig-fn args)))
-#+end_src
 **** Check for required packages
 
 For how I've setup Org's LaTeX export, the following packages are needed:
