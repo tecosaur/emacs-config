@@ -10225,6 +10225,9 @@ fleshing out. Let's change the prefix to a key which is similarly rarely used,
 but more convenient, like =;=.
 #+begin_src emacs-lisp
 (after! cdlatex
+  (setq cdlatex-env-alist
+        '(("bmatrix" "\\begin{bmatrix}\n?\n\\end{bmatrix}" nil)
+          ("equation*" "\\begin{equation*}\n?\n\\end{equation*}" nil)))
   (setq ;; cdlatex-math-symbol-prefix ?\; ;; doesn't work at the moment :(
    cdlatex-math-symbol-alist
    '( ;; adding missing functions to 3rd level symbols
