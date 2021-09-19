@@ -4770,13 +4770,33 @@ Then adding a regex for it to =~/.config/git/config=
 Testing patches from the ML is currently more hassle than it needs to be. Let's
 change that.
 #+begin_src emacs-lisp
-(defvar org-ml-target-dir "~/.emacs.d/.local/straight/repos/org-mode/")
-(defvar org-ml-max-age 600
+(defvar +org-ml-target-dir "~/.emacs.d/.local/straight/repos/org-mode/")
+(defvar +org-ml-max-age 600
   "Maximum permissible age in seconds.")
-(defvar org-ml--cache-timestamp 0)
-(defvar org-ml--cache nil)
+(defvar +org-ml--cache-timestamp 0)
+(defvar +org-ml--cache nil)
 
-(defun org-ml-current-patches ()
+(define-minor-mode +org-ml-patchy-mood-mode
+  "Apply patches to Org in bulk."
+  :global t
+  (let ((action (cons "apply patch to org" #'+org-ml-apply-patch)))
+    (if +org-ml-patchy-mood-mode
+        (add-to-list 'mu4e-view-actions action)
+      (setq mu4e-view-actions (delete action mu4e-view-actions)))))
+
+(defun +org-ml-apply-patch (msg)
+  "Apply the patch in the current message to Org."
+  (interactive)
+  (unless msg (setq msg (mu4e-message-at-point)))
+  (with-current-buffer (get-buffer-create "*Shell: Org apply patches*")
+    (erase-buffer)
+    (let* ((default-directory +org-ml-target-dir)
+           (exit-code (call-process "git" nil t nil "am" (mu4e-message-field msg :path))))
+      (magit-refresh)
+      (when (not (= 0 exit-code))
+        (+popup/buffer)))))
+
+(defun +org-ml-current-patches ()
   "Get the currently open patches, as a list of alists.
 Entries of the form (subject . id)."
   (delq nil
@@ -4797,41 +4817,33 @@ Entries of the form (subject . id)."
          (with-current-buffer (url-retrieve-synchronously "https://updates.orgmode.org/data/patches")
            (json-parse-buffer :object-type 'plist)))))
 
-(defun org-ml-select-patch-thread ()
+(defun +org-ml-select-patch-thread ()
   "Find and apply a proposed Org patch."
   (interactive)
   (let* ((current-workspace (+workspace-current))
          (patches (progn
-                    (when (or (not org-ml--cache)
-                              (> (- (float-time) org-ml--cache-timestamp)
-                                 org-ml-max-age))
-                      (setq org-ml--cache (org-ml-current-patches)
-                            org-ml--cache-timestamp (float-time)))
-                    org-ml--cache))
+                    (when (or (not +org-ml--cache)
+                              (> (- (float-time) +org-ml--cache-timestamp)
+                                 +org-ml-max-age))
+                      (setq +org-ml--cache (+org-ml-current-patches)
+                            +org-ml--cache-timestamp (float-time)))
+                    +org-ml--cache))
          (msg-id (cdr (assoc (completing-read
                               "Thread: " (mapcar #'car patches))
                              patches))))
     (+workspace-switch +mu4e-workspace-name)
     (mu4e-view-message-with-message-id msg-id)
-    (add-to-list 'mu4e-view-actions
-                 (cons "apply patch to org" #'org-ml-transient-mu4e-action))))
+    (unless +org-ml-patchy-mood-mode
+      (add-to-list 'mu4e-view-actions
+                   (cons "apply patch to org" #'+org-ml-transient-mu4e-action)))))
 
-(defun org-ml-transient-mu4e-action (msg)
+(defun +org-ml-transient-mu4e-action (msg)
   (setq mu4e-view-actions
-        (delete (cons "apply patch to org" #'org-ml-transient-mu4e-action)
+        (delete (cons "apply patch to org" #'+org-ml-transient-mu4e-action)
                 mu4e-view-actions))
   (+workspace/other)
-  (magit-status org-ml-target-dir)
-  (with-current-buffer (get-buffer-create "*Shell: Org apply patches*")
-    (erase-buffer)
-    (let ((default-directory org-ml-target-dir))
-      (shell-command
-       (format "git am %s"
-               (shell-quote-argument (mu4e-message-field msg :path)))
-       (current-buffer))
-      (magit-refresh))
-    (when (string-match-p "Error\\|failed" (buffer-string))
-      (+popup/buffer))))
+  (magit-status +org-ml-target-dir)
+  (+org-ml-apply-patch msg))
 #+end_src
 *** Packages
 :PROPERTIES:
