@@ -4453,6 +4453,11 @@ LD_LIBRARY_PATH=/usr/local/lib exec /usr/local/bin/msmtp "$@"
 #+end_src
 
 *** Mu4e
+:PROPERTIES:
+:CUSTOM_ID: org
+:header-args:emacs-lisp: :tangle no :noweb-ref mu4e-conf
+:END:
+
 Webmail clients are nice and all, but I still don't believe that SPAs in my
 browser can replaced desktop apps ... sorry Gmail. I'm also liking google less
 and less.
@@ -4482,6 +4487,13 @@ Alternatively, I may need to add the =/usr/share/= path.
 (add-to-list 'load-path "/usr/share/emacs/site-lisp/mu4e")
 #+end_src
 
+Let's also just shove all the Elisp code here in an src_elisp{(after! ...)} block.
+#+begin_src emacs-lisp :noweb no-export :tangle yes :noweb-ref nil
+(after! mu4e
+  <<mu4e-conf>>
+)
+#+end_src
+
 **** Viewing Mail
 There seem to be some advantages with using Gnus' article view (such as inline
 images), and judging from [[https://github.com/djcb/mu/pull/1442#issuecomment-591695814][djcb/mu!1442 (comment)]] this seems to be the 'way of
@@ -4493,32 +4505,31 @@ fancy chars, and make sure they get the correct width.
 To account for the increase width of each flag character, and make perform a
 few more visual tweaks, we'll tweak the headers a bit
 #+begin_src emacs-lisp
-(after! mu4e
-  (setq mu4e-headers-fields
-        '((:flags . 6)
-          (:account-stripe . 2)
-          (:from-or-to . 25)
-          (:folder . 10)
-          (:recipnum . 2)
-          (:subject . 80)
-          (:human-date . 8))
-        +mu4e-min-header-frame-width 142
-        mu4e-headers-date-format "%d/%m/%y"
-        mu4e-headers-time-format "⧖ %H:%M"
-        mu4e-headers-results-limit 1000
-        mu4e-index-cleanup t)
+(setq mu4e-headers-fields
+      '((:flags . 6)
+        (:account-stripe . 2)
+        (:from-or-to . 25)
+        (:folder . 10)
+        (:recipnum . 2)
+        (:subject . 80)
+        (:human-date . 8))
+      +mu4e-min-header-frame-width 142
+      mu4e-headers-date-format "%d/%m/%y"
+      mu4e-headers-time-format "⧖ %H:%M"
+      mu4e-headers-results-limit 1000
+      mu4e-index-cleanup t)
 
-  (add-to-list 'mu4e-bookmarks
-               '(:name "Yesterday's messages" :query "date:2d..1d" :key ?y) t)
+(add-to-list 'mu4e-bookmarks
+             '(:name "Yesterday's messages" :query "date:2d..1d" :key ?y) t)
 
-  (defvar +mu4e-header--folder-colors nil)
-  (appendq! mu4e-header-info-custom
-            '((:folder .
-               (:name "Folder" :shortname "Folder" :help "Lowest level folder" :function
-                (lambda (msg)
-                  (+mu4e-colorize-str
-                   (replace-regexp-in-string "\\`.*/" "" (mu4e-message-field msg :maildir))
-                   '+mu4e-header--folder-colors)))))))
+(defvar +mu4e-header--folder-colors nil)
+(appendq! mu4e-header-info-custom
+          '((:folder .
+             (:name "Folder" :shortname "Folder" :help "Lowest level folder" :function
+              (lambda (msg)
+                (+mu4e-colorize-str
+                 (replace-regexp-in-string "\\`.*/" "" (mu4e-message-field msg :maildir))
+                 '+mu4e-header--folder-colors))))))
 #+end_src
 
 We'll also use a nicer alert icon
@@ -4528,12 +4539,11 @@ We'll also use a nicer alert icon
 **** Sending Mail
 Let's send emails too.
 #+begin_src emacs-lisp
-(after! mu4e
-  (setq sendmail-program "/usr/bin/msmtp"
-        send-mail-function #'smtpmail-send-it
-        message-sendmail-f-is-evil t
-        message-sendmail-extra-arguments '("--read-envelope-from"); , "--read-recipients")
-        message-send-mail-function #'message-send-mail-with-sendmail))
+(setq sendmail-program "/usr/bin/msmtp"
+      send-mail-function #'smtpmail-send-it
+      message-sendmail-f-is-evil t
+      message-sendmail-extra-arguments '("--read-envelope-from"); , "--read-recipients")
+      message-send-mail-function #'message-send-mail-with-sendmail)
 #+end_src
 
 It's also nice to avoid accidentally sending emails with the wrong account. If
