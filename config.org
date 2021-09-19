@@ -1321,7 +1321,9 @@ I prefer the dashboard, so let's ensure that's always switched to in new frames.
 
 (when (daemonp)
   (add-hook 'emacs-startup-hook #'greedily-do-daemon-setup)
-  (add-hook! 'server-after-make-frame-hook (switch-to-buffer +doom-dashboard-name)))
+  (add-hook! 'server-after-make-frame-hook
+    (unless (string-match-p "\\*draft" (buffer-name))
+      (switch-to-buffer +doom-dashboard-name))))
 #+end_src
 *** Emacs client wrapper
 I frequently want to make use of Emacs while in a terminal emulator. To make
@@ -4538,15 +4540,25 @@ It's also nice to avoid accidentally sending emails with the wrong account. If
 we can send from the address in the ~To~ field, let's do that. Opening a prompt
 otherwise also seems sensible.
 
-We can register Emacs as a potential email client with the following desktop
-file, thanks to Etienne Deparis's [[https://etienne.depar.is/emacs.d/mu4e.html][Mu4e customization]].
+We can register Emacs as a potential email client with a desktop file. We could
+put an =emacsclient ...= entry in the =Exec= field, but I've found this a bit dodgy.
+Instead let's package the =emacslient= behaviour in a little executable
+=~/.local/bin/emacsmail=.
+
+#+begin_src shell :tangle ~/.local/bin/emacsmail :shebang "#!/usr/bin/env sh" :mkdirp yes :tangle-mode (identity #o755) :comments no
+emacsclient -create-frame --alternate-editor='' --no-wait --eval \
+"(progn (x-focus-frame nil) (mu4e-compose-from-mailto \"$1\" t))"
+#+end_src
+
+Now we can just call that in a desktop file.
+
 #+begin_src conf :tangle ~/.local/share/applications/emacsmail.desktop :mkdirp yes
 [Desktop Entry]
-Name=Compose message in Emacs
+Name=Mu4e
 GenericName=Compose a new message with Mu4e in Emacs
 Comment=Open mu4e compose window
 MimeType=x-scheme-handler/mailto;
-Exec=emacsclient -create-frame --alternate-editor="" --no-wait --eval '(progn (x-focus-frame nil) (mu4e-compose-from-mailto "%u"))'
+Exec=emacsmail %u
 Icon=emacs
 Type=Application
 Terminal=false
@@ -4561,21 +4573,38 @@ update-desktop-database ~/.local/share/applications
 
 We also want to define ~mu4e-compose-from-mailto~.
 #+begin_src emacs-lisp
-(defun mu4e-compose-from-mailto (mailto-string)
+(defun mu4e-compose-from-mailto (mailto-string &optional quit-frame-after)
   (require 'mu4e)
   (unless mu4e~server-props (mu4e t) (sleep-for 0.1))
   (let* ((mailto (rfc2368-parse-mailto-url mailto-string))
          (to (cdr (assoc "To" mailto)))
          (subject (or (cdr (assoc "Subject" mailto)) ""))
          (body (cdr (assoc "Body" mailto)))
-         (org-msg-greeting-fmt (if (assoc "Body" mailto)
-                                   (replace-regexp-in-string "%" "%%"
-                                                             (cdr (assoc "Body" mailto)))
-                                 org-msg-greeting-fmt))
          (headers (-filter (lambda (spec) (not (-contains-p '("To" "Subject" "Body") (car spec)))) mailto)))
-    (mu4e~compose-mail to subject headers)))
+    (when-let ((mu4e-main (get-buffer mu4e-main-buffer-name)))
+      (switch-to-buffer mu4e-main))
+    (mu4e~compose-mail to subject headers)
+    (when body
+      (goto-char (point-min))
+      (if (eq major-mode 'org-msg-edit-mode)
+          (org-msg-goto-body)
+        (mu4e-compose-goto-bottom))
+      (insert body))
+    (goto-char (point-min))
+    (cond ((null to) (search-forward "To: "))
+          ((string= "" subject) (search-forward "Subject: "))
+          (t (if (eq major-mode 'org-msg-edit-mode)
+                 (org-msg-goto-body)
+               (mu4e-compose-goto-bottom))))
+    (font-lock-ensure)
+    (when evil-normal-state-minor-mode
+      (evil-append 1))
+    (when quit-frame-after
+      (add-hook 'kill-buffer-hook
+                `(lambda ()
+                   (when (eq (selected-frame) ,(selected-frame))
+                     (delete-frame)))))))
 #+end_src
-This may not quite function as intended for now due to [[github:jeremy-compostella/org-msg/issues/52][jeremy-compostella/org-msg#52]].
 
 It would also be nice to change the name pre-filled in =From:= when drafting.
 #+begin_src emacs-lisp
