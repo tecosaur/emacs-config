@@ -4631,6 +4631,77 @@ We can also use this a signature,
 #+begin_src emacs-lisp
 (setq message-signature mu4e-from-name)
 #+end_src
+**** Adding =X-Woof= headers
+
+I'm fairly active on the Org mailing list (ML). The Org ML has a linked
+bug/patch tracker, https://updates.orgmode.org/ managed by [[https://github.com/bzg/woof][Woof]]. However, I feel
+like I spend too much time looking up what the appropriate headers are for
+updating the status of bugs and patches. What I need, is some sort of convenient
+tool. Let's write one.
+
+First, a function that asks what I want to do and returns the appropriate =X-Woof=
+header.
+#+begin_src emacs-lisp
+(defun +mu4e-get-woof-header ()
+  (pcase (read-char
+          (format "\
+%s
+  %s Declare %s Applied %s Aborted
+%s
+  %s Confirm %s Fixed
+%s
+  %s Request %s Resolved
+
+%s remove X-Woof header"
+                  (propertize "Patch" 'face 'outline-3)
+                  (propertize "p" 'face '(bold consult-key))
+                  (propertize "a" 'face '(bold consult-key))
+                  (propertize "A" 'face '(bold consult-key))
+                  (propertize "Bug" 'face 'outline-3)
+                  (propertize "b" 'face '(bold consult-key))
+                  (propertize "f" 'face '(bold consult-key))
+                  (propertize "Help" 'face 'outline-3)
+                  (propertize "h" 'face '(bold consult-key))
+                  (propertize "r" 'face '(bold consult-key))
+                  (propertize "x" 'face '(bold error))))
+    (?p "X-Woof-Patch: confirmed")
+    (?a "X-Woof-Patch: applied")
+    (?A "X-Woof-Patch: canceled")
+    (?b "X-Woof-Bug: confirmed")
+    (?f "X-Woof-Bug: fixed")
+    (?r "X-Woof-Help: confirmed")
+    (?r "X-Woof-Help: canceled")
+    (?x 'delete)))
+#+end_src
+
+Now we just need a function which will add such a header to a buffer
+#+begin_src emacs-lisp
+(defun +mu4e-insert-woof-header ()
+  "Insert an X-Woof header into the current message."
+  (interactive)
+  (when-let ((header (+mu4e-get-woof-header)))
+    (save-excursion
+      (goto-char (point-min))
+      (search-forward "--text follows this line--")
+      (unless (eq header 'delete)
+        (beginning-of-line)
+        (insert header "\n")
+        (forward-line -1))
+      (when (re-search-backward "^X-Woof-" nil t)
+        (kill-whole-line)))))
+
+(map! :map mu4e-compose-mode-map
+      :localleader
+      :desc "Insert X-Woof Header" "w" #'+mu4e-insert-woof-header)
+
+(map! :map org-msg-edit-mode-map
+      :after org-msg
+      :localleader
+      :desc "Insert X-Woof Header" "w" #'+mu4e-insert-woof-header)
+#+end_src
+
+Lovely! That should make adding these headers a breeze.
+
 *** Org Msg
 Doom does a fantastic stuff with the defaults with this, so we only make a few
 minor tweaks.
