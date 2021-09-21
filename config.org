@@ -310,7 +310,7 @@ for more info).
 #+end_src
 
 #+begin_src shell :exports none :comments no :tangle-mode (identity #o755)
-#!/bin/bash
+#!/usr/bin/env bash
 #+end_src
 ** Personal Information
 It's useful to have some basic personal information
@@ -1431,7 +1431,7 @@ anything to be run.
 
 #+name: run-setup
 #+begin_src emacs-lisp :tangle no
-(if (string-empty-p (string-trim (with-temp-buffer (insert-file-contents "setup.sh") (buffer-string)) "#!/bin/bash"))
+(if (string-empty-p (string-trim (with-temp-buffer (insert-file-contents "setup.sh") (buffer-string)) "#!/usr/bin/env bash"))
     (message ";; Setup script is empty")
   (message ";; Detected content in the setup script")
   (pp-to-string
