@@ -1431,19 +1431,36 @@ anything to be run.
 
 #+name: run-setup
 #+begin_src emacs-lisp :tangle no
-(if (string-empty-p (string-trim (with-temp-buffer (insert-file-contents "setup.sh") (buffer-string)) "#!/usr/bin/env bash"))
-    (message ";; Setup script is empty")
-  (message ";; Detected content in the setup script")
+(if (file-exists-p "setup.sh")
+    (if (string-empty-p (string-trim (with-temp-buffer (insert-file-contents "setup.sh") (buffer-string)) "#!/usr/bin/env bash"))
+        (message ";; Setup script is empty")
+      (message ";; Detected content in the setup script")
+      (pp-to-string
+       `(unless noninteractive
+          (defun +config-run-setup ()
+            (when (yes-or-no-p (format "%s The setup script has content. Check and run the script?"
+                                       (propertize "Warning!" 'face '(bold warning))))
+              (find-file (expand-file-name "setup.sh" doom-private-dir))
+              (when (yes-or-no-p "Would you like to run this script?")
+                (async-shell-command "./setup.sh"))))
+          (add-hook! 'doom-init-ui-hook
+            (run-at-time nil nil #'+config-run-setup)))))
+  (message ";; setup.sh did not exist during tangle. Tangle again.")
   (pp-to-string
    `(unless noninteractive
-      (defun +config-run-setup ()
-        (when (yes-or-no-p (format "%s The setup script has content. Check and run the script?"
-                                   (propertize "Warning!" 'face '(bold warning))))
-          (find-file (expand-file-name "setup.sh" doom-private-dir))
-          (when (yes-or-no-p "Would you like to run this script?")
-            (async-shell-command "./setup.sh"))))
       (add-hook! 'doom-init-ui-hook
-        (run-at-time nil nil #'+config-run-setup)))))
+        (let ((default-directory doom-private-dir))
+          (setq tangle-proc (start-process "tangle-config" (get-buffer-create " *tangle config*")
+                                           "emacs" "--batch" "--eval"
+                                           (format "(progn \
+(require 'org) \
+(setq org-confirm-babel-evaluate nil) \
+(org-babel-tangle-file \"%s\"))" +literate-config-file)))
+          (add-hook! 'kill-emacs-hook
+            (when (and (process-live-p tangle-proc)
+                       (yes-or-no-p "Config is currently retangling, would you please wait a few seconds?"))
+              (switch-to-buffer " *tangle config*")
+              (signal 'quit nil))))))))
 #+end_src
 
 #+begin_src emacs-lisp :noweb no-export
