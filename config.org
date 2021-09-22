@@ -6795,6 +6795,13 @@ cause issues. Let's make their failure less eventful.
 #+end_src
 **** Flycheck with org-lint
 
+Org may be simple, but that doesn't mean there's no such thing as malformed Org.
+Thankfully, malformed Org is a much less annoying affair than malformed zipped
+XML (looks at DOCX/ODT...), particularly because there's a rather helpful little
+tool called ~org-lint~ bundled with Org that can tell you about your mistakes.
+
+[[xkcd:2109]]
+
 Flycheck doesn't currently support Org, and there's aren't any packages to do so
 ☹. However, in an issue on ~org-lint~ there is [[https://github.com/flycheck/flycheck/issues/1757#issuecomment-759546940][some code]] which apparently works.
 Surely this is what the clipboard was invented for? With that said, let's
@@ -6826,7 +6833,8 @@ regurgitate the code, cross our fingers, and hope it works.
     org-id-locations-file
     org-attach-id-dir
     org-attach-use-inheritance
-    org-attach-id-to-path-function-list)
+    org-attach-id-to-path-function-list
+    org-link-parameters)
   "Variables inherited by the org-lint subprocess.")
 
 (defun flycheck-org-lint-variables-form ()
@@ -6843,6 +6851,8 @@ regurgitate the code, cross our fingers, and hope it works.
                                    "\")"))
             "--eval" (eval (flycheck-sexp-to-string
                             (flycheck-org-lint-variables-form)))
+            "--eval" (eval (flycheck-sexp-to-string
+                            (flycheck-org-lint-customisations-form)))
             "--eval" (eval flycheck-org-lint-form)
             "--" source)
   :error-patterns
@@ -6861,6 +6871,25 @@ Try adding these syntax checkers to `flycheck-checkers'.
 Well that's very nice and helpful. We'll just do that 🙂.
 #+begin_src emacs-lisp
 (add-to-list 'flycheck-checkers 'org-lint)
+#+end_src
+
+It was missing custom link types, but that's easily fixed just by adding
+~org-link-parameters~ to ~flycheck-org-lint-variables~.
+
+One remaining little annoyance is that it reports extra =#+options= that I've
+added to Org as errors. So we need to tell ~org-lint~ about them without having it
+load my whole config. Code duplication isn't great, but at least this isn't
+much.
+
+#+name: org-syntax-modifications
+#+begin_src emacs-lisp :tangle no
+(defun flycheck-org-lint-customisations-form ()
+  `(progn
+     (require 'ox)
+     (cl-pushnew '(:latex-cover-page nil "coverpage" nil)
+                 (org-export-backend-options (org-export-get-backend 'latex)))
+     (cl-pushnew '(:latex-font-set nil "fontset" nil)
+                 (org-export-backend-options (org-export-get-backend 'latex)))))
 #+end_src
 
 *** Visuals
