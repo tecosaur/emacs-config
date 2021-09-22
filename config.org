@@ -1707,6 +1707,8 @@ already clear, and there's no need for a different face.
 From the =:tools magit= module.
 #+end_quote
 
+[[xkcd:1597]]
+
 Magit is absolutely great by default. The diffs don't get any
 syntax-highlighting-love though which is a bit sad. Thankfully
 [[https://github.com/dandavison/magit-delta][dandavison/magit-delta]] exists, which we can put to use.
