@@ -981,6 +981,23 @@ straightforward, I'll just redefine it to a simpler, async, function.
 (org-babel-tangle-file \\\"%s\\\"))\""
              +literate-config-file))))
 #+end_src
+*** Dashboard quick actions
+
+When using the dashboard, there are often a small number of actions I will take.
+As the dashboard is it's own major mode, there is no need to suffer the tyranny
+of unnecessary keystrokes --- we can simply bind common actions to a single key!
+
+#+begin_src emacs-lisp
+(map! :map +doom-dashboard-mode-map
+      :ne "f" #'find-file
+      :ne "r" #'consult-recent-file
+      :ne "p" #'doom/open-private-config
+      :ne "c" (cmd! (find-file (expand-file-name "config.org" doom-private-dir)))
+      :ne "." (cmd! (doom-project-find-file "~/.config/")) ; . for dotfiles
+      :ne "b" #'+vertico/switch-workspace-buffer
+      :ne "B" #'consult-buffer)
+#+end_src
+
 ** Other things
 *** Editor interaction
 **** Mouse buttons
