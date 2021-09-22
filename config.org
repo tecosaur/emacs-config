@@ -4498,7 +4498,6 @@ LD_LIBRARY_PATH=/usr/local/lib exec /usr/local/bin/msmtp "$@"
 
 *** Mu4e
 :PROPERTIES:
-:CUSTOM_ID: org
 :header-args:emacs-lisp: :tangle no :noweb-ref mu4e-conf
 :END:
 
