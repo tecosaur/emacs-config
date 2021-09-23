@@ -5694,8 +5694,7 @@ set up org-capture.
                    :headline "Inbox"
                    :type entry
                    :template ("* TODO %?"
-                              "%i %a")
-                   )
+                              "%i %a"))
                   ("Personal note" :keys "n"
                    :icon ("sticky-note-o" :set "faicon" :color "green")
                    :file +org-capture-todo-file
@@ -5725,29 +5724,24 @@ set up org-capture.
                    :children (("Webpage" :keys "w"
                                :icon ("globe" :set "faicon" :color "green")
                                :desc "%(org-cliplink-capture) "
-                               :i-type "read:web"
-                               )
+                               :i-type "read:web")
                               ("Article" :keys "a"
                                :icon ("file-text" :set "octicon" :color "yellow")
                                :desc ""
-                               :i-type "read:reaserch"
-                               )
+                               :i-type "read:reaserch")
                               ("\tRecipie" :keys "r"
                                :icon ("spoon" :set "faicon" :color "dorange")
                                :file +org-capture-recipies
                                :headline "Unsorted"
-                               :template "%(org-chef-get-recipe-from-url)"
-                               )
+                               :template "%(org-chef-get-recipe-from-url)")
                               ("Information" :keys "i"
                                :icon ("info-circle" :set "faicon" :color "blue")
                                :desc ""
-                               :i-type "read:info"
-                               )
+                               :i-type "read:info")
                               ("Idea" :keys "I"
                                :icon ("bubble_chart" :set "material" :color "silver")
                                :desc ""
-                               :i-type "idea"
-                               )))
+                               :i-type "idea")))
                   ("Tasks" :keys "k"
                    :icon ("inbox" :set "octicon" :color "yellow")
                    :file +org-capture-todo-file
@@ -5758,17 +5752,13 @@ set up org-capture.
                               "%i %a")
                    :children (("General Task" :keys "k"
                                :icon ("inbox" :set "octicon" :color "yellow")
-                               :extra ""
-                               )
+                               :extra "")
                               ("Task with deadline" :keys "d"
                                :icon ("timer" :set "material" :color "orange" :v-adjust -0.1)
-                               :extra "\nDEADLINE: %^{Deadline:}t"
-                               )
+                               :extra "\nDEADLINE: %^{Deadline:}t")
                               ("Scheduled Task" :keys "s"
                                :icon ("calendar" :set "octicon" :color "orange")
-                               :extra "\nSCHEDULED: %^{Start time:}t"
-                               )
-                              ))
+                               :extra "\nSCHEDULED: %^{Start time:}t")))
                   ("Project" :keys "p"
                    :icon ("repo" :set "octicon" :color "silver")
                    :prepend t
@@ -5791,8 +5781,7 @@ set up org-capture.
                                :icon ("list" :set "faicon" :color "blue")
                                :time-or-todo "%U"
                                :heading "Unreleased"
-                               :file +org-capture-project-changelog-file))
-                   )
+                               :file +org-capture-project-changelog-file)))
                   ("\tCentralised project templates"
                    :keys "o"
                    :type entry
@@ -5815,8 +5804,7 @@ set up org-capture.
                                :keys "c"
                                :time-or-todo "%U"
                                :heading "Unreleased"
-                               :file +org-capture-central-project-changelog-file))
-                   )))))
+                               :file +org-capture-central-project-changelog-file)))))))
 
   (set-org-capture-templates)
   (unless (display-graphic-p)
