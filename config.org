@@ -1000,7 +1000,8 @@ of unnecessary keystrokes --- we can simply bind common actions to a single key!
       :ne "c" (cmd! (find-file (expand-file-name "config.org" doom-private-dir)))
       :ne "." (cmd! (doom-project-find-file "~/.config/")) ; . for dotfiles
       :ne "b" #'+vertico/switch-workspace-buffer
-      :ne "B" #'consult-buffer)
+      :ne "B" #'consult-buffer
+      :ne "q" #'save-buffers-kill-terminal)
 #+end_src
 
 ** Other things
