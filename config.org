@@ -4724,7 +4724,7 @@ header.
                   (propertize "Patch" 'face 'outline-3)
                   (propertize "p" 'face '(bold consult-key))
                   (propertize "a" 'face '(bold consult-key))
-                  (propertize "A" 'face '(bold consult-key))
+                  (propertize "c" 'face '(bold consult-key))
                   (propertize "Bug" 'face 'outline-3)
                   (propertize "b" 'face '(bold consult-key))
                   (propertize "f" 'face '(bold consult-key))
@@ -4734,11 +4734,11 @@ header.
                   (propertize "x" 'face '(bold error))))
     (?p "X-Woof-Patch: confirmed")
     (?a "X-Woof-Patch: applied")
-    (?A "X-Woof-Patch: canceled")
+    (?c "X-Woof-Patch: cancelled")
     (?b "X-Woof-Bug: confirmed")
     (?f "X-Woof-Bug: fixed")
-    (?r "X-Woof-Help: confirmed")
-    (?r "X-Woof-Help: canceled")
+    (?h "X-Woof-Help: confirmed")
+    (?r "X-Woof-Help: cancelled")
     (?x 'delete)))
 #+end_src
 
