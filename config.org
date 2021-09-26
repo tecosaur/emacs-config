@@ -4970,6 +4970,7 @@ Entries of the form (subject . id)."
                        'face 'font-lock-keyword-face))
               (plist-get entry :id))))
          (with-current-buffer (url-retrieve-synchronously "https://updates.orgmode.org/data/patches")
+           (goto-char url-http-end-of-headers)
            (json-parse-buffer :object-type 'plist)))))
 
 (defun +org-ml-select-patch-thread ()
