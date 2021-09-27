@@ -1,3 +1,5 @@
+# SPDX-FileCopyrightText: © 2020-2021 tecosaur <tec@tecosaur.com>
+# SPDX-License-Identifier: MIT
 #+title: Doom Emacs Configuration
 #+subtitle: The Methods, Management, and Menagerie@@latex:\\@@ of Madness@@latex: --- in meticulous detail@@
 #+author: tecosaur
