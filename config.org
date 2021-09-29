@@ -3923,7 +3923,7 @@ Using [[https://gitlab.com/shackra/goimapnotify][goimapnotify]] we should be abl
 mail. Unfortunately this means /yet another/ config file :(
 
 We install with
-#+begin_src shell :eval no :tangle (if (or (not (featurep! :email mu4e)) (executable-find "goimapnotify")) "no" "setup.sh")
+#+begin_src shell :eval no :tangle (if (or (not (executable-find "mu")) (executable-find "goimapnotify")) "no" "setup.sh")
 go get -u gitlab.com/shackra/goimapnotify
 ln -s ~/.local/share/go/bin/goimapnotify ~/.local/bin/
 #+end_src
@@ -4002,7 +4002,7 @@ Prevents a series of redisplays from being called (when set to an appropriate va
 
 **** Config transcoding & service management
 As long as the =mbsyncrc= file exists, this is as easy as running
-#+begin_src shell :tangle (if (or (not (featurep! :email mu4e)) (file-exists-p "~/.config/imapnotify")) "no" "setup.sh")
+#+begin_src shell :tangle (if (or (not (executable-find "mu")) (file-exists-p "~/.config/imapnotify")) "no" "setup.sh")
 ~/.config/doom/misc/mbsync-imapnotify.py
 #+end_src
 
@@ -4406,7 +4406,7 @@ start, so for that I'll do the 'normal' thing and run ~mbsync -all~ every so oft
 --- let's say five minutes.
 
 We can accomplish this via a systemd timer, and service file.
-#+begin_src systemd :tangle (if (featurep! :email mu4e) "~/.config/systemd/user/mbsync.timer" "no")
+#+begin_src systemd :tangle (if (executable-find "mu") "~/.config/systemd/user/mbsync.timer" "no")
 [Unit]
 Description=call mbsync on all accounts every 5 minutes
 ConditionPathExists=%h/.mbsyncrc
@@ -4419,7 +4419,7 @@ OnUnitInactiveSec=5m
 WantedBy=default.target
 #+end_src
 
-#+begin_src systemd :tangle (if (featurep! :email mu4e) "~/.config/systemd/user/mbsync.service" "no")
+#+begin_src systemd :tangle (if (executable-find "mu") "~/.config/systemd/user/mbsync.service" "no")
 [Unit]
 Description=mbsync service, sync all mail
 Documentation=man:mbsync(1)
@@ -4434,7 +4434,7 @@ WantedBy=mail.target
 #+end_src
 
 Enabling (and starting) this is as simple as
-#+begin_src shell :tangle (if (or (not (featurep! :email mu4e)) (string= "enabled\n" (shell-command-to-string "systemctl --user is-enabled mbsync.timer"))) "no" "setup.sh")
+#+begin_src shell :tangle (if (or (not (executable-find "mu")) (string= "enabled\n" (shell-command-to-string "systemctl --user is-enabled mbsync.timer"))) "no" "setup.sh")
 systemctl --user enable mbsync.timer --now
 #+end_src
 *** Indexing/Searching
@@ -4658,7 +4658,7 @@ StartupWMClass=Emacs
 #+end_src
 
 To register this, just call
-#+begin_src shell :tangle (if (or (not (featurep! :email mu4e)) (string= (shell-command-to-string "xdg-mime query default x-scheme-handler/mailto") "emacsmail.desktop\n")) "no" "setup.sh")
+#+begin_src shell :tangle (if (or (not (executable-find "mu")) (string= (shell-command-to-string "xdg-mime query default x-scheme-handler/mailto") "emacsmail.desktop\n")) "no" "setup.sh")
 update-desktop-database ~/.local/share/applications
 #+end_src
 
