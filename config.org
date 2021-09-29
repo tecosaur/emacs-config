@@ -278,15 +278,6 @@ few extras.
   - It's slightly quirky. Look at the diagonal cut on stems for example.
     Helvetica is a masterful design, but I like a bit more pizzazz now and then.
 + A few LSP servers. Take a look at [[file:init.el][init.el]] to see which modules have the ~+lsp~ flag.
-+ The [[https://github.com/dandavison/delta/][Delta]] binary. It's packaged for some distributions but I installed it with
-  #+begin_src shell :eval no :tangle (if (executable-find "delta") "no" "setup.sh")
-cargo install git-delta
-  #+end_src
-+ The =theme-magic= package requires the ~wal~ (=pywal=) executable. If this is
-  packaged for you, great! If not, it's just a quick ~pip install~ away.
-  #+begin_src shell :eval no :tangle (if (executable-find "wal") "no" "setup.sh")
-sudo python3 -m pip install pywal
-  #+end_src
 
 ** Current Issues
 *** Magit push in daemon
@@ -1723,23 +1714,31 @@ From the =:tools magit= module.
 
 [[xkcd:1597]]
 
-Magit is absolutely great by default. The diffs don't get any
-syntax-highlighting-love though which is a bit sad. Thankfully
-[[https://github.com/dandavison/magit-delta][dandavison/magit-delta]] exists, which we can put to use.
-#+begin_src emacs-lisp
-;; (after! magit
-;;   (magit-delta-mode +1))
-#+end_src
-Unfortunately this seems to mess things up, which is something I'll want to look
-into later.
+Magit is great as-is, thanks for making such a lovely package [[https://github.com/tarsius][Jonas]]!
 
 *** Magit delta
 
 [[https://github.com/dandavison/delta/][Delta]] is a git diff syntax highlighter written in rust. The author also wrote a
-package to hook this into the magit diff view. This requires the ~delta~ binary.
+package to hook this into the magit diff view (which don't get any syntax
+highlighting by default). This requires the ~delta~ binary. It's packaged on some
+distributions, but most reliably installed through Rust's package manager cargo.
+
+#+begin_src shell :eval no :tangle (if (or (not (executable-find "cargo")) (executable-find "delta")) "no" "setup.sh")
+cargo install git-delta
+#+end_src
+
+Now we can make use of the package for this.
 #+begin_src emacs-lisp :tangle packages.el
 ;; (package! magit-delta :recipe (:host github :repo "dandavison/magit-delta") :pin "56cdffd377279589aa0cb1df99455c098f1848cf")
 #+end_src
+
+All that's left is to hook it into magit
+#+begin_src emacs-lisp
+;; (after! magit
+;;   (magit-delta-mode +1))
+#+end_src
+Unfortunately this currently seems to mess things up, which is something I'll
+want to look into later.
 
 *** Smerge
 
@@ -2057,6 +2056,12 @@ so I'd like to make sure we have a recent version.
 With all our fancy Emacs themes, my terminal is missing out!
 #+begin_src emacs-lisp :tangle packages.el
 (package! theme-magic :pin "844c4311bd26ebafd4b6a1d72ddcc65d87f074e3")
+#+end_src
+
+This operates using =pywal=, which is present in some repositories, but most
+reliably installed with =pip=.
+#+begin_src shell :eval no :tangle (if (executable-find "wal") "no" "setup.sh")
+sudo python3 -m pip install pywal
 #+end_src
 
 Theme magic takes a look at a number of faces, the saturation levels, and colour
