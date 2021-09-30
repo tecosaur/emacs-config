@@ -5008,6 +5008,23 @@ Entries of the form (subject . id)."
   (magit-status +org-ml-target-dir)
   (+org-ml-apply-patch msg))
 #+end_src
+
+The other thing which it's good to be easily able to do is grab a link to the
+current message on https://list.orgmode.org.
+#+begin_src emacs-lisp
+(defun +mu4e-ml-message-link (msg)
+  "Copy the link to MSG on the mailing list archives."
+  (let ((msg-url
+         (cond
+          ((string= "emacs-orgmode.gnu.org" (mu4e-message-field msg :mailing-list))
+           (format "https://list.orgmode.org/%s" (mu4e-message-field msg :message-id)))
+          (t (user-error "Mailing list %s not supported" (mu4e-message-field msg :mailing-list))))))
+    (message "Link %s copied to clipboard" (gui-select-text msg-url))
+    msg-url))
+
+(add-to-list 'mu4e-view-actions (cons "link to message ML" #'+mu4e-ml-message-link t))
+#+end_src
+
 *** Packages
 :PROPERTIES:
 :header-args:emacs-lisp: :tangle packages.el :comments no
