@@ -4807,6 +4807,110 @@ Now we just need a function which will add such a header to a buffer
 
 Lovely! That should make adding these headers a breeze.
 
+***** Patch workflow
+
+Testing patches from the ML is currently more hassle than it needs to be. Let's
+change that.
+
+#+begin_src emacs-lisp
+(after! mu4e
+  (defvar +org-ml-target-dir "~/.emacs.d/.local/straight/repos/org-mode/")
+  (defvar +org-ml-max-age 600
+    "Maximum permissible age in seconds.")
+  (defvar +org-ml--cache-timestamp 0)
+  (defvar +org-ml--cache nil)
+
+  (define-minor-mode +org-ml-patchy-mood-mode
+    "Apply patches to Org in bulk."
+    :global t
+    (let ((action (cons "apply patch to org" #'+org-ml-apply-patch)))
+      (if +org-ml-patchy-mood-mode
+          (add-to-list 'mu4e-view-actions action)
+        (setq mu4e-view-actions (delete action mu4e-view-actions)))))
+
+  (defun +org-ml-apply-patch (msg)
+    "Apply the patch in the current message to Org."
+    (interactive)
+    (unless msg (setq msg (mu4e-message-at-point)))
+    (with-current-buffer (get-buffer-create "*Shell: Org apply patches*")
+      (erase-buffer)
+      (let* ((default-directory +org-ml-target-dir)
+             (exit-code (call-process "git" nil t nil "am" (mu4e-message-field msg :path))))
+        (magit-refresh)
+        (when (not (= 0 exit-code))
+          (+popup/buffer)))))
+
+  (defun +org-ml-current-patches ()
+    "Get the currently open patches, as a list of alists.
+Entries of the form (subject . id)."
+    (delq nil
+          (mapcar
+           (lambda (entry)
+             (unless (plist-get entry :fixed)
+               (cons
+                (format "%-8s  %s"
+                        (propertize
+                         (replace-regexp-in-string "T.*" ""
+                                                   (plist-get entry :date))
+                         'face 'font-lock-doc-face)
+                        (propertize
+                         (replace-regexp-in-string "\\[PATCH\\] ?" ""
+                                                   (plist-get entry :summary))
+                         'face 'font-lock-keyword-face))
+                (plist-get entry :id))))
+           (with-current-buffer (url-retrieve-synchronously "https://updates.orgmode.org/data/patches")
+             (goto-char url-http-end-of-headers)
+             (json-parse-buffer :object-type 'plist)))))
+
+  (defun +org-ml-select-patch-thread ()
+    "Find and apply a proposed Org patch."
+    (interactive)
+    (let* ((current-workspace (+workspace-current))
+           (patches (progn
+                      (when (or (not +org-ml--cache)
+                                (> (- (float-time) +org-ml--cache-timestamp)
+                                   +org-ml-max-age))
+                        (setq +org-ml--cache (+org-ml-current-patches)
+                              +org-ml--cache-timestamp (float-time)))
+                      +org-ml--cache))
+           (msg-id (cdr (assoc (completing-read
+                                "Thread: " (mapcar #'car patches))
+                               patches))))
+      (+workspace-switch +mu4e-workspace-name)
+      (mu4e-view-message-with-message-id msg-id)
+      (unless +org-ml-patchy-mood-mode
+        (add-to-list 'mu4e-view-actions
+                     (cons "apply patch to org" #'+org-ml-transient-mu4e-action)))))
+
+  (defun +org-ml-transient-mu4e-action (msg)
+    (setq mu4e-view-actions
+          (delete (cons "apply patch to org" #'+org-ml-transient-mu4e-action)
+                  mu4e-view-actions))
+    (+workspace/other)
+    (magit-status +org-ml-target-dir)
+    (+org-ml-apply-patch msg)))
+#+end_src
+
+***** Mail list archive links
+
+The other thing which it's good to be easily able to do is grab a link to the
+current message on https://list.orgmode.org.
+
+#+begin_src emacs-lisp
+(after! mu4e
+  (defun +mu4e-ml-message-link (msg)
+    "Copy the link to MSG on the mailing list archives."
+    (let ((msg-url
+           (cond
+            ((string= "emacs-orgmode.gnu.org" (mu4e-message-field msg :mailing-list))
+             (format "https://list.orgmode.org/%s" (mu4e-message-field msg :message-id)))
+            (t (user-error "Mailing list %s not supported" (mu4e-message-field msg :mailing-list))))))
+      (message "Link %s copied to clipboard" (gui-select-text msg-url))
+      msg-url))
+
+  (add-to-list 'mu4e-view-actions (cons "link to message ML" #'+mu4e-ml-message-link) t))
+#+end_src
+
 *** Org Msg
 Doom does a fantastic stuff with the defaults with this, so we only make a few
 minor tweaks.
@@ -4950,103 +5054,6 @@ Then adding a regex for it to =~/.config/git/config=
 #+begin_src gitconfig
 [diff "org"]
   xfuncname = "^(\\*+ +.*)$"
-#+end_src
-
-**** Development
-Testing patches from the ML is currently more hassle than it needs to be. Let's
-change that.
-#+begin_src emacs-lisp
-(defvar +org-ml-target-dir "~/.emacs.d/.local/straight/repos/org-mode/")
-(defvar +org-ml-max-age 600
-  "Maximum permissible age in seconds.")
-(defvar +org-ml--cache-timestamp 0)
-(defvar +org-ml--cache nil)
-
-(define-minor-mode +org-ml-patchy-mood-mode
-  "Apply patches to Org in bulk."
-  :global t
-  (let ((action (cons "apply patch to org" #'+org-ml-apply-patch)))
-    (if +org-ml-patchy-mood-mode
-        (add-to-list 'mu4e-view-actions action)
-      (setq mu4e-view-actions (delete action mu4e-view-actions)))))
-
-(defun +org-ml-apply-patch (msg)
-  "Apply the patch in the current message to Org."
-  (interactive)
-  (unless msg (setq msg (mu4e-message-at-point)))
-  (with-current-buffer (get-buffer-create "*Shell: Org apply patches*")
-    (erase-buffer)
-    (let* ((default-directory +org-ml-target-dir)
-           (exit-code (call-process "git" nil t nil "am" (mu4e-message-field msg :path))))
-      (magit-refresh)
-      (when (not (= 0 exit-code))
-        (+popup/buffer)))))
-
-(defun +org-ml-current-patches ()
-  "Get the currently open patches, as a list of alists.
-Entries of the form (subject . id)."
-  (delq nil
-        (mapcar
-         (lambda (entry)
-           (unless (plist-get entry :fixed)
-             (cons
-              (format "%-8s  %s"
-                      (propertize
-                       (replace-regexp-in-string "T.*" ""
-                                                 (plist-get entry :date))
-                       'face 'font-lock-doc-face)
-                      (propertize
-                       (replace-regexp-in-string "\\[PATCH\\] ?" ""
-                                                 (plist-get entry :summary))
-                       'face 'font-lock-keyword-face))
-              (plist-get entry :id))))
-         (with-current-buffer (url-retrieve-synchronously "https://updates.orgmode.org/data/patches")
-           (goto-char url-http-end-of-headers)
-           (json-parse-buffer :object-type 'plist)))))
-
-(defun +org-ml-select-patch-thread ()
-  "Find and apply a proposed Org patch."
-  (interactive)
-  (let* ((current-workspace (+workspace-current))
-         (patches (progn
-                    (when (or (not +org-ml--cache)
-                              (> (- (float-time) +org-ml--cache-timestamp)
-                                 +org-ml-max-age))
-                      (setq +org-ml--cache (+org-ml-current-patches)
-                            +org-ml--cache-timestamp (float-time)))
-                    +org-ml--cache))
-         (msg-id (cdr (assoc (completing-read
-                              "Thread: " (mapcar #'car patches))
-                             patches))))
-    (+workspace-switch +mu4e-workspace-name)
-    (mu4e-view-message-with-message-id msg-id)
-    (unless +org-ml-patchy-mood-mode
-      (add-to-list 'mu4e-view-actions
-                   (cons "apply patch to org" #'+org-ml-transient-mu4e-action)))))
-
-(defun +org-ml-transient-mu4e-action (msg)
-  (setq mu4e-view-actions
-        (delete (cons "apply patch to org" #'+org-ml-transient-mu4e-action)
-                mu4e-view-actions))
-  (+workspace/other)
-  (magit-status +org-ml-target-dir)
-  (+org-ml-apply-patch msg))
-#+end_src
-
-The other thing which it's good to be easily able to do is grab a link to the
-current message on https://list.orgmode.org.
-#+begin_src emacs-lisp
-(defun +mu4e-ml-message-link (msg)
-  "Copy the link to MSG on the mailing list archives."
-  (let ((msg-url
-         (cond
-          ((string= "emacs-orgmode.gnu.org" (mu4e-message-field msg :mailing-list))
-           (format "https://list.orgmode.org/%s" (mu4e-message-field msg :message-id)))
-          (t (user-error "Mailing list %s not supported" (mu4e-message-field msg :mailing-list))))))
-    (message "Link %s copied to clipboard" (gui-select-text msg-url))
-    msg-url))
-
-(add-to-list 'mu4e-view-actions (cons "link to message ML" #'+mu4e-ml-message-link t))
 #+end_src
 
 *** Packages
