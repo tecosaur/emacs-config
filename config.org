@@ -4900,11 +4900,22 @@ current message on https://list.orgmode.org.
 (after! mu4e
   (defun +mu4e-ml-message-link (msg)
     "Copy the link to MSG on the mailing list archives."
-    (let ((msg-url
-           (cond
-            ((string= "emacs-orgmode.gnu.org" (mu4e-message-field msg :mailing-list))
-             (format "https://list.orgmode.org/%s" (mu4e-message-field msg :message-id)))
-            (t (user-error "Mailing list %s not supported" (mu4e-message-field msg :mailing-list))))))
+    (let* ((list-addr (or (mu4e-message-field msg :mailing-list)
+                          (cdar (mu4e-message-field-raw msg :list-post))
+                          (thread-last (append (mu4e-message-field msg :to)
+                                               (mu4e-message-field msg :cc))
+                            (mapcar #'last)
+                            (mapcar #'cdr)
+                            (mapcar (lambda (addr)
+                                      (when (string-match-p "emacs.*@gnu\\.org$" addr)
+                                        (replace-regexp-in-string "@" "." addr))))
+                            (delq nil)
+                            (car))))
+           (msg-url
+            (cond
+             ((string= "emacs-orgmode.gnu.org" list-addr)
+              (format "https://list.orgmode.org/%s" (mu4e-message-field msg :message-id)))
+             (t (user-error "Mailing list %s not supported" list-addr)))))
       (message "Link %s copied to clipboard" (gui-select-text msg-url))
       msg-url))
 
