@@ -1952,7 +1952,7 @@ That's no problem though, we just need to help TRAMP find them.
 Sometimes pressing =TAB= is just too much.
 #+begin_src emacs-lisp :tangle packages.el
 (package! aas :recipe (:host github :repo "ymarco/auto-activating-snippets")
-  :pin "118ed7fc948b6d91eea727df35a1639521bf5fdb")
+  :pin "1699bec4d244a1f62af29fe4eb8b79b6d2fccf7d")
 #+end_src
 
 #+begin_src emacs-lisp
@@ -2009,7 +2009,7 @@ Nested snippets are good, so let's enable that.
 
 For when you want to change the case pattern for a symbol.
 #+begin_src emacs-lisp :tangle packages.el
-(package! string-inflection :pin "c4a519be102cb99dd86be3ee8c387f008d097635")
+(package! string-inflection :pin "fd7926ac17293e9124b31f706a4e8f38f6a9b855")
 #+end_src
 
 #+begin_src emacs-lisp
@@ -2084,7 +2084,7 @@ welcomed into Emacs 28. However, he is also rather attentive with updates, and
 so I'd like to make sure we have a recent version.
 
 #+begin_src emacs-lisp :tangle packages.el
-(package! modus-themes :pin "52532a1ac2f3b707e79ba67ada8bf36846e45048")
+(package! modus-themes :pin "392ebb115b07f8052d512ec847619387d109edd6")
 #+end_src
 
 *** Theme magic
@@ -5131,7 +5131,7 @@ correct package statement needed.
 (package! org-contrib
   :recipe (:host nil :repo "https://git.sr.ht/~bzg/org-contrib"
            :files ("lisp/*.el"))
-  :pin "fc81309cf6756607a836f93049a9393c2967c4e0")
+  :pin "b8012e759bd5bf5da802b0b41734a8fec218323c")
 #+end_src
 
 **** Visuals
@@ -5442,9 +5442,9 @@ There's also the new =org-cite= though. It would be nice to try that out.
 To improve =org-cite=.
 
 #+begin_src emacs-lisp :noweb-ref none :tangle packages.el
-(package! citeproc :pin "299e52b2dda37960d609efa78c40e255001d163a")
-(package! bibtex-completion :pin "12079bb09f203dda5cc2dd003bd60a6ad490f762")
-(package! bibtex-actions :pin "0e825fafe4f5843f9af4aed0bff8cc393fcae9f2")
+(package! bibtex-actions :pin "8130de52d9bf246d56bda0299ffea08108f0463b")
+(package! citeproc :pin "91d7630de1ec61ff5d5e62c27d820207ec5bb1c6")
+(package! bibtex-completion :pin "bb47f355b0da8518aa3fb516019120c14c8747c9")
 (package! org-cite-csl-activate :recipe (:host github :repo "andras-simonyi/org-cite-csl-activate") :pin "032e765a4cf634fc56abcd18488510d3d5b1ee09")
 #+end_src
 
@@ -6056,7 +6056,7 @@ the [[*Window title][Window title]].
 Org-roam is nice by itself, but there are so /extra/ nice packages which integrate
 with it.
 #+begin_src emacs-lisp :noweb-ref none :tangle packages.el
-(package! org-roam-ui :recipe (:host github :repo "org-roam/org-roam-ui" :files ("*.el" "out")) :pin "c745d07018a46b1a20b9f571d999ecf7a092c2e1")
+(package! org-roam-ui :recipe (:host github :repo "org-roam/org-roam-ui" :files ("*.el" "out")) :pin "cd1aefd56f648d32a25aae672ac1ab90893c0133")
 (package! websocket :pin "fda4455333309545c0787a79d73c19ddbeb57980") ; dependency of `org-roam-ui'
 #+end_src
 
@@ -10821,7 +10821,7 @@ Of course, there's an Emacs mode for this.
 
 #+begin_src emacs-lisp :tangle packages.el
 (package! beancount :recipe (:host github :repo "beancount/beancount-mode")
-  :pin "5be04a37d6a189f1680cb47d022a85d9faeba8fc")
+  :pin "ea8257881b7e276e8d170d724e3b2e179f25cb77")
 #+end_src
 
 #+begin_src emacs-lisp
