@@ -9832,6 +9832,24 @@ able to handle anyway. For them we define a table of LaTeX translations
 #+begin_src emacs-lisp :noweb no-export
 <<gen-latex-non-ascii-char-substitutions()>>
 #+end_src
+**** Normal spaces after Latin abbreviations
+
+In LaTeX inter-word and sentence spaces are typically of different widths. This
+can be an issue when using Latin abbreviations i.e. e.g. etc. et al..
+This can be corrected by forcing a normal space with src_LaTeX{\ }.
+When exporting Org documents, we can add a filter to check for common Latin
+abbreviations and make the space normal.
+
+#+begin_src emacs-lisp
+(defun +org-latex-correct-latin-abbreviation-spaces (text backend _info)
+  "Normalise spaces after Latin abbreviations."
+  (when (org-export-derived-backend-p backend 'latex)
+    (replace-regexp-in-string "\\(^\\| \\)\\(cf\\|e\\.g\\|etc\\|et al\\|i\\.e\\|vs?\\)\\.[ \n]"
+                              "\\1\\2.\\\\ "
+                              text)))
+
+(add-to-list 'org-export-filter-paragraph-functions #'+org-latex-correct-latin-abbreviation-spaces t)
+#+end_src
 
 **** Extra special strings
 LaTeX already recognises =---= and =--= as em/en-dashes, =\-= as a shy hyphen, and the
