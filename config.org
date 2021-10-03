@@ -9832,20 +9832,37 @@ able to handle anyway. For them we define a table of LaTeX translations
 #+begin_src emacs-lisp :noweb no-export
 <<gen-latex-non-ascii-char-substitutions()>>
 #+end_src
-**** Normal spaces after Latin abbreviations
+**** Normal spaces after abbreviations
 
 In LaTeX inter-word and sentence spaces are typically of different widths. This
-can be an issue when using Latin abbreviations i.e. e.g. etc. et al..
+can be an issue when using abbreviations i.e. e.g. etc. et al..
 This can be corrected by forcing a normal space with src_LaTeX{\ }.
-When exporting Org documents, we can add a filter to check for common Latin
+When exporting Org documents, we can add a filter to check for common
 abbreviations and make the space normal.
 
 #+begin_src emacs-lisp
+(defvar +org-latex-abbreviations
+  '(;; Latin
+    "cf." "e.g." "etc." "et al." "i.e." "v." "vs." "viz." "n.b."
+    ;; Corperate
+    "inc." "govt." "ltd." "pty." "dept."
+    ;; Temporal
+    "est." "c."
+    ;; Honorifics
+    "Dr." "Mr." "Mrs." "Ms." "Miss." "Sr." "Jr."
+    ;; Components of a work
+    "ed." "vol." "sec." "chap." "pt." "pp." "op." "no."
+    ;; Common usage
+    "approx." "misc." "min." "max.")
+  "A list of abbreviations that should be spaced correctly when exporting to LaTeX.")
+
 (defun +org-latex-correct-latin-abbreviation-spaces (text backend _info)
   "Normalise spaces after Latin abbreviations."
   (when (org-export-derived-backend-p backend 'latex)
-    (replace-regexp-in-string "\\(^\\| \\)\\(cf\\|e\\.g\\|etc\\|et al\\|i\\.e\\|vs?\\)\\.[ \n]"
-                              "\\1\\2.\\\\ "
+    (replace-regexp-in-string (rx (group (or line-start space)
+                                         (regexp (regexp-opt-group +org-latex-abbreviations)))
+                                  (or line-end space))
+                              "\\1\\\\ "
                               text)))
 
 (add-to-list 'org-export-filter-paragraph-functions #'+org-latex-correct-latin-abbreviation-spaces t)
