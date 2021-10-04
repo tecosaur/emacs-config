@@ -5509,11 +5509,15 @@ To improve =org-cite=.
     (interactive)
     (setq org-cite-activate-processor 'csl-activate)
     (add-hook! 'org-mode-hook '((lambda () (cursor-sensor-mode 1)) org-cite-csl-activate-render-all))
+    (defadvice! +org-cite-csl-activate-render-all-silent (orig-fn)
+      :around #'org-cite-csl-activate-render-all
+      (with-silent-modifications (funcall orig-fn)))
     (when (eq major-mode 'org-mode)
-      (save-excursion
-        (goto-char (point-min))
-        (org-cite-activate (point-max)))
-      (org-cite-csl-activate-render-all))))
+      (with-silent-modifications
+        (save-excursion
+          (goto-char (point-min))
+          (org-cite-activate (point-max)))
+        (org-cite-csl-activate-render-all)))))
 
 (use-package! oc-bibtex-actions
   :when (featurep! :completion vertico)
