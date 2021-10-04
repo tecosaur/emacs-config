@@ -4748,7 +4748,8 @@ We can also use this a signature,
 #+begin_src emacs-lisp
 (setq message-signature mu4e-from-name)
 #+end_src
-**** Adding =X-Woof= headers
+**** Working with the Org mailing list
+***** Adding =X-Woof= headers
 
 I'm fairly active on the Org mailing list (ML). The Org ML has a linked
 bug/patch tracker, https://updates.orgmode.org/ managed by [[https://github.com/bzg/woof][Woof]]. However, I feel
