@@ -4703,7 +4703,7 @@ We also want to define ~mu4e-compose-from-mailto~.
 (defun mu4e-compose-from-mailto (mailto-string &optional quit-frame-after)
   (require 'mu4e)
   (unless mu4e~server-props (mu4e t) (sleep-for 0.1))
-  (let* ((mailto (rfc2368-parse-mailto-url mailto-string))
+  (let* ((mailto (message-parse-mailto-url mailto-string))
          (to (cdr (assoc "To" mailto)))
          (subject (or (cdr (assoc "Subject" mailto)) ""))
          (body (cdr (assoc "Body" mailto)))
