@@ -8474,44 +8474,51 @@ commands below are defined.
 
 **** Class templates
 
+I really like the KOMA bundle. It provides a set of mechanisms to tweak document
+styling which is both easy to use, and quite comprehensive.
+For example, I rather like section numbers in the margin, which can be
+acomplished with
+#+name: latex-hanging-secnum
+#+begin_src LaTeX
+\\renewcommand\\sectionformat{\\llap{\\thesection\\autodot\\enskip}}
+\\renewcommand\\subsectionformat{\\llap{\\thesubsection\\autodot\\enskip}}
+\\renewcommand\\subsubsectionformat{\\llap{\\thesubsubsection\\autodot\\enskip}}
+#+end_src
+
+Now let's just sprinkle some KOMA all over the Org LaTeX classes.
+
 #+begin_src emacs-lisp :noweb no-export
 (after! ox-latex
-  (add-to-list 'org-latex-classes
-               '("scr-article"
-                 "\\documentclass{scrartcl}"
-                 ("\\section{%s}" . "\\section*{%s}")
-                 ("\\subsection{%s}" . "\\subsection*{%s}")
-                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-                 ("\\paragraph{%s}" . "\\paragraph*{%s}")
-                 ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
-  (add-to-list 'org-latex-classes
-               '("blank"
-                 "[NO-DEFAULT-PACKAGES]\n[NO-PACKAGES]\n[EXTRA]"
-                 ("\\section{%s}" . "\\section*{%s}")
-                 ("\\subsection{%s}" . "\\subsection*{%s}")
-                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-                 ("\\paragraph{%s}" . "\\paragraph*{%s}")
-                 ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
-  (add-to-list 'org-latex-classes
-               '("bmc-article"
-                 "\\documentclass[article,code,maths]{bmc}\n[NO-DEFAULT-PACKAGES]\n[NO-PACKAGES]\n[EXTRA]"
-                 ("\\section{%s}" . "\\section*{%s}")
-                 ("\\subsection{%s}" . "\\subsection*{%s}")
-                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-                 ("\\paragraph{%s}" . "\\paragraph*{%s}")
-                 ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
-  (add-to-list 'org-latex-classes
-               '("bmc"
-                 "\\documentclass[code,maths]{bmc}\n[NO-DEFAULT-PACKAGES]\n[NO-PACKAGES]\n[EXTRA]"
-                 ("\\chapter{%s}" . "\\chapter*{%s}")
-                 ("\\section{%s}" . "\\section*{%s}")
-                 ("\\subsection{%s}" . "\\subsection*{%s}")
-                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-                 ("\\paragraph{%s}" . "\\paragraph*{%s}")
-                 ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))))
+  (let* ((article-sections '(("\\section{%s}" . "\\section*{%s}")
+                             ("\\subsection{%s}" . "\\subsection*{%s}")
+                             ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                             ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                             ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+         (book-sections (append '(("\\chapter{%s}" . "\\chapter*{%s}"))
+                                article-sections))
+         (hanging-secnum-preamble "
+<<latex-hanging-secnum>>
+"))
+    (setcdr (assoc "article" org-latex-classes)
+            `(,(concat "\\documentclass{scrartcl}" hanging-secnum-preamble)
+              ,@article-sections))
+    (add-to-list 'org-latex-classes
+                 `("report" ,(concat "\\documentclass{scrartcl}" hanging-secnum-preamble)
+                   ,@article-sections))
+    (add-to-list 'org-latex-classes
+                 `("book" "\\documentclass{scrbook}"
+                   ,@book-sections))
+    (add-to-list 'org-latex-classes
+                 `("blank" "[NO-DEFAULT-PACKAGES]\n[NO-PACKAGES]\n[EXTRA]"
+                   ,@article-sections))
+    (add-to-list 'org-latex-classes
+                 `("bmc-article" "\\documentclass[article,code,maths]{bmc}\n[NO-DEFAULT-PACKAGES]\n[NO-PACKAGES]\n[EXTRA]"
+                   ,@article-sections))
+    (add-to-list 'org-latex-classes
+                 `("bmc" "\\documentclass[code,maths]{bmc}\n[NO-DEFAULT-PACKAGES]\n[NO-PACKAGES]\n[EXTRA]"
+                   ,@book-sections))))
 
-(setq org-latex-default-class "scr-article"
-      org-latex-tables-booktabs t
+(setq org-latex-tables-booktabs t
       org-latex-hyperref-template "
 <<latex-fancy-hyperref>>
 "
