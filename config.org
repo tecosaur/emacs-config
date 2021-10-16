@@ -6473,7 +6473,7 @@ or no selection is made: nil is returned."
                                       (propertize "(default)" 'face 'font-lock-doc-face)))
                       value))
                   values))
-    (let ((selection (consult--read question values :default default-value)))
+    (let ((selection (consult--read values :prompt question :default default-value)))
       (unless (or (string-match-p "(default)$" selection)
                   (string= "" selection))
         selection))))
