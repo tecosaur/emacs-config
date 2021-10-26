@@ -3199,7 +3199,7 @@ Then, to actually read the ebooks we use =nov=.
                 shr-use-colors nil)
     (require 'visual-fill-column nil t)
     (setq-local visual-fill-column-center-text t
-                visual-fill-column-width 80
+                visual-fill-column-width 81
                 nov-text-width 80)
     (visual-fill-column-mode 1)
     (hl-line-mode -1)
