@@ -6356,8 +6356,7 @@ appropriate.  In tables, insert a new row or end the table."
                  (forward-line)
                  (insert "\n")
                  (forward-line -1))
-               ;; FIXME: looking-back is supposed to be called with more arguments.
-               (while (not (looking-back (rx (repeat 3 (seq (optional blank) "\n")))))
+               (while (not (looking-back (rx (repeat 3 (seq (optional blank) "\n"))) nil))
                  (insert "\n"))
                (forward-line -1)))))
 
