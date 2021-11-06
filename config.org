@@ -5450,7 +5450,7 @@ There's also the new =org-cite= though. It would be nice to try that out.
 To improve =org-cite=.
 
 #+begin_src emacs-lisp :noweb-ref none :tangle packages.el
-(package! bibtex-actions :pin "8130de52d9bf246d56bda0299ffea08108f0463b")
+(package! citar :pin "d9c20a120b33e4dfd9964caa4cbb84bcffec5ffd")
 (package! citeproc :pin "91d7630de1ec61ff5d5e62c27d820207ec5bb1c6")
 (package! bibtex-completion :pin "bb47f355b0da8518aa3fb516019120c14c8747c9")
 (package! org-cite-csl-activate :recipe (:host github :repo "andras-simonyi/org-cite-csl-activate") :pin "032e765a4cf634fc56abcd18488510d3d5b1ee09")
@@ -5463,10 +5463,10 @@ To improve =org-cite=.
   (setq bibtex-completion-additional-search-fields '(keywords)
         bibtex-completion-pdf-field "file")) ; This tell bibtex-completion to look at the File field of the bibtex to figure out which pdf to open
 
-(use-package! bibtex-actions
+(use-package! citar
   :after embark bibtex-completion
   :config
-  (add-to-list 'embark-keymap-alist '(bibtex . bibtex-actions-map)))
+  (add-to-list 'embark-keymap-alist '(bibtex . citar-map)))
 
 (use-package! citeproc
   :defer t)
@@ -5474,15 +5474,15 @@ To improve =org-cite=.
 ;;; Org-Cite configuration
 
 (use-package! oc
-  :after org bibtex-completion bibtex-actions
+  :after org bibtex-completion citar
   :config
   (require 'ox)
   (map! :map org-mode-map
         :localleader
         :desc "Insert citation" "@" #'org-cite-insert)
-  (defvar bibtex-actions-bibliography nil)
+  (defvar citar-bibliography nil)
   (setq org-cite-global-bibliography
-        (let ((paths (or bibtex-actions-bibliography
+        (let ((paths (or citar-bibliography
                          bibtex-completion-bibliography)))
           ;; Always return bibliography paths as list for org-cite.
           (if (stringp paths) (list paths) paths)))
@@ -5526,13 +5526,13 @@ To improve =org-cite=.
           (org-cite-activate (point-max)))
         (org-cite-csl-activate-render-all)))))
 
-(use-package! oc-bibtex-actions
+(use-package! oc-citar
   :when (featurep! :completion vertico)
   :after oc
   :demand t
   :config
-  (setq org-cite-insert-processor 'oc-bibtex-actions
-        org-cite-follow-processor 'oc-bibtex-actions
+  (setq org-cite-insert-processor 'oc-citar
+        org-cite-follow-processor 'oc-citar
         org-cite-activate-processor 'basic))
 #+end_src
 
