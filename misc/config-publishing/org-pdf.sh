@@ -15,6 +15,8 @@
 (require 'org)
 (require 'ox-latex)
 
+(require 'emojify) ; this should not be needed
+
 (advice-add 'pdf-tools-install :around #'ignore)
 (advice-add 'pdf-info-features :around #'ignore)
 
