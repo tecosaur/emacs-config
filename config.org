@@ -8526,7 +8526,8 @@ Now let's just sprinkle some KOMA all over the Org LaTeX classes.
                  `("report" ,(concat "\\documentclass{scrartcl}" hanging-secnum-preamble)
                    ,@article-sections))
     (add-to-list 'org-latex-classes
-                 `("book" ,(concat "\\documentclass[twoside=false]{scrbook}" big-chap-preamble)
+                 `("book" ,(concat "\\documentclass[twoside=false]{scrbook}"
+                                   big-chap-preamble hanging-secnum-preamble)
                    ,@book-sections))
     (add-to-list 'org-latex-classes
                  `("blank" "[NO-DEFAULT-PACKAGES]\n[NO-PACKAGES]\n[EXTRA]"
