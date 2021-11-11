@@ -8479,7 +8479,7 @@ commands below are defined.
 I really like the KOMA bundle. It provides a set of mechanisms to tweak document
 styling which is both easy to use, and quite comprehensive.
 For example, I rather like section numbers in the margin, which can be
-acomplished with
+accomplished with
 #+name: latex-hanging-secnum
 #+begin_src LaTeX
 \\renewcommand\\sectionformat{\\llap{\\thesection\\autodot\\enskip}}
