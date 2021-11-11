@@ -8487,6 +8487,21 @@ acomplished with
 \\renewcommand\\subsubsectionformat{\\llap{\\thesubsubsection\\autodot\\enskip}}
 #+end_src
 
+It can also be nice to have big =\chapter=​s.
+#+name: latex-big-chapter
+#+begin_src LaTeX
+\\RedeclareSectionCommand[afterindent=false, beforeskip=0pt, afterskip=0pt, innerskip=0pt]{chapter}
+\\setkomafont{chapter}{\\normalfont\\Huge}
+\\renewcommand*{\\chapterheadstartvskip}{\\vspace*{0\\baselineskip}}
+\\renewcommand*{\\chapterheadendvskip}{\\vspace*{0\\baselineskip}}
+\\renewcommand*{\\chapterformat}{%
+  \\fontsize{60}{30}\\selectfont\\rlap{\\hspace{6pt}\\thechapter}}
+\\renewcommand*\\chapterlinesformat[3]{%
+  \\parbox[b]{\\dimexpr\\textwidth-0.5em\\relax}{%
+    \\raggedleft{{\\large\\scshape\\bfseries\\chapapp}\\vspace{-0.5ex}\\par\\Huge#3}}%
+    \\hfill\\makebox[0pt][l]{#2}}
+#+end_src
+
 Now let's just sprinkle some KOMA all over the Org LaTeX classes.
 
 #+begin_src emacs-lisp :noweb no-export
@@ -8500,6 +8515,9 @@ Now let's just sprinkle some KOMA all over the Org LaTeX classes.
                                 article-sections))
          (hanging-secnum-preamble "
 <<latex-hanging-secnum>>
+")
+         (big-chap-preamble "
+<<latex-big-chapter>>
 "))
     (setcdr (assoc "article" org-latex-classes)
             `(,(concat "\\documentclass{scrartcl}" hanging-secnum-preamble)
@@ -8508,7 +8526,7 @@ Now let's just sprinkle some KOMA all over the Org LaTeX classes.
                  `("report" ,(concat "\\documentclass{scrartcl}" hanging-secnum-preamble)
                    ,@article-sections))
     (add-to-list 'org-latex-classes
-                 `("book" "\\documentclass{scrbook}"
+                 `("book" ,(concat "\\documentclass{scrbook}" big-chap-preamble)
                    ,@book-sections))
     (add-to-list 'org-latex-classes
                  `("blank" "[NO-DEFAULT-PACKAGES]\n[NO-PACKAGES]\n[EXTRA]"
