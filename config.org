@@ -8853,7 +8853,7 @@ introduce an =:order= keyword. Using this I'll arrange snippets as follows.
 #+begin_src emacs-lisp
 (defvar org-latex-feature-implementations
   '((image         :snippet "\\usepackage{graphicx}" :order 2)
-    (svg           :snippet "\\usepackage{svg}" :order 2)
+    (svg           :snippet "\\usepackage[inkscapelatex=false]{svg}" :order 2)
     (maths         :snippet "\\usepackage[nofont]{bmc-maths}" :order 0.2)
     (table         :snippet "\\usepackage{longtable}\n\\usepackage{booktabs}" :order 2)
     (cleveref      :snippet "\\usepackage[capitalize]{cleveref}" :order 1) ; after bmc-maths
