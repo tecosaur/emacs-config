@@ -16,6 +16,9 @@
 #+startup: fold
 
 #+latex_class: book
+#+latex_header: \usepackage[autooneside=false,automark,headsepline]{scrlayer-scrpage}
+#+latex_header: \clearpairofpagestyles \renewcommand*{\chaptermarkformat}{} \renewcommand*{\sectionmarkformat}{}
+#+latex_header: \ihead{\upshape\scshape\leftmark} \chead{\ifstr{\leftmark}{\rightmark}{}{\rightmark}} \ohead[\pagemark]{\pagemark}
 
 #+begin_export html
 <a href="https://github.com/tecosaur/emacs-config/"
