@@ -1038,7 +1038,6 @@ straightforward, I'll just redefine it to a simpler, async, function.
     (signal 'quit nil)))
 (add-hook! 'kill-emacs-hook #'+literate-tangle-check-finished)
 #+end_src
-#+end_src
 *** Dashboard quick actions
 
 When using the dashboard, there are often a small number of actions I will take.
