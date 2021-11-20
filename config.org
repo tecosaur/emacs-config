@@ -1763,6 +1763,87 @@ From the =:tools magit= module.
 
 Magit is great as-is, thanks for making such a lovely package [[https://github.com/tarsius][Jonas]]!
 
+**** Commit message templates
+
+One little thing I want to add is some per-project commit message templates.
+#+begin_src emacs-lisp
+(defvar +magit-project-commit-templates-alist nil
+  "Alist of toplevel dirs and template strings/functions.")
+(after! magit
+  (defun +magit-fill-in-commit-template ()
+    "Insert template from `+magit-fill-in-commit-template' if applicable."
+    (when-let ((template (cdr (assoc (file-name-base (directory-file-name (magit-toplevel)))
+                                     +magit-project-commit-templates-alist))))
+      (goto-char (point-min))
+      (insert (if (stringp template) template (funcall template)))
+      (goto-char (point-min))
+      (end-of-line)))
+  (add-hook 'git-commit-setup-hook #'+magit-fill-in-commit-template 90))
+#+end_src
+
+This is particularly useful when creating commits for Org, as they need to
+follow [[https://orgmode.org/worg/org-contribute.html#commit-messages][a certain format]] and sometimes I forget elements (oops!).
+#+begin_src emacs-lisp
+(after! magit
+  (defun +org-commit-message-template ()
+    "Create a skeleton for an Org commit message based on the staged diff."
+    (let (change-data last-file file-changes temp-point)
+      (with-temp-buffer
+        (apply #'call-process magit-git-executable
+               nil t nil
+               (append
+                magit-git-global-arguments
+                (list "diff" "--cached")))
+        (goto-char (point-min))
+        (message "%s" (buffer-string))
+        (while (re-search-forward "^@@\\|^\\+\\+\\+ b/" nil t)
+          (if (looking-back "^\\+\\+\\+ b/" (line-beginning-position))
+              (progn
+                (push (list last-file file-changes) change-data)
+                (setq last-file (buffer-substring-no-properties (point) (line-end-position))
+                      file-changes nil))
+            (setq temp-point (line-beginning-position))
+            (re-search-forward "^\\+\\|^-" nil t)
+            (end-of-line)
+            (cond
+             ((string-match-p "\\.el$" last-file)
+              (when (re-search-backward "^\\(?:[+-]? *\\|@@[ +-\\d,]+@@ \\)(\\(?:cl-\\)?\\(?:defun\\|defvar\\|defmacro\\|defcustom\\)" temp-point t)
+                (re-search-forward "\\(?:cl-\\)?\\(?:defun\\|defvar\\|defmacro\\|defcustom\\) " nil t)
+                (add-to-list 'file-changes (buffer-substring-no-properties (point) (forward-symbol 1)))))
+             ((string-match-p "\\.org$" last-file)
+              (when (re-search-backward "^[+-]\\*+ \\|^@@[ +-\\d,]+@@ \\*+ " temp-point t)
+                (re-search-forward "@@ \\*+ " nil t)
+                (add-to-list 'file-changes (buffer-substring-no-properties (point) (line-end-position)))))))))
+      (push (list last-file file-changes) change-data)
+      (setq change-data (delete '(nil nil) change-data))
+      (concat
+       (if (= 1 (length change-data))
+           (replace-regexp-in-string "^.*/\\|.[a-z]+$" "" (caar change-data))
+         "?")
+       ": \n\n"
+       (mapconcat
+        (lambda (file-changes)
+          (if (cadr file-changes)
+              (format "* %s (%s): "
+                      (car file-changes)
+                      (mapconcat #'identity (cadr file-changes) ", "))
+            (format "* %s: " (car file-changes))))
+        change-data
+        "\n\n"))))
+
+  (add-to-list '+magit-project-commit-templates-alist (cons "org-mode" #'+org-commit-message-template)))
+#+end_src
+
+This relies on two small entries in the git config files which improves the hunk
+heading line selection for elisp and Org files.
+#+begin_src gitconfig
+[diff "lisp"]
+  xfuncname = "^(((;;;+ )|\\(|([ \t]+\\(((cl-|el-patch-)?def(un|var|macro|method|custom)|gb/))).*)$"
+
+[diff "org"]
+  xfuncname = "^(\\*+ +.*)$"
+#+end_src
+
 *** Magit delta
 
 [[https://github.com/dandavison/delta/][Delta]] is a git diff syntax highlighter written in rust. The author also wrote a
