@@ -93,7 +93,9 @@
                          (apply #'format (format "%%s%%-%ds" (length (plist-get dep :padded-name)))
                                 (pcase (process-status (plist-get dep :proc))
                                   ('run '("\033[0;33m" "Active"))
-                                  ('exit '("\033[0;32m" "Complete")))))
+                                  ('exit '("\033[0;32m" "Complete"))
+                                  (_ '("\033[0;31m" (format "Unrecognised status %s"
+                                                            (process-status (plist-get dep :proc))))))))
                        apm-dependent-processes
                        "  ")
             "\033[0;90m[1A[K[1A[K")
