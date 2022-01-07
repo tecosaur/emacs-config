@@ -7477,7 +7477,7 @@ Since I (roughly) track Org ~HEAD~, it makes sense to include the git version in
 the creator string.
 #+begin_src emacs-lisp
 (setq org-export-creator-string
-      (format "Emacs %s (Org mode %s %s)" emacs-version (org-release) (org-git-version)))
+      (format "Emacs %s (Org mode %s–%s)" emacs-version (org-release) (org-git-version)))
 #+end_src
 
 **** Acronym formatting
