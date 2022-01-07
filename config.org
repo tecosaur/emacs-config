@@ -1403,7 +1403,7 @@ I prefer the dashboard, so let's ensure that's always switched to in new frames.
 (when (daemonp)
   (add-hook 'emacs-startup-hook #'greedily-do-daemon-setup)
   (add-hook! 'server-after-make-frame-hook
-    (unless (string-match-p "\\*draft" (buffer-name))
+    (unless (string-match-p "\\*draft\\|\\*stdin\\|emacs-everywhere" (buffer-name))
       (switch-to-buffer +doom-dashboard-name))))
 #+end_src
 *** Emacs client wrapper
