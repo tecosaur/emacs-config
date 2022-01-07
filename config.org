@@ -8735,8 +8735,7 @@ following keys:
 - :prevents, a feature or list of features that should be masked
 - :order, for when ordering is important. Lower values appear first.
     The default is 0.
-
-Features that start with ! will be eagerly loaded, i.e. without being detected.")
+- :eager, when non-nil the feature will be eagerly loaded, i.e. without being detected.")
 #+end_src
 
 ***** Feature determination
