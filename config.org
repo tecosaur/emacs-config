@@ -1772,8 +1772,9 @@ One little thing I want to add is some per-project commit message templates.
 (after! magit
   (defun +magit-fill-in-commit-template ()
     "Insert template from `+magit-fill-in-commit-template' if applicable."
-    (when-let ((template (cdr (assoc (file-name-base (directory-file-name (magit-toplevel)))
-                                     +magit-project-commit-templates-alist))))
+    (when-let ((template (and (save-excursion (goto-char (point-min)) (string-match-p "\\`\\s-*$" (thing-at-point 'line)))
+                              (cdr (assoc (file-name-base (directory-file-name (magit-toplevel)))
+                                          +magit-project-commit-templates-alist)))))
       (goto-char (point-min))
       (insert (if (stringp template) template (funcall template)))
       (goto-char (point-min))
@@ -1795,7 +1796,6 @@ follow [[https://orgmode.org/worg/org-contribute.html#commit-messages][a certain
                 magit-git-global-arguments
                 (list "diff" "--cached")))
         (goto-char (point-min))
-        (message "%s" (buffer-string))
         (while (re-search-forward "^@@\\|^\\+\\+\\+ b/" nil t)
           (if (looking-back "^\\+\\+\\+ b/" (line-beginning-position))
               (progn
