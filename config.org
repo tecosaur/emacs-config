@@ -8996,8 +8996,8 @@ Finally, we just need to add some fonts.
      :mono "\\usepackage[scale=0.95]{plex-mono}"
      :maths "\\usepackage{newtxmath}") ; may be plex-based in future
     (source
-     :serif "\\usepackage[osf]{sourceserifpro}"
-     :sans "\\usepackage[osf]{sourcesanspro}"
+     :serif "\\usepackage[osf,semibold]{sourceserifpro}"
+     :sans "\\usepackage[osf,semibold]{sourcesanspro}"
      :mono "\\usepackage[scale=0.95]{sourcecodepro}"
      :maths "\\usepackage{newtxmath}") ; may be sourceserifpro-based in future
     (times
