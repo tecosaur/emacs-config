@@ -2263,7 +2263,9 @@ table
     ;; Terminal powerline
     "✔"
     ;; Box drawing
-    "▶" "◀")
+    "▶" "◀"
+    ;; I just want to see this as text
+    "©" "™")
   "Characters that should never be affected by `emojify-mode'.")
 
 (defadvice! emojify-delete-from-data ()
