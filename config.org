@@ -5047,7 +5047,7 @@ Doom does a fantastic stuff with the defaults with this, so we only make a few
 minor tweaks.
 #+begin_src emacs-lisp
 (setq +org-msg-accent-color "#1a5fb4"
-      org-msg-greeting-fmt "\nHi %s,\n\n"
+      org-msg-greeting-fmt "\nHi%s,\n\n"
       org-msg-signature "\n\n#+begin_signature\nAll the best,\\\\\n@@html:<b>@@Timothy@@html:</b>@@\n#+end_signature")
 (map! :map org-msg-edit-mode-map
       :after org-msg
