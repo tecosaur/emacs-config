@@ -5027,6 +5027,21 @@ current message on https://list.orgmode.org.
   (add-to-list 'mu4e-view-actions (cons "link to message ML" #'+mu4e-ml-message-link) t))
 #+end_src
 
+In a similar manner, when clicking on such a link (say when someone uses a link
+to the archive to refer to an earlier email) I'd much rather look at it in mu4e.
+
+#+begin_src emacs-lisp
+(defun +browse-url-orgmode-ml (url &optional _)
+  "Open an orgmode list url using notmuch."
+  (let ((id (and (or (string-match "^https?://orgmode\\.org/list/\\([^/]+\\)" url)
+                     (string-match "^https?://list\\.orgmode\\.org/\\([^/]+\\)" url))
+                 (match-string 1 url))))
+    (mu4e-view-message-with-message-id id)))
+
+(add-to-list 'browse-url-handlers (cons "^https?://orgmode\\.org/list" #'+browse-url-orgmode-ml))
+(add-to-list 'browse-url-handlers (cons "^https?://list\\.orgmode\\.org/" #'+browse-url-orgmode-ml))
+#+end_src
+
 *** Org Msg
 Doom does a fantastic stuff with the defaults with this, so we only make a few
 minor tweaks.
