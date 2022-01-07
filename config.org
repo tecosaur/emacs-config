@@ -9368,6 +9368,17 @@ better) we add bit to the preamble:
   breakable}
 #+end_src
 
+One little annoyance with this is the interaction between microtype and =Verbatim=
+environments. Protrusion is not desirable here. Thankfully, we can patch the
+=Verbatim= environment to turn off protrusion locally.
+#+begin_src emacs-lisp
+(add-to-list 'org-latex-feature-implementations
+             '(.no-protrusion-in-code :snippet "\\let\\oldcode\\Code\\renewcommand{\\Code}{\\microtypesetup{protrusion=false}\\oldcode}"
+                                      :when (microtype engraved-code-setup)
+                                      :eager t
+                                      :order 98.5) t)
+#+end_src
+
 At some point it would be nice to make the box colours easily customisable. At
 the moment it's fairly easy to change the syntax highlighting colours with
 src_elisp{(setq engrave-faces-preset-styles (engrave-faces-generate-preset))},
