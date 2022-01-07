@@ -2558,7 +2558,7 @@ We want to make the tabs a nice, comfy size (~36~), with icons. The modifier
 marker is nice, but the particular default Unicode one causes a lag spike, so
 let's just switch to an ~o~, which still looks decent but doesn't cause any
 issues.
-A 'active-bar' is nice, so let's have one of those. If we have it ~under~ needs us to
+An 'active-bar' is nice, so let's have one of those. If we have it ~under~ needs us to
 turn on ~x-underline-at-decent~ though. For some reason this didn't seem to work
 inside the src_elisp{(after! ... )} block ¯\_(ツ)_/¯.
 Then let's change the font to a sans serif, but the default one doesn't fit too
