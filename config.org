@@ -10510,13 +10510,13 @@ Maths deliminators can be de-emphasised a bit
 
 (font-lock-add-keywords
  'latex-mode
- `((,(rx (and "\\" (any "()[]"))) 0 'unimportant-latex-face prepend))
+ `(("\\\\[]()[]" 0 'unimportant-latex-face prepend))
  'end)
 
-(font-lock-add-keywords
- 'latex-mode
- `((,"\\\\[[:word:]]+" 0 'font-lock-keyword-face prepend))
- 'end)
+;; (font-lock-add-keywords
+;;  'latex-mode
+;;  '(("\\\\[[:word:]]+" 0 'font-lock-keyword-face prepend))
+;;  'end)
 #+end_src
 
 And enable shell escape for the preview
