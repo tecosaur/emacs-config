@@ -9352,6 +9352,7 @@ better) we add bit to the preamble:
 
 \\definecolor{codebackground}{HTML}{f7f7f7}
 \\definecolor{codeborder}{HTML}{f0f0f0}
+\\providecolor{EFD}{HTML}{28292e}
 
 % TODO have code boxes keep line vertical alignment
 \\usepackage[breakable,xparse]{tcolorbox}
