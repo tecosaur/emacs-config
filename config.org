@@ -8384,10 +8384,9 @@ Now let's just sprinkle some KOMA all over the Org LaTeX classes.
 The =hyperref= setup needs to be handled separately however.
 #+name: latex-fancy-hyperref
 #+begin_src LaTeX
-\\colorlet{greenyblue}{blue!70!green}
-\\colorlet{blueygreen}{blue!40!green}
-\\providecolor{link}{named}{greenyblue}
-\\providecolor{cite}{named}{blueygreen}
+\\providecolor{url}{HTML}{0077bb}
+\\providecolor{link}{HTML}{882255}
+\\providecolor{cite}{HTML}{999933}
 \\hypersetup{
   pdfauthor={%a},
   pdftitle={%t},
@@ -8397,8 +8396,8 @@ The =hyperref= setup needs to be handled separately however.
   pdflang={%L},
   breaklinks=true,
   colorlinks=true,
-  linkcolor=,
-  urlcolor=link,
+  linkcolor=link,
+  urlcolor=url,
   citecolor=cite\n}
 \\urlstyle{same}
 #+end_src
