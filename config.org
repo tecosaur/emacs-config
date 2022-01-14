@@ -8790,7 +8790,8 @@ following steps.
   "For each feature in FEATURES process :requires, :when, and :prevents keywords and sort according to :order."
   (dolist (feature features)
     (unless (assoc feature org-latex-feature-implementations)
-      (error "Feature %s not provided in org-latex-feature-implementations" feature)))
+      (message "Feature %s not provided in org-latex-feature-implementations, ignoring." feature)
+      (setq features (remove feature features))))
   (setq current features)
   (while current
     (when-let ((requirements (plist-get (cdr (assq (car current) org-latex-feature-implementations)) :requires)))
