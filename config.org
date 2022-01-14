@@ -9000,7 +9000,7 @@ Finally, we just need to add some fonts.
     (source
      :serif "\\usepackage[osf,semibold]{sourceserifpro}"
      :sans "\\usepackage[osf,semibold]{sourcesanspro}"
-     :mono "\\usepackage[scale=0.95]{sourcecodepro}"
+     :mono "\\usepackage[scale=0.92]{sourcecodepro}"
      :maths "\\usepackage{newtxmath}") ; may be sourceserifpro-based in future
     (times
      :serif "\\usepackage{newtxtext}"
