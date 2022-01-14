@@ -2224,18 +2224,6 @@ lightened versions --- let's do that.
      (face-attribute 'default :foreground))))
 #+end_src
 
-Let's automatically update terminals on theme change (as long as ~pywal~ is available).
-
-Unfortunately, as the theme is set on startup this causes the hook to be run
-immediately. It would be nicer to /not/ have this add to our precious startup
-time (around 0.4s last time I checked).
-We can achieve this by deferring it with a short idle timer that should add the
-hook /just after/ initialisation.
-
-#+begin_src emacs-lisp :tangle (if (executable-find "wal") "yes" "no")
-(run-with-idle-timer 0.1 nil (lambda () (add-hook 'doom-load-theme-hook 'theme-magic-from-emacs)))
-#+end_src
-
 *** Emojify
 #+begin_quote
 From the =:ui emoji= module.
