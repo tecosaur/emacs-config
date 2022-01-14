@@ -8471,20 +8471,33 @@ A LaTeX macro should make them trivial to create.
 
 #+name: org-latex-box-preamble
 #+begin_src LaTeX
-% args = #1 Name, #2 Colour, #3 Ding, #4 Label
-\\newcommand{\\defsimplebox}[4]{%
-  \\definecolor{#1}{HTML}{#2}
-  \\newenvironment{#1}[1][]
-  {%
+\\ExplSyntaxOn
+\\NewCoffin\\Content
+\\NewCoffin\\SideRule
+\\NewDocumentCommand{\\defsimplebox}{O{\\ding{117}} O{0.36em} m m m}{%
+  % #1 ding, #2 ding offset, #3 name, #4 colour, #5 default label
+  \\definecolor{#3}{HTML}{#4}
+  \\NewDocumentEnvironment{#3}{ O{#5} }
+  {
+    \\vcoffin_set:Nnw \\Content { \\linewidth }
+    \\noindent \\ignorespaces
     \\par\\vspace{-0.7\\baselineskip}%
-    \\textcolor{#1}{#3} \\textcolor{#1}{\\textbf{\\def\\temp{##1}\\ifx\\temp\\empty#4\\else##1\\fi}}%
+    \\textcolor{#3}{#1}~\\textcolor{#3}{\\textbf{##1}}%
     \\vspace{-0.8\\baselineskip}
     \\begin{addmargin}[1em]{1em}
-  }{%
+    }
+    {
     \\end{addmargin}
     \\vspace{-0.5\\baselineskip}
-  }%
+    \\vcoffin_set_end:
+    \\SetHorizontalCoffin\\SideRule{\\color{#3}\\rule{1pt}{\\CoffinTotalHeight\\Content}}
+    \\JoinCoffins*\\Content[l,t]\\SideRule[l,t](#2,-0.7em)
+    \\noindent\\TypesetCoffin\\Content
+    \\vspace*{\\CoffinTotalHeight\\Content}\\bigskip
+    \\vspace{-2\\baselineskip}
+  }
 }
+\\ExplSyntaxOff
 #+end_src
 
 Lastly, we will pass this content into some global variables we for ease of
@@ -8709,16 +8722,17 @@ introduce an =:order= keyword. Using this I'll arrange snippets as follows.
     (italic-quotes :snippet "\\renewcommand{\\quote}{\\list{}{\\rightmargin\\leftmargin}\\item\\relax\\em}\n" :order 0.5)
     (par-sep       :snippet "\\setlength{\\parskip}{\\baselineskip}\n\\setlength{\\parindent}{0pt}\n" :order 0.5)
     (.pifont       :snippet "\\usepackage{pifont}")
+    (.xcoffins     :snippet "\\usepackage{xcoffins}")
     (checkbox      :requires .pifont :order 3
                    :snippet (concat (unless (memq 'maths features)
                                       "\\usepackage{amssymb} % provides \\square")
                                     org-latex-checkbox-preamble))
-    (.fancy-box    :requires .pifont    :snippet org-latex-box-preamble :order 3.9)
-    (box-warning   :requires .fancy-box :snippet "\\defsimplebox{warning}{e66100}{\\ding{68}}{Warning}" :order 4)
-    (box-info      :requires .fancy-box :snippet "\\defsimplebox{info}{3584e4}{\\ding{68}}{Information}" :order 4)
-    (box-notes     :requires .fancy-box :snippet "\\defsimplebox{notes}{26a269}{\\ding{43}}{Notes}" :order 4)
-    (box-success   :requires .fancy-box :snippet "\\defsimplebox{success}{26a269}{\\ding{68}}{\\vspace{-\\baselineskip}}" :order 4)
-    (box-error     :requires .fancy-box :snippet "\\defsimplebox{error}{c01c28}{\\ding{68}}{Important}" :order 4))
+    (.fancy-box    :requires (.pifont .xcoffins) :snippet org-latex-box-preamble :order 3.9)
+    (box-warning   :requires .fancy-box :snippet "\\defsimplebox{warning}{e66100}{Warning}" :order 4)
+    (box-info      :requires .fancy-box :snippet "\\defsimplebox{info}{3584e4}{Information}" :order 4)
+    (box-notes     :requires .fancy-box :snippet "\\defsimplebox{notes}{26a269}{Notes}" :order 4)
+    (box-success   :requires .fancy-box :snippet "\\defsimplebox{success}{26a269}{\\vspace{-\\baselineskip}}" :order 4)
+    (box-error     :requires .fancy-box :snippet "\\defsimplebox{error}{c01c28}{Important}" :order 4))
   "LaTeX features and details required to implement them.
 
 List where the car is the feature symbol, and the rest forms a plist with the
