@@ -2063,7 +2063,7 @@ That's no problem though, we just need to help TRAMP find them.
 Sometimes pressing =TAB= is just too much.
 #+begin_src emacs-lisp :tangle packages.el
 (package! aas :recipe (:host github :repo "ymarco/auto-activating-snippets")
-  :pin "1699bec4d244a1f62af29fe4eb8b79b6d2fccf7d")
+  :pin "b1a436922ba06ab9e1a5cc222f1a4f25a7697231")
 #+end_src
 
 #+begin_src emacs-lisp
@@ -2195,7 +2195,7 @@ welcomed into Emacs 28. However, he is also rather attentive with updates, and
 so I'd like to make sure we have a recent version.
 
 #+begin_src emacs-lisp :tangle packages.el
-(package! modus-themes :pin "392ebb115b07f8052d512ec847619387d109edd6")
+(package! modus-themes :pin "18c08990c6b0ec7f144f9155da46988aa8c95e3a")
 #+end_src
 
 *** Theme magic
@@ -2374,7 +2374,7 @@ having something that doesn't cover up screen content is nice.
 [[https://tecosaur.com/lfs/emacs-config/screenshots/keycast.png]]
 
 #+begin_src emacs-lisp :tangle packages.el
-(package! keycast :pin "04ba7519f34421c235bac458f0192c130f732f12")
+(package! keycast :pin "72d9add8ba16e0cae8cfcff7fc050fa75e493b4e")
 #+end_src
 
 Let's just make sure this is lazy-loaded appropriately.
@@ -2756,7 +2756,7 @@ Now, we just identify the files in question.
 *** xkcd
 XKCD comics are fun.
 #+begin_src emacs-lisp :tangle packages.el
-(package! xkcd :pin "66e928706fd660cfdab204c98a347b49c4267bdf")
+(package! xkcd :pin "688d0b4ea234adda0c05784e6bb22ab9d71f0884")
 #+end_src
 
 We want to set this up so it loads nicely in [[*Extra links][Extra links]].
@@ -3111,7 +3111,7 @@ we're at it.
 What's even the point of using Emacs unless you're constantly telling everyone
 about it?
 #+begin_src emacs-lisp :tangle packages.el
-(package! elcord :pin "64545671174f9ae307c0bd0aa9f1304d04236421")
+(package! elcord :pin "eb4ae2e7e03a5fc26b054ba2fa9a1d308e239c76")
 #+end_src
 
 #+begin_src emacs-lisp
@@ -3177,7 +3177,7 @@ good option.
 
 Then for reading them, the only currently viable options seems to be [[https://depp.brause.cc/nov.el/][nov.el]].
 #+begin_src emacs-lisp :tangle packages.el
-(package! nov :pin "b3c7cc28e95fe25ce7b443e5f49e2e45360944a3")
+(package! nov :pin "2b4a7231aff6211a5a2f28719d830887aec6cc57")
 #+end_src
 
 Together these should give me a rather good experience reading ebooks.
@@ -3347,7 +3347,7 @@ opportunity which is taken advantage of in the CalcTeX package.
 #+begin_src emacs-lisp :tangle packages.el
 (package! calctex :recipe (:host github :repo "johnbcoughlin/calctex"
                            :files ("*.el" "calctex/*.el" "calctex-contrib/*.el" "org-calctex/*.el" "vendor"))
-  :pin "784cf911bc96aac0f47d529e8cee96ebd7cc31c9")
+  :pin "67a2e76847a9ea9eff1f8e4eb37607f84b380ebb")
 #+end_src
 
 #+attr_html: :class invertible :alt Demonstration of calc, prettified by calctex.
@@ -6188,7 +6188,7 @@ the [[*Window title][Window title]].
 Org-roam is nice by itself, but there are so /extra/ nice packages which integrate
 with it.
 #+begin_src emacs-lisp :noweb-ref none :tangle packages.el
-(package! org-roam-ui :recipe (:host github :repo "org-roam/org-roam-ui" :files ("*.el" "out")) :pin "cd1aefd56f648d32a25aae672ac1ab90893c0133")
+(package! org-roam-ui :recipe (:host github :repo "org-roam/org-roam-ui" :files ("*.el" "out")) :pin "c93f6b61a8d3d2edcf07eda6220278c418d1054b")
 (package! websocket :pin "fda4455333309545c0787a79d73c19ddbeb57980") ; dependency of `org-roam-ui'
 #+end_src
 
