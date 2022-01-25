@@ -4041,7 +4041,7 @@ Using [[https://gitlab.com/shackra/goimapnotify][goimapnotify]] we should be abl
 mail. Unfortunately this means /yet another/ config file :(
 
 We install with
-#+begin_src shell :eval no :tangle (if (or (not (executable-find "mu")) (executable-find "goimapnotify")) "no" "setup.sh")
+#+begin_src shell :eval no :tangle (if (and (executable-find "mu") (not (executable-find "goimapnotify"))) "setup.sh" "no")
 go get -u gitlab.com/shackra/goimapnotify
 ln -s ~/.local/share/go/bin/goimapnotify ~/.local/bin/
 #+end_src
@@ -4120,7 +4120,7 @@ Prevents a series of redisplays from being called (when set to an appropriate va
 
 **** Config transcoding & service management
 As long as the =mbsyncrc= file exists, this is as easy as running
-#+begin_src shell :tangle (if (or (not (executable-find "mu")) (file-exists-p "~/.config/imapnotify")) "no" "setup.sh")
+#+begin_src shell :tangle (if (and (executable-find "mu") (not (file-exists-p "~/.config/imapnotify"))) "setup.sh" "no")
 ~/.config/doom/misc/mbsync-imapnotify.py
 #+end_src
 
@@ -4571,7 +4571,7 @@ building it from source then. I needed to install these packages
 + =xapian-core-devel=
 
 #+name: Install mu from source
-#+begin_src shell :eval no :tangle (if (executable-find "mu") "no" "setup.sh")
+#+begin_src shell :eval no :tangle (if (and (file-directory-p "~/.mail") (not (executable-find "mu"))) "setup.sh" "no")
 cd ~/.local/lib/
 git clone https://github.com/djcb/mu.git
 cd ./mu
@@ -4610,7 +4610,7 @@ we'll just install the latest from source.
 For full use of the ~auth~ options, I need =GNU SASL=, which isn't packaged for me.
 I don't think I want it, but in case I do, I'll need to do this.
 #+name: Install gsasl from source
-#+begin_src shell :eval no :tangle (if (executable-find "msmtp") "no" "setup.sh")
+#+begin_src shell :eval no :tangle (if (and (executable-find "mu") (not (executable-find "msmtp"))) "setup.sh" "no")
 export GSASL_VERSION=1.8.1
 cd ~/.local/lib/
 curl "ftp://ftp.gnu.org/gnu/gsasl/libgsasl-$GSASL_VERSION.tar.gz" | tar xz
@@ -4629,7 +4629,7 @@ cd ..
 
 Now actually compile ~msmtp~.
 #+name: Install msmtp from source
-#+begin_src shell :eval no :tangle (if (executable-find "msmtp") "no" "setup.sh")
+#+begin_src shell :eval no :tangle (if (and (executable-find "mu") (not (executable-find "msmtp"))) "setup.sh" "no")
 cd ~/.local/lib/
 git clone https://github.com/marlam/msmtp-mirror.git ./msmtp
 cd ./msmtp
