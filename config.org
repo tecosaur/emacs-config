@@ -3149,21 +3149,6 @@ For editing systemd unit files
   :defer t)
 #+end_src
 
-*** Stan
-Stan is probabilistic programming language written in =C++=. From my brief
-exposure I think of it as a nicer =JAGS=. Though =Turing.jl= looks nicer yet...
-
-Anyway, the [[https://github.com/stan-dev/stan-mode][stan-dev/stan-mode]] repository contains a number of packages for
-working with Stan code. Let's grab them all.
-
-#+begin_src emacs-lisp :tangle packages.el
-(package! stan-mode :pin "9bb858b9f1314dcf1a5df23e39f9af522098276b")
-(package! company-stan :pin "9bb858b9f1314dcf1a5df23e39f9af522098276b")
-(package! eldoc-stan :pin "9bb858b9f1314dcf1a5df23e39f9af522098276b")
-(package! flycheck-stan :pin "9bb858b9f1314dcf1a5df23e39f9af522098276b")
-(package! stan-snippets :pin "9bb858b9f1314dcf1a5df23e39f9af522098276b")
-#+end_src
-
 * Applications
 ** Ebooks
 [[xkcd:548]]
