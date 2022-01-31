@@ -5566,7 +5566,17 @@ To improve =org-cite=.
 
 #+begin_src emacs-lisp :noweb-ref none :tangle yes
 (use-package! citar
-  :when (featurep! :completion vertico))
+  :when (featurep! :completion vertico)
+  :config
+  (setq citar-bibliography
+        (let ((libfile-search-names '("library.json" "Library.json" "library.bib" "Library.bib"))
+              (libfile-dir "~/Zotero")
+              paths)
+          (dolist (libfile libfile-search-names)
+            (when (and (not paths)
+                       (file-exists-p (expand-file-name libfile libfile-dir)))
+              (setq paths (list (expand-file-name libfile libfile-dir)))))
+          paths)))
 
 (use-package! citeproc
   :defer t)
