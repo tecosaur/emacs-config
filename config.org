@@ -5238,17 +5238,15 @@ correct package statement needed.
 
 **** Visuals
 ***** Tables
-Org tables aren't the prettiest thing to look at. This package is supposed to
-redraw them in the buffer with box-drawing characters. Sounds like an
-improvement to me! We'll make use of this with =writeroom-mode=.
-#+begin_src emacs-lisp
-(package! org-pretty-table
-  :recipe (:host github :repo "Fuco1/org-pretty-table") :pin "87772a9469d91770f87bfa788580fca69b9e697a")
+
+We now get pretty tables with =org +pretty= from Doom, however I actually don't want
+that by default, so we'll just trim it off the org-mode hook.
+
+#+begin_src emacs-lisp :tangle no :noweb-ref org-conf
+(remove-hook 'org-mode-hook #'org-pretty-table-mode)
 #+end_src
-#+begin_src emacs-lisp :tangle yes
-(use-package! org-pretty-table
-  :commands (org-pretty-table-mode global-org-pretty-table-mode))
-#+end_src
+
+We'll enable this when using =writeroom-mode=.
 
 ***** Emphasis markers
 While ~org-hide-emphasis-markers~ is very nice, it can sometimes make edits which
