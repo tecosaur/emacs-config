@@ -1026,7 +1026,7 @@ straightforward, I'll just redefine it to a simpler, async, function.
              (- (float-time) +literate-tangle--proc-start-time))
     (setq +literate-tangle--proc nil))
    ((memq (process-status process) (list 'exit 'signal))
-    (+popup-buffer (get-buffer " *tangle config*"))
+    (pop-to-buffer (get-buffer " *tangle config*"))
     (message "Failed to tangle config.org (after %.1fs)"
              (- (float-time) +literate-tangle--proc-start-time))
     (setq +literate-tangle--proc nil))))
