@@ -2195,7 +2195,7 @@ welcomed into Emacs 28. However, he is also rather attentive with updates, and
 so I'd like to make sure we have a recent version.
 
 #+begin_src emacs-lisp :tangle packages.el
-(package! modus-themes :pin "18c08990c6b0ec7f144f9155da46988aa8c95e3a")
+(package! modus-themes :pin "59422c05e00d65582a005ccb06c3767622d14e03")
 #+end_src
 
 *** Theme magic
@@ -5233,7 +5233,7 @@ correct package statement needed.
 (package! org-contrib
   :recipe (:host nil :repo "https://git.sr.ht/~bzg/org-contrib"
            :files ("lisp/*.el"))
-  :pin "b8012e759bd5bf5da802b0b41734a8fec218323c")
+  :pin "8c138dc5375dc13a0d1952e61c638ef4d57df368")
 #+end_src
 
 **** Visuals
@@ -5245,7 +5245,7 @@ improvement to me! We'll make use of this with =writeroom-mode=.
 
 #+begin_src emacs-lisp
 (package! org-pretty-table
-  :recipe (:host github :repo "Fuco1/org-pretty-table") :pin "87772a9469d91770f87bfa788580fca69b9e697a")
+  :recipe (:host github :repo "Fuco1/org-pretty-table") :pin "7bd68b420d3402826fea16ee5099d04aa9879b78")
 #+end_src
 
 #+begin_src emacs-lisp :tangle yes
@@ -5259,7 +5259,7 @@ occur at the border a bit more fiddley. We can improve this situation without
 sacrificing visual amenities with the =org-appear= package.
 #+begin_src emacs-lisp
 (package! org-appear :recipe (:host github :repo "awth13/org-appear")
-  :pin "148aa124901ae598f69320e3dcada6325cdc2cf0")
+  :pin "303fcc8d5d85a4ebff2798dab50b2ccc0255ea5f")
 #+end_src
 
 #+begin_src emacs-lisp :tangle yes
@@ -5334,7 +5334,7 @@ I like the idea of being able to make HTTP requests with Babel.
 There's a really cool package in development to /transclude/ Org document content.
 #+begin_src emacs-lisp
 (package! org-transclusion :recipe (:host github :repo "nobiot/org-transclusion")
-  :pin "8cbbade1e3237200c2140741f39ff60176e703e7")
+  :pin "ccc0aaa72732ea633bf52bcc8a0345cd3ac178fd")
 #+end_src
 
 #+begin_src emacs-lisp :tangle yes
@@ -5348,14 +5348,14 @@ There's a really cool package in development to /transclude/ Org document conten
 ***** Heading graph
 Came across this and ... it's cool
 #+begin_src emacs-lisp
-(package! org-graph-view :recipe (:host github :repo "alphapapa/org-graph-view") :pin "13314338d70d2c19511efccc491bed3ca0758170")
+(package! org-graph-view :recipe (:host github :repo "alphapapa/org-graph-view") :pin "233c6708c1f37fc60604de49ca192497aef39757")
 #+end_src
 
 ***** Cooking recipes
 I *need* this in my life. It take a URL to a recipe from a common site, and
 inserts an org-ified version at point. Isn't that just great.
 #+begin_src emacs-lisp
-(package! org-chef :pin "a97232b4706869ecae16a1352487a99bc3cf97af")
+(package! org-chef :pin "87e9a6c4844ff32f47c8d1108ec0f087a3148a8e")
 #+end_src
 
 Loading after org seems a bit premature. Let's just load it when we try to use
@@ -5562,14 +5562,18 @@ There's also the new =org-cite= though. It would be nice to try that out.
 To improve =org-cite=.
 
 #+begin_src emacs-lisp :noweb-ref none :tangle packages.el
-(package! citar :pin "a6926650114a8091f98bff8c7fd00add82043190")
-(package! citeproc :pin "38e70c0a94eeefe86ddefc38dfa8ab2311008774")
-(package! org-cite-csl-activate :recipe (:host github :repo "andras-simonyi/org-cite-csl-activate") :pin "8f49ccbd337edda01e52da0c75f6a76e2cc976f7")
+(package! citar :pin "79512aefdf11071b66908320aa346255dd349234")
+(package! citeproc :pin "ba49516265fa24b138346c4918d39d19b4de8a62")
+(package! org-cite-csl-activate :recipe (:host github :repo "andras-simonyi/org-cite-csl-activate") :pin "a9b3f3643b587076538a767666372b31b873c294")
 #+end_src
 
 #+begin_src emacs-lisp :noweb-ref none :tangle yes
 (use-package! citar
   :when (featurep! :completion vertico)
+  :custom
+  (org-cite-insert-processor 'citar)
+  (org-cite-follow-processor 'citar)
+  (org-cite-activate-processor 'citar)
   :config
   (setq citar-bibliography
         (let ((libfile-search-names '("library.json" "Library.json" "library.bib" "Library.bib"))
@@ -5579,7 +5583,11 @@ To improve =org-cite=.
             (when (and (not paths)
                        (file-exists-p (expand-file-name libfile libfile-dir)))
               (setq paths (list (expand-file-name libfile libfile-dir)))))
-          paths)))
+          paths))
+  (setq citar-symbols
+      `((file ,(all-the-icons-faicon "file-o" :face 'all-the-icons-green :v-adjust -0.1) . " ")
+        (note ,(all-the-icons-material "speaker_notes" :face 'all-the-icons-blue :v-adjust -0.3) . " ")
+        (link ,(all-the-icons-octicon "link" :face 'all-the-icons-orange :v-adjust 0.01) . " "))))
 
 (use-package! citeproc
   :defer t)
@@ -5615,24 +5623,6 @@ To improve =org-cite=.
 
 (use-package! oc-natbib
   :after oc)
-
-;;;; Third-party
-
-(use-package! citar-org
-  :no-require
-  :custom
-  (org-cite-insert-processor 'citar)
-  (org-cite-follow-processor 'citar)
-  (org-cite-activate-processor 'citar)
-  (org-support-shift-select t)
-  (when (featurep! :lang org +roam2)
-    ;; Include property drawer metadata for 'org-roam' v2.
-    (citar-org-note-include '(org-id org-roam-ref)))
-  ;; Personal extras
-  (setq citar-symbols
-        `((file ,(all-the-icons-faicon "file-o" :v-adjust -0.1) . " ")
-          (note ,(all-the-icons-material "speaker_notes" :face 'all-the-icons-silver :v-adjust -0.3) . " ")
-          (link ,(all-the-icons-octicon "link" :face 'all-the-icons-dsilver :v-adjust 0.01) . " "))))
 
 (use-package! oc-csl-activate
   :after oc
@@ -5774,7 +5764,7 @@ functionality as in LaTeX. Let's try viewing possible output files with this.
 
 The agenda is nice, but a souped up version is nicer.
 #+begin_src emacs-lisp :noweb-ref none :tangle packages.el
-(package! org-super-agenda :pin "a5557ea4f51571ee9def3cd9a1ab1c38f1a27af7")
+(package! org-super-agenda :pin "fb5e2ef277bc811a3b061106c99e4c47b6b86f80")
 #+end_src
 
 #+begin_src emacs-lisp :noweb-ref none :tangle yes
@@ -5864,7 +5854,7 @@ set up org-capture.
 #+begin_src emacs-lisp :noweb-ref none :tangle packages.el
 (package! doct
   :recipe (:host github :repo "progfolio/doct")
-  :pin "67fc46c8a68989b932bce879fbaa62c6a2456a1f")
+  :pin "9ed9b8c7f7e2ea2d2fb739d65ae4626a1cf16b9f")
 #+end_src
 
 #+begin_src emacs-lisp :noweb-ref none :tangle yes
@@ -6186,7 +6176,7 @@ the [[*Window title][Window title]].
 Org-roam is nice by itself, but there are so /extra/ nice packages which integrate
 with it.
 #+begin_src emacs-lisp :noweb-ref none :tangle packages.el
-(package! org-roam-ui :recipe (:host github :repo "org-roam/org-roam-ui" :files ("*.el" "out")) :pin "c93f6b61a8d3d2edcf07eda6220278c418d1054b")
+(package! org-roam-ui :recipe (:host github :repo "org-roam/org-roam-ui" :files ("*.el" "out")) :pin "309fe3c58c7081de4e2c9c64f7b40ea291926048")
 (package! websocket :pin "fda4455333309545c0787a79d73c19ddbeb57980") ; dependency of `org-roam-ui'
 #+end_src
 
@@ -7180,7 +7170,7 @@ What's better than syntax-highlighted LaTeX is /rendered/ LaTeX though, and we c
 have this be performed automatically with =org-fragtog=.
 
 #+begin_src emacs-lisp :noweb-ref none :tangle packages.el
-(package! org-fragtog :pin "479e0a1c3610dfe918d89a5f5a92c8aec37f131d")
+(package! org-fragtog :pin "680606189d5d28039e6f9301b55ec80517a24005")
 #+end_src
 
 #+begin_src emacs-lisp :noweb-ref none :tangle yes
@@ -10728,7 +10718,7 @@ Julia server. The pseudo-fix is rather simple at least
 Graphviz is a nice method of visualising simple graphs, based on plaintext
 =.dot= / =.gv= files.
 #+begin_src emacs-lisp :tangle packages.el
-(package! graphviz-dot-mode :pin "3642a0a5f41a80c8ecef7c6143d514200b80e194")
+(package! graphviz-dot-mode :pin "a1b7d66f5c20404a1e59c2ee5e841022622535b8")
 #+end_src
 
 #+begin_src emacs-lisp
