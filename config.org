@@ -1038,6 +1038,38 @@ straightforward, I'll just redefine it to a simpler, async, function.
     (signal 'quit nil)))
 (add-hook! 'kill-emacs-hook #'+literate-tangle-check-finished)
 #+end_src
+
+*** Htmlize command
+
+Why not have a command to htmlize files? This is basically a little test of my
+engrave-faces package because it somehow seems to work without a GUI, while the
+htmlize package doesn't.
+
+#+begin_src emacs-lisp :tangle cli.el :comments no
+(defcli! htmlize (file)
+  "Export a FILE buffer to HTML."
+
+  (print! "Htmlizing %s" file)
+
+  (doom-initialize)
+  (require 'highlight-numbers)
+  (require 'highlight-quoted)
+  (require 'rainbow-delimiters)
+  (require 'engrave-faces-html)
+
+  ;; Lighten org-mode
+  (when (string= "org" (file-name-extension file))
+    (setcdr (assoc 'org after-load-alist) nil)
+    (setq org-load-hook nil)
+    (require 'org)
+    (setq org-mode-hook nil)
+    (add-hook 'engrave-faces-before-hook
+              (lambda () (if (eq major-mode 'org-mode)
+                        (org-show-all)))))
+
+  (engrave-faces-html-file file))
+#+end_src
+
 *** Dashboard quick actions
 
 When using the dashboard, there are often a small number of actions I will take.
