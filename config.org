@@ -1539,11 +1539,11 @@ if [ -z "$DISPLAY" ] || $force_tty; then
             TERM="$termstub-direct"; else
             TERM="xterm-direct"; fi # should be fairly safe
     fi
-    emacsclient --tty -create-frame --alternate-editor="" "${args[@]}"
+    emacsclient --tty -create-frame --alternate-editor="$ALTERNATE_EDITOR" "${args[@]}"
 else
     if ! $force_wait; then
         args+=(--no-wait); fi
-    emacsclient -create-frame --alternate-editor="" "${args[@]}"
+    emacsclient -create-frame --alternate-editor="$ALTERNATE_EDITOR" "${args[@]}"
 fi
 #+end_src
 
