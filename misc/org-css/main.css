@@ -613,6 +613,7 @@ kbd {
   display: inline-block;
   padding: 0.25em 0.35em;
   font: 80% SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace;
+  font-weight: inherit;
   line-height: normal;
   line-height: 80%;
   color: var(--text-gray);

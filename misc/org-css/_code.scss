@@ -46,6 +46,7 @@ kbd {
     display: inline-block;
     padding: 0.25em 0.35em;
     font: 80% $code-font;
+    font-weight: inherit;
     line-height: normal;
     line-height: 80%;
     color: $text-gray;
