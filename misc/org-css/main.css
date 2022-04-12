@@ -632,7 +632,7 @@ details.code {
   position: relative; }
   details.code summary {
     position: relative;
-    left: -3px;
+    left: -2.5px;
     padding-left: 10px;
     padding-bottom: 4px;
     margin-left: -10px;
