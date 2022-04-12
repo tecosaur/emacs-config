@@ -239,10 +239,10 @@ body {
     margin-bottom: 10px;
     margin-top: 10px;
     text-transform: none; }
-    .page-header h1 .subtitle {
-      font-size: 24px;
-      color: var(--text-light);
-      margin: 0; }
+  .page-header .subtitle {
+    font-size: 24px;
+    color: var(--text-light);
+    margin: 0; }
 
 .page-meta {
   font-family: "Open Sans", sans;
