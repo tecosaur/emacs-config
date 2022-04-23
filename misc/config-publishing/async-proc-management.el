@@ -85,22 +85,22 @@
 ;;; Status info
 
 (defun apm-process-status-table ()
-  (message (concat
-            "\033[1m[%4.1fs] \033[0;1m"
-            (mapconcat (lambda (dep) (plist-get dep :padded-name)) apm-dependent-processes "  ")
-            "\n\033[0m        "
-            (mapconcat (lambda (dep)
-                         (apply #'format (format "%%s%%-%ds" (length (plist-get dep :padded-name)))
-                                (pcase (process-status (plist-get dep :proc))
-                                  ('run '("\033[0;33m" "Active"))
-                                  ('exit '("\033[0;32m" "Complete"))
-                                  (_ '("\033[0;31m" (format "Unrecognised status %s"
-                                                            (process-status (plist-get dep :proc))))))))
-                       apm-dependent-processes
-                       "  ")
-            "\033[0;90m[1A[K[1A[K")
-           'unmodified
-           (- (float-time) start-time)))
+  ;; (message (concat
+  ;;           "\033[1m[%4.1fs] \033[0;1m"
+  ;;           (mapconcat (lambda (dep) (plist-get dep :padded-name)) apm-dependent-processes "  ")
+  ;;           "\n\033[0m        "
+  ;;           (mapconcat (lambda (dep)
+  ;;                        (apply #'format (format "%%s%%-%ds" (length (plist-get dep :padded-name)))
+  ;;                               (pcase (process-status (plist-get dep :proc))
+  ;;                                 ('run '("\033[0;33m" "Active"))
+  ;;                                 ('exit '("\033[0;32m" "Complete"))
+  ;;                                 (_ '("\033[0;31m" (format "Unrecognised status %s"
+  ;;                                                           (process-status (plist-get dep :proc))))))))
+  ;;                      apm-dependent-processes
+  ;;                      "  ")
+  ;;           "\033[0;90m[1A[K[1A[K")
+  ;;          (- (float-time) start-time))
+  )
 
 ;;; Await completion
 

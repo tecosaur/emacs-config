@@ -20,6 +20,10 @@
 (advice-add 'pdf-tools-install :around #'ignore)
 (advice-add 'pdf-info-features :around #'ignore)
 
+(setq org-link-parameters
+      (delq (assoc "pdf" org-link-parameters)
+            org-link-parameters))
+
 ;; For some faces
 (require 'highlight-numbers)
 (require 'highlight-quoted)
