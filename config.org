@@ -5314,9 +5314,17 @@ structure has come to my attention.
   :pin "207c748aa5fea8626be619e8c55bdb1c16118c25")
 #+end_src
 
+We'll bind this to =O= on the org-mode localleader, and manually apply a [[https://github.com/Townk/org-ol-tree/pull/13][PR
+recognising the pgtk window system]].
+
 #+begin_src emacs-lisp :tangle yes
 (use-package! org-ol-tree
-  :commands org-ol-tree)
+  :commands org-ol-tree
+  :config
+  (defadvice! org-ol-tree-system--graphical-frame-p--pgtk ()
+    :override #'org-ol-tree-system--graphical-frame-p
+    (memq window-system '(pgtk x w32 ns))))
+
 (map! :map org-mode-map
       :after org
       :localleader
