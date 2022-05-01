@@ -2095,7 +2095,7 @@ That's no problem though, we just need to help TRAMP find them.
 Sometimes pressing =TAB= is just too much.
 #+begin_src emacs-lisp :tangle packages.el
 (package! aas :recipe (:host github :repo "ymarco/auto-activating-snippets")
-  :pin "b1a436922ba06ab9e1a5cc222f1a4f25a7697231")
+  :pin "566944e3b336c29d3ac11cd739a954c9d112f3fb")
 #+end_src
 
 #+begin_src emacs-lisp
@@ -2130,7 +2130,8 @@ be loaded in something like the [[https://www.speedscope.app/][speedscope]] weba
 investigation.
 
 #+begin_src emacs-lisp :tangle packages.el
-(package! etrace :recipe (:host github :repo "aspiers/etrace"))
+(package! etrace :recipe (:host github :repo "aspiers/etrace")
+  :pin "2291ccf2f2ccc80a6aac4664e8ede736ceb672b7")
 #+end_src
 
 #+begin_src emacs-lisp :tangle packages.el
@@ -2227,7 +2228,7 @@ welcomed into Emacs 28. However, he is also rather attentive with updates, and
 so I'd like to make sure we have a recent version.
 
 #+begin_src emacs-lisp :tangle packages.el
-(package! modus-themes :pin "59422c05e00d65582a005ccb06c3767622d14e03")
+(package! modus-themes :pin "a42c1710389eab741bb2921b575e3fa7b678eddd")
 #+end_src
 
 *** Theme magic
@@ -2638,7 +2639,8 @@ In some files, =^L= appears as a page break character. This isn't that visually
 appealing, and Steve Purcell has been nice enough to make a package to display
 these as horizontal rules.
 #+begin_src emacs-lisp :tangle packages.el
-(package! page-break-lines :recipe (:host github :repo "purcell/page-break-lines"))
+(package! page-break-lines :recipe (:host github :repo "purcell/page-break-lines")
+  :pin "cc283621c64e4f1133a63e0945658a4abecf42ef")
 #+end_src
 
 #+begin_src emacs-lisp
@@ -3143,7 +3145,7 @@ we're at it.
 What's even the point of using Emacs unless you're constantly telling everyone
 about it?
 #+begin_src emacs-lisp :tangle packages.el
-(package! elcord :pin "eb4ae2e7e03a5fc26b054ba2fa9a1d308e239c76")
+(package! elcord :pin "70fd716e673b724b30b921f4cfa0033f9c02d0f2")
 #+end_src
 
 #+begin_src emacs-lisp
@@ -3189,12 +3191,12 @@ For managing my ebooks, I'll hook into the well-established ebook library
 manager [[https://calibre-ebook.com/][calibre]]. A number of Emacs clients for this exist, but this seems like a
 good option.
 #+begin_src emacs-lisp :tangle packages.el
-(package! calibredb :pin "cb93563d0ec9e0c653210bc574f9546d1e7db437")
+(package! calibredb :pin "8a6148a264e5e57e11824a238ae7b92bb3b6c9ab")
 #+end_src
 
 Then for reading them, the only currently viable options seems to be [[https://depp.brause.cc/nov.el/][nov.el]].
 #+begin_src emacs-lisp :tangle packages.el
-(package! nov :pin "2b4a7231aff6211a5a2f28719d830887aec6cc57")
+(package! nov :pin "8f5b42e9d9f304b422c1a7918b43ee323a7d3532")
 #+end_src
 
 Together these should give me a rather good experience reading ebooks.
@@ -5265,7 +5267,7 @@ correct package statement needed.
 (package! org-contrib
   :recipe (:host nil :repo "https://git.sr.ht/~bzg/org-contrib"
            :files ("lisp/*.el"))
-  :pin "8c138dc5375dc13a0d1952e61c638ef4d57df368")
+  :pin "e6cb6ca42f5bbb74825e81fd645b00e17a673da4")
 #+end_src
 
 **** Visuals
@@ -5291,7 +5293,7 @@ occur at the border a bit more fiddley. We can improve this situation without
 sacrificing visual amenities with the =org-appear= package.
 #+begin_src emacs-lisp
 (package! org-appear :recipe (:host github :repo "awth13/org-appear")
-  :pin "303fcc8d5d85a4ebff2798dab50b2ccc0255ea5f")
+  :pin "8dd1e564153d8007ebc4bb4e14250bde84e26a34")
 #+end_src
 
 #+begin_src emacs-lisp :tangle yes
@@ -5389,7 +5391,7 @@ Came across this and ... it's cool
 I *need* this in my life. It take a URL to a recipe from a common site, and
 inserts an org-ified version at point. Isn't that just great.
 #+begin_src emacs-lisp
-(package! org-chef :pin "87e9a6c4844ff32f47c8d1108ec0f087a3148a8e")
+(package! org-chef :pin "6a786e77e67a715b3cd4f5128b59d501614928af")
 #+end_src
 
 Loading after org seems a bit premature. Let's just load it when we try to use
@@ -5596,9 +5598,9 @@ There's also the new =org-cite= though. It would be nice to try that out.
 To improve =org-cite=.
 
 #+begin_src emacs-lisp :noweb-ref none :tangle packages.el
-(package! citar :pin "79512aefdf11071b66908320aa346255dd349234")
+(package! citar :pin "b391e6de49e00cffa8f60a089a01d663b627a678")
 (package! citeproc :pin "ba49516265fa24b138346c4918d39d19b4de8a62")
-(package! org-cite-csl-activate :recipe (:host github :repo "andras-simonyi/org-cite-csl-activate") :pin "a9b3f3643b587076538a767666372b31b873c294")
+(package! org-cite-csl-activate :recipe (:host github :repo "andras-simonyi/org-cite-csl-activate") :pin "4fdb61c0f83b5d6db0d07dfd64d2a177fd46e931")
 #+end_src
 
 #+begin_src emacs-lisp :noweb-ref none :tangle yes
@@ -5798,7 +5800,7 @@ functionality as in LaTeX. Let's try viewing possible output files with this.
 
 The agenda is nice, but a souped up version is nicer.
 #+begin_src emacs-lisp :noweb-ref none :tangle packages.el
-(package! org-super-agenda :pin "fb5e2ef277bc811a3b061106c99e4c47b6b86f80")
+(package! org-super-agenda :pin "3108bc3f725818f0e868520d2c243abe9acbef4e")
 #+end_src
 
 #+begin_src emacs-lisp :noweb-ref none :tangle yes
@@ -5888,7 +5890,7 @@ set up org-capture.
 #+begin_src emacs-lisp :noweb-ref none :tangle packages.el
 (package! doct
   :recipe (:host github :repo "progfolio/doct")
-  :pin "9ed9b8c7f7e2ea2d2fb739d65ae4626a1cf16b9f")
+  :pin "4033a8fd8681d3989550f7a2532d6b4e3c45bfe8")
 #+end_src
 
 #+begin_src emacs-lisp :noweb-ref none :tangle yes
@@ -6210,8 +6212,8 @@ the [[*Window title][Window title]].
 Org-roam is nice by itself, but there are so /extra/ nice packages which integrate
 with it.
 #+begin_src emacs-lisp :noweb-ref none :tangle packages.el
-(package! org-roam-ui :recipe (:host github :repo "org-roam/org-roam-ui" :files ("*.el" "out")) :pin "309fe3c58c7081de4e2c9c64f7b40ea291926048")
-(package! websocket :pin "fda4455333309545c0787a79d73c19ddbeb57980") ; dependency of `org-roam-ui'
+(package! org-roam-ui :recipe (:host github :repo "org-roam/org-roam-ui" :files ("*.el" "out")) :pin "9474a254390b1e42488a1801fed5826b32a8030b")
+(package! websocket :pin "82b370602fa0158670b1c6c769f223159affce9b") ; dependency of `org-roam-ui'
 #+end_src
 
 #+begin_src emacs-lisp :noweb-ref none :tangle yes
@@ -10675,7 +10677,7 @@ Julia server. The pseudo-fix is rather simple at least
 Graphviz is a nice method of visualising simple graphs, based on plaintext
 =.dot= / =.gv= files.
 #+begin_src emacs-lisp :tangle packages.el
-(package! graphviz-dot-mode :pin "a1b7d66f5c20404a1e59c2ee5e841022622535b8")
+(package! graphviz-dot-mode :pin "6e96a89762760935a7dff6b18393396f6498f976")
 #+end_src
 
 #+begin_src emacs-lisp
