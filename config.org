@@ -8366,6 +8366,9 @@ The =hyperref= setup needs to be handled separately however.
   urlcolor=url,
   citecolor=cite\n}
 \\urlstyle{same}
+%% hide links styles in toc
+\\NewCommandCopy{\\oldtoc}{\\tableofcontents}
+\\renewcommand{\\tableofcontents}{\\begingroup\\hypersetup{hidelinks}\\oldtoc\\endgroup}
 #+end_src
 
 **** A cleverer preamble
