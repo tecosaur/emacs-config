@@ -665,7 +665,6 @@ markdown                     ; writing docs for people to ignore
 ;;nix                        ; I hereby declare "nix geht mehr!"
 ;;ocaml                      ; an objective camel
 (org                         ; organize your plain life in plain text
- +pretty                     ; yessss my pretties! (nice unicode symbols)
  +dragndrop                  ; drag & drop files/images into org buffers
  ;;+hugo                     ; use Emacs for hugo blogging
  +noter                      ; enhanced PDF notetaking
@@ -2672,15 +2671,16 @@ tweaks. Namely:
 + Hiding line numbers
 + Removing outline indentation
 + Centring the text
-+ Turning on ~org-pretty-table-mode~
 
 #+begin_src emacs-lisp
 (defvar +zen-serif-p t
   "Whether to use a serifed font with `mixed-pitch-mode'.")
+(defvar +zen-org-starhide t
+  "The value `org-modern-hide-stars' is set to.")
+
 (after! writeroom-mode
   (defvar-local +zen--original-org-indent-mode-p nil)
   (defvar-local +zen--original-mixed-pitch-mode-p nil)
-  (defvar-local +zen--original-org-pretty-table-mode-p nil)
   (defun +zen-enable-mixed-pitch-mode-h ()
     "Enable `mixed-pitch-mode' when in `+zen-mixed-pitch-modes'."
     (when (apply #'derived-mode-p +zen-mixed-pitch-modes)
@@ -2693,8 +2693,9 @@ tweaks. Namely:
             'display-line-numbers
             'visual-fill-column-width
             'org-adapt-indentation
-            'org-superstar-headline-bullets-list
-            'org-superstar-remove-leading-stars)
+            'org-modern-mode
+            'org-modern-star
+            'org-modern-hide-stars)
   (add-hook 'writeroom-mode-enable-hook
             (defun +zen-prose-org-h ()
               "Reformat the current Org buffer appearance for prose."
@@ -2702,25 +2703,23 @@ tweaks. Namely:
                 (setq display-line-numbers nil
                       visual-fill-column-width 60
                       org-adapt-indentation nil)
-                (when (featurep 'org-superstar)
-                  (setq-local org-superstar-headline-bullets-list '("🙘" "🙙" "🙚" "🙛")
-                              ;; org-superstar-headline-bullets-list '("🙐" "🙑" "🙒" "🙓" "🙔" "🙕" "🙖" "🙗")
-                              org-superstar-remove-leading-stars t)
-                  (org-superstar-restart))
+                (when (featurep 'org-modern)
+                  (setq-local org-modern-star '("🙘" "🙙" "🙚" "🙛")
+                              ;; org-modern-star '("🙐" "🙑" "🙒" "🙓" "🙔" "🙕" "🙖" "🙗")
+                              org-modern-hide-stars +zen-org-starhide)
+                  (org-modern-mode -1)
+                  (org-modern-mode 1))
                 (setq
                  +zen--original-org-indent-mode-p org-indent-mode
-                 +zen--original-org-pretty-table-mode-p (bound-and-true-p org-pretty-table-mode))
-                (org-indent-mode -1)
-                (org-pretty-table-mode 1))))
-  (add-hook 'writeroom-mode-disable-hook
-            (defun +zen-nonprose-org-h ()
-              "Reverse the effect of `+zen-prose-org'."
-              (when (eq major-mode 'org-mode)
-                (when (featurep 'org-superstar)
-                  (org-superstar-restart))
-                (when +zen--original-org-indent-mode-p (org-indent-mode 1))
-                ;; (unless +zen--original-org-pretty-table-mode-p (org-pretty-table-mode -1))
-                ))))
+                 (org-indent-mode -1))))
+            (add-hook 'writeroom-mode-disable-hook
+                      (defun +zen-nonprose-org-h ()
+                        "Reverse the effect of `+zen-prose-org'."
+                        (when (eq major-mode 'org-mode)
+                          (when (bound-and-true-p org-modern-mode)
+                            (org-modern-mode -1)
+                            (org-modern-mode 1))
+                          (when +zen--original-org-indent-mode-p (org-indent-mode 1)))))))
 #+end_src
 
 #+attr_html: :class invertible :alt Writeroom applied to an Org file
@@ -5271,20 +5270,41 @@ correct package statement needed.
 #+end_src
 
 **** Visuals
-***** Tables
+***** Org Modern
 
-Org tables aren't the prettiest thing to look at. This package is supposed to
-redraw them in the buffer with box-drawing characters. Sounds like an
-improvement to me! We'll make use of this with =writeroom-mode=.
+Fontifying =org-mode= buffers to be as pretty as possible is of paramount importance,
+and Minad's lovely =org-modern= goes a long way in this regard.
 
 #+begin_src emacs-lisp
-(package! org-pretty-table
-  :recipe (:host github :repo "Fuco1/org-pretty-table") :pin "7bd68b420d3402826fea16ee5099d04aa9879b78")
+(package! org-modern)
 #+end_src
 
+...with a touch of configuration...
+
 #+begin_src emacs-lisp :tangle yes
-(use-package! org-pretty-table
-  :commands (org-pretty-table-mode global-org-pretty-table-mode))
+(use-package! org-modern
+  :hook (org-mode . org-modern-mode)
+  :config
+  (setq org-modern-star ["◉" "○" "✸" "✿" "✤" "✜" "◆" "▶"]
+        org-modern-table-vertical 1
+        org-modern-table-horizontal 0.2
+        org-modern-list '((43 . "➤")
+                          (45 . "–")
+                          (42 . "•"))
+        org-modern-todo-faces
+        '(("TODO" :inverse-video t :inherit org-todo)
+          ("PROJ" :inverse-video t :inherit +org-todo-project)
+          ("STRT" :inverse-video t :inherit +org-todo-active)
+          ("[-]"  :inverse-video t :inherit +org-todo-active)
+          ("HOLD" :inverse-video t :inherit +org-todo-onhold)
+          ("WAIT" :inverse-video t :inherit +org-todo-onhold)
+          ("[?]"  :inverse-video t :inherit +org-todo-onhold)
+          ("KILL" :inverse-video t :inherit +org-todo-cancel)
+          ("NO"   :inverse-video t :inherit +org-todo-cancel))
+        org-modern-block nil
+        org-modern-progress nil
+        org-modern-keyword nil)
+  (custom-set-faces! '(org-modern-statistics :inherit org-checkbox-statistics-todo)))
 #+end_src
 
 ***** Emphasis markers
@@ -6772,7 +6792,6 @@ cause issues. Let's make their failure less eventful.
 #+begin_src emacs-lisp
 (defadvice! shut-up-org-problematic-hooks (orig-fn &rest args)
   :around #'org-fancy-priorities-mode
-  :around #'org-superstar-mode
   (ignore-errors (apply orig-fn args)))
 #+end_src
 **** Flycheck with org-lint
@@ -6974,12 +6993,8 @@ Doom theme's extra fontification is more problematic than helpful.
 It's also nice to change the character used for collapsed items (by default ~…~),
 I think ~▾~ is better for indicating 'collapsed section'.
 and add an extra ~org-bullet~ to the default list of four.
-I've also added some fun alternatives, just commented out.
-#+begin_src emacs-lisp
-(after! org-superstar
-  (setq org-superstar-headline-bullets-list '("◉" "○" "✸" "✿" "✤" "✜" "◆" "▶")
-        org-superstar-prettify-item-bullets t ))
 
+#+begin_src emacs-lisp
 (setq org-ellipsis " ▾ "
       org-hide-leading-stars t
       org-priority-highest ?A
@@ -7081,7 +7096,7 @@ It's also nice to make use of the Unicode characters for check boxes, and other 
 (plist-put +ligatures-extra-symbols :name "⁍")
 #+end_src
 
-~org-superstar-mode~ is great. While we're at it we may as well make tags prettier as well 🙂
+While we're at it we may as well make tags prettier as well 🙂
 #+begin_src emacs-lisp :tangle packages.el
 ;; (package! org-pretty-tags :pin "5c7521651b35ae9a7d3add4a66ae8cc176ae1c76")
 #+end_src
