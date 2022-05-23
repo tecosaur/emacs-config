@@ -5307,6 +5307,14 @@ and Minad's lovely =org-modern= goes a long way in this regard.
   (custom-set-faces! '(org-modern-statistics :inherit org-checkbox-statistics-todo)))
 #+end_src
 
+Since =org-modern='s tag face supplants Org's tag face, we need to adjust the
+spell-check face ignore list
+
+#+begin_src emacs-lisp
+(after! spell-fu
+  (pushnew 'org-modern-tag (alist-get 'org-mode +spell-excluded-faces-alist)))
+#+end_src
+
 ***** Emphasis markers
 While ~org-hide-emphasis-markers~ is very nice, it can sometimes make edits which
 occur at the border a bit more fiddley. We can improve this situation without
