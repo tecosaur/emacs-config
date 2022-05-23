@@ -8619,6 +8619,7 @@ tests should be very versatile.
     ("^[ \t]*|" . table)
     ("cref:\\|\\cref{\\|\\[\\[[^\\]+\n?[^\\]\\]\\]" . cleveref)
     ("[;\\\\]?\\b[A-Z][A-Z]+s?[^A-Za-z]" . acronym)
+    ("[\u2500-\u259F]" . box-drawing)
     ("\\+[^ ].*[^ ]\\+\\|_[^ ].*[^ ]_\\|\\\\uu?line\\|\\\\uwave\\|\\\\sout\\|\\\\xout\\|\\\\dashuline\\|\\dotuline\\|\\markoverwith" . underline)
     (":float wrap" . float-wrap)
     (":float sideways" . rotate)
@@ -8694,6 +8695,7 @@ introduce an =:order= keyword. Using this I'll arrange snippets as follows.
     (embed-files   :snippet org-latex-embed-files-preamble :order -2)
     (embed-tangled :requires embed-files :snippet (concat (org-latex-embed-extra-files) "\n") :order -1)
     (acronym       :snippet "\\newcommand{\\acr}[1]{\\protect\\textls*[110]{\\scshape #1}}\n\\newcommand{\\acrs}{\\protect\\scalebox{.91}[.84]{\\hspace{0.15ex}s}}" :order 0.4)
+    (box-drawing   :snippet "\\usepackage{pmboxdraw}" :order 0.05)
     (italic-quotes :snippet "\\renewcommand{\\quote}{\\list{}{\\rightmargin\\leftmargin}\\item\\relax\\em}\n" :order 0.5)
     (par-sep       :snippet "\\setlength{\\parskip}{\\baselineskip}\n\\setlength{\\parindent}{0pt}\n" :order 0.5)
     (.pifont       :snippet "\\usepackage{pifont}")
@@ -9506,9 +9508,10 @@ don't appear in the pdf. It's preferable to see that there was /some/ character
 which wasn't displayed as opposed to nothing.
 
 We check every non-ascii character to make sure it's not a character encoded by
-the =inputenc= packages when loaded with the =utf8= option. Finally, we see if we
-have our own LaTeX conversion we can apply and if there is none we replace the
-non-ascii char with =¿=.
+the =inputenc= packages when loaded with the =utf8= option. We'll also allow
+box-drawing characters since they can be mostly supported with =pmboxdraw=.
+Finally, we see if we have our own LaTeX conversion we can apply and if there is
+none we replace the non-ascii char with =¿=.
 
 No to make sure we only remove characters that can't be displayed, we check
 =/usr/share/texmf/tex/latex/base/utf8enc.dfu=.
@@ -9518,7 +9521,7 @@ since we want to let emoji processing occur first.
 
 #+begin_src emacs-lisp
 (defvar +org-pdflatex-inputenc-encoded-chars
-  "[[:ascii:]\u00A0-\u01F0\u0218-\u021BȲȳȷˆˇ˜˘˙˛˝\u0400-\u04FFḂḃẞ\u200C\u2010-\u201E†‡•…‰‱‹›※‽⁄⁎⁒₡₤₦₩₫€₱℃№℗℞℠™Ω℧℮←↑→↓〈〉␢␣◦◯♪⟨⟩Ḡḡ\uFB00-\uFB06]")
+  "[[:ascii:]\u00A0-\u01F0\u0218-\u021BȲȳȷˆˇ˜˘˙˛˝\u0400-\u04FFḂḃẞ\u200C\u2010-\u201E†‡•…‰‱‹›※‽⁄⁎⁒₡₤₦₩₫€₱℃№℗℞℠™Ω℧℮←↑→↓〈〉␢␣◦◯♪⟨⟩Ḡḡ\uFB00-\uFB06\u2500-\u259F]")
 
 (defun +org-latex-replace-non-ascii-chars (text backend info)
   "Replace non-ascii chars with \\char\"XYZ forms."
