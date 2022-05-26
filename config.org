@@ -9329,6 +9329,7 @@ text property =emojified=.
 #+begin_src emacs-lisp
 (defun emojify-emoji-in-buffer-p ()
   "Determine if any emojis are present in the current buffer, using `emojify-mode'."
+  (require 'emojify)
   (unless emojify-mode
     (emojify-mode 1)
     (emojify-display-emojis-in-region (point-min) (point-max)))
