@@ -7517,6 +7517,32 @@ TODO abstract backend implementations."
    todo todo-type priority (org-export-filter-text-acronym text 'latex info) tags info))
 (setq org-latex-format-headline-function #'org-latex-format-headline-acronymised)
 #+end_src
+
+**** Exporting Org code
+
+With all our Org config and hooks, exporting an Org code block when using
+a font-lock based method can produce undesirable results. To address this, we
+can tweak ~+org-babel-mode-alist~ when exporting.
+
+#+begin_src emacs-lisp
+(defun +org-mode--fontlock-only-mode ()
+  "Just apply org-mode's font-lock once."
+  (let (org-mode-hook
+        org-hide-leading-stars
+        org-hide-emphasis-markers)
+    (org-set-font-lock-defaults)
+    (font-lock-ensure))
+  (setq-local major-mode #'fundamental-mode))
+
+(defun +org-export-babel-mask-org-config (_backend)
+  "Use `+org-mode--fontlock-only-mode' instead of `org-mode'."
+  (setq-local org-src-lang-modes
+              (append org-src-lang-modes
+                      (list (cons "org" #'+org-mode--fontlock-only)))))
+
+(add-hook 'org-export-before-processing-hook #'+org-export-babel-mask-org-config)
+#+end_src
+
 *** HTML Export
 :PROPERTIES:
 :header-args:emacs-lisp: :noweb-ref ox-html-conf
