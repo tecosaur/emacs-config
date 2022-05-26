@@ -9216,43 +9216,10 @@ entry in ~org-latex-scr-block~ we can easily add this as a recognised
   :after #'org-latex-src-block
   :after #'org-latex-inline-src-block-engraved
   (setq org-export-has-code-p t))
-
-(setq org-latex-engraved-code-preamble "
-<<org-latex-engraved-code-preamble>>
-")
 #+end_src
 
 Whenever this is used, in order for it to actually work (and look a little
 better) we add bit to the preamble:
-
-#+name: org-latex-engraved-code-preamble
-#+begin_src LaTeX
-\\usepackage{fvextra}
-\\fvset{
-  commandchars=\\\\\\{\\},
-  highlightcolor=white!95!black!80!blue,
-  breaklines=true,
-  breaksymbol=\\color{white!60!black}\\tiny\\ensuremath{\\hookrightarrow}}
-\\renewcommand\\theFancyVerbLine{\\footnotesize\\color{black!40!white}\\arabic{FancyVerbLine}}
-
-\\providecolor{codebackground}{HTML}{f7f7f7}
-\\providecolor{codeborder}{HTML}{f0f0f0}
-\\providecolor{EFD}{HTML}{28292e}
-
-% TODO have code boxes keep line vertical alignment
-\\usepackage[breakable,xparse]{tcolorbox}
-\\DeclareTColorBox[]{Code}{o}%
-{colback=codebackground, colframe=codeborder,
-  fontupper=\\footnotesize\\setlength{\\fboxsep}{0pt},
-  colupper=EFD,
-  IfNoValueTF={#1}%
-  {boxsep=2pt, arc=2.5pt, outer arc=2.5pt,
-    boxrule=0.5pt, left=2pt}%
-  {boxsep=2.5pt, arc=0pt, outer arc=0pt,
-    boxrule=0pt, leftrule=1.5pt, left=0.5pt},
-  right=2pt, top=1pt, bottom=0.5pt,
-  breakable}
-#+end_src
 
 One little annoyance with this is the interaction between microtype and =Verbatim=
 environments. Protrusion is not desirable here. Thankfully, we can patch the
