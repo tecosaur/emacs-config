@@ -2227,7 +2227,7 @@ welcomed into Emacs 28. However, he is also rather attentive with updates, and
 so I'd like to make sure we have a recent version.
 
 #+begin_src emacs-lisp :tangle packages.el
-(package! modus-themes :pin "a42c1710389eab741bb2921b575e3fa7b678eddd")
+(package! modus-themes :pin "810a035768085167440c07f99bd7b64e6894d1b7")
 #+end_src
 
 *** Theme magic
@@ -3190,7 +3190,7 @@ For managing my ebooks, I'll hook into the well-established ebook library
 manager [[https://calibre-ebook.com/][calibre]]. A number of Emacs clients for this exist, but this seems like a
 good option.
 #+begin_src emacs-lisp :tangle packages.el
-(package! calibredb :pin "8a6148a264e5e57e11824a238ae7b92bb3b6c9ab")
+(package! calibredb :pin "232fa1cf3af08200af439d1cbb5a131f38286183")
 #+end_src
 
 Then for reading them, the only currently viable options seems to be [[https://depp.brause.cc/nov.el/][nov.el]].
@@ -5266,7 +5266,7 @@ correct package statement needed.
 (package! org-contrib
   :recipe (:host nil :repo "https://git.sr.ht/~bzg/org-contrib"
            :files ("lisp/*.el"))
-  :pin "e6cb6ca42f5bbb74825e81fd645b00e17a673da4")
+  :pin "15b03d5090cd6ef46bdfdd14a3f9e20c3dab60da")
 #+end_src
 
 **** Visuals
@@ -5276,7 +5276,7 @@ Fontifying =org-mode= buffers to be as pretty as possible is of paramount import
 and Minad's lovely =org-modern= goes a long way in this regard.
 
 #+begin_src emacs-lisp
-(package! org-modern)
+(package! org-modern :pin "ff1046705b3950b7a49da50bc34c11da86c6226d")
 #+end_src
 
 ...with a touch of configuration...
@@ -5626,7 +5626,7 @@ There's also the new =org-cite= though. It would be nice to try that out.
 To improve =org-cite=.
 
 #+begin_src emacs-lisp :noweb-ref none :tangle packages.el
-(package! citar :pin "b391e6de49e00cffa8f60a089a01d663b627a678")
+(package! citar :pin "d55cac7a2b8b848990ebd713de8667bf3fe93c6b")
 (package! citeproc :pin "ba49516265fa24b138346c4918d39d19b4de8a62")
 (package! org-cite-csl-activate :recipe (:host github :repo "andras-simonyi/org-cite-csl-activate") :pin "4fdb61c0f83b5d6db0d07dfd64d2a177fd46e931")
 #+end_src
