@@ -7349,8 +7349,11 @@ There's also this lovely equation numbering stuff I'll nick
 We can use some of the variables in =org-plot= to use the current doom theme
 colours.
 #+begin_src emacs-lisp
+(defvar +org-plot-term-size '(1050 . 650)
+  "The size of the GNUPlot terminal, in the form (WIDTH . HEIGHT).")
+
 (after! org-plot
-  (defun org-plot/generate-theme (_type)
+  (defun +org-plot-generate-theme (_type)
     "Use the current Doom theme colours to generate a GnuPlot preamble."
     (format "
 fgt = \"textcolor rgb '%s'\" # foreground text
@@ -7417,14 +7420,16 @@ set palette defined ( 0 '%s',\
             (doom-color 'orange)
             (doom-color 'yellow)
             (doom-color 'teal)
-            (doom-color 'violet)
-            ))
-  (defun org-plot/gnuplot-term-properties (_type)
-    (format "background rgb '%s' size 1050,650"
-            (doom-color 'bg)))
-  (setq org-plot/gnuplot-script-preamble #'org-plot/generate-theme)
-  (setq org-plot/gnuplot-term-extra #'org-plot/gnuplot-term-properties))
+            (doom-color 'violet)))
+
+  (defun +org-plot-gnuplot-term-properties (_type)
+    (format "background rgb '%s' size %s,%s"
+            (doom-color 'bg) (car +org-plot-term-size) (cdr +org-plot-term-size)))
+
+  (setq org-plot/gnuplot-script-preamble #'+org-plot-generate-theme)
+  (setq org-plot/gnuplot-term-extra #'+org-plot-gnuplot-term-properties))
 #+end_src
+
 *** Exporting
 **** General settings
 By default Org only exports the first three levels of headings as ... headings.
