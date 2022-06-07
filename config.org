@@ -7047,43 +7047,19 @@ and add an extra ~org-bullet~ to the default list of four.
         (?D . 'all-the-icons-green)
         (?E . 'all-the-icons-blue)))
 #+end_src
-It's also nice to make use of the Unicode characters for check boxes, and other commands.
+
+It's also nice to make use of the =prettify-symbols-mode= for a few Org syntactic
+tokens which we'd like to prettify that aren't covered by =org-modern= or any
+other settings.
+
 #+begin_src emacs-lisp
 (appendq! +ligatures-extra-symbols
-          `(:checkbox      "☐"
-            :pending       "◼"
-            :checkedbox    "☑"
-            :list_property "∷"
+          `(:list_property "∷"
             :em_dash       "—"
             :ellipses      "…"
             :arrow_right   "→"
             :arrow_left    "←"
-            :title         "𝙏"
-            :subtitle      "𝙩"
-            :author        "𝘼"
-            :date          "𝘿"
-            :property      "☸"
-            :options       "⌥"
-            :startup       "⏻"
-            :macro         "𝓜"
-            :bibliography  ""
-            :print_biblio  ""
-            :html_head     "🅷"
-            :html          "🅗"
-            :latex_class   "🄻"
-            :latex_header  "🅻"
-            :beamer_header "🅑"
-            :latex         "🅛"
-            :attr_latex    "🄛"
-            :attr_html     "🄗"
-            :attr_org      "⒪"
-            :begin_quote   "❝"
-            :end_quote     "❞"
-            :caption       "☰"
-            :header        "›"
-            :results       "🠶"
-            :begin_export  "⏩"
-            :end_export    "⏪"
+            :arrow_lr      "⟷"
             :properties    "⚙"
             :end           "∎"
             :priority_a   ,(propertize "⚑" 'face 'all-the-icons-red)
@@ -7093,48 +7069,19 @@ It's also nice to make use of the Unicode characters for check boxes, and other 
             :priority_e   ,(propertize "❓" 'face 'all-the-icons-blue)))
 (set-ligatures! 'org-mode
   :merge t
-  :checkbox      "[ ]"
-  :pending       "[-]"
-  :checkedbox    "[X]"
   :list_property "::"
   :em_dash       "---"
   :ellipsis      "..."
   :arrow_right   "->"
   :arrow_left    "<-"
-  :title         "#+title:"
-  :subtitle      "#+subtitle:"
-  :author        "#+author:"
-  :date          "#+date:"
-  :property      "#+property:"
-  :options       "#+options:"
-  :startup       "#+startup:"
-  :macro         "#+macro:"
-  :bibliography  "#+bibliography:"
-  :print_biblio  "#+print_bibliography:"
-  :html_head     "#+html_head:"
-  :html          "#+html:"
-  :latex_class   "#+latex_class:"
-  :latex_header  "#+latex_header:"
-  :beamer_header "#+beamer_header:"
-  :latex         "#+latex:"
-  :attr_latex    "#+attr_latex:"
-  :attr_html     "#+attr_html:"
-  :attr_org      "#+attr_org:"
-  :begin_quote   "#+begin_quote"
-  :end_quote     "#+end_quote"
-  :caption       "#+caption:"
-  :header        "#+header:"
-  :begin_export  "#+begin_export"
-  :end_export    "#+end_export"
-  :results       "#+RESULTS:"
-  :property      ":PROPERTIES:"
+  :arrow_lr      "<->"
+  :properties    ":PROPERTIES:"
   :end           ":END:"
   :priority_a    "[#A]"
   :priority_b    "[#B]"
   :priority_c    "[#C]"
   :priority_d    "[#D]"
   :priority_e    "[#E]")
-(plist-put +ligatures-extra-symbols :name "⁍")
 #+end_src
 
 While we're at it we may as well make tags prettier as well 🙂
