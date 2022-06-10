@@ -257,7 +257,7 @@ If you are so bold as to wish to steal bits of my config (or if I upgrade and
 wonder why things aren't working), here's a list of sections which rely on
 external setup (i.e. outside of this config).
 
-+ dictionary :: I've downloaded a custom [[http://app.aspell.com/create][SCOWL]] dictionary, which I use in [[*Ispell][ispell]].
++ dictionary :: I've downloaded a custom [[http://app.aspell.net/create][SCOWL]] dictionary, which I use in [[*Ispell][ispell]].
   If this causes issues, just delete the src_elisp{(setq ispell-dictionary ...)}
   bit.
 
