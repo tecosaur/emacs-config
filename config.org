@@ -10608,7 +10608,7 @@ Graphviz is a nice method of visualising simple graphs, based on plaintext
 #+begin_src emacs-lisp
 (use-package! graphviz-dot-mode
   :commands graphviz-dot-mode
-  :mode ("\\.dot\\'" "\\.gz\\'")
+  :mode ("\\.dot\\'" . graphviz-dot-mode)
   :init
   (after! org
     (setcdr (assoc "dot" org-src-lang-modes)
