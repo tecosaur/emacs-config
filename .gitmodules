@@ -34,3 +34,6 @@
 [submodule "ob-julia"]
 	path = lisp/ob-julia
 	url = https://github.com/nico202/ob-julia.git
+[submodule "org-glossary"]
+	path = lisp/org-glossary
+	url = https://github.com/tecosaur/org-glossary.git

@@ -5497,6 +5497,17 @@ to make that right again, and this package makes that even easier to do.
   :after org)
 #+end_src
 
+***** Glossaries and more
+
+#+begin_src emacs-lisp
+(package! org-glossary :recipe (:local-repo "lisp/org-glossary"))
+#+end_src
+
+#+begin_src emacs-lisp :tangle yes
+(use-package! org-glossary
+  :hook (org-mode . org-glossary-mode))
+#+end_src
+
 ***** Document comparison
 It's quite nice to compare Org files, and the richest way to compare content is
 probably =latexdiff=. There are a few annoying steps involved here, and so I've
