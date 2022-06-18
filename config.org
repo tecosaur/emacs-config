@@ -445,7 +445,10 @@ have flags applied to tweak their behaviour.
 ;; This file controls what Doom modules are enabled and what order they load in.
 ;; Press 'K' on a module to view its documentation, and 'gd' to browse its directory.
 
-(doom! :completion
+(doom! :input
+       <<doom-input>>
+
+       :completion
        <<doom-completion>>
 
        :ui
@@ -608,6 +611,7 @@ rgb                          ; creating color strings
 ;;taskrunner                 ; taskrunner for all your projects
 ;;terraform                  ; infrastructure as code
 ;;tmux                       ; an API for interacting with tmux
+;;tree-sitter                ; syntax and parsing, sitting in a tree...
 upload                       ; map local to remote projects via ssh/ftp
 #+end_src
 
@@ -625,7 +629,7 @@ associated file.
 #+begin_src emacs-lisp
 ;;agda                       ; types of types of types of types...
 ;;beancount                  ; mind the GAAP
-;;cc                         ; C/C++/Obj-C madness
+;;(cc +lsp)                  ; C > C++ == 1
 ;;clojure                    ; java with a lisp
 ;;common-lisp                ; if you've seen one lisp, you've seen them all
 ;;coq                        ; proofs-as-programs
@@ -643,12 +647,13 @@ ess                          ; emacs speaks statistics
 ;;fsharp                     ; ML stands for Microsoft's Language
 ;;fstar                      ; (dependent) types and (monadic) effects and Z3
 ;;gdscript                   ; the language you waited for
+;;(graphql +lsp)             ; Give queries a REST
 ;;(go +lsp)                  ; the hipster dialect
 ;;(haskell +lsp)             ; a language that's lazier than I am
 ;;hy                         ; readability of scheme w/ speed of python
 ;;idris                      ;
 json                         ; At least it ain't XML
-;;(java +meghanada)          ; the poster child for carpal tunnel syndrome
+;;(java +lsp)                ; the poster child for carpal tunnel syndrome
 (javascript +lsp)            ; all(hope(abandon(ye(who(enter(here))))))
 (julia +lsp)                 ; Python, R, and MATLAB in a blender
 ;;kotlin                     ; a better, slicker Java(Script)
@@ -695,6 +700,16 @@ sh                           ; she sells {ba,z,fi}sh shells on the C xor
 web                          ; the tubes
 yaml                         ; JSON, but readable
 ;;zig                        ; C, but simpler
+#+end_src
+
+**** Input
+
+#+name: doom-input
+#+begin_src emacs-lisp
+;;bidi                       ; (tfel ot) thgir etirw uoy gnipleh
+;;chinese
+;;japanese
+;;layout                     ; auie,ctsrnm is the superior home row
 #+end_src
 
 **** Everything in Emacs
