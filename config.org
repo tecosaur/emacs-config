@@ -5646,6 +5646,31 @@ I think it makes sense to have list bullets change with depth
 #+begin_src emacs-lisp
 (setq org-list-demote-modify-bullet '(("+" . "-") ("-" . "+") ("*" . "+") ("1." . "a.")))
 #+end_src
+***** Easier file links
+
+While ~org-insert-link~ is all very well and good, a large portion of the time I
+want to insert a file, and so it would be good to have a way to skip straight to
+that and avoid the description prompt. Looking at ~org-link-parameters~, we can
+see that the ="file"= link type uses the completion function
+~org-link-complete-file~, so let's use that to make a little file-link inserting
+function.
+
+#+begin_src emacs-lisp
+(defun +org-insert-file-link ()
+  "Insert a file link.  At the prompt, enter the filename."
+  (interactive)
+  (insert (format "[[%s]]" (org-link-complete-file))))
+#+end_src
+
+Now we'll just add that under the Org mode link localleader for convenience.
+
+#+begin_src emacs-lisp
+(map! :after org
+      :map org-mode-map
+      :localleader
+      "l f" #'+org-insert-file-link)
+#+end_src
+
 ***** Citation
 Occasionally I want to cite something, and =org-ref= is /the/ package for that.
 
