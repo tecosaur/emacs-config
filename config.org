@@ -5366,7 +5366,7 @@ spell-check face ignore list
 
 #+begin_src emacs-lisp
 (after! spell-fu
-  (pushnew 'org-modern-tag (alist-get 'org-mode +spell-excluded-faces-alist)))
+  (cl-pushnew 'org-modern-tag (alist-get 'org-mode +spell-excluded-faces-alist)))
 #+end_src
 
 ***** Emphasis markers
