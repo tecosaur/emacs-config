@@ -9573,7 +9573,7 @@ since we want to let emoji processing occur first.
                                     (or (cdr (assoc nonascii +org-latex-non-ascii-char-substitutions)) "¿")))
                                 text))))
 
-(add-to-list 'org-export-filter-final-output-functions #'+org-latex-replace-non-ascii-chars t)
+(add-to-list 'org-export-filter-plain-text-functions #'+org-latex-replace-non-ascii-chars t)
 #+end_src
 
 Now, there are some symbols that aren't included in =inputenc=, but we should be
