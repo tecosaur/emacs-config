@@ -9347,7 +9347,12 @@ need to make it automatic
 #+begin_src emacs-lisp
 (defadvice! org-latex-pick-compiler (_contents info)
   :before #'org-latex-template
-  (when (and org-export-has-code-p (memq 'julia-code (org-latex-detect-features)))
+  :before #'org-beamer-template
+  (when (and org-export-has-code-p
+             (memq 'julia-code (org-latex-detect-features))
+             (save-excursion
+               (goto-char (point-min))
+               (re-search-forward "[^\x00-\x7F\u200b]" nil t)))
     (setf info (plist-put
                 (if (member #'+org-latex-replace-non-ascii-chars (plist-get info :filter-final-output))
                     (plist-put info :filter-final-output
