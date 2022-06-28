@@ -37,3 +37,6 @@
 [submodule "org-glossary"]
 	path = lisp/org-glossary
 	url = https://github.com/tecosaur/org-glossary.git
+[submodule "ox-pluto"]
+	path = lisp/ox-pluto
+	url = https://github.com/tecosaur/ox-pluto.git
