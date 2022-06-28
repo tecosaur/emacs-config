@@ -9251,7 +9251,7 @@ When we're using Alegreya we can apply a lovely little tweak to =tabular= which
 \\makeatother\n") t)
 #+end_src
 
-Due to the Alegreya's metrics, the =\LaTeX= symbol doesn't quite look right. We
+Due to Alegreya's metrics, the =\LaTeX= symbol doesn't quite look right. We
 can correct for this by redefining it with subtlety shifted kerning.
 
 #+begin_src emacs-lisp
