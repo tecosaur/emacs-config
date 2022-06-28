@@ -52,6 +52,7 @@ table {
       @include light-meta();
     }
     margin-bottom: 10px;
+    min-width: 20em;
     @include light-para(15px);
   }
 }
