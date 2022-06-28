@@ -2259,7 +2259,7 @@ welcomed into Emacs 28. However, he is also rather attentive with updates, and
 so I'd like to make sure we have a recent version.
 
 #+begin_src emacs-lisp :tangle packages.el
-(package! modus-themes :pin "810a035768085167440c07f99bd7b64e6894d1b7")
+(package! modus-themes :pin "5d35fed1ab7d2d59f64b2c5dcf77c05e64a0322e")
 #+end_src
 
 *** Theme magic
@@ -3240,7 +3240,7 @@ For managing my ebooks, I'll hook into the well-established ebook library
 manager [[https://calibre-ebook.com/][calibre]]. A number of Emacs clients for this exist, but this seems like a
 good option.
 #+begin_src emacs-lisp :tangle packages.el
-(package! calibredb :pin "232fa1cf3af08200af439d1cbb5a131f38286183")
+(package! calibredb :pin "2f2cfc38f2d1c705134b692127c3008ac1382482")
 #+end_src
 
 Then for reading them, the only currently viable options seems to be [[https://depp.brause.cc/nov.el/][nov.el]].
@@ -5364,7 +5364,7 @@ correct package statement needed.
 (package! org-contrib
   :recipe (:host nil :repo "https://git.sr.ht/~bzg/org-contrib"
            :files ("lisp/*.el"))
-  :pin "15b03d5090cd6ef46bdfdd14a3f9e20c3dab60da")
+  :pin "c6aef31ccfc7c4418c3b51e98f7c3bd8e255f5e6")
 #+end_src
 
 **** Visuals
@@ -5374,7 +5374,7 @@ Fontifying =org-mode= buffers to be as pretty as possible is of paramount import
 and Minad's lovely =org-modern= goes a long way in this regard.
 
 #+begin_src emacs-lisp
-(package! org-modern :pin "b352680d9ee8c6e6966cc21d595513c3595e3bb7")
+(package! org-modern :pin "cef71f81e6a1b66795e70a209121841c98335f82")
 #+end_src
 
 ...with a touch of configuration...
@@ -5457,7 +5457,7 @@ occur at the border a bit more fiddley. We can improve this situation without
 sacrificing visual amenities with the =org-appear= package.
 #+begin_src emacs-lisp
 (package! org-appear :recipe (:host github :repo "awth13/org-appear")
-  :pin "8dd1e564153d8007ebc4bb4e14250bde84e26a34")
+  :pin "60ba267c5da336e75e603f8c7ab3f44e6f4e4dac")
 #+end_src
 
 #+begin_src emacs-lisp :tangle yes
@@ -5542,7 +5542,7 @@ I like the idea of being able to make HTTP requests with Babel.
 There's a really cool package in development to /transclude/ Org document content.
 #+begin_src emacs-lisp
 (package! org-transclusion :recipe (:host github :repo "nobiot/org-transclusion")
-  :pin "ccc0aaa72732ea633bf52bcc8a0345cd3ac178fd")
+  :pin "5cb94542e18722bf72a281441e944a8039b5301f")
 #+end_src
 
 #+begin_src emacs-lisp :tangle yes
@@ -5820,8 +5820,8 @@ There's also the new =org-cite= though. It would be nice to try that out.
 To improve =org-cite=.
 
 #+begin_src emacs-lisp :noweb-ref none :tangle packages.el
-(package! citar :pin "d55cac7a2b8b848990ebd713de8667bf3fe93c6b")
-(package! citeproc :pin "ba49516265fa24b138346c4918d39d19b4de8a62")
+(package! citar :pin "b6cd49ffb56824b8d1793b0c4268237b3d89fb45")
+(package! citeproc :pin "65e1c52486d788b9b0d4baba63645453b4abcfca")
 (package! org-cite-csl-activate :recipe (:host github :repo "andras-simonyi/org-cite-csl-activate") :pin "4fdb61c0f83b5d6db0d07dfd64d2a177fd46e931")
 #+end_src
 
@@ -6115,7 +6115,7 @@ set up org-capture.
 #+begin_src emacs-lisp :noweb-ref none :tangle packages.el
 (package! doct
   :recipe (:host github :repo "progfolio/doct")
-  :pin "4033a8fd8681d3989550f7a2532d6b4e3c45bfe8")
+  :pin "8464809754f3316d5a2fdcf3c01ce1e8736b323b")
 #+end_src
 
 #+begin_src emacs-lisp :noweb-ref none :tangle yes
