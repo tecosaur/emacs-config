@@ -5488,9 +5488,12 @@ recognising the pgtk window system]].
 (use-package! org-ol-tree
   :commands org-ol-tree
   :config
-  (defadvice! org-ol-tree-system--graphical-frame-p--pgtk ()
-    :override #'org-ol-tree-system--graphical-frame-p
-    (memq window-system '(pgtk x w32 ns))))
+  (setq org-ol-tree-ui-icon-set
+        (if (and (display-graphic-p)
+                 (fboundp 'all-the-icons-material))
+            'all-the-icons
+          'unicode))
+  (org-ol-tree-ui--update-icon-set))
 
 (map! :map org-mode-map
       :after org
