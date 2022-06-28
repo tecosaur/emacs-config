@@ -43,6 +43,7 @@ computer to do. @@latex:\mbox{@@--- Donald Knuth@@latex:}@@
 #+end_quote
 
 * Introduction
+
 Customising an editor can be very rewarding ... until you have to leave it.
 For years I have been looking for ways to avoid this pain.
 Then I discovered [[https://github.com/cknadler/vim-anywhere][vim-anywhere]], and found that it had an Emacs companion,
@@ -91,6 +92,7 @@ output= cycles, i.e. form a bridge between the human mind and information
 manipulation.
 
 *** The enveloping editor
+
 Emacs allows one to do more in one place than any other application. Why is this
 good?
 + Enables one to complete tasks with a consistent, standard set of keybindings,
@@ -154,6 +156,7 @@ digraph {
 [[file:misc/emacs-platform.svg]]
 
 *** Some notably unique features
+
 + Recursive editing
 + Completely introspectable, with pervasive docstrings
 + Mutable environment, which can be incrementally modified
@@ -162,6 +165,7 @@ digraph {
   startup time.
 
 *** Issues
+
 + Emacs has irritating quirks
 + Some aspects are showing their age (naming conventions, APIs)
 + Emacs is ([[https://www.gnu.org/software/emacs/manual/html_node/elisp/Threads.html][mostly]]) single-threaded, meaning that when something holds that
@@ -169,6 +173,7 @@ digraph {
 + A few other nuisances
 
 *** Teach a man to fish...
+
 #+begin_quote
 Give a man a fish, and you feed him for a day. Teach a man to fish, and you feed
 him for a lifetime. --- Anne Isabella
@@ -246,6 +251,7 @@ I have attempted to quantify aspects of my impressions of them below.
 [[file:misc/editor-comparison.svg]]
 
 ** Notes for the unwary adventurer
+
 If you like the look of this, that's marvellous, and I'm really happy that I've
 made something which you may find interesting, however:
 #+begin_warning
@@ -268,6 +274,7 @@ so, no matter how much criticism you include I'll appreciate it :)
 [[xkcd:1513]]
 
 *** Extra Requirements
+
 The lovely ~doom doctor~ is good at diagnosing most missing things, but here are a
 few extras.
 + A [[https://www.tug.org/texlive/][LaTeX Compiler]] is required for the mathematics rendering performed in [[#org][Org]],
@@ -286,6 +293,7 @@ few extras.
 
 ** Current Issues
 *** Magit push in daemon
+
 Quite often trying to push to a remote in the Emacs daemon produces as error like this:
 #+begin_src fundamental
 128 git … push -v origin refs/heads/master\:refs/heads/master
@@ -296,7 +304,9 @@ fatal: Could not read from remote repository.
 Please make sure you have the correct access rights
 and the repository exists.
 #+end_src
+
 *** Unread emails doesn't work across Emacs instances
+
 It would be nice if it did, so that I could have the Emacs-daemon hold the
 active mu4e session, but still get that information. In this case I'd want to
 change the action to open the Emacs daemon, but it should be possible.
@@ -306,6 +316,7 @@ to write to a temporary file, and having a file watcher started in other Emacs
 instances, in a similar manner to [[*Rebuild mail index while using mu4e][Rebuild mail index while using mu4e]].
 
 * Rudimentary configuration
+
 Make this file run (slightly) faster with lexical binding (see [[https://nullprogram.com/blog/2016/12/22/][this blog post]]
 for more info).
 #+begin_src emacs-lisp :comments no
@@ -315,7 +326,9 @@ for more info).
 #+begin_src shell :exports none :comments no :tangle-mode (identity #o755)
 #!/usr/bin/env bash
 #+end_src
+
 ** Personal Information
+
 It's useful to have some basic personal information
 #+begin_src emacs-lisp
 (setq user-full-name "TEC"
@@ -332,8 +345,10 @@ my home machine is pretty safe, and my laptop is shutdown a lot.
 (setq auth-sources '("~/.authinfo.gpg")
       auth-source-cache-expiry nil) ; default is 7200 (2h)
 #+end_src
+
 ** Better defaults
 *** Simple settings
+
 Browsing the web and seeing [[https://github.com/angrybacon/dotemacs/blob/master/dotemacs.org#use-better-defaults][angrybacon/dotemacs]] and comparing with the values
 shown by =SPC h v= and selecting what I thought looks good, I've ended up adding
 the following:
@@ -359,7 +374,9 @@ the following:
 
 (global-subword-mode 1)                           ; Iterate through CamelCase words
 #+end_src
+
 *** Frame sizing
+
 It's nice to control the size of new frames, when launching Emacs that can be
 done with src_shell{emacs -geometry 160x48}. After the font size adjustment
 during initialisation this works out to be ~102x31~.
@@ -374,7 +391,9 @@ default to be something roughly 80% of that size.
 (add-to-list 'default-frame-alist '(height . 24))
 (add-to-list 'default-frame-alist '(width . 80))
 #+end_src
+
 *** Auto-customisations
+
 By default changes made via a customisation interface are added to =init.el=.
 I prefer the idea of using a separate file for this. We just need to change a
 setting, and load it if it exists.
@@ -383,7 +402,9 @@ setting, and load it if it exists.
 (when (file-exists-p custom-file)
   (load custom-file))
 #+end_src
+
 *** Windows
+
 I find it rather handy to be asked which buffer I want to see after splitting
 the window. Let's make that happen.
 
@@ -420,18 +441,22 @@ navigation/swapping commands.
       "C-<up>"         #'+evil/window-move-up
       "C-<right>"      #'+evil/window-move-right)
 #+end_src
+
 *** Buffer defaults
+
 I'd much rather have my new buffers in ~org-mode~ than ~fundamental-mode~, hence
 #+begin_src emacs-lisp
 ;; (setq-default major-mode 'org-mode)
 #+end_src
 For some reason this + the mixed pitch hook causes issues with hydra and so I'll
 just need to resort to =SPC b o= for now.
+
 ** Doom configuration
 *** Modules
 :PROPERTIES:
 :header-args:emacs-lisp: :tangle no
 :END:
+
 Doom has this lovely /modular configuration base/ that takes a lot of work out of
 configuring Emacs. Each module (when enabled) can provide a list of packages to
 install (on ~doom sync~) and configuration to be applied. The modules can also
@@ -487,6 +512,7 @@ have flags applied to tweak their behaviour.
 #+end_src
 
 **** Structure
+
 As you may have noticed by this point, this is a [[https://en.wikipedia.org/wiki/Literate_programming][literate]] configuration. Doom
 has good support for this which we access though the ~literate~ module.
 
@@ -500,6 +526,7 @@ literate
 #+end_src
 
 **** Interface
+
 There's a lot that can be done to enhance Emacs' capabilities.
 I reckon enabling half the modules Doom provides should do it.
 
@@ -621,6 +648,7 @@ tty                          ; improve the terminal Emacs experience
 #+end_src
 
 **** Language support
+
 We can be rather liberal with enabling support for languages as the associated
 packages/configuration are (usually) only loaded when first opening an
 associated file.
@@ -713,6 +741,7 @@ yaml                         ; JSON, but readable
 #+end_src
 
 **** Everything in Emacs
+
 It's just too convenient being able to have everything in Emacs.
 I couldn't resist the Email and Feed modules.
 
@@ -735,6 +764,7 @@ irc                          ; how neckbeards socialize
 
 *** Visual Settings
 **** Font Face
+
 'Fira Code' is nice, and 'Overpass' makes for a nice sans companion. We just need to
 fiddle with the font sizes a tad so that they visually match. Just for fun I'm
 trying out JetBrains Mono though. So far I have mixed feelings on it, some
@@ -834,6 +864,7 @@ thus not worth noting in the modeline. So, let's conditionally hide it.
 #+end_src
 
 **** Miscellaneous
+
 Relative line numbers are fantastic for knowing how far away line numbers are,
 then =ESC 12 <UP>= gets you exactly where you think.
 #+begin_src emacs-lisp
@@ -847,6 +878,7 @@ I'd like some slightly nicer default buffer names
 #+end_src
 
 *** Some helper macros
+
 There are a few handy macros added by doom, namely
 - ~load!~ for loading external ~.el~ files relative to this one
 - ~use-package!~ for configuring packages
@@ -875,6 +907,7 @@ avoid polluting the output.
 
 (advice-add 'org-babel-execute-src-block :around #'doom-shut-up-a)
 #+end_src
+
 *** Elisp REPL
 
 I think an elisp REPL sounds like a fun idea, even if not a particularly useful
@@ -1061,11 +1094,14 @@ Now that the dashboard is so convenient, I'll want to make it easier to get to.
 ** Other things
 *** Editor interaction
 **** Mouse buttons
+
 #+begin_src emacs-lisp
 (map! :n [mouse-8] #'better-jumper-jump-backward
       :n [mouse-9] #'better-jumper-jump-forward)
 #+end_src
+
 *** Window title
+
 I'd like to have just the buffer name, then if applicable the project folder
 #+begin_src emacs-lisp
 (setq frame-title-format
@@ -1084,7 +1120,9 @@ I'd like to have just the buffer name, then if applicable the project folder
 
 For example when I open my config file it the window will be titled =config.org ●
 doom= then as soon as I make a change it will become =config.org ◉ doom=.
+
 *** Splash screen
+
 Emacs can render an image as the splash screen, and [[https://github.com/MarioRicalde][@MarioRicalde]] came up with a
 cracker! He's also provided me with a nice Emacs-style /E/. I was using the
 blackhole image, but as I've stripped down the splash screen I've switched to
@@ -1332,6 +1370,7 @@ something simple.
 #+end_src
 
 *** Systemd daemon
+
 For running a systemd service for a Emacs server I have the following
 #+name: emacsclient service
 #+begin_src systemd :tangle ~/.config/systemd/user/emacs.service :mkdirp yes
@@ -1408,7 +1447,9 @@ I prefer the dashboard, so let's ensure that's always switched to in new frames.
     (unless (string-match-p "\\*draft\\|\\*stdin\\|emacs-everywhere" (buffer-name))
       (switch-to-buffer +doom-dashboard-name))))
 #+end_src
+
 *** Emacs client wrapper
+
 I frequently want to make use of Emacs while in a terminal emulator. To make
 this easier, I can construct a few handy aliases.
 
@@ -1505,6 +1546,7 @@ alias m='e --eval "(progn (magit-status) (delete-other-windows))"'
 alias mt="m -t"
 alias et="e -t"
 #+end_src
+
 *** Prompt to run setup script
 
 At various points in this config, content is conditionally tangled to
@@ -1543,6 +1585,7 @@ anything to be run.
 :PROPERTIES:
 :header-args:emacs-lisp: :tangle no
 :END:
+
 This is where you install packages, by declaring them with the ~package!~ macro in
 =packages.el=, then running ~doom refresh~ on the command line.
 This file shouldn't be byte compiled.
@@ -1557,12 +1600,14 @@ run =M-x doom/reload=.
 Doom requires these, and disabling them may have terrible side effects.
 
 *** Packages in MELPA/ELPA/emacsmirror
+
 To install ~some-package~ from MELPA, ELPA or emacsmirror:
 #+begin_src emacs-lisp
 (package! some-package)
 #+end_src
 
 *** Packages from git repositories
+
 To install a package directly from a particular repo, you'll need to specify
 a ~:recipe~. You'll find documentation on what ~:recipe~ accepts [[https://github.com/raxod502/straight.el#the-recipe-format][here]]:
 #+begin_src emacs-lisp
@@ -1580,6 +1625,7 @@ file, or is located in a subdirectory of the repo, you'll need to specify
 #+end_src
 
 *** Disabling built-in packages
+
 If you'd like to disable a package included with Doom, for whatever reason,
 you can do so here with the ~:disable~ property:
 #+begin_src emacs-lisp
@@ -1597,8 +1643,10 @@ Specify a ~:branch~ to install a package from a particular branch or tag.
 #+begin_src emacs-lisp
 (package! builtin-package :recipe (:branch "develop"))
 #+end_src
+
 ** Convenience
 *** Avy
+
 #+begin_quote
 From the =:config default= module.
 #+end_quote
@@ -1614,6 +1662,7 @@ home-row for jumping. Very convenient ... except I'm using Colemak.
 #+end_src
 
 *** Rotate (window management)
+
 The =rotate= package just adds the ability to rotate window layouts, but that
 sounds nice to me.
 
@@ -1622,6 +1671,7 @@ sounds nice to me.
 #+end_src
 
 *** Emacs Everywhere
+
 The name says it all. It's loaded and set up (a bit) by =:app everywhere=, however
 as I develop this I want the unpinned version I have as a submodule.
 
@@ -1652,7 +1702,9 @@ Doom module.
   (defun emacs-everywhere-raise-frame-1 ()
     (call-process "wmctrl" nil nil nil "-a" emacs-everywhere-frame-name)))
 #+end_src
+
 *** Which-key
+
 #+begin_quote
 From the =:core packages= module.
 #+end_quote
@@ -1679,6 +1731,7 @@ let's change that, and do a few other similar tweaks while we're at it.
 
 ** Tools
 *** Abbrev
+
 Thanks to [[https://emacs.stackexchange.com/questions/45462/use-a-single-abbrev-table-for-multiple-modes/45476#45476][use a single abbrev-table for multiple modes? - Emacs Stack Exchange]] I
 have the following.
 #+begin_src emacs-lisp :tangle no
@@ -1704,6 +1757,7 @@ To make VLF available without delaying startup, we'll just load it in quiet mome
 #+end_src
 
 *** Eros
+
 #+begin_quote
 From the =:tools eval= module.
 #+end_quote
@@ -1715,6 +1769,7 @@ could be slightly nicer though.
 #+end_src
 
 *** EVIL
+
 #+begin_quote
 From the =:editor evil= module.
 #+end_quote
@@ -1743,6 +1798,7 @@ the mode on startup, let's prevent installation of the package.
 #+end_src
 
 *** Consult
+
 #+begin_quote
 From the =:completion vertico= module.
 #+end_quote
@@ -1757,6 +1813,7 @@ already clear, and there's no need for a different face.
 #+end_src
 
 *** Magit
+
 #+begin_quote
 From the =:tools magit= module.
 #+end_quote
@@ -1859,7 +1916,7 @@ cargo install git-delta
 
 Now we can make use of the package for this.
 #+begin_src emacs-lisp :tangle packages.el
-;; (package! magit-delta :recipe (:host github :repo "dandavison/magit-delta") :pin "56cdffd377279589aa0cb1df99455c098f1848cf")
+;; (package! magit-delta :recipe (:host github :repo "dandavison/magit-delta") :pin "5fc7dbddcfacfe46d3fd876172ad02a9ab6ac616")
 #+end_src
 
 All that's left is to hook it into magit
@@ -1904,6 +1961,7 @@ For repeated operations, a hydra would be helpful. But I prefer transient.
 #+end_src
 
 *** Company
+
 #+begin_quote
 From the =:completion company= module.
 #+end_quote
@@ -1923,7 +1981,9 @@ let's improve that memory.
 (setq-default history-length 1000)
 (setq-default prescient-history-length 1000)
 #+end_src
+
 **** Plain Text
+
 ~Ispell~ is nice, let's have it in ~text~, ~markdown~, and ~GFM~.
 #+begin_src emacs-lisp
 (set-company-backend!
@@ -1936,12 +1996,16 @@ let's improve that memory.
     company-yasnippet))
 #+end_src
 We then configure the dictionary we're using in [[*Ispell][Ispell]].
+
 **** ESS
+
 ~company-dabbrev-code~ is nice. Let's have it.
 #+begin_src emacs-lisp
 (set-company-backend! 'ess-r-mode '(company-R-args company-R-objects company-dabbrev-code :separate))
 #+end_src
+
 *** Projectile
+
 #+begin_quote
 From the =:core packages= module.
 #+end_quote
@@ -1957,6 +2021,7 @@ add package src directories to projectile. This isn't desirable in my opinion.
 
 *** Ispell
 **** Downloading dictionaries
+
 Let's get a nice big dictionary from [[http://app.aspell.net/create][SCOWL Custom List/Dictionary Creator]] with
 the following configuration
 - size :: 80 (huge)
@@ -1966,6 +2031,7 @@ the following configuration
 - extra lists :: hacker, roman numerals
 
 ***** Hunspell
+
 #+begin_src shell :tangle (if (file-exists-p "/usr/share/myspell/en-custom.dic") "no" "setup.sh")
 cd /tmp
 curl -o "hunspell-en-custom.zip" 'http://app.aspell.net/create?max_size=80&spelling=GBs&spelling=AU&max_variant=0&diacritic=keep&special=hacker&special=roman-numerals&encoding=utf-8&format=inline&download=hunspell'
@@ -1974,7 +2040,9 @@ unzip "hunspell-en-custom.zip"
 sudo chown root:root en-custom.*
 sudo mv en-custom.{aff,dic} /usr/share/myspell/
 #+end_src
+
 ***** Aspell
+
 #+begin_src shell :tangle (if (file-expand-wildcards "/usr/lib64/aspell*/en-custom.multi") "no" "setup.sh")
 cd /tmp
 curl -o "aspell6-en-custom.tar.bz2" 'http://app.aspell.net/create?max_size=80&spelling=GBs&spelling=AU&max_variant=0&diacritic=keep&special=hacker&special=roman-numerals&encoding=utf-8&format=inline&download=aspell'
@@ -1983,7 +2051,9 @@ tar -xjf "aspell6-en-custom.tar.bz2"
 cd aspell6-en-custom
 ./configure && make && sudo make install
 #+end_src
+
 **** Configuration
+
 #+begin_src emacs-lisp
 (setq ispell-dictionary "en-custom")
 #+end_src
@@ -1997,6 +2067,7 @@ nearby (also means that if I change the 'main' dictionary I keep my addition).
 #+begin_src emacs-lisp
 (setq ispell-personal-dictionary (expand-file-name ".ispell_personal" doom-private-dir))
 #+end_src
+
 *** TRAMP
 
 Another lovely Emacs feature, TRAMP stands for /Transparent Remote Access,
@@ -2016,9 +2087,11 @@ prompt recognition.
 #+end_src
 
 **** Troubleshooting
+
 In case the remote shell is misbehaving, here are some things to try
 
 ***** Zsh
+
 There are some escape code you don't want, let's make it behave more considerately.
 #+begin_src shell :eval no :tangle no
 if [[ "$TERM" == "dumb" ]]; then
@@ -2041,6 +2114,7 @@ That's no problem though, we just need to help TRAMP find them.
               "/run/current-system/profile/bin"
               "/run/current-system/profile/sbin")))
 #+end_src
+
 *** Auto activating snippets
 
 Sometimes pressing =TAB= is just too much.
@@ -2091,6 +2165,7 @@ investigation.
 #+end_src
 
 *** YASnippet
+
 #+begin_quote
 From the =:editor snippets= module.
 #+end_quote
@@ -2136,7 +2211,9 @@ For when you want to change the case pattern for a symbol.
       (setq evil-repeat-info '([?g ?~])))
     (define-key evil-normal-state-map (kbd "g~") 'evil-operator-string-inflection)))
 #+end_src
+
 *** Smart parentheses
+
 #+begin_quote
 From the =:core packages= module.
 #+end_quote
@@ -2151,6 +2228,7 @@ From the =:core packages= module.
 
 ** Visuals
 *** Info colours
+
 This makes manual pages nicer to look at by adding variable pitch fontification
 and colouring 🙂.
 
@@ -2174,6 +2252,7 @@ To use this we'll just hook it into =Info=.
 [[https://tecosaur.com/lfs/emacs-config/screenshots/info-coloured.png]]
 
 *** Modus themes
+
 Proteolas did a lovely job with the Modus themes, so much so that they were
 welcomed into Emacs 28. However, he is also rather attentive with updates, and
 so I'd like to make sure we have a recent version.
@@ -2228,6 +2307,7 @@ lightened versions --- let's do that.
 #+end_src
 
 *** Emojify
+
 #+begin_quote
 From the =:ui emoji= module.
 #+end_quote
@@ -2295,7 +2375,9 @@ Email and IRC.
 #+begin_src emacs-lisp
 (add-hook! '(mu4e-compose-mode org-msg-edit-mode circe-channel-mode) (emoticon-to-emoji 1))
 #+end_src
+
 *** Doom modeline
+
 #+begin_quote
 From the =:ui modeline= module.
 #+end_quote
@@ -2348,6 +2430,7 @@ icon. Then we'll redefine two functions used to generate the modeline.
     '(bar window-number pdf-pages pdf-icon buffer-name)
     '(misc-info matches major-mode process vcs)))
 #+end_src
+
 *** Keycast
 
 For some reason, I find myself demoing Emacs every now and then. Showing what
@@ -2425,7 +2508,9 @@ theme.
   (gif-screencast-write-colormap)
   (add-hook 'doom-load-theme-hook #'gif-screencast-write-colormap))
 #+end_src
+
 *** Mixed pitch
+
 #+begin_quote
 From the =:ui zen= module.
 #+end_quote
@@ -2487,7 +2572,9 @@ Thankfully, it isn't to hard to add these to the ~composition-function-table~.
 (set-char-table-range composition-function-table ?f '(["\\(?:ff?[fijlt]\\)" 0 font-shape-gstring]))
 (set-char-table-range composition-function-table ?T '(["\\(?:Th\\)" 0 font-shape-gstring]))
 #+end_src
+
 *** Marginalia
+
 #+begin_quote
 Part of the =:completion vertico= module.
 #+end_quote
@@ -2541,7 +2628,9 @@ shadow)=, but I don't like that.
                     (doom-blend 'red 'orange (- size-index 1)))))
       (propertize (file-size-human-readable size) 'face (list :foreground color)))))
 #+end_src
+
 *** Centaur Tabs
+
 #+begin_quote
 From the =:ui tabs= module.
 #+end_quote
@@ -2570,6 +2659,7 @@ well somehow, so let's switch to 'P22 Underground Book'; it looks much nicer.
 #+end_src
 
 *** All the icons
+
 #+begin_quote
 From the =:core packages= module.
 #+end_quote
@@ -2605,7 +2695,9 @@ these as horizontal rules.
         :desc "Prev page break" :nv "[" #'backward-page
         :desc "Next page break" :nv "]" #'forward-page))
 #+end_src
+
 *** Writeroom
+
 #+begin_quote
 From the =:ui zen= module.
 #+end_quote
@@ -2678,6 +2770,7 @@ tweaks. Namely:
 [[https://tecosaur.com/lfs/emacs-config/screenshots/writeroom-and-org.png]]
 
 *** Treemacs
+
 #+begin_quote
 From the =:ui treemacs= module.
 #+end_quote
@@ -2737,8 +2830,10 @@ Now, we just identify the files in question.
         "*/_region_.log"
         "*/_region_.tex"))
 #+end_src
+
 ** Frivolities
 *** xkcd
+
 XKCD comics are fun.
 #+begin_src emacs-lisp :tangle packages.el
 (package! xkcd :pin "688d0b4ea234adda0c05784e6bb22ab9d71f0884")
@@ -3124,6 +3219,7 @@ Now we just need to load it appropriately.
 #+end_src
 
 *** Systemd
+
 For editing systemd unit files
 #+begin_src emacs-lisp :tangle packages.el
 (package! systemd :pin "b6ae63a236605b1c5e1069f7d3afe06ae32a7bae")
@@ -3136,6 +3232,7 @@ For editing systemd unit files
 
 * Applications
 ** Ebooks
+
 [[xkcd:548]]
 
 For managing my ebooks, I'll hook into the well-established ebook library
@@ -3295,7 +3392,9 @@ Then, to actually read the ebooks we use =nov=.
 
   (add-hook 'nov-mode-hook #'+nov-mode-setup))
 #+end_src
+
 ** Calculator
+
 Emacs includes the venerable =calc=, which is a pretty impressive RPN (Reverse
 Polish Notation) calculator. However, we can do a bit to improve the experience.
 
@@ -3365,6 +3464,7 @@ everyone else!?
     (let ((default-directory (file-name-directory calctex-dvichop-bin)))
       (call-process "make" nil nil nil))))
 #+end_src
+
 *** Embedded calc
 
 Embedded calc is a lovely feature which let's us use calc to operate on LaTeX
@@ -3422,7 +3522,9 @@ panel.
       (switch-to-buffer "*Calculator*")
       (select-window main-window))))
 #+end_src
+
 ** IRC
+
 =circe= is a client for IRC in Emacs (hey, isn't that a nice project
 name+acronym), and a greek enchantress who turned humans into animals.
 
@@ -3523,6 +3625,7 @@ configuration tweaks.
 #+end_src
 
 *** Org-style emphasis
+
 Let's do our *bold*, /italic/, and _underline_ in org-syntax, using IRC control characters.
 #+name: org-emph-to-irc
 #+begin_src emacs-lisp
@@ -3543,7 +3646,9 @@ Let's do our *bold*, /italic/, and _underline_ in org-syntax, using IRC control 
 
 (add-hook 'lui-pre-input-hook #'lui-org-to-irc)
 #+end_src
+
 *** Emojis
+
 Let's setup Circe to use some emojis
 #+name: circe-emojis
 #+begin_src emacs-lisp :tangle no
@@ -3710,7 +3815,9 @@ Now, some actual emojis to use.
     (":|"   . "neutral")
     (":-|"  . "expressionless")))
 #+end_src
+
 ** Newsfeed
+
 RSS feeds are still a thing. Why not make use of them with =elfeed=.
 I really like what [[https://github.com/fuxialexander/doom-emacs-private-xfu/tree/master/modules/app/rss][fuxialexander]] has going on, but I don't think I need a custom
 module. Let's just try to patch on the main things I like the look of.
@@ -3719,6 +3826,7 @@ module. Let's just try to patch on the main things I like the look of.
 [[https://tecosaur.com/lfs/emacs-config/screenshots/elfeed.png]]
 
 *** Keybindings
+
 #+begin_src emacs-lisp
 (map! :map elfeed-search-mode-map
       :after elfeed-search
@@ -3753,7 +3861,9 @@ module. Let's just try to patch on the main things I like the look of.
       :nm "s" #'elfeed-show-new-live-search
       :nm "y" #'elfeed-show-yank)
 #+end_src
+
 *** Usability enhancements
+
 #+begin_src emacs-lisp
 (after! elfeed-search
   (set-evil-initial-state! 'elfeed-search-mode 'normal))
@@ -3764,7 +3874,9 @@ module. Let's just try to patch on the main things I like the look of.
   (push 'elfeed-show-mode   evil-snipe-disabled-modes)
   (push 'elfeed-search-mode evil-snipe-disabled-modes))
 #+end_src
+
 *** Visual enhancements
+
 #+begin_src emacs-lisp
 (after! elfeed
 
@@ -3880,7 +3992,9 @@ module. Let's just try to patch on the main things I like the look of.
 
   )
 #+end_src
+
 *** Functionality enhancements
+
 #+begin_src emacs-lisp
 (after! elfeed-show
   (require 'url)
@@ -3927,7 +4041,9 @@ module. Let's just try to patch on the main things I like the look of.
 
   )
 #+end_src
+
 ** Dictionary
+
 Doom already loads =define-word=, and provides it's own definition service using
 [[https://github.com/gromnitsky/wordnut][wordnut]]. However, using an offline dictionary possess a few compelling
 advantages, namely:
@@ -4004,9 +4120,11 @@ fi
 #+end_src
 
 ** Mail
+
 [[xkcd:1467]]
 
 *** Fetching
+
 The contenders for this seem to be:
 + [[https://www.offlineimap.org/][OfflineIMAP]] ([[https://wiki.archlinux.org/index.php/OfflineIMAP][ArchWiki page]])
 + [[http://isync.sourceforge.net/mbsync.html][isync/mbsync]] ([[https://wiki.archlinux.org/index.php/isync][ArchWiki page]])
@@ -4053,6 +4171,7 @@ Here's the general plan:
 Let's start off by handling the elisp side of things
 
 **** Rebuild mail index while using mu4e
+
 #+begin_src emacs-lisp
 (after! mu4e
   (defvar mu4e-reindex-request-file "/tmp/mu_reindex_now"
@@ -4108,6 +4227,7 @@ Prevents a series of redisplays from being called (when set to an appropriate va
 #+end_src
 
 **** Config transcoding & service management
+
 As long as the =mbsyncrc= file exists, this is as easy as running
 #+begin_src shell :tangle (if (and (executable-find "mu") (not (file-exists-p "~/.config/imapnotify"))) "setup.sh" "no")
 ~/.config/doom/misc/mbsync-imapnotify.py
@@ -4485,6 +4605,7 @@ if __name__ == "__main__":
 #+end_src
 
 **** Systemd
+
 We then have a service file to run ~goimapnotify~ on all of these generated config files.
 We'll use a template service file so we can enable a unit per-account.
 #+begin_src systemd :tangle ~/.config/systemd/user/goimapnotify@.service
@@ -4544,7 +4665,9 @@ Enabling (and starting) this is as simple as
 #+begin_src shell :tangle (if (or (not (executable-find "mu")) (string= "enabled\n" (shell-command-to-string "systemctl --user is-enabled mbsync.timer"))) "no" "setup.sh")
 systemctl --user enable mbsync.timer --now
 #+end_src
+
 *** Indexing/Searching
+
 This is performed by [[https://www.djcbsoftware.nl/code/mu/][Mu]]. This is a tool for finding emails stored in the [[http://en.wikipedia.org/wiki/Maildir][Maildir]] format.
 According to the homepage, it's main features are
 + Fast indexing
@@ -4579,7 +4702,9 @@ mu --version | head -n 1 | sed 's/.* version //'
 #+results:
 | 1.4.6 |
 | 1.4.6 |
+
 *** Sending
+
 [[https://www.nongnu.org/smtpmail/][SmtpMail]] seems to be the 'default' starting point, but that's not packaged for
 me. [[https://marlam.de/msmtp/][msmtp]] is however, so I'll give that a shot. Reading around a bit (googling
 "msmtp vs sendmail" for example) almost every comparison mentioned seems to
@@ -4593,6 +4718,7 @@ suggest msmtp to be a better choice. I have seen the following points raised
 The config file is [[file:~/.config/msmtp/config][~/.config/msmtp/config]].
 
 **** System hackery
+
 Unfortunately, I seem to have run into a [[https://bugs.archlinux.org/task/44994][bug]] present in my packaged version, so
 we'll just install the latest from source.
 
@@ -4683,6 +4809,7 @@ Let's also just shove all the Elisp code here in an src_elisp{(after! ...)} bloc
 #+end_src
 
 **** Viewing Mail
+
 There seem to be some advantages with using Gnus' article view (such as inline
 images), and judging from [[https://github.com/djcb/mu/pull/1442#issuecomment-591695814][djcb/mu!1442 (comment)]] this seems to be the 'way of
 the future' for mu4e.
@@ -4724,7 +4851,9 @@ We'll also use a nicer alert icon
 #+begin_src emacs-lisp
 (setq mu4e-alert-icon "/usr/share/icons/Papirus/64x64/apps/evolution.svg")
 #+end_src
+
 **** Sending Mail
+
 Let's send emails too.
 #+begin_src emacs-lisp
 (setq sendmail-program "/usr/bin/msmtp"
@@ -4819,6 +4948,7 @@ We can also use this a signature,
 #+begin_src emacs-lisp
 (setq message-signature mu4e-from-name)
 #+end_src
+
 **** Working with the Org mailing list
 ***** Adding =X-Woof= headers
 
@@ -5022,6 +5152,7 @@ to the archive to refer to an earlier email) I'd much rather look at it in mu4e.
 #+end_src
 
 *** Org Msg
+
 Doom does a fantastic stuff with the defaults with this, so we only make a few
 minor tweaks.
 #+begin_src emacs-lisp
@@ -5032,9 +5163,11 @@ minor tweaks.
       :after org-msg
       :n "G" #'org-msg-goto-body)
 #+end_src
+
 * Language configuration
 ** General
 *** File Templates
+
 For some file types, we overwrite defaults in the [[file:./snippets][snippets]] directory, others
 need to have a template assigned.
 #+begin_src emacs-lisp
@@ -5042,7 +5175,9 @@ need to have a template assigned.
 (set-file-template! "\\.org$" :trigger "__" :mode 'org-mode)
 (set-file-template! "/LICEN[CS]E$" :trigger '+file-templates/insert-license)
 #+end_src
+
 ** Plaintext
+
 It's nice to see ANSI colour codes displayed. However, until Emacs 28 it's not
 possible to do this without modifying the buffer, so let's condition this block
 on that.
@@ -5053,11 +5188,13 @@ on that.
              (with-silent-modifications
                (ansi-color-apply-on-region (point-min) (point-max) t))))
 #+end_src
+
 ** Org
 :PROPERTIES:
 :CUSTOM_ID: org
 :header-args:emacs-lisp: :tangle no :noweb-ref org-conf
 :END:
+
 :intro:
 I really like org mode, I've given some thought to why, and below is the result.
 
@@ -5127,8 +5264,10 @@ in an src_elisp{(after! ...)} block.
   <<org-conf>>
 )
 #+end_src
+
 *** System config
 **** Mime types
+
 Org mode isn't recognised as it's own mime type by default, but that can easily
 be changed with the following file. For system-wide changes try
 ~/usr/share/mime/packages/org.xml~.
@@ -5150,7 +5289,9 @@ Then set Emacs as the default editor
 #+begin_src shell :tangle (if (string= (shell-command-to-string "xdg-mime query default text/org") "emacs-client.desktop\n") "no" "setup.sh")
 xdg-mime default emacs.desktop text/org
 #+end_src
+
 **** Git diffs
+
 Protesilaos wrote a [[https://protesilaos.com/codelog/2021-01-26-git-diff-hunk-elisp-org/][very helpful article]] in which he explains how to change the
 git diff chunk heading to something more useful than just the immediate line
 above the hunk --- like the parent heading.
@@ -5170,7 +5311,9 @@ Then adding a regex for it to =~/.config/git/config=
 :PROPERTIES:
 :header-args:emacs-lisp: :tangle packages.el :comments no
 :END:
+
 ****  Org itself
+
 There are actually three possible package statements I may want to use for Org.
 
 If I'm on a machine where I can push changes, I want to be able to develop Org.
@@ -5307,6 +5450,7 @@ spell-check face ignore list
 #+end_src
 
 ***** Emphasis markers
+
 While ~org-hide-emphasis-markers~ is very nice, it can sometimes make edits which
 occur at the border a bit more fiddley. We can improve this situation without
 sacrificing visual amenities with the =org-appear= package.
@@ -5328,6 +5472,7 @@ sacrificing visual amenities with the =org-appear= package.
 #+end_src
 
 ***** Heading structure
+
 Speaking of headlines, a nice package for viewing and managing the heading
 structure has come to my attention.
 #+begin_src emacs-lisp
@@ -5354,7 +5499,9 @@ recognising the pgtk window system]].
 
 **** Extra functionality
 
+
 ***** Julia support
+
 =ob-julia= is currently a bit borked, but there's an effort to improve this.
 #+begin_src emacs-lisp
 (package! ob-julia :recipe (:local-repo "lisp/ob-julia" :files ("*.el" "julia")))
@@ -5373,6 +5520,7 @@ recognising the pgtk window system]].
           ,(number-to-string (- (doom-system-cpus) 2))
           "--banner=no")))
 #+end_src
+
 ***** HTTP requests
 
 I like the idea of being able to make HTTP requests with Babel.
@@ -5386,6 +5534,7 @@ I like the idea of being able to make HTTP requests with Babel.
 #+end_src
 
 ***** Transclusion
+
 There's a really cool package in development to /transclude/ Org document content.
 #+begin_src emacs-lisp
 (package! org-transclusion :recipe (:host github :repo "nobiot/org-transclusion")
@@ -5401,12 +5550,14 @@ There's a really cool package in development to /transclude/ Org document conten
 #+end_src
 
 ***** Heading graph
+
 Came across this and ... it's cool
 #+begin_src emacs-lisp
 (package! org-graph-view :recipe (:host github :repo "alphapapa/org-graph-view") :pin "233c6708c1f37fc60604de49ca192497aef39757")
 #+end_src
 
 ***** Cooking recipes
+
 I *need* this in my life. It take a URL to a recipe from a common site, and
 inserts an org-ified version at point. Isn't that just great.
 #+begin_src emacs-lisp
@@ -5446,6 +5597,7 @@ to make that right again, and this package makes that even easier to do.
 #+end_src
 
 ***** Document comparison
+
 It's quite nice to compare Org files, and the richest way to compare content is
 probably =latexdiff=. There are a few annoying steps involved here, and so I've
 written a package to streamline the process.
@@ -5480,6 +5632,7 @@ post-processing the =latexdiff= result.
 #+end_src
 
 ***** Org music
+
 It's nice to be able to link to music
 #+begin_src emacs-lisp
 (package! org-music :recipe (:local-repo "lisp/org-music"))
@@ -5494,8 +5647,11 @@ It's nice to be able to link to music
 #+end_src
 
 *** Behaviour
+
 [[xkcd:1319]]
+
 **** Tweaking defaults
+
 #+begin_src emacs-lisp
 (setq org-directory "~/.org"                      ; let's put files here
       org-use-property-inheritance t              ; it's convenient to have properties inherited
@@ -5536,8 +5692,10 @@ There also seem to be a few keybindings which use =hjkl=, but miss arrow key equ
       :n "g <left>" #'org-up-element
       :n "g <right>" #'org-down-element)
 #+end_src
+
 **** Extra functionality
 ***** Org buffer creation
+
 Let's also make creating an org buffer just that little bit easier.
 #+begin_src emacs-lisp :tangle yes :noweb-ref none
 (evil-define-command evil-buffer-org-new (count file)
@@ -5555,7 +5713,9 @@ Let's also make creating an org buffer just that little bit easier.
       (:prefix "b"
        :desc "New empty ORG buffer" "o" #'evil-buffer-org-new))
 #+end_src
+
 ***** The utility of zero-width spaces
+
 Occasionally in Org you run into annoyances where you want to have two seperate
 blocks right together without a space. For example, to *emp​h*​asise part of a word,
 or put a currency symbol immediately before an inline source block.
@@ -5578,11 +5738,14 @@ with a little filter.
 (after! ox
   (add-to-list 'org-export-filter-final-output-functions #'+org-export-remove-zero-width-space t))
 #+end_src
+
 ***** List bullet sequence
+
 I think it makes sense to have list bullets change with depth
 #+begin_src emacs-lisp
 (setq org-list-demote-modify-bullet '(("+" . "-") ("-" . "+") ("*" . "+") ("1." . "a.")))
 #+end_src
+
 ***** Easier file links
 
 While ~org-insert-link~ is all very well and good, a large portion of the time I
@@ -5609,6 +5772,7 @@ Now we'll just add that under the Org mode link localleader for convenience.
 #+end_src
 
 ***** Citation
+
 Occasionally I want to cite something, and =org-ref= is /the/ package for that.
 
 Unfortunately, it ignores the ~file = {...}~ =.bib= keys though. Let's fix that.
@@ -5766,6 +5930,7 @@ I think it would be nice to have a function to convert =org-ref= citations to
 #+end_src
 
 ***** cdlatex
+
 It's also nice to be able to use ~cdlatex~.
 #+begin_src emacs-lisp
 (add-hook 'org-mode-hook 'turn-on-org-cdlatex)
@@ -5783,6 +5948,7 @@ At some point in the future it could be good to investigate [[https://scripter.c
 Likewise [[https://archive.casouri.cat/note/2020/insert-math-symbol-in-emacs/][this]] looks good for symbols.
 
 ***** LSP support in ~src~ blocks
+
 Now, by default, LSPs don't really function at all in ~src~ blocks.
 #+begin_src emacs-lisp
 (cl-defmacro lsp-org-babel-enable (lang)
@@ -5814,7 +5980,9 @@ Now, by default, LSPs don't really function at all in ~src~ blocks.
 (dolist (lang org-babel-lang-list)
   (eval `(lsp-org-babel-enable ,lang)))
 #+end_src
+
 ***** View exported file
+
 ='localeader v= has no pre-existing binding, so I may as well use it with the same
 functionality as in LaTeX. Let's try viewing possible output files with this.
 #+begin_src emacs-lisp
@@ -5846,6 +6014,7 @@ functionality as in LaTeX. Let's try viewing possible output files with this.
 (defvar org-view-external-file-extensions '("html")
   "File formats that should be opened externally.")
 #+end_src
+
 **** Super agenda
 
 The agenda is nice, but a souped up version is nicer.
@@ -5929,7 +6098,9 @@ The agenda is nice, but a souped up version is nicer.
                            :order 90)
                           (:discard (:tag ("Chore" "Routine" "Daily")))))))))))
 #+end_src
+
 **** Capture
+
 Let's setup some org-capture templates, and make them visually nice to access.
 
 #+attr_html: :class invertible :alt My org-capture dialouge.
@@ -6229,8 +6400,10 @@ no modeline.
         (set-window-parameter nil 'mode-line-format 'none)
         (org-capture)))
 #+end_src
+
 **** Roam
 ***** Basic settings
+
 I'll just set this to be within =Organisation= folder for now, in the future it
 could be worth seeing if I could hook this up to a [[https://nextcloud.com/][Nextcloud]] instance.
 #+begin_src emacs-lisp :noweb-ref none :tangle yes
@@ -6243,7 +6416,9 @@ to initialise), let's not load roam.
 #+begin_src emacs-lisp :noweb-ref none :tangle (if (file-exists-p "~/Desktop/TEC/Organisation/Roam/") "no" "packages.el")
 (package! org-roam :disable t)
 #+end_src
+
 ***** Modeline file name
+
 All those numbers! It's messy. Let's adjust this in a similar way that I have in
 the [[*Window title][Window title]].
 #+begin_src emacs-lisp
@@ -6284,6 +6459,7 @@ with it.
 #+end_src
 
 **** Nicer generated heading IDs
+
 Thanks to alphapapa's [[https://github.com/alphapapa/unpackaged.el#export-to-html-with-useful-anchors][unpackaged.el]].
 
 By default, Org generated heading IDs like =#org80fc2a5= which ... works, but has
@@ -6498,7 +6674,9 @@ as returned by `org-export-new-reference'."
   :override #'org-export-format-reference
   (if (stringp reference) reference (format "org%07x" reference)))
 #+end_src
+
 **** Nicer ~org-return~
+
 Once again, from [[https://github.com/alphapapa/unpackaged.el#org-return-dwim][unpackaged.el]]
 #+begin_src emacs-lisp
 (defun unpackaged/org-element-descendant-of (type element)
@@ -6602,6 +6780,7 @@ appropriate.  In tables, insert a new row or end the table."
  :map evil-org-mode-map
  :i [return] #'unpackaged/org-return-dwim)
 #+end_src
+
 **** Snippet Helpers
 
 I often want to set =src-block= headers, and it's a pain to
@@ -6720,6 +6899,7 @@ Return nil otherwise."
 #+end_src
 
 **** Translate capital keywords (old) to lower case (new)
+
 Everyone used to use ~#+CAPITAL~ keywords. Then people realised that ~#+lowercase~
 is actually both marginally easier and visually nicer, so now the capital
 version is just used in the manual.
@@ -6746,8 +6926,10 @@ It likely misses some edge cases, but should mostly work.
           (setq count (1+ count))))
       (message "Replaced %d occurances" count))))
 #+end_src
+
 **** Extra links
 ***** xkcd
+
 Because xkcd is cool, let's make it as easy and fun as possible to insert them.
 Saving seconds adds up after all! (but only so much)
 
@@ -6798,7 +6980,9 @@ Saving seconds adds up after all! (but only so much)
 
 ***** Music
 
+
 ***** YouTube
+
 The ~[[yt:...]]~ links preview nicely, but don't export nicely. Thankfully, we can
 fix that.
 #+begin_src emacs-lisp
@@ -6814,7 +6998,9 @@ allowfullscreen>%s</iframe>" path (or "" desc)))
          (format "\\href{https://youtu.be/%s}{%s}" path (or desc "youtube")))
         (t (format "https://youtu.be/%s" path))))
 #+end_src
+
 **** Fix problematic hooks
+
 When one of the src_elisp{org-mode-hook} functions errors, it halts the hook
 execution. This is problematic, and there are two hooks in particular which
 cause issues. Let's make their failure less eventful.
@@ -6824,6 +7010,7 @@ cause issues. Let's make their failure less eventful.
   :around #'org-fancy-priorities-mode
   (ignore-errors (apply orig-fn args)))
 #+end_src
+
 **** Flycheck with org-lint
 
 Org may be simple, but that doesn't mean there's no such thing as malformed Org.
@@ -6931,6 +7118,7 @@ font changes etc, and also propagate colours from the current theme.
 [[xkcd:1882]]
 
 **** Font Display
+
 Mixed pitch is great. As is ~+org-pretty-mode~, let's use them.
 #+begin_src emacs-lisp
 (add-hook 'org-mode-hook #'+org-pretty-mode)
@@ -6988,6 +7176,7 @@ problematic beyond the expected slight delay in some fontification, so until I
 do I'll use the above.
 
 **** Fontifying inline src blocks
+
 Org does lovely things with =#+begin_src= blocks, like using font-lock for
 language's major-mode behind the scenes and pulling out the lovely colourful
 results. By contrast, inline =src_= blocks are somewhat neglected.
@@ -7101,6 +7290,7 @@ While we're at it we may as well make tags prettier as well 🙂
 
 **** LaTeX Fragments
 ***** Prettier highlighting
+
 First off, we want those fragments to look good.
 #+begin_src emacs-lisp
 (setq org-highlight-latex-and-related '(native script entities))
@@ -7121,6 +7311,7 @@ passed, and so we can override the background as discussed above.
 #+end_src
 
 ***** More eager rendering
+
 What's better than syntax-highlighted LaTeX is /rendered/ LaTeX though, and we can
 have this be performed automatically with =org-fragtog=.
 
@@ -7134,6 +7325,7 @@ have this be performed automatically with =org-fragtog=.
 #+end_src
 
 ***** Prettier rendering
+
 It's nice to customise the look of LaTeX fragments so they fit better in the
 text --- like this \(\sqrt{\beta^2+3}-\sum_{\phi=1}^\infty \frac{x^\phi-1}{\Gamma(a)}\).
 Let's start by adding a sans font. I'd also like to use some of the
@@ -7175,6 +7367,7 @@ let's make it transparent.
 #+end_src
 
 ***** Rendering speed tests
+
 We can either render from a ~dvi~ or ~pdf~ file, so let's benchmark ~latex~ and
 ~pdflatex~.
 | ~latex~ time | ~pdflatex~ time |
@@ -7205,6 +7398,7 @@ Unfortunately, it seems that SVG sizing is annoying ATM, so let's actually not d
 #+end_warning
 
 **** Stolen from [[https://github.com/jkitchin/scimax][scimax]] (semi-working right now)
+
 I want fragment justification
 #+begin_src emacs-lisp
 (defun scimax-org-latex-fragment-justify (justification)
@@ -7318,7 +7512,9 @@ There's also this lovely equation numbering stuff I'll nick
 (advice-add 'org-create-formula-image :around #'scimax-org-renumber-environment)
 (put 'scimax-org-renumber-environment 'enabled t)
 #+end_src
+
 **** Org Plot
+
 We can use some of the variables in =org-plot= to use the current doom theme
 colours.
 #+begin_src emacs-lisp
@@ -7405,6 +7601,7 @@ set palette defined ( 0 '%s',\
 
 *** Exporting
 **** General settings
+
 By default Org only exports the first three levels of headings as ... headings.
 This is rather unfortunate as my documents frequently stray far beyond three
 levels of depth. The two main formats I care about exporting to are LaTeX and
@@ -7438,6 +7635,7 @@ the creator string.
 #+end_src
 
 **** Acronym formatting
+
 I like automatically using spaced small caps for acronyms. For strings I want to
 be unaffected let's use ~;~ as a prefix to prevent the transformation --- i.e.
 ~;JFK~ (as one would want for two-letter geographic locations and names).
@@ -7525,6 +7723,7 @@ can tweak ~+org-babel-mode-alist~ when exporting.
 :PROPERTIES:
 :header-args:emacs-lisp: :noweb-ref ox-html-conf
 :END:
+
 I want to tweak a whole bunch of things. While I'll want my tweaks almost all
 the time, occasionally I may want to test how something turns out using a more
 default config. With that in mind, a global minor mode seems like the most
@@ -7560,7 +7759,9 @@ src_elisp{(after! ox-html ...)} block.
   <<ox-html-conf>>
 )
 #+end_src
+
 **** Extra header content
+
 We want to tack on a few more bits to the start of the body. Unfortunately, there
 doesn't seem to be any nice variable or hook, so we'll just override the
 relevant function.
@@ -7762,7 +7963,9 @@ Lastly, let's pile on some metadata. This gives my pages nice embeds.
   (defalias 'org-html-meta-tags-default #'ignore))
 (setq org-html-meta-tags #'org-html-meta-tags-fancy)
 #+end_src
+
 **** Custom CSS/JS
+
 The default org HTML export is ... alright, but we can really jazz it up.
 [[https://lepisma.xyz][lepisma.xyz]] has a really nice style, and from and org export too!
 Suffice to say I've snatched it, with a few of my own tweaks applied.
@@ -7796,7 +7999,9 @@ Suffice to say I've snatched it, with a few of my own tweaks applied.
     (setq org-html-style-default org-html-style-fancy)))
 (org-html-reload-fancy-style)
 #+end_src
+
 **** Collapsable src and example blocks
+
 By wrapping the ~<pre>~ element in a ~<details>~ block, we can obtain collapsable
 blocks with no CSS, though we will toss a little in anyway to have this looking
 somewhat spiffy.
@@ -7991,6 +8196,7 @@ By enabling these modes in ~htmlize-before-hook~ we can correct this behaviour.
 #+end_src
 
 **** Handle table overflow
+
 In order to accommodate wide tables ---particularly on mobile devices--- we want
 to set a maximum width and scroll overflow. Unfortunately, this cannot be applied
 directly to the ~table~ element, so we have to wrap it in a ~div~.
@@ -8018,7 +8224,9 @@ While we're at it, we can a link gutter, as we did with src blocks, and show the
                                             (funcall orig-fn table contents info))
                 (funcall orig-fn table contents info))))))
 #+end_src
+
 **** TOC as a collapsable tree
+
 The TOC is much nicer to navigate as a collapsable tree. Unfortunately we cannot
 achieve this with CSS alone. Thankfully we can avoid JS though, by adapting the
 TOC generation code to use a ~label~ for each item, and a hidden ~checkbox~ to keep
@@ -8056,7 +8264,9 @@ org provides.
     (replace-regexp-in-string "<input [^>]+><label [^>]+>\\(.+?\\)</label></li>" "\\1</li>"
                               (funcall orig-fn toc-entries))))
 #+end_src
+
 **** Make verbatim different to code
+
 Since we have =verbatim= and ~code~, let's make use of the difference.
 
 We can use ~code~ exclusively for code snippets and commands like: "calling
@@ -8076,7 +8286,9 @@ Then, styling these two cases differently can help improve clarity in a document
         (underline . "<span class=\"underline\">%s</span>")
         (verbatim . "<kbd>%s</kbd>")))
 #+end_src
+
 **** Change checkbox type
+
 We also want to use HTML checkboxes, however we want to get a bit fancier than default
 #+begin_src emacs-lisp
 (appendq! org-html-checkbox-types
@@ -8089,7 +8301,9 @@ We also want to use HTML checkboxes, however we want to get a bit fancier than d
 - [ ] I'm yet to do this
 - [-] Work in progress
 - [X] This is done
+
 **** Extra special strings
+
 The ~org-html-special-string-regexps~ variable defines substitutions for:
 + =\-=, a shy hyphen
 + =---=, an em dash
@@ -8110,6 +8324,7 @@ before this stage of output processing.
 #+end_src
 
 **** Header anchors
+
 I want to add GitHub-style links on hover for headings.
 #+begin_src emacs-lisp
 (defun org-export-html-headline-anchor (text backend info)
@@ -8125,7 +8340,9 @@ I want to add GitHub-style links on hover for headings.
 (add-to-list 'org-export-filter-headline-functions
              'org-export-html-headline-anchor)
 #+end_src
+
 **** Link previews
+
 Sometimes it's nice to make a link particularly prominent, an embed/preview like
 Twitter does would be nice I think.
 
@@ -8214,6 +8431,7 @@ Now we just need to actually implement that metadata extraction function.
 
 **** LaTeX Rendering
 ***** Pre-rendered
+
 I consider ~dvisvgm~ to be a rather compelling option. However this isn't scaled
 very well at the moment.
 #+begin_src emacs-lisp
@@ -8221,6 +8439,7 @@ very well at the moment.
 #+end_src
 
 ***** MathJax
+
 If MathJax is used, we want to use version 3 instead of the default version 2.
 Looking at a [[https://www.intmath.com/cg5/katex-mathjax-comparison.php][comparison]] we seem to find that it is ~5 times as fast, uses a
 single file instead of multiple, but seems to be a bit bigger unfortunately.
@@ -8256,8 +8475,10 @@ MathJax = {
 <script id=\"MathJax-script\" async
         src=\"%PATH\"></script>")
 #+end_src
+
 *** LaTeX Export
 **** Compiling
+
 By default Org uses ~pdflatex~ \times 3 + ~bibtex~. This simply won't do in our
 modern world. ~latexmk~ + ~biber~ (which is used automatically with ~latexmk~) is a
 simply superior combination.
@@ -8400,6 +8621,7 @@ The =hyperref= setup needs to be handled separately however.
 
 **** A cleverer preamble
 ***** Use case
+
 We often want particular snippets of LaTeX in our documents preambles.
 It's a pain to have to work out / remember them every time.
 For example, I almost always want to include the snippet below.
@@ -8882,6 +9104,7 @@ There are also some obsolete entries in the default value, specifically
         ("" "xcolor" nil) ; Generally useful
         ("" "hyperref" nil)))
 #+end_src
+
 **** Font collections
 
 Using the lovely conditional preamble, I'll define a number of font collections
@@ -9159,7 +9382,9 @@ This condition is applied when cover page option is set to auto.")
 (add-to-list 'org-latex-feature-implementations '(cover-page :snippet org-latex-cover-page-maketitle :order 9) t)
 (add-to-list 'org-latex-conditional-features '((org-latex-cover-page-p) . cover-page) t)
 #+end_src
+
 **** Condensed lists
+
 LaTeX is generally pretty good by default, but it's /really/ generous with how
 much space it puts between list items by default. I'm generally not a fan.
 
@@ -9325,6 +9550,7 @@ Now all that remains is to hook this into the preamble generation.
 #+end_src
 
 **** Emojis
+
 It would be nice to actually include emojis where used.
 Thanks to =emojify=, we have a folder of emoji images just sitting and waiting to
 be used 🙂.
@@ -9585,6 +9811,7 @@ able to handle anyway. For them we define a table of LaTeX translations
 #+begin_src emacs-lisp :noweb no-export
 <<gen-latex-non-ascii-char-substitutions()>>
 #+end_src
+
 **** Normal spaces after abbreviations
 
 In LaTeX inter-word and sentence spaces are typically of different widths. This
@@ -9622,6 +9849,7 @@ abbreviations and make the space normal.
 #+end_src
 
 **** Extra special strings
+
 LaTeX already recognises =---= and =--= as em/en-dashes, =\-= as a shy hyphen, and the
 conversion of =...= to =\ldots{}= is hardcoded into ~org-latex-plain-text~ (unlike
 ~org-html-plain-text~).
@@ -9665,6 +9893,7 @@ which I have implemented in the package =ox-chameleon=.
 #+end_src
 
 **** Make verbatim different to code
+
 Since have just gone to so much effort above let's make the most of it by making
 =verbatim= use ~verb~ instead of ~protectedtexttt~ (default).
 
@@ -9679,6 +9908,7 @@ This gives the same advantages as mentioned in the [[*Make verbatim different to
         (underline . "\\uline{%s}")
         (verbatim . verb)))
 #+end_src
+
 **** Check for required packages
 
 For how I've setup Org's LaTeX export, the following packages are needed:
@@ -9794,7 +10024,9 @@ export to a PDF.
 #+begin_src emacs-lisp :noweb no-export
 <<org-missing-latex-packages()>>
 #+end_src
+
 *** Beamer Export
+
 It's nice to use a different theme
 #+begin_src emacs-lisp
 (setq org-beamer-theme "[progressbar=foot]metropolis")
@@ -9841,6 +10073,7 @@ frame from ~1~ to ~2~.
 #+begin_src emacs-lisp
 (setq org-beamer-frame-level 2)
 #+end_src
+
 *** Reveal export
 
 By default reveal is rather nice, there are just a few tweaks that I consider a
@@ -9851,6 +10084,7 @@ good idea.
       org-re-reveal-transition "slide"
       org-re-reveal-plugins '(markdown notes math search zoom))
 #+end_src
+
 *** ASCII export
 
 To start with, why settle for ASCII when UTF-8 exists?
@@ -10000,6 +10234,7 @@ contextual information."
 #+end_src
 
 *** Babel
+
 Doom lazy-loads babel languages, with is lovely.
 It also pulls in [[https://github.com/astahlman/ob-async][ob-async]], which is nice, but it would be even better if it was
 used by default.
@@ -10046,7 +10281,9 @@ Not added when either:
       (push '(:async) (caddr result)))
     result))
 #+end_src
+
 *** ESS
+
 We don't want ~R~ evaluation to hang the editor, hence
 #+begin_src emacs-lisp
 (setq ess-eval-visibly 'nowait)
@@ -10074,9 +10311,13 @@ the language identifier, not =ess-jags=.
 #+begin_src emacs-lisp
 (add-to-list '+org-babel-mode-alist '(jags . ess-jags))
 #+end_src
+
 ** LaTeX
+
 [[xkcd:1301]]
+
 *** To-be-implemented ideas
+
 - Paste image from clipboard
   + Determine first folder in ~graphicspath~ if applicable
   + Ask for file name
@@ -10095,7 +10336,9 @@ fi
   #+end_src
   + Insert figure, with filled in details as a result (activate =yasnippet= with
     filename as variable maybe?)
+
 *** Compilation
+
 #+begin_src emacs-lisp
 (setq TeX-save-query nil
       TeX-show-compilation t
@@ -10110,8 +10353,10 @@ rather not have it default to using them, so let's re-order the preferences.
 #+begin_src emacs-lisp
 (setq +latex-viewers '(pdf-tools evince zathura okular skim sumatrapdf))
 #+end_src
+
 *** Snippet helpers
 **** Template
+
 For use in the new-file template, let's set out a nice preamble we may want to use.
 #+name: latex-nice-preamble
 #+begin_src latex :tangle no
@@ -10153,7 +10398,9 @@ Then let's bind the content to a function, and define some nice helpers.
   (if (equal tec/yas-latex-class-choice "bmc") 'nil
     (eq (read-char-choice "Include default preamble? [Type y/n]" '(?y ?n)) ?y)))
 #+end_src
+
 **** Deliminators
+
 #+begin_src emacs-lisp
 (after! tex
   (defvar tec/tex-last-delim-char nil
@@ -10213,6 +10460,7 @@ Then let's bind the content to a function, and define some nice helpers.
   (defun tec/tex-delim-yas-expand (&optional open-char)
     (yas-expand-snippet (yas-lookup-snippet "_deliminators" 'latex-mode) (point) (+ (point) (if (tec/tex-next-char-smart-close-delim open-char) 2 1)))))
 #+end_src
+
 *** Editor visuals
 
 Let's enhance ~TeX-fold-math~ a bit
@@ -10386,8 +10634,10 @@ And enable shell escape for the preview
 \\AtBeginDocument{\\ifx\\ifPreview\\undefined"
 preview-default-preamble "\\fi}\"%' \"\\detokenize{\" %t \"}\""))
 #+end_src
+
 *** Math input
 **** CDLaTeX
+
 The symbols and modifies are very nice by default, but could do with a bit of
 fleshing out. Let's change the prefix to a key which is similarly rarely used,
 but more convenient, like =;=.
@@ -10419,6 +10669,7 @@ but more convenient, like =;=.
      (?B    "\\mathbb"        nil          t    nil  nil)
      (?a    "\\abs"           nil          t    nil  nil))))
 #+end_src
+
 **** LAAS
 
 This makes use of =aas= (/Auto Activating Snippets/) for CDLaTeX-like symbol input.
@@ -10438,24 +10689,30 @@ This makes use of =aas= (/Auto Activating Snippets/) for CDLaTeX-like symbol inp
 #+end_src
 
 *** SyncTeX
+
 #+begin_src emacs-lisp
 (after! tex
   (add-to-list 'TeX-view-program-list '("Evince" "evince %o"))
   (add-to-list 'TeX-view-program-selection '(output-pdf "Evince")))
 #+end_src
+
 *** Fixes
+
 In case of Emacs28,
 #+begin_src emacs-lisp
 (when EMACS28+
   (add-hook 'latex-mode-hook #'TeX-latex-mode))
 #+end_src
+
 ** Python
+
 Since I'm using =mypyls=, as suggested in [[file:~/.emacs.d/modules/lang/python/README.org::*Language Server Protocol Support][:lang python LSP support]] I'll tweak the
 priority of =mypyls=
 #+begin_src emacs-lisp
 (after! lsp-python-ms
   (set-lsp-priority! 'mspyls 1))
 #+end_src
+
 ** PDF
 *** MuPDF
 
@@ -10517,6 +10774,7 @@ Lastly, whenever Emacs is non-graphical (i.e. a TUI), we want to use this by def
 
 ** R
 *** Editor Visuals
+
 #+begin_src emacs-lisp
 (after! ess-r-mode
   (appendq! +ligatures-extra-symbols
@@ -10542,7 +10800,9 @@ Lastly, whenever Emacs is non-graphical (i.e. a TUI), we want to use this by def
     :assign "<-"
     :multiply "%*%"))
 #+end_src
+
 ** Julia
+
 As mentioned in [[https://github.com/non-Jedi/lsp-julia/issues/35][lsp-julia#35]], =lsp-mode= seems to serve an invalid response to the
 Julia server. The pseudo-fix is rather simple at least
 #+begin_src emacs-lisp
@@ -10572,6 +10832,7 @@ Graphviz is a nice method of visualising simple graphs, based on plaintext
 (use-package! company-graphviz-dot
   :after graphviz-dot-mode)
 #+end_src
+
 ** Markdown
 
 Most of the time when I write markdown, it's going into some app/website which
@@ -10596,7 +10857,9 @@ sixth greyed out. Since the sixth level is so small, I'll turn up the boldness a
   '(markdown-header-face-5 :height 0.90 :weight bold       :inherit markdown-header-face)
   '(markdown-header-face-6 :height 0.75 :weight extra-bold :inherit markdown-header-face))
 #+end_src
+
 ** Beancount
+
 There are a number of rather compelling advantages to [[https://plaintextaccounting.org/][plain text accounting]],
 with [[https://www.ledger-cli.org/][ledger]] being the most obvious example. However, [[https://github.com/beancount/beancount][beancount]], a more recent
 implementation of the idea is ledger-compatible (meaning I can switch easily if
