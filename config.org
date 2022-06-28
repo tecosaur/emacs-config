@@ -914,8 +914,9 @@ I think an elisp REPL sounds like a fun idea, even if not a particularly useful
 one 😛. We can do this by adding a new command in =cli.el=.
 
 #+begin_src emacs-lisp :tangle cli.el
-(defcli! repl ((in-rlwrap-p ["--rl"] "For internal use only."))
+(defcli! repl ((in-rlwrap-p ("--rl") "For internal use only."))
   "Start an elisp REPL."
+  (require 'core-start)
   (when (and (executable-find "rlwrap") (not in-rlwrap-p))
     ;; For autocomplete
     (setq autocomplete-file "/tmp/doom_elisp_repl_symbols")
@@ -928,8 +929,8 @@ one 😛. We can do this by adding a new command in =cli.el=.
               (insert sym "\n"))))
         (write-region nil nil autocomplete-file)))
     (princ "\e[F")
-    (throw 'exit (list "rlwrap" "-f" autocomplete-file
-                       (concat doom-emacs-dir "bin/doom") "repl" "--rl")))
+    (exit! "rlwrap" "-f" autocomplete-file
+           (concat doom-emacs-dir "bin/doom") "repl" "--rl"))
 
   (doom-initialize-packages)
   (require 'engrave-faces-ansi)
