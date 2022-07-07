@@ -2058,6 +2058,7 @@ cd aspell6-en-custom
 #+begin_src emacs-lisp
 (setq ispell-dictionary "en-custom")
 #+end_src
+
 Oh, and by the way, if ~company-ispell-dictionary~ is ~nil~, then
 ~ispell-complete-word-dict~ is used instead, which once again when ~nil~ is
 ~ispell-alternate-dictionary~, which at the moment maps to a plaintext version of
@@ -2065,8 +2066,10 @@ the above.
 
 It seems reasonable to want to keep an eye on my personal dict, let's have it
 nearby (also means that if I change the 'main' dictionary I keep my addition).
+
 #+begin_src emacs-lisp
-(setq ispell-personal-dictionary (expand-file-name ".ispell_personal" doom-private-dir))
+(setq ispell-personal-dictionary
+      (expand-file-name "misc/ispell_personal" doom-private-dir))
 #+end_src
 
 *** TRAMP
