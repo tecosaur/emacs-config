@@ -5594,13 +5594,32 @@ to make that right again, and this package makes that even easier to do.
 
 ***** Glossaries and more
 
+For glossary-type entries, there's a nice package for this I'm developing.
+
 #+begin_src emacs-lisp
 (package! org-glossary :recipe (:local-repo "lisp/org-glossary"))
 #+end_src
 
+Other than hooking this to =org-mode=, we also want to set a collection root and
+improve the LaTeX usage references with =cleveref='s ~\labelcpageref~ command.
+
 #+begin_src emacs-lisp :tangle yes
 (use-package! org-glossary
-  :hook (org-mode . org-glossary-mode))
+  :hook (org-mode . org-glossary-mode)
+  :config
+  (setq org-glossary-collection-root "~/.config/doom/misc/glossaries/")
+  (defun +org-glossary--latex-cdef (backend info term-entry form &optional ref-index plural-p capitalized-p extra-parameters)
+    (org-glossary--export-template
+     (if (plist-get term-entry :uses)
+         "*%d*\\emsp{}%v\\ensp{}@@latex:\\labelcpageref{@@%b@@latex:}@@\n"
+       "*%d*\\emsp{}%v\n")
+     backend info term-entry ref-index
+     plural-p capitalized-p extra-parameters))
+  (org-glossary-set-export-spec
+   'latex t
+   :backref "gls-%K-use-%r"
+   :backref-seperator ","
+   :definition-structure #'+org-glossary--latex-cdef))
 #+end_src
 
 ***** Document comparison
