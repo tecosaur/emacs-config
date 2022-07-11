@@ -5679,13 +5679,13 @@ It's nice to be able to link to music
 **** Tweaking defaults
 
 #+begin_src emacs-lisp
-(setq org-directory "~/.org"                      ; let's put files here
-      org-use-property-inheritance t              ; it's convenient to have properties inherited
-      org-log-done 'time                          ; having the time a item is done sounds convenient
-      org-list-allow-alphabetical t               ; have a. A. a) A) list bullets
-      org-catch-invisible-edits 'smart            ; try not to accidently do weird stuff in invisible regions
-      org-export-with-sub-superscripts '{}        ; don't treat lone _ / ^ as sub/superscripts, require _{} / ^{}
-      org-image-actual-width '(0.9))              ; make the in-buffer display closer to the exported result.
+(setq org-directory "~/.org"               ; Let's put files here.
+      org-use-property-inheritance t       ; It's convenient to have properties inherited.
+      org-log-done 'time                   ; Having the time a item is done sounds convenient.
+      org-list-allow-alphabetical t        ; Have a. A. a) A) list bullets.
+      org-catch-invisible-edits 'smart     ; Try not to accidently do weird stuff in invisible regions.
+      org-export-with-sub-superscripts '{} ; Don't treat lone _ / ^ as sub/superscripts, require _{} / ^{}.
+      org-image-actual-width '(0.9))       ; Make the in-buffer display closer to the exported result..
 #+end_src
 I also like the src_elisp{:comments} header-argument, so let's make that a
 default.
