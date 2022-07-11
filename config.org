@@ -5181,6 +5181,7 @@ need to have a template assigned.
 #+end_src
 
 ** Plaintext
+*** Ansi colours
 
 It's nice to see ANSI colour codes displayed. However, until Emacs 28 it's not
 possible to do this without modifying the buffer, so let's condition this block
