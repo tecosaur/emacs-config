@@ -5195,6 +5195,50 @@ on that.
         (ansi-color-apply-on-region (point-min) (point-max) t)))))
 #+end_src
 
+*** Margin without line numbers
+
+Display-wise, somehow I don't mind code buffers without any margin on the left,
+but it feels a bit off with text buffers once the padding provided by line
+numbers is stripped away.
+
+#+begin_src emacs-lisp
+(defvar +text-mode-left-margin-width 1
+  "The `left-margin-width' to be used in `text-mode' buffers.")
+
+(defun +setup-text-mode-left-margin ()
+  (when (derived-mode-p 'text-mode)
+    (setq left-margin-width (if display-line-numbers
+                                0 +text-mode-left-margin-width))
+    (set-window-buffer (get-buffer-window (current-buffer))
+                       (current-buffer))))
+
+#+end_src
+
+Now we just need to hook this up to all the events which could either indicate a
+change in the conditions or require the setup to be re-applied.
+
+#+begin_src emacs-lisp
+(add-hook 'window-configuration-change-hook #'+setup-text-mode-left-margin)
+(add-hook 'display-line-numbers-mode-hook #'+setup-text-mode-left-margin)
+(add-hook 'text-mode-hook #'+setup-text-mode-left-margin)
+#+end_src
+
+There's one little niggle with Doom, as ~doom/toggle-line-numbers~ doesn't run
+~display-line-numbers-mode-hook~, so some advice is needed.
+
+#+begin_src emacs-lisp
+(defadvice! +doom/toggle-line-numbers--call-hook-a ()
+  :after #'doom/toggle-line-numbers
+  (run-hooks 'display-line-numbers-mode-hook))
+#+end_src
+
+Lastly, I think I actually like this enough that I'll go ahead and remove line
+numbers in text mode.
+
+#+begin_src emacs-lisp
+(remove-hook 'text-mode-hook #'display-line-numbers-mode)
+#+end_src
+
 ** Org
 :PROPERTIES:
 :CUSTOM_ID: org
