@@ -7051,9 +7051,6 @@ Saving seconds adds up after all! (but only so much)
   (format "xkcd:%d" (+xkcd-select)))
 #+end_src
 
-***** Music
-
-
 ***** YouTube
 
 The ~[[yt:...]]~ links preview nicely, but don't export nicely. Thankfully, we can
