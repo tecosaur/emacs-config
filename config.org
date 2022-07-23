@@ -3455,6 +3455,7 @@ Then, to actually read the ebooks we use =nov=.
   (advice-add 'nov-render-title :override #'ignore)
 
   (defun +nov-mode-setup ()
+    "Tweak nov-mode to our liking."
     (face-remap-add-relative 'variable-pitch
                              :family "Merriweather"
                              :height 1.4
@@ -3471,30 +3472,32 @@ Then, to actually read the ebooks we use =nov=.
     (hl-line-mode -1)
     ;; Re-render with new display settings
     (nov-render-document)
+    ;; Look up words with the dictionary.
     (add-to-list '+lookup-definition-functions #'+lookup/dictionary-definition)
-
-    (setq-local mode-line-format
-                `((:eval
-                   (doom-modeline-segment--workspace-name))
-                  (:eval
-                   (doom-modeline-segment--window-number))
-                  (:eval
-                   (doom-modeline-segment--nov-info))
-                  ,(propertize
-                    " %P "
-                    'face 'doom-modeline-buffer-minor-mode)
-                  ,(propertize
-                    " "
-                    'face (if (doom-modeline--active) 'mode-line 'mode-line-inactive)
-                    'display `((space
-                                :align-to
-                                (- (+ right right-fringe right-margin)
-                                   ,(* (let ((width (doom-modeline--font-width)))
-                                         (or (and (= width 1) 1)
-                                             (/ width (frame-char-width) 1.0)))
-                                       (string-width
-                                        (format-mode-line (cons "" '(:eval (doom-modeline-segment--major-mode))))))))))
-                  (:eval (doom-modeline-segment--major-mode)))))
+    ;; Customise the mode-line to make it more minimal and relevant.
+    (setq-local
+     mode-line-format
+     `((:eval
+        (doom-modeline-segment--workspace-name))
+       (:eval
+        (doom-modeline-segment--window-number))
+       (:eval
+        (doom-modeline-segment--nov-info))
+       ,(propertize
+         " %P "
+         'face 'doom-modeline-buffer-minor-mode)
+       ,(propertize
+         " "
+         'face (if (doom-modeline--active) 'mode-line 'mode-line-inactive)
+         'display `((space
+                     :align-to
+                     (- (+ right right-fringe right-margin)
+                        ,(* (let ((width (doom-modeline--font-width)))
+                              (or (and (= width 1) 1)
+                                  (/ width (frame-char-width) 1.0)))
+                            (string-width
+                             (format-mode-line (cons "" '(:eval (doom-modeline-segment--major-mode))))))))))
+       (:eval (doom-modeline-segment--major-mode)))))
 
   (add-hook 'nov-mode-hook #'+nov-mode-setup))
 #+end_src
