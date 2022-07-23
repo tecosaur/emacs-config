@@ -3469,7 +3469,8 @@ Then, to actually read the ebooks we use =nov=.
                 nov-text-width 80)
     (visual-fill-column-mode 1)
     (hl-line-mode -1)
-
+    ;; Re-render with new display settings
+    (nov-render-document)
     (add-to-list '+lookup-definition-functions #'+lookup/dictionary-definition)
 
     (setq-local mode-line-format
