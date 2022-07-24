@@ -5528,7 +5528,7 @@ Fontifying =org-mode= buffers to be as pretty as possible is of paramount import
 and Minad's lovely =org-modern= goes a long way in this regard.
 
 #+begin_src emacs-lisp
-(package! org-modern :pin "cef71f81e6a1b66795e70a209121841c98335f82")
+(package! org-modern :pin "239c02aa99dc52755edf38d5e9c9e986683c4249")
 #+end_src
 
 ...with a touch of configuration...
@@ -5537,7 +5537,7 @@ and Minad's lovely =org-modern= goes a long way in this regard.
 (use-package! org-modern
   :hook (org-mode . org-modern-mode)
   :config
-  (setq org-modern-star ["◉" "○" "✸" "✿" "✤" "✜" "◆" "▶"]
+  (setq org-modern-star '("◉" "○" "✸" "✿" "✤" "✜" "◆" "▶")
         org-modern-table-vertical 1
         org-modern-table-horizontal 0.2
         org-modern-list '((43 . "➤")
@@ -5557,6 +5557,7 @@ and Minad's lovely =org-modern= goes a long way in this regard.
         (cons nil (cadr org-script-display))
         org-modern-progress nil
         org-modern-priority nil
+        org-modern-horizontal-rule (make-string 36 ?─)
         org-modern-keyword
         '((t . t)
           ("title" . "𝙏")
@@ -5572,7 +5573,9 @@ and Minad's lovely =org-modern= goes a long way in this regard.
           ("bibliography" . "")
           ("print_bibliography" . #("" 0 1 (display (raise -0.1))))
           ("cite_export" . "⮭")
-          ("import" . "⇤")
+          ("print_glossary" . #("ᴬᶻ" 0 1 (display (raise -0.1))))
+          ("glossary_sources" . #("" 0 1 (display (raise -0.14))))
+          ("include" . "⇤")
           ("setupfile" . "⇚")
           ("html_head" . "🅷")
           ("html" . "🅗")
@@ -5594,6 +5597,20 @@ and Minad's lovely =org-modern= goes a long way in this regard.
           ("caption" . "☰")
           ("RESULTS" . "🠶")))
   (custom-set-faces! '(org-modern-statistics :inherit org-checkbox-statistics-todo)))
+#+end_src
+
+Not let's remove the overlap between the substitutions we set here and those
+that Doom applies via =:ui ligatures= and =:lang org=.
+
+#+begin_src emacs-lisp
+(defadvice! +org-init-appearance-h--no-ligatures-a ()
+  :after #'+org-init-appearance-h
+  (set-ligatures! 'org-mode
+    :name nil
+    :src_block nil
+    :src_block_end nil
+    :quote nil
+    :quote_end nil))
 #+end_src
 
 Since =org-modern='s tag face supplants Org's tag face, we need to adjust the
