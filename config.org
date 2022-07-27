@@ -7393,6 +7393,37 @@ Apparently this causes issues with some people, but I haven't noticed anything
 problematic beyond the expected slight delay in some fontification, so until I
 do I'll use the above.
 
+**** Reduced text indent
+
+Thanks to the various bits and bobs of setup we have here, the non-heading lines
+tend to appear over-indented in ~org-indent-mode~. We can adjust this by modifying
+the generated text prefixes.
+
+There's another issue we can have when using mixed-pitch mode, where the line
+height is set by the indent prefix displayed with the fixed-pitch font. This
+means that on 0-indent lines the line spacing can be different, which doesn't
+look very good. We can also solve this problem by modifying the generated text
+prefixes to but a fixed-pitch zero width space at the start of 0-indent lines
+instead of nothing.
+
+#+begin_src emacs-lisp
+(defadvice! +org-indent--reduced-text-prefixes ()
+  :after #'org-indent--compute-prefixes
+  (setq org-indent--text-line-prefixes
+        (make-vector org-indent--deepest-level nil))
+  (when (> org-indent-indentation-per-level 0)
+    (dotimes (n org-indent--deepest-level)
+      (aset org-indent--text-line-prefixes
+            n
+            (org-add-props
+                (concat (make-string (* n (1- org-indent-indentation-per-level))
+                                     ?\s)
+                        (if (> n 0)
+                             (char-to-string org-indent-boundary-char)
+                          "\u200b"))
+                nil 'face 'org-indent)))))
+#+end_src
+
 **** Fontifying inline src blocks
 
 Org does lovely things with =#+begin_src= blocks, like using font-lock for
