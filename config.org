@@ -2435,7 +2435,7 @@ table
 #+begin_src emacs-lisp
 (defvar emojify-disabled-emojis
   '(;; Org
-    "◼" "☑" "☸" "⚙" "⏩" "⏪" "⬆" "⬇" "❓"
+    "◼" "☑" "☸" "⚙" "⏩" "⏪" "⬆" "⬇" "❓" "↔"
     ;; Terminal powerline
     "✔"
     ;; Box drawing
@@ -7487,7 +7487,6 @@ other settings.
             :ellipses      "…"
             :arrow_right   "→"
             :arrow_left    "←"
-            :arrow_lr      "⟷"
             :properties    "⚙"
             :end           "∎"
             :priority_a   ,(propertize "⚑" 'face 'all-the-icons-red)
@@ -7495,6 +7494,7 @@ other settings.
             :priority_c   ,(propertize "■" 'face 'all-the-icons-yellow)
             :priority_d   ,(propertize "⬇" 'face 'all-the-icons-green)
             :priority_e   ,(propertize "❓" 'face 'all-the-icons-blue)))
+                :arrow_lr      "↔"
 (set-ligatures! 'org-mode
   :merge t
   :list_property "::"
@@ -10108,7 +10108,8 @@ I'd quite like to also recognise =->= and =<-=, so let's set come up with some a
 
 #+begin_src emacs-lisp
 (defvar org-latex-extra-special-string-regexps
-  '(("->" . "\\\\textrightarrow{}")
+  '(("<->" . "\\\\(\\\\leftrightarrow{}\\\\)")
+    ("->" . "\\\\textrightarrow{}")
     ("<-" . "\\\\textleftarrow{}")))
 
 (defun org-latex-convert-extra-special-strings (string)
@@ -10428,6 +10429,7 @@ these substitution.
            ("---\\([^-]\\|$\\)" . "—\\1")
            ("--\\([^-]\\|$\\)" . "–\\1")
            ("\\.\\.\\." . "…")
+           ("<->" . "⟷")
            ("->" . "→")
            ("<-" . "←"))))
     (funcall orig-fn text (plist-put info :with-smart-quotes nil))))
