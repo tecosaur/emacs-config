@@ -5057,6 +5057,34 @@ We can also use this a signature,
 (setq message-signature mu4e-from-name)
 #+end_src
 
+Lastly, I've got a few extra addresses I'd like ~+mu4e-set-from-address-h~ to be
+aware of.
+
+#+begin_src emacs-lisp
+(defun +mu4e-update-personal-addresses ()
+  (let ((primary-address
+         (car (cl-remove-if-not
+               (lambda (a) (eq (mod (apply #'* (cl-coerce a 'list)) 600) 0))
+               (mu4e-personal-addresses)))))
+    (setq +mu4e-personal-addresses
+          (and primary-address
+               (append (mu4e-personal-addresses)
+                       (mapcar
+                        (lambda (subalias)
+                          (concat subalias "@"
+                                  (subst-char-in-string ?@ ?. primary-address)))
+                        '("orgmode"))
+                       (mapcar
+                        (lambda (alias)
+                          (replace-regexp-in-string
+                           "\\`\\(.*\\)@" alias primary-address t t 1))
+                        '("contact" "timothy")))))))
+
+(defadvice! +mu4e-update-personal-addresses-a ()
+  :after #'mu4e--server-start
+  (run-at-time 0.1 nil #'+mu4e-update-personal-addresses))
+#+end_src
+
 **** Working with the Org mailing list
 ***** Adding =X-Woof= headers
 
