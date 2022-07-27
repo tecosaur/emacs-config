@@ -7482,19 +7482,19 @@ other settings.
 
 #+begin_src emacs-lisp
 (appendq! +ligatures-extra-symbols
-          `(:list_property "∷"
-            :em_dash       "—"
-            :ellipses      "…"
-            :arrow_right   "→"
-            :arrow_left    "←"
-            :properties    "⚙"
-            :end           "∎"
-            :priority_a   ,(propertize "⚑" 'face 'all-the-icons-red)
-            :priority_b   ,(propertize "⬆" 'face 'all-the-icons-orange)
-            :priority_c   ,(propertize "■" 'face 'all-the-icons-yellow)
-            :priority_d   ,(propertize "⬇" 'face 'all-the-icons-green)
-            :priority_e   ,(propertize "❓" 'face 'all-the-icons-blue)))
+          (list :list_property "∷"
+                :em_dash       "—"
+                :ellipses      "…"
+                :arrow_right   "→"
+                :arrow_left    "←"
                 :arrow_lr      "↔"
+                :properties    "⚙"
+                :end           "∎"
+                :priority_a    #("⚑" 0 1 (face all-the-icons-red))
+                :priority_b    #("⬆" 0 1 (face all-the-icons-orange))
+                :priority_c    #("■" 0 1 (face all-the-icons-yellow))
+                :priority_d    #("⬇" 0 1 (face all-the-icons-green))
+                :priority_e    #("❓" 0 1 (face all-the-icons-blue))))
 (set-ligatures! 'org-mode
   :merge t
   :list_property "::"
