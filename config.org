@@ -1436,9 +1436,8 @@ I prefer the dashboard, so let's ensure that's always switched to in new frames.
     (setq mu4e-confirm-quit t)
     (setq +mu4e-lock-greedy t)
     (setq +mu4e-lock-relaxed t)
-    (+mu4e-lock-add-watcher)
     (when (+mu4e-lock-available t)
-      (mu4e~start)))
+      (mu4e--start)))
   (when (require 'elfeed nil t)
     (run-at-time nil (* 8 60 60) #'elfeed-update)))
 
@@ -4301,12 +4300,12 @@ Prevents a series of redisplays from being called (when set to an appropriate va
                                  #'mu4e-file-reindex-request)))
 
   (defadvice! mu4e-stop-watching-for-reindex-request ()
-    :after #'mu4e~proc-kill
+    :after #'mu4e--server-kill
     (if mu4e-reindex-request--file-watcher
         (file-notify-rm-watch mu4e-reindex-request--file-watcher)))
 
   (defadvice! mu4e-watch-for-reindex-request ()
-    :after #'mu4e~proc-start
+    :after #'mu4e--server-start
     (mu4e-stop-watching-for-reindex-request)
     (when (file-exists-p mu4e-reindex-request-file)
       (delete-file mu4e-reindex-request-file))
@@ -4322,14 +4321,14 @@ Prevents a series of redisplays from being called (when set to an appropriate va
         (mu4e-reindex-maybe t))))
 
   (defun mu4e-reindex-maybe (&optional new-request)
-    "Run `mu4e~proc-index' if it's been more than
+    "Run `mu4e--server-index' if it's been more than
 `mu4e-reindex-request-min-seperation'seconds since the last request,"
     (let ((time-since-last-request (- (float-time)
                                       mu4e-reindex-request--last-time)))
       (when new-request
         (setq mu4e-reindex-request--last-time (float-time)))
       (if (> time-since-last-request mu4e-reindex-request-min-seperation)
-          (mu4e~proc-index nil t)
+          (mu4e--server-index nil t)
         (when new-request
           (run-at-time (* 1.1 mu4e-reindex-request-min-seperation) nil
                        #'mu4e-reindex-maybe))))))
@@ -5224,11 +5223,10 @@ current message on https://list.orgmode.org.
   (defun +mu4e-ml-message-link (msg)
     "Copy the link to MSG on the mailing list archives."
     (let* ((list-addr (or (mu4e-message-field msg :mailing-list)
-                          (cdar (mu4e-message-field-raw msg :list-post))
+                          (cadar (mu4e-message-field-raw msg :list-post))
                           (thread-last (append (mu4e-message-field msg :to)
                                                (mu4e-message-field msg :cc))
-                            (mapcar #'last)
-                            (mapcar #'cdr)
+                            (mapcar (lambda (e) (plist-get e :email)))
                             (mapcar (lambda (addr)
                                       (when (string-match-p "emacs.*@gnu\\.org$" addr)
                                         (replace-regexp-in-string "@" "." addr))))
