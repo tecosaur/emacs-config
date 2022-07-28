@@ -5340,7 +5340,9 @@ numbers is stripped away.
   "The `left-margin-width' to be used in `text-mode' buffers.")
 
 (defun +setup-text-mode-left-margin ()
-  (when (derived-mode-p 'text-mode)
+  (when (and (derived-mode-p 'text-mode)
+             (eq (current-buffer) ; Check current buffer is active.
+                 (window-buffer (frame-selected-window))))
     (setq left-margin-width (if display-line-numbers
                                 0 +text-mode-left-margin-width))
     (set-window-buffer (get-buffer-window (current-buffer))
