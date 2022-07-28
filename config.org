@@ -337,7 +337,7 @@ It's useful to have some basic personal information
 Apparently this is used by ~GPG~, and all sorts of other things.
 
 Speaking of ~GPG~, I want to use =~/.authinfo.gpg= instead of the default in
-=~/.emacs.d=. Why? Because my home directory is already cluttered, so this won't
+=~/.config/emacs=. Why? Because my home directory is already cluttered, so this won't
 make a difference, and I don't want to accidentally purge this file (I have done
 src_shell{rm -rf~/.emac.d~ before}. I also want to cache as much as possible, as
 my home machine is pretty safe, and my laptop is shutdown a lot.
@@ -1597,7 +1597,7 @@ This file shouldn't be byte compiled.
 You'll then need to restart Emacs for your changes to take effect! Or at least,
 run =M-x doom/reload=.
 
-*Warning*: Don't disable core packages listed in =~/.emacs.d/core/packages.el=.
+*Warning*: Don't disable core packages listed in =~/.config/emacs/core/packages.el=.
 Doom requires these, and disabling them may have terrible side effects.
 
 *** Packages in MELPA/ELPA/emacsmirror
@@ -2115,7 +2115,8 @@ From the =:core packages= module.
 Looking at documentation via =SPC h f= and =SPC h v= and looking at the source can
 add package src directories to projectile. This isn't desirable in my opinion.
 #+begin_src emacs-lisp
-(setq projectile-ignored-projects '("~/" "/tmp" "~/.emacs.d/.local/straight/repos/"))
+(setq projectile-ignored-projects
+      (list "~/" "/tmp" (expand-file-name "straight/repos" doom-local-dir)))
 (defun projectile-ignored-project-function (filepath)
   "Return t if FILEPATH is within any of `projectile-ignored-projects'"
   (or (mapcar (lambda (p) (s-starts-with-p p filepath)) projectile-ignored-projects)))
@@ -3702,7 +3703,7 @@ configuration tweaks.
 (after! circe
   (setq-default circe-use-tls t)
   (setq circe-notifications-alert-icon "/usr/share/icons/breeze/actions/24/network-connect.svg"
-        lui-logging-directory "~/.emacs.d/.local/etc/irc"
+        lui-logging-directory (expand-file-name "irc" doom-etc-dir)
         lui-logging-file-format "{buffer}/%Y/%m-%d.txt"
         circe-format-self-say "{nick:+13s} ┃ {body}")
 
@@ -5165,7 +5166,8 @@ change that.
 
 #+begin_src emacs-lisp
 (after! mu4e
-  (defvar +org-ml-target-dir "~/.emacs.d/.local/straight/repos/org-mode/")
+  (defvar +org-ml-target-dir
+    (expand-file-name "straight/repos/org-mode/" doom-local-dir))
   (defvar +org-ml-max-age 600
     "Maximum permissible age in seconds.")
   (defvar +org-ml--cache-timestamp 0)
@@ -6611,7 +6613,7 @@ is selected, only the bare key is returned."
         (when buffer (kill-buffer buffer))))))
 (advice-add 'org-mks :override #'org-mks-pretty)
 #+end_src
-The [[file:~/.emacs.d/bin/org-capture][org-capture bin]] is rather nice, but I'd be nicer with a smaller frame, and
+The [[file:~/.config/emacs/bin/org-capture][org-capture bin]] is rather nice, but I'd be nicer with a smaller frame, and
 no modeline.
 #+begin_src emacs-lisp
 (setf (alist-get 'height +org-capture-frame-parameters) 15)
@@ -8482,7 +8484,7 @@ achieve this with CSS alone. Thankfully we can avoid JS though, by adapting the
 TOC generation code to use a ~label~ for each item, and a hidden ~checkbox~ to keep
 track of state.
 
-To add this, we need to change one line in [[file:~/.emacs.d/.local/straight/repos/org-mode/lisp/ox-html.el::(format "<a href=\"#%s\">%s</a>"][org-html--format-toc-headline]].
+To add this, we need to change one line in [[file:~/.config/emacs/.local/straight/repos/org-mode/lisp/ox-html.el::(format "<a href=\"#%s\">%s</a>"][org-html--format-toc-headline]].
 
 Since we can actually accomplish the desired effect by adding advice /around/ the
 function, without overriding it --- let's do that to reduce the bug surface of
@@ -10958,7 +10960,7 @@ In case of Emacs28,
 
 ** Python
 
-Since I'm using =mypyls=, as suggested in [[file:~/.emacs.d/modules/lang/python/README.org::*Language Server Protocol Support][:lang python LSP support]] I'll tweak the
+Since I'm using =mypyls=, as suggested in [[file:~/.config/emacs/modules/lang/python/README.org::*Language Server Protocol Support][:lang python LSP support]] I'll tweak the
 priority of =mypyls=
 #+begin_src emacs-lisp
 (after! lsp-python-ms
