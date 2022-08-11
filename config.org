@@ -1936,23 +1936,38 @@ There's still a room for a little tweaking though...
 **** Easier forge remotes
 
 When creating a new project, I often want the remote to be to my personal gitea
-instance. Let's make that a bit more streamlined. While we're at it, when
-creating a remote with the same name as my github username in a project where an
-https github remote already exists, let's make the pre-filled remote url use
-ssh.
+instance. Let's make that a bit more streamlined by introducing a quick-entry
+"default forge" option.
+
+#+begin_src emacs-lisp
+(defvar +magit-default-forge-remote "gitea@git.tecosaur.net:tec/%s.git"
+  "Format string that fills out to a remote from the repo name.
+Set to nil to disable this functionality.")
+#+end_src
+
+While we're at it, when creating a remote with the same name as my github
+username in a project where an https github remote already exists, let's make
+the pre-filled remote url use ssh.
 
 #+begin_src emacs-lisp
 (defadvice! +magit-remote-add--streamline-forge-a (args)
   :filter-args #'magit-remote-add
   (interactive
-   (or (and (not (magit-list-remotes))
-            (eq (read-char-choice "Setup git.tecosaur.net remote? [y/n]: " '(?y ?n)) ?y)
+   (or (and +magit-default-forge-remote
+            (not (magit-list-remotes))
+            (eq (read-char-choice
+                 (format "Setup %s remote? [y/n]: "
+                         (replace-regexp-in-string
+                          "\\`\\(?:[^@]+@\\|https://\\)\\([^:/]+\\)[:/].*\\'" "\\1"
+                          +magit-default-forge-remote))
+                 '(?y ?n))
+                ?y)
             (let* ((default-name
                      (subst-char-in-string ?\s ?-
                                            (file-name-nondirectory
                                             (directory-file-name (doom-project-root)))))
                    (name (read-string "Name: " default-name)))
-              (list "origin" (format "gitea@git.tecosaur.net:tec/%s.git" name)
+              (list "origin" (format +magit-default-forge-remote name)
                     (transient-args 'magit-remote))))
        (let ((origin (magit-get "remote.origin.url"))
              (remote (magit-read-string-ns "Remote name"))
