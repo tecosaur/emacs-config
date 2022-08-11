@@ -464,7 +464,7 @@ have flags applied to tweak their behaviour.
 
 #+name: init.el
 #+attr_html: :collapsed t
-#+begin_src emacs-lisp :tangle "init.el" :noweb no-export :comments no
+#+begin_src emacs-lisp :tangle "init.el" :noweb no-export :noweb-prefix no :comments no
 ;;; init.el -*- lexical-binding: t; -*-
 
 ;; This file controls what Doom modules are enabled and what order they load in.
@@ -507,8 +507,7 @@ have flags applied to tweak their behaviour.
        <<doom-app>>
 
        :config
-       <<doom-config>>
-       )
+       <<doom-config>>)
 #+end_src
 
 **** Structure
@@ -1755,7 +1754,7 @@ ridiculously large files.
 
 To make VLF available without delaying startup, we'll just load it in quiet moments.
 
-#+begin_src emacs-lisp :noweb no-export
+#+begin_src emacs-lisp :noweb no-export :noweb-prefix no
 (use-package! vlf-setup
   :defer-incrementally vlf-tune vlf-base vlf-write
   vlf-search vlf-occur vlf-follow vlf-ediff vlf
@@ -1764,8 +1763,7 @@ To make VLF available without delaying startup, we'll just load it in quiet mome
   <<vlf-largefile-prompt>>
   :config
   (advice-remove 'abort-if-file-too-large #'ad-Advice-abort-if-file-too-large)
-  <<vlf-linenum-offset>>
-  )
+  <<vlf-linenum-offset>>)
 #+end_src
 
 Now, there are one or two tweaks worth applying to VLF. For starters, it goes to
@@ -4913,10 +4911,9 @@ Alternatively, I may need to add the =/usr/share/= path.
 #+end_src
 
 Let's also just shove all the Elisp code here in an src_elisp{(after! ...)} block.
-#+begin_src emacs-lisp :noweb no-export :tangle yes :noweb-ref nil
+#+begin_src emacs-lisp :noweb no-export :tangle yes :noweb-prefix no :noweb-ref nil
 (after! mu4e
-  <<mu4e-conf>>
-)
+  <<mu4e-conf>>)
 #+end_src
 
 **** Viewing Mail
@@ -5446,10 +5443,9 @@ figure.png╶─╧─▶ PROJECT.ORG ▶───╴filters╶───╧─�
 
 Finally, because this section is fairly expensive to initialise, we'll wrap it
 in an src_elisp{(after! ...)} block.
-#+begin_src emacs-lisp :noweb no-export :tangle yes :noweb-ref nil
+#+begin_src emacs-lisp :noweb no-export :tangle yes :noweb-prefix no :noweb-ref nil
 (after! org
-  <<org-conf>>
-)
+  <<org-conf>>)
 #+end_src
 
 *** System config
