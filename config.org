@@ -332,7 +332,7 @@ for more info).
 It's useful to have some basic personal information
 #+begin_src emacs-lisp
 (setq user-full-name "TEC"
-      user-mail-address "tec@tecosaur.com")
+      user-mail-address "contact@tecosaur.net")
 #+end_src
 Apparently this is used by ~GPG~, and all sorts of other things.
 
