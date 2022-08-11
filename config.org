@@ -1933,6 +1933,47 @@ There's still a room for a little tweaking though...
   <<magit-tweaks>>)
 #+end_src
 
+**** Easier forge remotes
+
+When creating a new project, I often want the remote to be to my personal gitea
+instance. Let's make that a bit more streamlined. While we're at it, when
+creating a remote with the same name as my github username in a project where an
+https github remote already exists, let's make the pre-filled remote url use
+ssh.
+
+#+begin_src emacs-lisp
+(defadvice! +magit-remote-add--streamline-forge-a (args)
+  :filter-args #'magit-remote-add
+  (interactive
+   (or (and (not (magit-list-remotes))
+            (eq (read-char-choice "Setup git.tecosaur.net remote? [y/n]: " '(?y ?n)) ?y)
+            (let* ((default-name
+                     (subst-char-in-string ?\s ?-
+                                           (file-name-nondirectory
+                                            (directory-file-name (doom-project-root)))))
+                   (name (read-string "Name: " default-name)))
+              (list "origin" (format "gitea@git.tecosaur.net:tec/%s.git" name)
+                    (transient-args 'magit-remote))))
+       (let ((origin (magit-get "remote.origin.url"))
+             (remote (magit-read-string-ns "Remote name"))
+             (gh-user (magit-get "github.user")))
+         (when (and (equal remote gh-user)
+                    (string-match "\\`https://github\\.com/\\([^/]+\\)/\\([^/]+\\)\\.git\\'"
+                                  origin)
+                    (not (string= (match-string origin 1) gh-user)))
+           (setq origin (replace-regexp-in-string
+                         "\\`https://github\\.com/" "git@github.com:"
+                         origin)))
+         (list remote
+               (magit-read-url
+                "Remote url"
+                (and origin
+                     (string-match "\\([^:/]+\\)/[^/]+\\(\\.git\\)?\\'" origin)
+                     (replace-match remote t t origin 1)))
+               (transient-args 'magit-remote)))))
+  args)
+#+end_src
+
 **** Commit message templates
 
 One little thing I want to add is some per-project commit message templates.
