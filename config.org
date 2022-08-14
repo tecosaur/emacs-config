@@ -5695,20 +5695,6 @@ and Minad's lovely =org-modern= goes a long way in this regard.
   (custom-set-faces! '(org-modern-statistics :inherit org-checkbox-statistics-todo)))
 #+end_src
 
-Not let's remove the overlap between the substitutions we set here and those
-that Doom applies via =:ui ligatures= and =:lang org=.
-
-#+begin_src emacs-lisp
-(defadvice! +org-init-appearance-h--no-ligatures-a ()
-  :after #'+org-init-appearance-h
-  (set-ligatures! 'org-mode
-    :name nil
-    :src_block nil
-    :src_block_end nil
-    :quote nil
-    :quote_end nil))
-#+end_src
-
 Since =org-modern='s tag face supplants Org's tag face, we need to adjust the
 spell-check face ignore list
 
@@ -7564,21 +7550,24 @@ other settings.
                 :priority_c    #("■" 0 1 (face all-the-icons-yellow))
                 :priority_d    #("⬇" 0 1 (face all-the-icons-green))
                 :priority_e    #("❓" 0 1 (face all-the-icons-blue))))
-(set-ligatures! 'org-mode
-  :merge t
-  :list_property "::"
-  :em_dash       "---"
-  :ellipsis      "..."
-  :arrow_right   "->"
-  :arrow_left    "<-"
-  :arrow_lr      "<->"
-  :properties    ":PROPERTIES:"
-  :end           ":END:"
-  :priority_a    "[#A]"
-  :priority_b    "[#B]"
-  :priority_c    "[#C]"
-  :priority_d    "[#D]"
-  :priority_e    "[#E]")
+
+(defadvice! +org-init-appearance-h--no-ligatures-a ()
+  :after #'+org-init-appearance-h
+  (set-ligatures! 'org-mode nil)
+  (set-ligatures! 'org-mode
+    :list_property "::"
+    :em_dash       "---"
+    :ellipsis      "..."
+    :arrow_right   "->"
+    :arrow_left    "<-"
+    :arrow_lr      "<->"
+    :properties    ":PROPERTIES:"
+    :end           ":END:"
+    :priority_a    "[#A]"
+    :priority_b    "[#B]"
+    :priority_c    "[#C]"
+    :priority_d    "[#D]"
+    :priority_e    "[#E]"))
 #+end_src
 
 While we're at it we may as well make tags prettier as well 🙂
