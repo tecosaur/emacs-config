@@ -5149,9 +5149,8 @@ aware of.
                            "\\`\\(.*\\)@" alias primary-address t t 1))
                         '("contact" "timothy")))))))
 
-(defadvice! +mu4e-update-personal-addresses-a ()
-  :after #'mu4e--server-start
-  (run-at-time 0.1 nil #'+mu4e-update-personal-addresses))
+(add-transient-hook! 'mu4e-compose-pre-hook
+  (+mu4e-update-personal-addresses))
 #+end_src
 
 **** Working with the Org mailing list
