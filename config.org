@@ -5590,7 +5590,7 @@ correct package statement needed.
                       (string= "tec@git.savannah.gnu.org:/srv/git/emacs/org-mode.git\n" (shell-command-to-string "git remote get-url origin")))))
       (recipe-common '(:files ("*.el" "lisp/*.el" "etc")
                        :pre-build
-                       (with-temp-file (doom-path (straight--repos-dir "org-mode") "org-version.el")
+                       (with-temp-file "org-version.el"
                          (insert "(fset 'org-release (lambda () \"9.5\"))\n"
                                  (format "(fset 'org-git-version (lambda () \"%s\"))\n"
                                          (substring (shell-command-to-string "git rev-parse --short HEAD") 0 -1))
