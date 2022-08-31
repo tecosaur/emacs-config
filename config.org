@@ -5624,7 +5624,7 @@ Fontifying =org-mode= buffers to be as pretty as possible is of paramount import
 and Minad's lovely =org-modern= goes a long way in this regard.
 
 #+begin_src emacs-lisp
-(package! org-modern :pin "239c02aa99dc52755edf38d5e9c9e986683c4249")
+(package! org-modern :pin "537e6b75e38bc0eff083c390c257098c9fc9ab49")
 #+end_src
 
 ...with a touch of configuration...
@@ -5651,6 +5651,13 @@ and Minad's lovely =org-modern= goes a long way in this regard.
           ("NO"   :inverse-video t :inherit +org-todo-cancel))
         org-modern-footnote
         (cons nil (cadr org-script-display))
+        org-modern-block-fringe nil
+        org-modern-block-name
+        '((t . t)
+          ("src" "»" "«")
+          ("example" "»–" "–«")
+          ("quote" "❝" "❞")
+          ("export" "⏩" "⏪"))
         org-modern-progress nil
         org-modern-priority nil
         org-modern-horizontal-rule (make-string 36 ?─)
