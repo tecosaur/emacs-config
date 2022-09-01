@@ -5695,6 +5695,7 @@ and Minad's lovely =org-modern= goes a long way in this regard.
           ("attr_latex" . "🄛")
           ("attr_html" . "🄗")
           ("attr_org" . "⒪")
+          ("call" . #("" 0 1 (display (raise -0.15))))
           ("name" . "⁍")
           ("header" . "›")
           ("caption" . "☰")
