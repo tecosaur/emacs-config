@@ -6339,7 +6339,8 @@ The agenda is nice, but a souped up version is nicer.
 
 #+begin_src emacs-lisp
 (after! org-agenda
-  (org-super-agenda-mode))
+  (let ((inhibit-message t))
+    (org-super-agenda-mode)))
 
 (setq org-agenda-skip-scheduled-if-done t
       org-agenda-skip-deadline-if-done t
