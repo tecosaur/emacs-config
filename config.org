@@ -9871,10 +9871,12 @@ this just as a fallback font (when it isn't a pain to do so).
 
 #+name: julia-mono-fontspec
 #+begin_src LaTeX
-\\usepackage{fontspec}
-\\newfontfamily\\JuliaMono{JuliaMono-Regular.ttf}[Path=/usr/share/fonts/truetype/, Extension=.ttf]
-\\newfontface\\JuliaMonoRegular{JuliaMono-Regular}
-\\setmonofont{JuliaMonoRegular}[Contextuals=Alternate, Scale=MatchLowercase]
+\\ifcsname directlua\\endcsname
+  \\usepackage{fontspec}
+  \\newfontfamily\\JuliaMono{JuliaMono-Regular.ttf}[Path=/usr/share/fonts/truetype/, Extension=.ttf]
+  \\newfontface\\JuliaMonoRegular{JuliaMono-Regular}
+  \\setmonofont{JuliaMonoRegular}[Contextuals=Alternate, Scale=MatchLowercase]
+\\fi
 #+end_src
 
 Now all that remains is to hook this into the preamble generation.
