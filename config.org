@@ -746,7 +746,7 @@ I couldn't resist the Email and Feed modules.
 
 #+name: doom-email
 #+begin_src emacs-lisp
-(:if (executable-find "mu") (mu4e +org +gmail))
+(:if (executable-find "mu") (mu4e +org))
 ;;notmuch
 ;;(wanderlust +gmail)
 #+end_src
