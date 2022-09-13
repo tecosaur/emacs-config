@@ -7714,6 +7714,22 @@ let's make it transparent.
       (plist-put org-format-latex-options :background "Transparent"))
 #+end_src
 
+With the background taken care of, we just need to make sure we're using the
+theme-appropriate foreground.
+
+# TODO check that this is still needed.
+
+#+begin_src emacs-lisp
+(add-hook! 'doom-load-theme-hook
+  (setq org-preview-latex-image-directory
+        (concat doom-cache-dir "org-latex/" (symbol-name doom-theme) "/"))
+  (dolist (buffer (doom-buffers-in-mode 'org-mode (buffer-list)))
+    (with-current-buffer buffer
+      (+org--toggle-inline-images-in-subtree (point-min) (point-max) 'refresh)
+      (org-clear-latex-preview (point-min) (point-max))
+      (org--latex-preview-region (point-min) (point-max)))))
+#+end_src
+
 ***** Rendering speed tests
 
 We can either render from a ~dvi~ or ~pdf~ file, so let's benchmark ~latex~ and
