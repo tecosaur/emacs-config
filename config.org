@@ -1,14 +1,15 @@
-# SPDX-FileCopyrightText: © 2020-2021 tecosaur <tec@tecosaur.com>
+# SPDX-FileCopyrightText: © 2020-2022 tecosaur <contact@tecosaur.net>
 # SPDX-License-Identifier: MIT
 #+title: Doom Emacs Configuration
 #+subtitle: The Methods, Management, and Menagerie@@latex:\\@@ of Madness@@latex: --- in meticulous detail@@
 #+author: tecosaur
+#+email: contact@tecosaur.net
 #+date: @@html:<!--@@{{{git-rev}}}@@html:-->@@@@latex:\\\Large\bfseries@@ {{{modification-time(%Y-%m-%d, t)}}} @@latex:\\\normalsize\mdseries@@{{{modification-time(%H:%M, t)}}} @@latex:\acr{\lowercase{@@{{{timezone}}}@@latex:}}\iffalse@@, {{{git-rev}}}@@latex:\fi@@
 #+macro: timezone (eval (substring (shell-command-to-string "date +%Z") 0 -1))
 #+macro: git-rev (eval (format "@@html:<a href=\"https://github.com/tecosaur/emacs-config/commit/%1$s\" style=\"text-decoration: none\"><code style=\"padding: 0; color: var(--text-light); font-size: inherit; opacity: 0.7\">%1$s</code></a>@@@@latex:\\href{https://github.com/tecosaur/emacs-config/commit/%1$s}{\\normalsize\\texttt{%1$s}}@@" (substring (shell-command-to-string "git rev-parse --short HEAD") 0 -1)))
 #+html_head: <link rel='shortcut icon' type='image/png' href='https://www.gnu.org/software/emacs/favicon.png'>
-#+property: header-args:emacs-lisp :tangle yes :comments link
-#+property: header-args:elisp :exports code
+#+property: header-args:emacs-lisp
+#+property: header-args:elisp :results replace :exports code
 #+property: header-args:shell :tangle "setup.sh"
 #+property: header-args :tangle no :results silent :eval no-export
 #+embed: LICENCE :description MIT licence file
@@ -316,18 +317,769 @@ to write to a temporary file, and having a file watcher started in other Emacs
 instances, in a similar manner to [[*Rebuild mail index while using mu4e][Rebuild mail index while using mu4e]].
 
 * Rudimentary configuration
+** Confpkg
+*** Motivation
 
-Make this file run (slightly) faster with lexical binding (see [[https://nullprogram.com/blog/2016/12/22/][this blog post]]
-for more info).
-#+begin_src emacs-lisp :comments no
-;;; config.el -*- lexical-binding: t; -*-
+Previously, all of my configuration was directly tangled into =config.el=. This
+/almost/ satisfies my use. Occasionally though, I'd want to apply or extract a
+/specific bit/ of my config in an elisp script, such as some of my Org-export
+customisations. This is a hassle, either loading my entire config (of which 90%
+simply complicates the state), or manually copying the relevant code in pieces,
+one source block at a time (just a different kind of hassle). While I'd like to
+think my config is "greater than the sum of its parts", much of it can be safely
+clumped into self-contained packets of functionality.
+
+One afternoon I thought "wouldn't it be nice if I could just load a few of those
+self-contained chunks of my config", then I started thinking about how I could
+have that /and/ =config.el=. This is the result.
+
+*** Design
+
+It's already natural to organise blocks of config under sections, and we can use
+=:noweb-ref= with a =header-args:emacs-lisp= property to direct all child source
+blocks into a single parent. We could have two parents, one tangling to
+=subconf/config-X.el= and the other to =config.el=, however this will duplicate
+any evaluations required to generate the content, which isn't great
+(particularly for things which take a moment, like checking for LaTeX
+packages). Instead we can /just/ write to the =subconf/*= files and then at the
+end of tangling extract their contents into =config.el=.
+
+#+begin_src dot :file misc/confpkg.svg :results file graphics
+digraph {
+    graph [bgcolor="transparent"];
+    node  [shape="underline" penwidth="2" style="rounded,filled" fillcolor="#efefef" color="#c9c9c9" fontcolor="#000000" fontname="Alegreya Sans"];
+    edge  [color="#aaaaaa" penwidth="1.2" fontname="Alegreya Sans"]
+    rankdir="LR"
+    "config.org" [color="#4db5bd"]
+    "config.el" [color="#e69055"]
+    node[color="#a991f1"]
+    "subconf/config-magit.el"
+    "subconf/config-org.el"
+    "subconf/config-?.el"
+    node[color="#51afef"]
+    "config.org" -> "Magit#src1" -> "subconf/config-magit.el" -> "config.el"
+    "config.org" -> "Magit#src2" -> "subconf/config-magit.el"
+    "config.org" -> "Org#src1" -> "subconf/config-org.el" -> "config.el"
+    "config.org" -> "Org#src2" -> "subconf/config-org.el"
+    "config.org" -> "Org#..." -> "subconf/config-org.el"
+    "config.org" -> "(etc.)#..." -> "subconf/config-?.el" -> "config.el"
+}
 #+end_src
 
-#+begin_src shell :exports none :comments no :tangle-mode (identity #o755)
-#!/usr/bin/env bash
+#+caption: Flow of code information from the literate config into the generated files.
+#+attr_html: :class invertible :alt DAG showing code block info go to config-*.el files then config.el
+#+attr_latex: :width 0.7\linewidth
+#+RESULTS:
+[[file:misc/confpkg.svg]]
+
+To set this up within each section, instead of manually repeating a common form
+we can generate the form and supply the relevant section properties via a babel
+call keyword, like so:
+
+#+begin_src org
+,* Subject
+
+,#+call: confpkg("subject")
+
+,#+begin_src emacs-lisp
+;; Code that configures the subject...
+,#+end_src
 #+end_src
+
+This isn't entirely straightforward, but with some mild abuse of noweb and babel
+we can make it work!
+
+*** Preparation
+
+This approach is built around =#+call= invocations that affect the tangling.
+Unfortunately for this use-case, babel call keywords are not executed on tangle.
+Tangled noweb blocks /are/ however, and so we can fudge the behaviour we want by
+tangling a noweb block to a temp file, with a noweb block that executes babel
+calls in the buffer.
+
+#+name: confpkg-prepare
+#+begin_src emacs-lisp
+(condition-case nil
+    (org-fold-core-ignore-fragility-checks
+      (org-babel-map-executables nil
+        (when (eq (org-element-type (org-element-context)) 'babel-call)
+          (org-babel-lob-execute-maybe))))
+  (quit (revert-buffer t t t)))
+#+end_src
+
+#+begin_src emacs-lisp :tangle (make-temp-file "emacs-confpkg-prepare-") :noweb no-export
+<<confpkg-prepare()>>
+#+end_src
+
+*** Setup
+
+Before generating the template with babel, we want to keep track of:
++ How many config groups are created
++ Information about each config group
+
+To do this we can simply create two variables. Due to temp-buffer shenanigans,
+we'll have to use global variables here.
+
+Then we need to set up the two final phases of this process:
++ Creating =config.el=
++ Cleaning up the superfluous generated content
+
+To trigger the final phases we'll add a hook to ~org-babel-post-tangle-hook~. Once
+again, it would be preferred if this was done locally, but it needs to be
+global. To avoid this causing headaches down the line we'll make sure when
+implementing the hook function to have it remove itself from the hook when
+executed.
+
+#+name: confpkg-setup
+#+begin_src emacs-lisp :results silent :noweb no-export
+(setq confpkg--num 0
+      confpkg--list nil)
+
+<<confpkg-dependency-analysis>>
+<<confpkg-strip-package-statements>>
+<<confpkg-create-config>>
+(defun confpkg-cleanup ()
+ <<confpkg-cleanup>>
+  )
+<<confpkg-finaliser>>
+
+<<confpkg-clear-old-files>>
+
+(add-hook 'org-babel-tangle-finished-hook #'confpkg-tangle-finalise)
+#+end_src
+
+To avoid generating cruft, it would also be good to get rid of old tangled
+config files at the start.
+
+#+name: confpkg-clear-old-files
+#+begin_src emacs-lisp
+(make-directory "subconf" t)
+(dolist (conf-file (directory-files "subconf" t "config-.*\\.el"))
+  (delete-file conf-file))
+#+end_src
+
+Now to have this take effect, we can just use a babel call keyword. Thanks to
+the preparation step this will be executed during tangling.
+
+#+call: confpkg-setup[:results none]()
+
+*** Package generation
+
+Now we actually implement the =confpkg= babel function. We could just direct the
+output into the =subconf/config-X.el= file without any extra steps, but why not be
+a bit fancier and make it more like a package.
+
+To do this, we'll have =confpkg= load a template and then fill it in using
+~format-spec~. To make sure this is actually used, we'll call ~org-set-property~ to
+modify the parent heading, and register the config group with the variables we
+created earlier.
+
+#+name: confpkg
+#+begin_src elisp :var name="" needs="" after="" :results silent raw :noweb no-export
+;; Babel block for use with #+call
+;; Arguments:
+;;  + name, the name of the config sub-package
+;;  + needs, (when non-empty) required system executable(s)
+;;  + after, required features
+(when (or (string-empty-p needs)
+          (cl-every #'executable-find (delq nil (split-string needs ","))))
+  (let* ((name (if (string-empty-p name)
+                   (save-excursion
+                     (and (org-back-to-heading-or-point-min t)
+                          (substring-no-properties
+                           (org-element-interpret-data
+                            (org-element-property :title (org-element-at-point))))))
+                 name))
+         (after
+          (cond
+           ((string-empty-p after) nil)
+           ((string-match-p "\\`[^()]+\\'" after)
+            (intern after)) ; Single feature.
+           (t after)))
+         (confpkg-name
+          (concat "config-" (replace-regexp-in-string
+                             "[^a-z-]" "-" (downcase name))))
+         (confpkg-file (expand-file-name (concat confpkg-name ".el")
+                                         "subconf")))
+    (unless (file-exists-p confpkg-file)
+      (make-empty-file confpkg-file t))
+    (cl-incf confpkg--num)
+    (org-set-property
+     "header-args:emacs-lisp"
+     (format ":tangle no :noweb-ref %s" confpkg-name))
+    (push (list :name name
+                :package confpkg-name
+                :file confpkg-file
+                :after after)
+          confpkg--list)
+    (format-spec
+     "#+begin_src emacs-lisp :tangle %f :mkdirp yes :noweb no-export :noweb-ref none :comments no
+<<confpkg-template>>
+,#+end_src"
+     `((?n . ,confpkg--num)
+       (?p . ,confpkg-name)
+       (?f . ,confpkg-file)
+       (?Y . ,(format-time-string "%Y"))
+       (?B . ,(format-time-string "%B"))
+       (?m . ,(format-time-string "%m"))
+       (?d . ,(format-time-string "%d"))
+       (?M . ,(format-time-string "%M"))
+       (?S . ,(format-time-string "%S"))))))
+#+end_src
+
+Now all that's needed is a template to be used.
+
+#+name: confpkg-template
+#+begin_src emacs-lisp :eval no
+;;; %p.el --- Generated package (no.%n) from my config -*- lexical-binding: t; -*-
+;;
+;; Copyright (C) %Y TEC
+;;
+;; Author: TEC <https://git.tecosaur.net/tec>
+;; Maintainer: TEC <contact@tecosaur.net>
+;; Created: %B %d, %Y
+;; Modified: %B %d, %Y
+;; Version: %Y.%m.%d
+;; Homepage: https://git.tecosaur.net/tec/emacs-config
+;; Package-Requires: ((emacs \"27.1\"))
+;;
+;; This file is not part of GNU Emacs.
+;;
+;;; Commentary:
+;;
+;;  Generated package (no.%n) from my config.
+;;
+;;  This is liable to have unstated dependencies, and reply on other bits of
+;;  state from other configuration blocks. Only use this if you know /exactly/
+;;  what you are doing.
+;;
+;;  This may function nicely as a bit of self-contained functionality, or it
+;;  might be a horrid mix of functionalities and state.
+;;
+;;  Hopefully, in future static analysis will allow this to become more
+;;  properly package-like.
+;;
+;;; Code:
+
+<<%p>>
+
+(provide '%p)
+;;; %p.el ends here
+#+end_src
+
+This currently makes the included content look much more package-like that in
+truly is. However, I hope that some static analysis in future will allow for
+dependency information to be collected and included.
+
+
+Lastly, should there be an issue or interruption, it's possible that the
+modifications from =#+call: confpkg= may persist. If I've been good with my
+committing, resolving this should be as simple as reverting unstaged changes.
+So... back in reality, it would be nice to have a way to clean up =confpkg=
+residue.
+
+#+name: confpkg-cleanup
+#+begin_src emacs-lisp :results none
+(org-fold-core-ignore-fragility-checks
+  (org-babel-map-executables nil
+    (when (and (eq (org-element-type (org-element-context)) 'babel-call)
+               (equal (org-element-property :call (org-element-context)) "confpkg"))
+      (org-babel-remove-result)
+      (org-entry-delete nil "header-args:emacs-lisp"))))
+#+end_src
+
+*** Identify cross-package dependencies
+:PROPERTIES:
+:header-args:emacs-lisp: :noweb-ref confpkg-dependency-analysis
+:END:
+
+At a basic level, we can search for regexp expressions indicating the definition
+of functions or variables and search for their usage.
+
+#+begin_src emacs-lisp
+(defun confpkg--rough-extract-definitions (file)
+  (with-temp-buffer
+    (insert-file-contents file)
+    (goto-char (point-min))
+    (let (symbols)
+      (while (re-search-forward
+              (rx line-start (* (any ?\s ?\t)) "("
+                  (or "defun" "defmacro" "defsubst" "defgeneric" "defalias" "defvar" "defcustom" "defface" "deftheme"
+                      "cl-defun" "cl-defmacro" "cl-defsubst" "cl-defmethod" "cl-defstruct" "cl-defgeneric" "cl-deftype")
+                  (+ (any ?\s ?\t))
+                  (group (+ (any "A-Z" "a-z" "0-9"
+                                 ?+ ?- ?* ?/ ?_ ?~ ?! ?@ ?$ ?% ?^ ?& ?= ?: ?< ?> ?{ ?})))
+                  (or blank ?\n))
+              nil t)
+        (push (match-string 1) symbols))
+      symbols)))
+#+end_src
+
+Continuing our rough regexp approach, we can construct a similar function to
+look for uses of symbols.
+
+#+begin_src emacs-lisp
+(defun confpkg--rough-uses-p (file symbols)
+  (with-temp-buffer
+    (insert-file-contents file)
+    (let ((symbols (copy-sequence symbols)) uses-p)
+      (while symbols
+        (goto-char (point-min))
+        (if (re-search-forward (rx word-start (literal (car symbols)) word-end) nil t)
+            (setq uses-p t symbols nil)
+          (setq symbols (cdr symbols))))
+      uses-p)))
+#+end_src
+
+Now we can put these two functions together to annotate ~confpkg--list~ with their
+(confpkg) dependencies.
+
+#+begin_src emacs-lisp
+(defun confpkg-annotate-list-dependencies ()
+  (dolist (confpkg confpkg--list)
+    (plist-put confpkg :defines
+               (confpkg--rough-extract-definitions
+                (plist-get confpkg :file))))
+  (dolist (confpkg confpkg--list)
+    (let ((after (plist-get confpkg :after))
+          requires)
+      (dolist (other-confpkg confpkg--list)
+        (when (and (not (eq other-confpkg confpkg))
+                   (confpkg--rough-uses-p (plist-get confpkg :file)
+                                          (plist-get other-confpkg :defines)))
+          (push (plist-get other-confpkg :package) requires)))
+      (when (and after (symbolp after))
+        (push after requires))
+      (plist-put confpkg :requires requires))))
+#+end_src
+
+Finally, we can use this information to edit the confpkg files to add the
+necessary ~require~ statements.
+
+#+begin_src emacs-lisp
+(defun confpkg-write-dependencies ()
+  (dolist (confpkg confpkg--list)
+    (when (plist-get confpkg :requires)
+      (with-temp-buffer
+        (setq buffer-file-name (plist-get confpkg :file))
+        (insert-file-contents buffer-file-name)
+        (re-search-forward "^;;; Code:\n")
+        (insert "\n")
+        (dolist (req (plist-get confpkg :requires))
+          (insert (format "(require '%s)\n" req)))
+        (write-region nil nil buffer-file-name)
+        (set-buffer-modified-p nil)))))
+#+end_src
+
+*** Commenting out ~package!~ statements
+
+It's easy enough to set ~package!~ statements to tangle to =packages.el=, however
+with our noweb ref approach they will /also/ go to the config files. This could be
+viewed as a problem, but I actually think it's rather nice to have the package
+information with the config. So, we can look for an immediate ~package!~ statement
+and simply comment it out.
+
+#+name: confpkg-strip-package-statements
+#+begin_src emacs-lisp
+(defun confpkg-comment-out-package-statements ()
+  (dolist (confpkg confpkg--list)
+    (with-temp-buffer
+      (setq buffer-file-name (plist-get confpkg :file))
+      (insert-file-contents buffer-file-name)
+      (goto-char (point-min))
+      (while (re-search-forward "^;;; Code:\n[[:space:]\n]*(\\(package!\\|unpin!\\) " nil t)
+        (let* ((start (progn (beginning-of-line) (point)))
+               (end (progn (forward-sexp 1)
+                           (if (looking-at "[\t ]*;.*")
+                               (line-end-position)
+                             (point))))
+               (contents (buffer-substring start end))
+               paste-start paste-end
+               (comment-start ";")
+               (comment-padding "   ")
+               (comment-end ""))
+          (delete-region start (1+ end))
+          (re-search-backward "^;;; Code:")
+          (beginning-of-line)
+          (insert ";;  Package statement:\n")
+          (setq paste-start (point))
+          (insert contents)
+          (setq paste-end (point))
+          (insert  "\n;;\n")
+          (comment-region paste-start paste-end 2)))
+      (when (buffer-modified-p)
+        (write-region nil nil buffer-file-name)
+        (set-buffer-modified-p nil)))))
+#+end_src
+
+*** Creating the config file
+
+After all the subconfig files have been tangled, we need to collect their
+content and put them together into =config.el=. For this, all that's needed is a
+function to go through the registered config groups and put their content in a
+tempbuffer. We can call this with the finalising step.
+
+#+name: confpkg-create-config
+#+begin_src emacs-lisp
+(defun confpkg-create-config ()
+  (let ((revert-without-query '("config\\.el"))
+        (keywords (org-collect-keywords '("AUTHOR" "EMAIL"))))
+    (with-temp-buffer
+      (insert
+       (format ";;; config.el -*- lexical-binding: t; -*-
+
+;; SPDX-FileCopyrightText: © 2020-%s %s <%s>
+;; SPDX-License-Identifier: MIT
+
+;; Generated at %s from the literate configuration.\n"
+               (format-time-string "%Y")
+               (cadr (assoc "AUTHOR" keywords))
+               (cadr (assoc "EMAIL" keywords))
+               (format-time-string "%FT%T%z")))
+      (mapc
+       (lambda (confpkg)
+         (insert
+          (with-temp-buffer
+            (insert-file-contents (plist-get confpkg :file))
+            (goto-char (point-min))
+            (narrow-to-region
+             (re-search-forward "^;;; Code:\n+")
+             (progn
+               (goto-char (point-max))
+               (re-search-backward (format "[^\n\t ][\n\t ]*\n[\t ]*(provide '%s)" (plist-get confpkg :package)))
+               (1+ (point))))
+            (goto-char (point-min))
+            (insert "\n;;:------------------------"
+                    "\n;;; " (plist-get confpkg :name)
+                    "\n;;:------------------------\n\n")
+            (when (plist-get confpkg :defines)
+              (insert ";; This block defines "
+                      (mapconcat
+                       (lambda (d) (format "`%s'" d))
+                       (plist-get confpkg :defines)
+                       ", ")
+                      ".")
+              (when (re-search-backward "\\([^, ]+\\), \\([^, ]+\\), \\([^, ]+\\).\\="
+                                        (line-beginning-position) t)
+                (replace-match "\\1, \\2, and \\3."))
+              (when (re-search-backward "\\([^, ]+\\), \\([^, ]+\\).\\="
+                                        (line-beginning-position) t)
+                (replace-match "\\1 and \\2."))
+              (insert "\n\n")
+              (forward-line -2)
+              (setq-local comment-start ";")
+              (fill-comment-paragraph)
+              (forward-paragraph 1)
+              (forward-line 1))
+            (if (equal (plist-get confpkg :package) "config-confpkg-timings")
+                (progn
+                  (goto-char (point-max))
+                  (insert "\n\n\
+(confpkg-create-record 'doom-pre-config (float-time (time-subtract (current-time) before-init-time)))
+(confpkg-start-record 'config)
+(confpkg-create-record 'config-defered 0.0 'config)
+(confpkg-create-record 'set-hooks 0.0 'config-defered)
+(confpkg-create-record 'load-hooks 0.0 'config-defered)
+(confpkg-create-record 'requires 0.0 'root)\n"))
+              (let ((after (plist-get confpkg :after))
+                    (name (replace-regexp-in-string
+                           "config--?" ""
+                           (plist-get confpkg :package))))
+                (when after
+                  (insert (format "(confpkg-with-record '%S\n"
+                                  (list (concat "hook: " name) 'set-hooks))
+                          (format (if (symbolp after) ; If single feature.
+                                      "  (with-eval-after-load '%s\n"
+                                    "  (after! %s\n")
+                                  after)))
+                (insert
+                 (format "(confpkg-with-record '%S\n"
+                         (list (concat "load: " name)
+                               (if after 'load-hooks 'config)))))
+              (goto-char (point-max))
+              (when (string-match-p ";" (thing-at-point 'line))
+                (insert "\n"))
+              (insert ")")
+              (when (plist-get confpkg :after)
+                (insert "))"))
+              (insert "\n"))
+            (buffer-string))))
+       (let ((confpkg-timings ;; Ensure timings is put first.
+              (cl-some (lambda (p) (and (equal (plist-get p :package) "config-confpkg-timings") p))
+                       confpkg--list)))
+         (append (list confpkg-timings)
+                 (nreverse (remove confpkg-timings confpkg--list)))))
+      (insert "\n(confpkg-finish-record 'config)\n\n;;; config.el ends here")
+      (write-region nil nil "config.el" nil :silent))))
+#+end_src
+
+Applying lexical binding to the config file is good for a number of reasons,
+among which it's (slightly) faster than dynamic binding (see [[https://nullprogram.com/blog/2016/12/22/][this blog post]] for
+more info).
+
+*** Reporting load time information
+
+#+call: confpkg("Confpkg timings")
+
+When generating the config we added a form to collect load-time information.
+
+#+begin_src emacs-lisp
+(defvar confpkg-load-time-tree (list (list 'root)))
+(defvar confpkg-record-branch (list 'root))
+(defvar confpkg-record-num 0)
+#+end_src
+
+It would be good to process ~confpkg-load-times~ at the end to make it more
+useful, and provide a function to display load time information from it. This is
+to aid in identification of confpkgs that take particularly long to load, and
+thus would benefit from some attention.
+
+To extract the per-confpkg load times, we can just take the difference in
+~(float-time)~ and exclude the first entry.
+
+#+begin_src emacs-lisp
+(defun confpkg-create-record (name elapsed &optional parent enclosing)
+  (let ((parent (assoc (or parent (car confpkg-record-branch))
+                       confpkg-load-time-tree))
+        (record (cons name (list (list 'self
+                                       :name (format "%s" name)
+                                       :num (cl-incf confpkg-record-num)
+                                       :elapsed elapsed
+                                       :enclosing enclosing)))))
+    (push record confpkg-load-time-tree)
+    (push record (cdr parent))
+    record))
+
+(defun confpkg-start-record (name &optional parent)
+  (let ((record (confpkg-create-record name 0.0e+NaN parent t)))
+    (plist-put (cdadr record) :start (float-time))
+    (push name confpkg-record-branch)
+    record))
+
+(defun confpkg-finish-record (name)
+  (let ((self-record (cdar (last (cdr (assoc name confpkg-load-time-tree))))))
+    (plist-put self-record :elapsed
+               (- (float-time) (plist-get self-record :start) 0.0))
+    (unless (equal (car confpkg-record-branch) name)
+      (message "Warning: Confpkg timing record expected to finish %S, instead found %S. %S"
+               name (car confpkg-record-branch) confpkg-record-branch))
+    (setq confpkg-record-branch (cdr confpkg-record-branch))))
+#+end_src
+
+A convenience macro could be nice to have.
+
+#+begin_src emacs-lisp
+(defmacro confpkg-with-record (name &rest body)
+  "Create a time record around BODY.
+The record must have a NAME."
+  (declare (indent 1))
+  (let ((name-val (make-symbol "name-val"))
+        (record-spec (make-symbol "record-spec")))
+    `(let* ((,name-val ,name)
+            (,record-spec (if (consp ,name-val) ,name-val (list ,name-val))))
+       (apply #'confpkg-start-record ,record-spec)
+       (unwind-protect
+           (progn ,@body)
+         (confpkg-finish-record (car ,record-spec))))))
+#+end_src
+
+It would also be nice to collect some other load-time-related information.
+
+#+begin_src emacs-lisp
+(defadvice! +require--log-timing-a (orig-fn feature &optional filename noerror)
+  :around #'require
+  (if (or (featurep feature)
+          (eq feature 'cus-start) ; HACK Why!?!
+          (assoc (format "require: %s" feature) confpkg-load-time-tree))
+      (funcall orig-fn feature filename noerror)
+    (confpkg-with-record (list (format "require: %s" feature)
+                               (and (eq (car confpkg-record-branch) 'root)
+                                    'requires))
+      (funcall orig-fn feature filename noerror))))
+#+end_src
+
+At last, we'll go to some pains to make a nice result tabulation function.
+
+I will readily admit that this function is absolutely horrible. I just spent an
+evening adding to it till it worked then stopped touching it. Maybe in the
+future I'll go back to it and try to clean up the implementation.
+
+#+begin_src emacs-lisp
+(defun confpkg-timings-report (&optional sort-p node)
+  "Display a report on load-time information.
+Supply SORT-P (or the universal argument) to sort the results.
+NODE defaults to the root node."
+  (interactive
+   (list (and current-prefix-arg t)))
+  (let ((buf (get-buffer-create "*Confpkg Load Time Report*"))
+        (depth 0)
+        num-pad name-pad max-time max-total-time max-depth)
+    (cl-labels
+        ((sort-records-by-time
+          (record)
+          (let ((self (assoc 'self record)))
+            (append (list self)
+                    (sort (nreverse (remove self (cdr record)))
+                          (lambda (a b)
+                            (> (or (plist-get (alist-get 'self a) :total) 0.0)
+                               (or (plist-get (alist-get 'self b) :total) 0.0)))))))
+         (print-record
+          (record)
+          (cond
+           ((eq (car record) 'self)
+            (insert
+             (propertize
+              (string-pad (number-to-string (plist-get (cdr record) :num)) num-pad)
+              'face 'font-lock-keyword-face)
+             " "
+             (propertize
+              (apply #'concat
+                     (make-list (1- depth) "• "))
+              'face 'font-lock-comment-face)
+             (string-pad (format "%s" (plist-get (cdr record) :name)) name-pad)
+             (make-string (* (- max-depth depth) 2) ?\s)
+             (propertize
+              (format "%.4fs" (plist-get (cdr record) :elapsed))
+              'face
+              (list :foreground
+                    (doom-blend 'orange 'green
+                                (/ (plist-get (cdr record) :elapsed) max-time))))
+             (if (= (plist-get (cdr record) :elapsed)
+                    (plist-get (cdr record) :total))
+                 ""
+               (concat "   (Σ="
+                       (propertize
+                        (format "%.3fs" (plist-get (cdr record) :total))
+                        'face
+                        (list :foreground
+                              (doom-blend 'orange 'green
+                                          (/ (plist-get (cdr record) :total) max-total-time))))
+                       ")"))
+             "\n"))
+           (t
+            (cl-incf depth)
+            (mapc
+             #'print-record
+             (if sort-p
+                 (sort-records-by-time record)
+               (reverse (cdr record))))
+            (cl-decf depth))))
+         (flatten-records
+          (records)
+          (if (eq (car records) 'self)
+              (list records)
+            (mapcan
+             #'flatten-records
+             (reverse (cdr records)))))
+         (tree-depth
+          (records &optional depth)
+          (if (eq (car records) 'self)
+              (or depth 0)
+            (1+ (cl-reduce #'max (cdr records) :key #'tree-depth))))
+         (mapreduceprop
+          (list map reduce prop)
+          (cl-reduce
+           reduce list
+           :key
+           (lambda (p) (funcall map (plist-get (cdr p) prop)))))
+         (elaborate-timings
+          (record)
+          (if (eq (car record) 'self)
+              (plist-get (cdr record) :elapsed)
+            (let ((total (cl-reduce #'+ (cdr record)
+                                    :key #'elaborate-timings))
+                  (self (cdr (assoc 'self record))))
+              (if (plist-get self :enclosing)
+                  (prog1
+                      (plist-get self :elapsed)
+                    (plist-put self :total (plist-get self :elapsed))
+                    (plist-put self :elapsed
+                               (- (* 2 (plist-get self :elapsed)) total)))
+                (plist-put self :total total)
+                total))))
+         (elaborated-timings
+          (record)
+          (let ((record (copy-tree record)))
+            (elaborate-timings record)
+            record)))
+      (let* ((tree
+              (elaborated-timings
+               (append '(root)
+                       (copy-tree
+                        (alist-get (or node 'root)
+                                   confpkg-load-time-tree
+                                   nil nil #'equal))
+                       '((self :num 0 :elapsed 0)))))
+             (flat-records
+              (cl-remove-if
+               (lambda (rec) (= (plist-get (cdr rec) :num) 0))
+               (flatten-records tree))))
+        (setq max-time (mapreduceprop flat-records #'identity #'max :elapsed)
+              max-total-time (mapreduceprop flat-records #'identity #'max :total)
+              name-pad (mapreduceprop flat-records #'length #'max :name)
+              num-pad (mapreduceprop flat-records
+                                     (lambda (n) (length (number-to-string n)))
+                                     #'max :num)
+              max-depth (tree-depth tree))
+        (with-current-buffer buf
+          (erase-buffer)
+          (setq-local outline-regexp "[0-9]+ *\\(?:• \\)*")
+          (outline-minor-mode 1)
+          (use-local-map (make-sparse-keymap))
+          (local-set-key "TAB" #'outline-toggle-children)
+          (local-set-key "\t" #'outline-toggle-children)
+          (local-set-key (kbd "<backtab>") #'outline-show-subtree)
+          (local-set-key (kbd "C-<iso-lefttab>")
+                         (eval `(cmd! (if current-prefix-arg
+                                          (outline-show-all)
+                                        (outline-hide-sublevels (+ ,num-pad 2))))))
+          (insert
+           (propertize
+            (concat (string-pad "#" num-pad) " "
+                    (string-pad "Confpkg"
+                                (+ name-pad (* 2 max-depth) -3))
+                    (format " Load Time (Σ=%.3fs)\n"
+                            (plist-get (cdr (assoc 'self tree)) :total)))
+            'face '(:inherit (tab-bar-tab bold) :extend t :underline t)))
+          (dolist (record (if sort-p
+                              (sort-records-by-time tree)
+                            (reverse (cdr tree))))
+            (unless (eq (car record) 'self)
+              (print-record record)))
+          (set-buffer-modified-p nil)
+          (goto-char (point-min)))
+        (pop-to-buffer buf)))))
+#+end_src
+
+*** Finalise
+
+At last, to clean up the content inserted by the babel calls we can just revert
+the buffer. As long as ~org-babel-pre-tangle-hook~ hasn't been modified,
+~save-buffer~ will be run at the start of the tangle process and so reverting will
+take us back to just before the tangle started.
+
+Since this is /the/ function added as the post-tangle hook, we also need to remove
+the function from the hook and call the =config.el= creation function.
+
+#+name: confpkg-finaliser
+#+begin_src emacs-lisp
+(defun confpkg-tangle-finalise ()
+  (remove-hook 'org-babel-tangle-finished-hook #'confpkg-tangle-finalise)
+  (revert-buffer t t t)
+  (confpkg-comment-out-package-statements)
+  (confpkg-annotate-list-dependencies)
+  (confpkg-create-config)
+  (confpkg-write-dependencies)
+  (message "Processed %s elisp files." (length confpkg--list)))
+#+end_src
+
+Within ~confpkg-tangle-finalise~ we carefully order each step so that
+the most important steps go first, to minimise the impact should a particular
+step fail.
 
 ** Personal Information
+
+#+call: confpkg()
 
 It's useful to have some basic personal information
 #+begin_src emacs-lisp
@@ -347,6 +1099,9 @@ my home machine is pretty safe, and my laptop is shutdown a lot.
 #+end_src
 
 ** Better defaults
+
+#+call: confpkg()
+
 *** Simple settings
 
 Browsing the web and seeing [[https://github.com/angrybacon/dotemacs/blob/master/dotemacs.org#use-better-defaults][angrybacon/dotemacs]] and comparing with the values
@@ -452,6 +1207,9 @@ For some reason this + the mixed pitch hook causes issues with hydra and so I'll
 just need to resort to =SPC b o= for now.
 
 ** Doom configuration
+
+#+call: confpkg("Doom")
+
 *** Modules
 :PROPERTIES:
 :header-args:emacs-lisp: :tangle no
@@ -464,7 +1222,7 @@ have flags applied to tweak their behaviour.
 
 #+name: init.el
 #+attr_html: :collapsed t
-#+begin_src emacs-lisp :tangle "init.el" :noweb no-export :noweb-prefix no :comments no
+#+begin_src emacs-lisp :tangle "init.el" :noweb no-export :noweb-ref none
 ;;; init.el -*- lexical-binding: t; -*-
 
 ;; This file controls what Doom modules are enabled and what order they load in.
@@ -507,7 +1265,8 @@ have flags applied to tweak their behaviour.
        <<doom-app>>
 
        :config
-       <<doom-config>>)
+       <<doom-config>>
+       )
 #+end_src
 
 **** Structure
@@ -767,13 +1526,13 @@ irc                          ; how neckbeards socialize
 Doom has support for multiple configuration profiles. For general usage, this
 isn't a particularly useful feature, but for niche use cases it's fantastic.
 
-#+begin_src emacs-lisp :tangle ~/.config/emacs/profiles.el
+#+begin_src emacs-lisp :tangle ~/.config/emacs/profiles.el :noweb-ref none
 ((orgdev (env ("DOOMDIR" . "~/.config/doom.orgdev"))))
 #+end_src
 
 **** Org development profile
 :PROPERTIES:
-:header-args:emacs-lisp+: :comments no
+:header-args:emacs-lisp: :noweb-ref none
 :END:
 
 For development purposes, it's handy to have a more minimal config without my
@@ -788,7 +1547,6 @@ near-minimal new config:
 #+end_src
 
 #+begin_src emacs-lisp :tangle ../doom.orgdev/packages.el :noweb no-export
-<<org-pkg-statement()>>
 (unpin! org-mode) ; there be bugs
 #+end_src
 
@@ -934,7 +1692,7 @@ command is run, so we can just enable evaluation by setting
 While we're at it, we should silence ~org-babel-execute-src-block~ to
 avoid polluting the output.
 
-#+begin_src emacs-lisp :tangle cli.el :comments no
+#+begin_src emacs-lisp :tangle cli.el :noweb-ref none
 ;;; cli.el -*- lexical-binding: t; -*-
 (setq org-confirm-babel-evaluate nil)
 
@@ -949,7 +1707,7 @@ avoid polluting the output.
 I think an elisp REPL sounds like a fun idea, even if not a particularly useful
 one 😛. We can do this by adding a new command in =cli.el=.
 
-#+begin_src emacs-lisp :tangle cli.el
+#+begin_src emacs-lisp :tangle cli.el :noweb-ref none
 (defcli! repl ((in-rlwrap-p ("--rl") "For internal use only."))
   "Start an elisp REPL."
   (require 'core-start)
@@ -1066,7 +1824,7 @@ Why not have a command to htmlize files? This is basically a little test of my
 engrave-faces package because it somehow seems to work without a GUI, while the
 htmlize package doesn't.
 
-#+begin_src emacs-lisp :tangle cli.el :comments no
+#+begin_src emacs-lisp :tangle cli.el :noweb-ref none
 (defcli! htmlize (file)
   "Export a FILE buffer to HTML."
 
@@ -1089,6 +1847,28 @@ htmlize package doesn't.
                         (org-show-all)))))
 
   (engrave-faces-html-file file))
+#+end_src
+
+*** Org buffer creation
+
+Let's make creating an Org buffer just that little bit easier.
+
+#+begin_src emacs-lisp
+(evil-define-command +evil-buffer-org-new (count file)
+  "Creates a new ORG buffer replacing the current window, optionally
+   editing a certain FILE"
+  :repeat nil
+  (interactive "P<f>")
+  (if file
+      (evil-edit file)
+    (let ((buffer (generate-new-buffer "*new org*")))
+      (set-window-buffer nil buffer)
+      (with-current-buffer buffer
+        (org-mode)))))
+
+(map! :leader
+      (:prefix "b"
+       :desc "New empty Org buffer" "o" #'+evil-buffer-org-new))
 #+end_src
 
 *** Dashboard quick actions
@@ -1129,8 +1909,17 @@ Now that the dashboard is so convenient, I'll want to make it easier to get to.
 #+end_src
 
 ** Other things
+
+# This stub for the shell setup scrip needs to appear before any
+# other setup shell source blocks.
+#+begin_src shell :exports none :comments no :tangle-mode (identity #o755)
+#!/usr/bin/env bash
+#+end_src
+
 *** Editor interaction
 **** Mouse buttons
+
+#+call: confpkg("Better jumper mouse")
 
 #+begin_src emacs-lisp
 (map! :n [mouse-8] #'better-jumper-jump-backward
@@ -1138,6 +1927,8 @@ Now that the dashboard is so convenient, I'll want to make it easier to get to.
 #+end_src
 
 *** Window title
+
+#+call: confpkg("Frame title")
 
 I'd like to have just the buffer name, then if applicable the project folder
 #+begin_src emacs-lisp
@@ -1159,6 +1950,8 @@ For example when I open my config file it the window will be titled =config.org 
 doom= then as soon as I make a change it will become =config.org ◉ doom=.
 
 *** Splash screen
+
+#+call: confpkg()
 
 Emacs can render an image as the splash screen, and [[https://github.com/MarioRicalde][@MarioRicalde]] came up with a
 cracker! He's also provided me with a nice Emacs-style /E/. I was using the
@@ -1465,6 +2258,8 @@ Lastly, while I'm not sure quite why it happens, but after a bit it seems that
 new Emacsclient frames start on the =*scratch*= buffer instead of the dashboard.
 I prefer the dashboard, so let's ensure that's always switched to in new frames.
 
+#+call: confpkg("Emacs daemon setup")
+
 #+name: daemon initialisation
 #+begin_src emacs-lisp
 (defun greedily-do-daemon-setup ()
@@ -1586,6 +2381,8 @@ alias et="e -t"
 
 *** Prompt to run setup script
 
+#+call: pkgconf("Setup script prompt")
+
 At various points in this config, content is conditionally tangled to
 =./setup.sh=. It's no good just putting content there if it isn't run though.
 To help remind me to run it when needed, let's add a little prompt when there's
@@ -1684,6 +2481,8 @@ Specify a ~:branch~ to install a package from a particular branch or tag.
 ** Convenience
 *** Avy
 
+#+call: confpkg("!Pkg avy")
+
 #+begin_quote
 From the =:config default= module.
 #+end_quote
@@ -1692,10 +2491,24 @@ From the =:config default= module.
 What a wonderful way to jump to buffer positions, and it uses the QWERTY
 home-row for jumping. Very convenient ... except I'm using Colemak.
 
-#+begin_src emacs-lisp :tangle (if (= 0 (call-process "sh" nil nil nil "-c" "dmesg | grep -q 'ErgoDox'")) "yes" "no")
+#+name: avy-colemak-setup
+#+begin_src emacs-lisp :noweb-ref none
 (after! avy
   ;; home row priorities: 8 6 4 5 - - 1 2 3 7
   (setq avy-keys '(?n ?e ?i ?s ?t ?r ?i ?a)))
+#+end_src
+
+Now let's just have this included when an ErgoDox is found via =dmesg=.
+
+#+name: avy-detect-colemak
+#+begin_src emacs-lisp :noweb no-export :noweb-ref none :noweb-prefix no
+(if (= 0 (call-process "sh" nil nil nil "-c" "dmesg | grep -q 'ErgoDox'"))
+    (pp '<<avy-colemak-setup>>)
+  ";; Avy: Colemak layout not detected (ErgoDox not mentioned in dmesg).")
+#+end_src
+
+#+begin_src emacs-lisp :noweb no-export
+<<avy-detect-colemak()>>
 #+end_src
 
 *** Rotate (window management)
@@ -1708,6 +2521,8 @@ sounds nice to me.
 #+end_src
 
 *** Emacs Everywhere
+
+#+call: confpkg("!Pkg emacs-everywhere")
 
 The name says it all. It's loaded and set up (a bit) by =:app everywhere=, however
 as I develop this I want the unpinned version I have as a submodule.
@@ -1742,6 +2557,8 @@ Doom module.
 
 *** Which-key
 
+#+call: confpkg("!Pkg which-key")
+
 #+begin_quote
 From the =:core packages= module.
 #+end_quote
@@ -1769,8 +2586,11 @@ let's change that, and do a few other similar tweaks while we're at it.
 ** Tools
 *** Abbrev
 
+#+call: confpkg("Multi-mode abbrev")
+
 Thanks to [[https://emacs.stackexchange.com/questions/45462/use-a-single-abbrev-table-for-multiple-modes/45476#45476][use a single abbrev-table for multiple modes? - Emacs Stack Exchange]] I
 have the following.
+
 #+begin_src emacs-lisp :tangle no
 (add-hook 'doom-first-buffer-hook
           (defun +abbrev-file-name ()
@@ -1779,6 +2599,8 @@ have the following.
 #+end_src
 
 *** Very large files
+
+#+call: confpkg("!Pkg VLF")
 
 The /very large files/ mode loads large files in chunks, allowing one to open
 ridiculously large files.
@@ -1812,7 +2634,7 @@ original behaviour with src_elisp{(setq vlf-application 'always)} (which I can't
 imagine using anyway).
 
 #+name: vlf-largefile-prompt
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp :noweb-ref none
 (defadvice! +files--ask-about-large-file-vlf (size op-type filename offer-raw)
   "Like `files--ask-user-about-large-file', but with support for `vlf'."
   :override #'files--ask-user-about-large-file
@@ -1846,7 +2668,7 @@ for an /overall/ line number, and by tracking chunk's cumulative line numbers we
 can implement this behaviour fairly easily.
 
 #+name: vlf-linenum-offset
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp :noweb-ref none
 (defvar-local +vlf-cumulative-linenum '((0 . 0))
   "An alist keeping track of the cumulative line number.")
 
@@ -1871,7 +2693,7 @@ of a chunk usually wraps the point to the beginning of the chunk, instead of
 moving to the next chunk.
 
 #+name: vlf-search-chunking
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp :noweb-ref none
 (defun +vlf-next-chunk-or-start ()
   (if (= vlf-file-size vlf-end-pos)
       (vlf-jump-to-chunk 1)
@@ -1897,6 +2719,8 @@ Unfortunately, since evil-search doesn't have an analogue to
 
 *** Eros
 
+#+call: confpkg("!Pkg Eros")
+
 #+begin_quote
 From the =:tools eval= module.
 #+end_quote
@@ -1908,6 +2732,8 @@ could be slightly nicer though.
 #+end_src
 
 *** EVIL
+
+#+call: confpkg("!Pkg evil")
 
 #+begin_quote
 From the =:editor evil= module.
@@ -1932,11 +2758,14 @@ contributes a typing delay. I'm not sure it's much, but it is an extra
 ~pre-command-hook~ that I don't benefit from, so...
 It seems that there's a dedicated package for this, so instead of just disabling
 the mode on startup, let's prevent installation of the package.
-#+begin_src emacs-lisp :tangle packages.el
+
+#+begin_src emacs-lisp :tangle packages.el :noweb-ref none
 (package! evil-escape :disable t)
 #+end_src
 
 *** Consult
+
+#+call: confpkg("!Pkg Consult")
 
 #+begin_quote
 From the =:completion vertico= module.
@@ -1952,9 +2781,8 @@ already clear, and there's no need for a different face.
 #+end_src
 
 *** Magit
-:PROPERTIES:
-:header-args:emacs-lisp: :tangle no :noweb-ref magit-tweaks
-:END:
+
+#+call: confpkg("!Pkg Magit")
 
 #+begin_quote
 From the =:tools magit= module.
@@ -1966,12 +2794,16 @@ Magit is great as-is, thanks for making such a lovely package [[https://github.c
 
 There's still a room for a little tweaking though...
 
-#+begin_src emacs-lisp :tangle yes :noweb no-export :noweb-prefix no :noweb-ref nil
+#+begin_src emacs-lisp :noweb no-export :noweb-prefix no
+<<magit-toplevel>>
 (after! magit
   <<magit-tweaks>>)
 #+end_src
 
 **** Easier forge remotes
+:PROPERTIES:
+:header-args:emacs-lisp: :noweb-ref magit-tweaks
+:END:
 
 When creating a new project, I often want the remote to be to my personal gitea
 instance. Let's make that a bit more streamlined by introducing a quick-entry
@@ -2028,10 +2860,13 @@ the pre-filled remote url use ssh.
 #+end_src
 
 **** Commit message templates
+:PROPERTIES:
+:header-args:emacs-lisp: :noweb-ref magit-tweaks
+:END:
 
 One little thing I want to add is some per-project commit message templates.
 
-#+begin_src emacs-lisp :tangle yes :noweb-ref none
+#+begin_src emacs-lisp :noweb-ref magit-toplevel
 (defvar +magit-project-commit-templates-alist nil
   "Alist of toplevel dirs and template hf strings/functions.")
 #+end_src
@@ -2111,7 +2946,7 @@ heading line selection for elisp and Org files.
   xfuncname = "^(\\*+ +.*)$"
 #+end_src
 
-*** Magit delta
+**** Magit delta
 
 [[https://github.com/dandavison/delta/][Delta]] is a git diff syntax highlighter written in rust. The author also wrote a
 package to hook this into the magit diff view (which don't get any syntax
@@ -2123,19 +2958,20 @@ cargo install git-delta
 #+end_src
 
 Now we can make use of the package for this.
-#+begin_src emacs-lisp :tangle packages.el
+#+begin_src emacs-lisp :tangle packages.el :noweb-ref none
 ;; (package! magit-delta :recipe (:host github :repo "dandavison/magit-delta") :pin "5fc7dbddcfacfe46d3fd876172ad02a9ab6ac616")
 #+end_src
 
 All that's left is to hook it into magit
-#+begin_src emacs-lisp
-;; (after! magit
-;;   (magit-delta-mode +1))
+#+begin_src emacs-lisp :noweb-ref none
+;; (magit-delta-mode +1)
 #+end_src
 Unfortunately this currently seems to mess things up, which is something I'll
 want to look into later.
 
 *** Smerge
+
+#+call: confpkg("!Pkg Smerge")
 
 For repeated operations, a hydra would be helpful. But I prefer transient.
 #+begin_src emacs-lisp
@@ -2170,12 +3006,15 @@ For repeated operations, a hydra would be helpful. But I prefer transient.
 
 *** Company
 
+#+call: confpkg("!Pkg Company")
+
 #+begin_quote
 From the =:completion company= module.
 #+end_quote
 
 It's nice to have completions almost all the time, in my opinion. Key strokes
 are just waiting to be saved!
+
 #+begin_src emacs-lisp
 (after! company
   (setq company-idle-delay 0.5
@@ -2183,8 +3022,10 @@ are just waiting to be saved!
   (setq company-show-numbers t)
   (add-hook 'evil-normal-state-entry-hook #'company-abort)) ;; make aborting less annoying.
 #+end_src
+
 Now, the improvements from ~precedent~ are mostly from remembering history, so
 let's improve that memory.
+
 #+begin_src emacs-lisp
 (setq-default history-length 1000)
 (setq-default prescient-history-length 1000)
@@ -2214,12 +3055,15 @@ We then configure the dictionary we're using in [[*Ispell][Ispell]].
 
 *** Projectile
 
+#+call: confpkg("!Pkg Projectile")
+
 #+begin_quote
 From the =:core packages= module.
 #+end_quote
 
 Looking at documentation via =SPC h f= and =SPC h v= and looking at the source can
 add package src directories to projectile. This isn't desirable in my opinion.
+
 #+begin_src emacs-lisp
 (setq projectile-ignored-projects
       (list "~/" "/tmp" (expand-file-name "straight/repos" doom-local-dir)))
@@ -2263,6 +3107,8 @@ cd aspell6-en-custom
 
 **** Configuration
 
+#+call: confpkg("!Pkg Ispell")
+
 #+begin_src emacs-lisp
 (setq ispell-dictionary "en-custom")
 #+end_src
@@ -2281,6 +3127,8 @@ nearby (also means that if I change the 'main' dictionary I keep my addition).
 #+end_src
 
 *** TRAMP
+
+#+call: confpkg("TRAMP")
 
 Another lovely Emacs feature, TRAMP stands for /Transparent Remote Access,
 Multiple Protocol/. In brief, it's a lovely way to wander around outside your
@@ -2329,6 +3177,8 @@ That's no problem though, we just need to help TRAMP find them.
 
 *** Auto activating snippets
 
+#+call: confpkg("!Pkg AAS")
+
 Sometimes pressing =TAB= is just too much.
 #+begin_src emacs-lisp :tangle packages.el
 (package! aas :recipe (:host github :repo "ymarco/auto-activating-snippets")
@@ -2342,7 +3192,10 @@ Sometimes pressing =TAB= is just too much.
 
 *** Screenshot
 
+#+call: confpkg("!Pkg Screenshot")
+
 This makes it a breeze to take lovely screenshots.
+
 #+begin_src emacs-lisp :tangle packages.el
 (package! screenshot :recipe (:local-repo "lisp/screenshot"))
 #+end_src
@@ -2352,6 +3205,7 @@ This makes it a breeze to take lovely screenshots.
 
 Some light configuring is all we need, so we can make use of the [[https://github.com/Calinou/0x0][0x0]] wrapper
 file uploading script (which I've renamed to ~upload~).
+
 #+begin_src emacs-lisp
 (use-package! screenshot
   :defer t
@@ -2359,6 +3213,8 @@ file uploading script (which I've renamed to ~upload~).
 #+end_src
 
 *** Etrace
+
+#+call: confpkg("!Pkg etrace")
 
 The /Emacs Lisp Profiler/ (ELP) does a nice job recording information, but it
 isn't the best for looking at results. =etrace= converts ELP's results to the
@@ -2378,6 +3234,8 @@ investigation.
 
 *** YASnippet
 
+#+call: confpkg("!Pkg YASnippet")
+
 #+begin_quote
 From the =:editor snippets= module.
 #+end_quote
@@ -2388,6 +3246,8 @@ Nested snippets are good, so let's enable that.
 #+end_src
 
 *** String inflection
+
+#+call: confpkg("!Pkg String Inflection")
 
 For when you want to change the case pattern for a symbol.
 #+begin_src emacs-lisp :tangle packages.el
@@ -2426,10 +3286,11 @@ For when you want to change the case pattern for a symbol.
 
 *** Smart parentheses
 
+#+call: confpkg("!Pkg SmartParens")
+
 #+begin_quote
 From the =:core packages= module.
 #+end_quote
-
 
 #+begin_src emacs-lisp
 (sp-local-pair
@@ -2440,6 +3301,8 @@ From the =:core packages= module.
 
 ** Visuals
 *** Info colours
+
+#+call: confpkg("!Pkg Info colors")
 
 This makes manual pages nicer to look at by adding variable pitch fontification
 and colouring 🙂.
@@ -2480,6 +3343,8 @@ so I'd like to make sure we have a recent version.
 #+end_src
 
 *** Theme magic
+
+#+call: confpkg("!Pkg Theme magic")
 
 With all our fancy Emacs themes, my terminal is missing out!
 #+begin_src emacs-lisp :tangle packages.el
@@ -2525,6 +3390,8 @@ lightened versions --- let's do that.
 #+end_src
 
 *** Emojify
+
+#+call: confpkg("!Pkg emojify")
 
 #+begin_quote
 From the =:ui emoji= module.
@@ -2596,6 +3463,8 @@ Email and IRC.
 
 *** Doom modeline
 
+#+call: confpkg("!Pkg Doom modeline")
+
 #+begin_quote
 From the =:ui modeline= module.
 #+end_quote
@@ -2651,6 +3520,8 @@ icon. Then we'll redefine two functions used to generate the modeline.
 
 *** Keycast
 
+#+call: confpkg("!Pkg Keycast")
+
 For some reason, I find myself demoing Emacs every now and then. Showing what
 keyboard stuff I'm doing on-screen seems helpful. While [[https://gitlab.com/screenkey/screenkey][screenkey]] does exist,
 having something that doesn't cover up screen content is nice.
@@ -2685,6 +3556,8 @@ Let's just make sure this is lazy-loaded appropriately.
 #+end_src
 
 *** Screencast
+
+#+call: confpkg("!Pkg Screencast")
 
 In a similar manner to [[Keycast]], [[https://gitlab.com/ambrevar/emacs-gif-screencast][gif-screencast]] may come in handy.
 #+begin_src emacs-lisp :tangle packages.el
@@ -2729,10 +3602,11 @@ theme.
 
 *** Mixed pitch
 
+#+call: confpkg("!Pkg mixed pitch")
+
 #+begin_quote
 From the =:ui zen= module.
 #+end_quote
-
 
 We'd like to use mixed pitch in certain modes. If we simply add a hook, when
 directly opening a file with (a new) Emacs =mixed-pitch-mode= runs before UI
@@ -2755,20 +3629,17 @@ Also immediately enables `mixed-pitch-modes' if currently in one of the modes."
 #+end_src
 
 As mixed pitch uses the variable =mixed-pitch-face=, we can create a new function
-to apply mixed pitch with a serif face instead of the default. This was created
-for writeroom mode.
+to apply mixed pitch with a serif face instead of the default (see the
+subsequent face definition). This was created for writeroom mode.
 
 #+begin_src emacs-lisp
 (autoload #'mixed-pitch-serif-mode "mixed-pitch"
   "Change the default face of the current buffer to a serifed variable pitch, while keeping some faces fixed pitch." t)
 
+(setq! variable-pitch-serif-font (font-spec :family "Alegreya" :size 27))
+
 (after! mixed-pitch
-  (defface variable-pitch-serif
-    '((t (:family "serif")))
-    "A variable-pitch face with serifs."
-    :group 'basic-faces)
   (setq mixed-pitch-set-height t)
-  (setq variable-pitch-serif-font (font-spec :family "Alegreya" :size 27))
   (set-face-attribute 'variable-pitch-serif nil :font variable-pitch-serif-font)
   (defun mixed-pitch-serif-mode (&optional arg)
     "Change the default face of the current buffer to a serifed variable pitch, while keeping some faces fixed pitch."
@@ -2791,7 +3662,34 @@ Thankfully, it isn't to hard to add these to the ~composition-function-table~.
 (set-char-table-range composition-function-table ?T '(["\\(?:Th\\)" 0 font-shape-gstring]))
 #+end_src
 
+**** Variable pitch serif font
+
+#+call: confpkg()
+
+It would be nice if we were able to make use of a serif version of the
+=variable-pitch= face. Since this doesn't already exist, let's create it.
+
+#+begin_src emacs-lisp
+(defface variable-pitch-serif
+    '((t (:family "serif")))
+    "A variable-pitch face with serifs."
+    :group 'basic-faces)
+#+end_src
+
+For ease of use, let's also set up an easy way of setting the ~:font~ attribute.
+
+#+begin_src emacs-lisp
+(defcustom variable-pitch-serif-font (font-spec :family "serif")
+  "The font face used for `variable-pitch-serif'."
+  :group 'basic-faces
+  :set (lambda (symbol value)
+         (set-face-attribute 'variable-pitch-serif nil :font value)
+         (set-default-toplevel-value symbol value)))
+#+end_src
+
 *** Marginalia
+
+#+call: confpkg("!Pkg Marginalia")
 
 #+begin_quote
 Part of the =:completion vertico= module.
@@ -2849,10 +3747,11 @@ shadow)=, but I don't like that.
 
 *** Centaur Tabs
 
+#+call: confpkg("!Pkg Centaur Tabs")
+
 #+begin_quote
 From the =:ui tabs= module.
 #+end_quote
-
 
 We want to make the tabs a nice, comfy size (~36~), with icons. The modifier
 marker is nice, but the particular default Unicode one causes a lag spike, so
@@ -2863,6 +3762,7 @@ turn on ~x-underline-at-decent~ though. For some reason this didn't seem to work
 inside the src_elisp{(after! ... )} block ¯\_(ツ)_/¯.
 Then let's change the font to a sans serif, but the default one doesn't fit too
 well somehow, so let's switch to 'P22 Underground Book'; it looks much nicer.
+
 #+begin_src emacs-lisp
 (after! centaur-tabs
   (centaur-tabs-mode -1)
@@ -2878,10 +3778,11 @@ well somehow, so let's switch to 'P22 Underground Book'; it looks much nicer.
 
 *** All the icons
 
+#+call: confpkg("!Pkg All the Icons")
+
 #+begin_quote
 From the =:core packages= module.
 #+end_quote
-
 
 =all-the-icons= does a generally great job giving file names icons. One minor
 niggle I have is that when /I/ open a =.m= file, it's much more likely to be Matlab
@@ -2893,6 +3794,8 @@ than Objective-C. As such, it'll be switching the icon associated with =.m=.
 #+end_src
 
 *** Prettier page breaks
+
+#+call: confpkg("!Pkg page break lines")
 
 In some files, =^L= appears as a page break character. This isn't that visually
 appealing, and Steve Purcell has been nice enough to make a package to display
@@ -2915,6 +3818,8 @@ these as horizontal rules.
 #+end_src
 
 *** Writeroom
+
+#+call: confpkg("Writeroom")
 
 #+begin_quote
 From the =:ui zen= module.
@@ -2989,6 +3894,8 @@ tweaks. Namely:
 
 *** Treemacs
 
+#+call: confpkg("!Pkg treemacs")
+
 #+begin_quote
 From the =:ui treemacs= module.
 #+end_quote
@@ -3051,6 +3958,8 @@ Now, we just identify the files in question.
 
 ** Frivolities
 *** xkcd
+
+#+call: confpkg("XKCD")
 
 XKCD comics are fun.
 #+begin_src emacs-lisp :tangle packages.el
@@ -3343,6 +4252,8 @@ SQL can be either the emacsql vector representation, or a string."
 
 *** Selectric
 
+#+call: confpkg("!Pkg Selectric")
+
 Every so often, you want everyone else to /know/ that you're typing, or just to
 amuse oneself. Introducing: typewriter sounds!
 #+begin_src emacs-lisp :tangle packages.el
@@ -3355,6 +4266,8 @@ amuse oneself. Introducing: typewriter sounds!
 #+end_src
 
 *** Wttrin
+
+#+call: confpkg("!Pkg Wttrin")
 
 Hey, let's get the weather in here while we're at it.
 Unfortunately this seems slightly unmaintained ([[https://github.com/bcbcarl/emacs-wttrin/pulls][few open bugfix PRs]]) so let's
@@ -3369,6 +4282,8 @@ roll our [[file:lisp/wttrin/wttrin.el][own version]].
 #+end_src
 
 *** Spray
+
+#+call: confpkg("!Pkg Spray")
 
 Why not flash words on the screen. Why not --- hey, it could be fun.
 #+begin_src emacs-lisp :tangle packages.el
@@ -3406,6 +4321,8 @@ we're at it.
 
 *** Elcord
 
+#+call: confpkg("!Pkg Elcord")
+
 What's even the point of using Emacs unless you're constantly telling everyone
 about it?
 #+begin_src emacs-lisp :tangle packages.el
@@ -3422,6 +4339,8 @@ about it?
 ** File types
 *** Systemd
 
+#+call: confpkg("!Pkg Systemd")
+
 For editing systemd unit files
 #+begin_src emacs-lisp :tangle packages.el
 (package! systemd :pin "b6ae63a236605b1c5e1069f7d3afe06ae32a7bae")
@@ -3434,6 +4353,8 @@ For editing systemd unit files
 
 * Applications
 ** Ebooks
+
+#+call: confpkg()
 
 [[xkcd:548]]
 
@@ -3601,17 +4522,10 @@ Then, to actually read the ebooks we use =nov=.
 
 ** Calculator
 
+#+call: confpkg()
+
 Emacs includes the venerable =calc=, which is a pretty impressive RPN (Reverse
 Polish Notation) calculator. However, we can do a bit to improve the experience.
-
-*** Defaults
-
-Any sane person prefers radians and exact values.
-
-#+begin_src emacs-lisp
-(setq calc-angle-mode 'rad  ; radians are rad
-      calc-symbolic-mode t) ; keeps expressions like \sqrt{2} irrational for as long as possible
-#+end_src
 
 *** CalcTeX
 
@@ -3669,6 +4583,15 @@ everyone else!?
     (message "CalcTeX: Building dvichop binary")
     (let ((default-directory (file-name-directory calctex-dvichop-bin)))
       (call-process "make" nil nil nil))))
+#+end_src
+
+*** Defaults
+
+Any sane person prefers radians and exact values.
+
+#+begin_src emacs-lisp
+(setq calc-angle-mode 'rad  ; radians are rad
+      calc-symbolic-mode t) ; keeps expressions like \sqrt{2} irrational for as long as possible
 #+end_src
 
 *** Embedded calc
@@ -3730,6 +4653,8 @@ panel.
 #+end_src
 
 ** IRC
+
+#+call: confpkg()
 
 =circe= is a client for IRC in Emacs (hey, isn't that a nice project
 name+acronym), and a greek enchantress who turned humans into animals.
@@ -4024,6 +4949,8 @@ Now, some actual emojis to use.
 
 ** Newsfeed
 
+#+call: confpkg()
+
 RSS feeds are still a thing. Why not make use of them with =elfeed=.
 I really like what [[https://github.com/fuxialexander/doom-emacs-private-xfu/tree/master/modules/app/rss][fuxialexander]] has going on, but I don't think I need a custom
 module. Let's just try to patch on the main things I like the look of.
@@ -4250,6 +5177,8 @@ module. Let's just try to patch on the main things I like the look of.
 
 ** Dictionary
 
+#+call: confpkg(needs="sdcv")
+
 Doom already loads =define-word=, and provides it's own definition service using
 [[https://github.com/gromnitsky/wordnut][wordnut]]. However, using an offline dictionary possess a few compelling
 advantages, namely:
@@ -4274,7 +5203,7 @@ painless switch.
 
 We start off by loading =lexic=, then we'll integrate it into pre-existing
 definition functionality (like ~+lookup/dictionary-definition~).
-#+begin_src emacs-lisp :tangle (if (executable-find "sdcv") "yes" "no")
+#+begin_src emacs-lisp
 (use-package! lexic
   :commands lexic-search lexic-list-dictionary
   :config
@@ -4298,7 +5227,7 @@ definition functionality (like ~+lookup/dictionary-definition~).
 #+end_src
 
 Now let's use this instead of wordnet.
-#+begin_src emacs-lisp :tangle (if (executable-find "sdcv") "yes" "no")
+#+begin_src emacs-lisp
 (defadvice! +lookup/dictionary-definition-lexic (identifier &optional arg)
   "Look up the definition of the word at point (or selection) using `lexic-search'."
   :override #'+lookup/dictionary-definition
@@ -4326,6 +5255,8 @@ fi
 #+end_src
 
 ** Mail
+
+#+call: confpkg()
 
 [[xkcd:1467]]
 
@@ -4378,58 +5309,57 @@ Let's start off by handling the elisp side of things
 
 **** Rebuild mail index while using mu4e
 
-#+begin_src emacs-lisp
-(after! mu4e
-  (defvar mu4e-reindex-request-file "/tmp/mu_reindex_now"
-    "Location of the reindex request, signaled by existance")
-  (defvar mu4e-reindex-request-min-seperation 5.0
-    "Don't refresh again until this many second have elapsed.
+#+begin_src emacs-lisp :noweb-ref mu4e-conf
+(defvar mu4e-reindex-request-file "/tmp/mu_reindex_now"
+  "Location of the reindex request, signaled by existance")
+(defvar mu4e-reindex-request-min-seperation 5.0
+  "Don't refresh again until this many second have elapsed.
 Prevents a series of redisplays from being called (when set to an appropriate value)")
 
-  (defvar mu4e-reindex-request--file-watcher nil)
-  (defvar mu4e-reindex-request--file-just-deleted nil)
-  (defvar mu4e-reindex-request--last-time 0)
+(defvar mu4e-reindex-request--file-watcher nil)
+(defvar mu4e-reindex-request--file-just-deleted nil)
+(defvar mu4e-reindex-request--last-time 0)
 
-  (defun mu4e-reindex-request--add-watcher ()
-    (setq mu4e-reindex-request--file-just-deleted nil)
-    (setq mu4e-reindex-request--file-watcher
-          (file-notify-add-watch mu4e-reindex-request-file
-                                 '(change)
-                                 #'mu4e-file-reindex-request)))
+(defun mu4e-reindex-request--add-watcher ()
+  (setq mu4e-reindex-request--file-just-deleted nil)
+  (setq mu4e-reindex-request--file-watcher
+        (file-notify-add-watch mu4e-reindex-request-file
+                               '(change)
+                               #'mu4e-file-reindex-request)))
 
-  (defadvice! mu4e-stop-watching-for-reindex-request ()
-    :after #'mu4e--server-kill
-    (if mu4e-reindex-request--file-watcher
-        (file-notify-rm-watch mu4e-reindex-request--file-watcher)))
+(defadvice! mu4e-stop-watching-for-reindex-request ()
+  :after #'mu4e--server-kill
+  (if mu4e-reindex-request--file-watcher
+      (file-notify-rm-watch mu4e-reindex-request--file-watcher)))
 
-  (defadvice! mu4e-watch-for-reindex-request ()
-    :after #'mu4e--server-start
-    (mu4e-stop-watching-for-reindex-request)
-    (when (file-exists-p mu4e-reindex-request-file)
-      (delete-file mu4e-reindex-request-file))
-    (mu4e-reindex-request--add-watcher))
+(defadvice! mu4e-watch-for-reindex-request ()
+  :after #'mu4e--server-start
+  (mu4e-stop-watching-for-reindex-request)
+  (when (file-exists-p mu4e-reindex-request-file)
+    (delete-file mu4e-reindex-request-file))
+  (mu4e-reindex-request--add-watcher))
 
-  (defun mu4e-file-reindex-request (event)
-    "Act based on the existance of `mu4e-reindex-request-file'"
-    (if mu4e-reindex-request--file-just-deleted
-        (mu4e-reindex-request--add-watcher)
-      (when (equal (nth 1 event) 'created)
-        (delete-file mu4e-reindex-request-file)
-        (setq mu4e-reindex-request--file-just-deleted t)
-        (mu4e-reindex-maybe t))))
+(defun mu4e-file-reindex-request (event)
+  "Act based on the existance of `mu4e-reindex-request-file'"
+  (if mu4e-reindex-request--file-just-deleted
+      (mu4e-reindex-request--add-watcher)
+    (when (equal (nth 1 event) 'created)
+      (delete-file mu4e-reindex-request-file)
+      (setq mu4e-reindex-request--file-just-deleted t)
+      (mu4e-reindex-maybe t))))
 
-  (defun mu4e-reindex-maybe (&optional new-request)
-    "Run `mu4e--server-index' if it's been more than
+(defun mu4e-reindex-maybe (&optional new-request)
+  "Run `mu4e--server-index' if it's been more than
 `mu4e-reindex-request-min-seperation'seconds since the last request,"
-    (let ((time-since-last-request (- (float-time)
-                                      mu4e-reindex-request--last-time)))
+  (let ((time-since-last-request (- (float-time)
+                                    mu4e-reindex-request--last-time)))
+    (when new-request
+      (setq mu4e-reindex-request--last-time (float-time)))
+    (if (> time-since-last-request mu4e-reindex-request-min-seperation)
+        (mu4e--server-index nil t)
       (when new-request
-        (setq mu4e-reindex-request--last-time (float-time)))
-      (if (> time-since-last-request mu4e-reindex-request-min-seperation)
-          (mu4e--server-index nil t)
-        (when new-request
-          (run-at-time (* 1.1 mu4e-reindex-request-min-seperation) nil
-                       #'mu4e-reindex-maybe))))))
+        (run-at-time (* 1.1 mu4e-reindex-request-min-seperation) nil
+                     #'mu4e-reindex-maybe)))))
 #+end_src
 
 **** Config transcoding & service management
@@ -4974,9 +5904,6 @@ LD_LIBRARY_PATH=/usr/local/lib exec /usr/local/bin/msmtp "$@"
 #+end_src
 
 *** Mu4e
-:PROPERTIES:
-:header-args:emacs-lisp: :tangle no :noweb-ref mu4e-conf
-:END:
 
 Webmail clients are nice and all, but I still don't believe that SPAs in my
 browser can replaced desktop apps ... sorry Gmail. I'm also liking google less
@@ -4997,23 +5924,30 @@ to possess a similarly strong feature set --- and modifies the mail itself (I.e.
 information is accessible without the database). =Mu4e= also seems to have a large
 user base, which tends to correlate with better support and attention.
 
-As I installed mu4e from source, I need to add the =/usr/local/= loadpath so Mu4e has a chance of loading
-#+begin_src emacs-lisp :tangle (if (file-directory-p "/usr/local/share/emacs/site-lisp/mu4e") "yes" "no")
-(add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu4e")
-#+end_src
+If I install mu4e from source, I need to add the =/usr/local/= loadpath so Mu4e
+has a chance of loading. Alternatively, I may need to add the =/usr/share/= path.
 
-Alternatively, I may need to add the =/usr/share/= path.
-#+begin_src emacs-lisp :tangle (if (file-directory-p "/usr/share/emacs/site-lisp/mu4e") "yes" "no")
-(add-to-list 'load-path "/usr/share/emacs/site-lisp/mu4e")
+#+name: add-mu4e-load-path
+#+begin_src emacs-lisp :noweb-ref none
+(cond
+ ((file-directory-p "/usr/local/share/emacs/site-lisp/mu4e")
+  (quote (add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu4e")))
+ ((file-directory-p "/usr/share/emacs/site-lisp/mu4e")
+  (quote (add-to-list 'load-path "/usr/share/emacs/site-lisp/mu4e"))))
 #+end_src
 
 Let's also just shove all the Elisp code here in an src_elisp{(after! ...)} block.
-#+begin_src emacs-lisp :noweb no-export :tangle yes :noweb-prefix no :noweb-ref nil
+#+begin_src emacs-lisp :noweb no-export :noweb-prefix no
+<<add-mu4e-load-path()>>
+
 (after! mu4e
   <<mu4e-conf>>)
 #+end_src
 
 **** Viewing Mail
+:PROPERTIES:
+:header-args:emacs-lisp: :noweb-ref mu4e-conf
+:END:
 
 There seem to be some advantages with using Gnus' article view (such as inline
 images), and judging from [[https://github.com/djcb/mu/pull/1442#issuecomment-591695814][djcb/mu!1442 (comment)]] this seems to be the 'way of
@@ -5058,6 +5992,9 @@ We'll also use a nicer alert icon
 #+end_src
 
 **** Sending Mail
+:PROPERTIES:
+:header-args:emacs-lisp: :noweb-ref mu4e-conf
+:END:
 
 Let's send emails too.
 #+begin_src emacs-lisp
@@ -5182,6 +6119,9 @@ aware of.
 #+end_src
 
 **** Working with the Org mailing list
+:PROPERTIES:
+:header-args:emacs-lisp: :noweb-ref mu4e-conf
+:END:
 ***** Adding =X-Woof= headers
 
 I'm fairly active on the Org mailing list (ML). The Org ML has a linked
@@ -5400,8 +6340,11 @@ minor tweaks.
 ** General
 *** File Templates
 
+#+call: confpkg()
+
 For some file types, we overwrite defaults in the [[file:./snippets][snippets]] directory, others
 need to have a template assigned.
+
 #+begin_src emacs-lisp
 (set-file-template! "\\.tex$" :trigger "__" :mode 'latex-mode)
 (set-file-template! "\\.org$" :trigger "__" :mode 'org-mode)
@@ -5409,11 +6352,13 @@ need to have a template assigned.
 #+end_src
 
 ** Plaintext
+
+#+call: confpkg()
+
 *** Ansi colours
 
-It's nice to see ANSI colour codes displayed. However, until Emacs 28 it's not
-possible to do this without modifying the buffer, so let's condition this block
-on that.
+It's nice to see ANSI colour codes displayed, however we don't want to disrupt
+ANSI codes in Org src blocks.
 
 #+begin_src emacs-lisp
 (after! text-mode
@@ -5473,7 +6418,6 @@ numbers in text mode.
 ** Org
 :PROPERTIES:
 :CUSTOM_ID: org
-:header-args:emacs-lisp: :tangle no :noweb-ref org-conf
 :END:
 
 :intro:
@@ -5538,13 +6482,6 @@ figure.png╶─╧─▶ PROJECT.ORG ▶───╴filters╶───╧─�
 #+end_example
 :end:
 
-Finally, because this section is fairly expensive to initialise, we'll wrap it
-in an src_elisp{(after! ...)} block.
-#+begin_src emacs-lisp :noweb no-export :tangle yes :noweb-prefix no :noweb-ref nil
-(after! org
-  <<org-conf>>)
-#+end_src
-
 *** System config
 **** Mime types
 
@@ -5588,10 +6525,6 @@ Then adding a regex for it to =~/.config/git/config=
 #+end_src
 
 *** Packages
-:PROPERTIES:
-:header-args:emacs-lisp: :tangle packages.el :comments no
-:END:
-
 ****  Org itself
 
 There are actually three possible package statements I may want to use for Org.
@@ -5608,7 +6541,7 @@ To account for this situation properly, we need a short script to determine the
 correct package statement needed.
 
 #+name: org-pkg-statement
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp :noweb-ref none
 (or (require 'doom (expand-file-name "lisp/doom.el"
                                      (or (bound-and-true-p doom-emacs-dir)
                                          user-emacs-directory)))
@@ -5640,7 +6573,7 @@ correct package statement needed.
       :pin nil)))
 #+end_src
 
-#+begin_src emacs-lisp :noweb no-export
+#+begin_src emacs-lisp :tangle packages.el :noweb no-export
 <<org-pkg-statement()>>
 (unpin! org-mode) ; there be bugs
 (package! org-contrib
@@ -5652,16 +6585,18 @@ correct package statement needed.
 **** Visuals
 ***** Org Modern
 
+#+call: confpkg("!Pkg org-modern")
+
 Fontifying =org-mode= buffers to be as pretty as possible is of paramount importance,
 and Minad's lovely =org-modern= goes a long way in this regard.
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle packages.el
 (package! org-modern :pin "537e6b75e38bc0eff083c390c257098c9fc9ab49")
 #+end_src
 
 ...with a touch of configuration...
 
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
 (use-package! org-modern
   :hook (org-mode . org-modern-mode)
   :config
@@ -5745,15 +6680,17 @@ spell-check face ignore list
 
 ***** Emphasis markers
 
+#+call: confpkg("!Pkg org-appear")
+
 While ~org-hide-emphasis-markers~ is very nice, it can sometimes make edits which
 occur at the border a bit more fiddley. We can improve this situation without
 sacrificing visual amenities with the =org-appear= package.
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle packages.el
 (package! org-appear :recipe (:host github :repo "awth13/org-appear")
   :pin "60ba267c5da336e75e603f8c7ab3f44e6f4e4dac")
 #+end_src
 
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
 (use-package! org-appear
   :hook (org-mode . org-appear-mode)
   :config
@@ -5767,9 +6704,11 @@ sacrificing visual amenities with the =org-appear= package.
 
 ***** Heading structure
 
+#+call: confpkg("!Pkg org-ol-tree")
+
 Speaking of headlines, a nice package for viewing and managing the heading
 structure has come to my attention.
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle packages.el
 (package! org-ol-tree :recipe (:host github :repo "Townk/org-ol-tree")
   :pin "207c748aa5fea8626be619e8c55bdb1c16118c25")
 #+end_src
@@ -5777,7 +6716,7 @@ structure has come to my attention.
 We'll bind this to =O= on the org-mode localleader, and manually apply a [[https://github.com/Townk/org-ol-tree/pull/13][PR
 recognising the pgtk window system]].
 
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
 (use-package! org-ol-tree
   :commands org-ol-tree
   :config
@@ -5795,16 +6734,16 @@ recognising the pgtk window system]].
 #+end_src
 
 **** Extra functionality
-
-
 ***** Julia support
 
+#+call: confpkg("!Pkg ob-julia")
+
 =ob-julia= is currently a bit borked, but there's an effort to improve this.
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle packages.el
 (package! ob-julia :recipe (:local-repo "lisp/ob-julia" :files ("*.el" "julia")))
 #+end_src
 
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
 (use-package! ob-julia
   :commands org-babel-execute:julia
   :config
@@ -5820,25 +6759,29 @@ recognising the pgtk window system]].
 
 ***** HTTP requests
 
+#+call: confpkg("!Pkg ob-http")
+
 I like the idea of being able to make HTTP requests with Babel.
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle packages.el
 (package! ob-http :pin "b1428ea2a63bcb510e7382a1bf5fe82b19c104a7")
 #+end_src
 
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
 (use-package! ob-http
   :commands org-babel-execute:http)
 #+end_src
 
 ***** Transclusion
 
+#+call: confpkg("!Pkg org-transclusion")
+
 There's a really cool package in development to /transclude/ Org document content.
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle packages.el
 (package! org-transclusion :recipe (:host github :repo "nobiot/org-transclusion")
   :pin "5cb94542e18722bf72a281441e944a8039b5301f")
 #+end_src
 
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
 (use-package! org-transclusion
   :commands org-transclusion-mode
   :init
@@ -5848,52 +6791,60 @@ There's a really cool package in development to /transclude/ Org document conten
 
 ***** Heading graph
 
+#+call: confpkg("!Pkg org-graph-view")
+
 Came across this and ... it's cool
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle packages.el
 (package! org-graph-view :recipe (:host github :repo "alphapapa/org-graph-view") :pin "233c6708c1f37fc60604de49ca192497aef39757")
 #+end_src
 
 ***** Cooking recipes
 
+#+call: confpkg("!Pkg org-chef")
+
 I *need* this in my life. It take a URL to a recipe from a common site, and
 inserts an org-ified version at point. Isn't that just great.
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle packages.el
 (package! org-chef :pin "6a786e77e67a715b3cd4f5128b59d501614928af")
 #+end_src
 
 Loading after org seems a bit premature. Let's just load it when we try to use
 it, either by command or in a capture template.
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
 (use-package! org-chef
   :commands (org-chef-insert-recipe org-chef-get-recipe-from-url))
 #+end_src
 
 ***** Importing with Pandoc
 
+#+call: confpkg("!Pkg org-pandoc-import")
+
 Sometimes I'm given non-org files, that's very sad. Luckily Pandoc offers a way
 to make that right again, and this package makes that even easier to do.
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle packages.el
 (package! org-pandoc-import :recipe
   (:local-repo "lisp/org-pandoc-import" :files ("*.el" "filters" "preprocessors")))
 #+end_src
 
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
 (use-package! org-pandoc-import
   :after org)
 #+end_src
 
 ***** Glossaries and more
 
+#+call: confpkg("!Pkg org-glossary")
+
 For glossary-type entries, there's a nice package for this I'm developing.
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle packages.el
 (package! org-glossary :recipe (:local-repo "lisp/org-glossary"))
 #+end_src
 
 Other than hooking this to =org-mode=, we also want to set a collection root and
 improve the LaTeX usage references with =cleveref='s ~\labelcpageref~ command.
 
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
 (use-package! org-glossary
   :hook (org-mode . org-glossary-mode)
   :config
@@ -5914,11 +6865,13 @@ improve the LaTeX usage references with =cleveref='s ~\labelcpageref~ command.
 
 ***** Document comparison
 
+#+call: confpkg("!Pkg orgdiff")
+
 It's quite nice to compare Org files, and the richest way to compare content is
 probably =latexdiff=. There are a few annoying steps involved here, and so I've
 written a package to streamline the process.
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle packages.el
 (package! orgdiff :recipe (:local-repo "lisp/orgdiff"))
 #+end_src
 
@@ -5926,7 +6879,7 @@ The only little annoyance is the fact that =latexdiff= uses ~#FF0000~ and ~#0000
 the red/blue change indication colours. We can make this a bit nicer by
 post-processing the =latexdiff= result.
 
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
 (use-package! orgdiff
   :defer t
   :config
@@ -5949,11 +6902,14 @@ post-processing the =latexdiff= result.
 
 ***** Org music
 
+#+call: confpkg("!Pkg org-music")
+
 It's nice to be able to link to music
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle packages.el
 (package! org-music :recipe (:local-repo "lisp/org-music"))
 #+end_src
-#+begin_src emacs-lisp :tangle yes
+
+#+begin_src emacs-lisp
 (use-package! org-music
   :after org
   :config
@@ -5963,6 +6919,8 @@ It's nice to be able to link to music
 #+end_src
 
 *** Behaviour
+
+#+call: confpkg("Org Behaviour", after="org")
 
 [[xkcd:1319]]
 
@@ -6011,25 +6969,6 @@ There also seem to be a few keybindings which use =hjkl=, but miss arrow key equ
 #+end_src
 
 **** Extra functionality
-***** Org buffer creation
-
-Let's also make creating an org buffer just that little bit easier.
-#+begin_src emacs-lisp :tangle yes :noweb-ref none
-(evil-define-command evil-buffer-org-new (count file)
-  "Creates a new ORG buffer replacing the current window, optionally
-   editing a certain FILE"
-  :repeat nil
-  (interactive "P<f>")
-  (if file
-      (evil-edit file)
-    (let ((buffer (generate-new-buffer "*new org*")))
-      (set-window-buffer nil buffer)
-      (with-current-buffer buffer
-        (org-mode)))))
-(map! :leader
-      (:prefix "b"
-       :desc "New empty ORG buffer" "o" #'evil-buffer-org-new))
-#+end_src
 
 ***** The utility of zero-width spaces
 
@@ -6090,6 +7029,8 @@ Now we'll just add that under the Org mode link localleader for convenience.
 
 ***** Citation
 
+#+call: confpkg("Org Citation")
+
 #+begin_quote
 Extending the =:tools biblio= module.
 #+end_quote
@@ -6099,7 +7040,7 @@ module gives a fairly decent basic setup, but it would be nice to take it a bit
 further. This mostly consists of tweaking settings, but there is one extra
 package I'll grab for prettier in-buffer citations.
 
-#+begin_src emacs-lisp :noweb-ref none :tangle packages.el
+#+begin_src emacs-lisp :tangle packages.el
 (package! org-cite-csl-activate :recipe (:host github :repo "andras-simonyi/org-cite-csl-activate") :pin "4fdb61c0f83b5d6db0d07dfd64d2a177fd46e931")
 #+end_src
 
@@ -6110,7 +7051,7 @@ Unfortunately, there's currently a potential for undesirable buffer
 modifications, so we'll put all the activation code behind a function we can
 call when we want it.
 
-#+begin_src emacs-lisp :noweb-ref none :tangle yes
+#+begin_src emacs-lisp
 (use-package! oc-csl-activate
   :after oc
   :config
@@ -6135,7 +7076,7 @@ Now that =oc-csl-activate= is set up, let's go ahead and customise some of the
 packages already loaded. For starters, we can make use of the my Zotero files
 with =citar=, and make the symbols a bit prettier.
 
-#+begin_src emacs-lisp :noweb-ref none :tangle yes
+#+begin_src emacs-lisp
 (after! citar
   (setq citar-bibliography
         (let ((libfile-search-names '("library.json" "Library.json" "library.bib" "Library.bib"))
@@ -6154,7 +7095,7 @@ with =citar=, and make the symbols a bit prettier.
 
 We can also make the Zotero CSL styles available to use.
 
-#+begin_src emacs-lisp :noweb-ref none :tangle yes
+#+begin_src emacs-lisp
 (after! oc-csl
   (setq org-cite-csl-styles-dir "~/Zotero/styles"))
 #+end_src
@@ -6162,7 +7103,7 @@ We can also make the Zotero CSL styles available to use.
 Since CSL works so nicely everywhere, we might as well use it as the default
 citation export processor for everything.
 
-#+begin_src emacs-lisp :noweb-ref none :tangle yes
+#+begin_src emacs-lisp
 (after! oc
   (setq org-cite-export-processors '((t csl))))
 #+end_src
@@ -6170,7 +7111,7 @@ citation export processor for everything.
 Then, for convenience we'll cap things off by putting the citation command under
 Org's localleader.
 
-#+begin_src emacs-lisp :noweb-ref none :tangle yes
+#+begin_src emacs-lisp
 (map! :after org
       :map org-mode-map
       :localleader
@@ -6180,7 +7121,7 @@ Org's localleader.
 Lastly, just in case I come across any old citations of mine, I think it would
 be nice to have a function to convert =org-ref= citations to =org-cite= forms.
 
-#+begin_src emacs-lisp :noweb-ref none :tangle yes
+#+begin_src emacs-lisp
 (after! oc
   (defun org-ref-to-org-cite ()
     "Attempt to convert org-ref citations to org-cite syntax."
@@ -6297,12 +7238,14 @@ functionality as in LaTeX. Let's try viewing possible output files with this.
 
 **** Super agenda
 
+#+call: confpkg("!Pkg Org Super Agenda")
+
 The agenda is nice, but a souped up version is nicer.
-#+begin_src emacs-lisp :noweb-ref none :tangle packages.el
+#+begin_src emacs-lisp :tangle packages.el
 (package! org-super-agenda :pin "3108bc3f725818f0e868520d2c243abe9acbef4e")
 #+end_src
 
-#+begin_src emacs-lisp :noweb-ref none :tangle yes
+#+begin_src emacs-lisp
 (use-package! org-super-agenda
   :commands org-super-agenda-mode)
 #+end_src
@@ -6395,7 +7338,7 @@ set up org-capture.
   :pin "8464809754f3316d5a2fdcf3c01ce1e8736b323b")
 #+end_src
 
-#+begin_src emacs-lisp :noweb-ref none :tangle yes
+#+begin_src emacs-lisp
 (use-package! doct
   :commands doct)
 #+end_src
@@ -6683,17 +7626,22 @@ no modeline.
 #+end_src
 
 **** Roam
+
+#+call: confpkg("!Pkg org-roam", after="org-roam")
+
 ***** Basic settings
 
 I'll just set this to be within =Organisation= folder for now, in the future it
 could be worth seeing if I could hook this up to a [[https://nextcloud.com/][Nextcloud]] instance.
-#+begin_src emacs-lisp :noweb-ref none :tangle yes
+
+#+begin_src emacs-lisp
 (setq org-roam-directory "~/Desktop/TEC/Organisation/Roam/")
 #+end_src
 
 That said, if the directory doesn't exist we likely don't want to be using roam.
 Since we don't want to trigger errors (which will happen as soon as roam tries
 to initialise), let's not load roam.
+
 #+begin_src emacs-lisp :noweb-ref none :tangle (if (file-exists-p "~/Desktop/TEC/Organisation/Roam/") "no" "packages.el")
 (package! org-roam :disable t)
 #+end_src
@@ -6702,6 +7650,7 @@ to initialise), let's not load roam.
 
 All those numbers! It's messy. Let's adjust this in a similar way that I have in
 the [[*Window title][Window title]].
+
 #+begin_src emacs-lisp
 (defadvice! doom-modeline--buffer-file-name-roam-aware-a (orig-fun)
   :around #'doom-modeline-buffer-file-name ; takes no args
@@ -6715,14 +7664,17 @@ the [[*Window title][Window title]].
 
 ***** Graph view
 
+#+call: confpkg("!Pkg org-roam-ui")
+
 Org-roam is nice by itself, but there are so /extra/ nice packages which integrate
 with it.
+
 #+begin_src emacs-lisp :noweb-ref none :tangle packages.el
 (package! org-roam-ui :recipe (:host github :repo "org-roam/org-roam-ui" :files ("*.el" "out")) :pin "9474a254390b1e42488a1801fed5826b32a8030b")
 (package! websocket :pin "82b370602fa0158670b1c6c769f223159affce9b") ; dependency of `org-roam-ui'
 #+end_src
 
-#+begin_src emacs-lisp :noweb-ref none :tangle yes
+#+begin_src emacs-lisp
 (use-package! websocket
   :after org-roam)
 
@@ -7291,6 +8243,8 @@ cause issues. Let's make their failure less eventful.
 
 **** Flycheck with org-lint
 
+#+call: confpkg("Flycheck org-lint", after="org")
+
 Org may be simple, but that doesn't mean there's no such thing as malformed Org.
 Thankfully, malformed Org is a much less annoying affair than malformed zipped
 XML (looks at DOCX/ODT...), particularly because there's a rather helpful little
@@ -7389,6 +8343,8 @@ much.
 #+end_src
 
 *** Visuals
+
+#+call: confpkg("Org Visuals", after="org")
 
 Here I try to do two things: improve the styling of the various documents, via
 font changes etc, and also propagate colours from the current theme.
@@ -7624,14 +8580,16 @@ passed, and so we can override the background as discussed above.
 
 ***** More eager rendering
 
+#+call: confpkg("!Pkg org-fragtog")
+
 What's better than syntax-highlighted LaTeX is /rendered/ LaTeX though, and we can
 have this be performed automatically with =org-fragtog=.
 
-#+begin_src emacs-lisp :noweb-ref none :tangle packages.el
+#+begin_src emacs-lisp :tangle packages.el
 (package! org-fragtog :pin "680606189d5d28039e6f9301b55ec80517a24005")
 #+end_src
 
-#+begin_src emacs-lisp :noweb-ref none :tangle yes
+#+begin_src emacs-lisp
 (use-package! org-fragtog
   :hook (org-mode . org-fragtog-mode))
 #+end_src
@@ -7928,6 +8886,9 @@ set palette defined ( 0 '%s',\
 #+end_src
 
 *** Exporting
+
+#+call: confpkg("Org exports", after="ox")
+
 **** General settings
 
 By default Org only exports the first three levels of headings as ... headings.
@@ -8048,14 +9009,14 @@ can tweak ~+org-babel-mode-alist~ when exporting.
 #+end_src
 
 *** HTML Export
-:PROPERTIES:
-:header-args:emacs-lisp: :noweb-ref ox-html-conf
-:END:
+
+#+call: confpkg("ox-html", after="ox-html")
 
 I want to tweak a whole bunch of things. While I'll want my tweaks almost all
 the time, occasionally I may want to test how something turns out using a more
 default config. With that in mind, a global minor mode seems like the most
 appropriate architecture to use.
+
 #+begin_src emacs-lisp
 (define-minor-mode org-fancy-html-export-mode
   "Toggle my fabulous org export tweaks. While this mode itself does a little bit,
@@ -8077,15 +9038,6 @@ the vast majority of the change in behaviour comes from switch statements in:
     (setq org-html-style-default org-html-style-plain
           org-html-meta-tags #'org-html-meta-tags-default
           org-html-checkbox-type 'html)))
-#+end_src
-
-There are quite a few instances where I want to modify variables defined in
-=ox-html=, so we'll wrap the contents of this section in a
-src_elisp{(after! ox-html ...)} block.
-#+begin_src emacs-lisp :noweb no-export :noweb-ref org-conf
-(after! ox-html
-  <<ox-html-conf>>
-)
 #+end_src
 
 **** Extra header content
@@ -8805,6 +9757,9 @@ MathJax = {
 #+end_src
 
 *** LaTeX Export
+
+#+call: confpkg("ox-latex", after="ox-latex")
+
 **** Compiling
 
 By default Org uses ~pdflatex~ \times 3 + ~bibtex~. This simply won't do in our
@@ -9748,7 +10703,7 @@ exporting that as LaTeX commands.
 (package! engrave-faces :recipe (:local-repo "lisp/engrave-faces"))
 #+end_src
 
-#+begin_src emacs-lisp :noweb-ref none :tangle yes
+#+begin_src emacs-lisp
 (use-package! engrave-faces-latex
   :after ox-latex)
 #+end_src
@@ -10210,15 +11165,17 @@ I'd quite like to also recognise =->= and =<-=, so let's set come up with some a
 
 **** Chameleon --- aka. match theme
 
+#+call: confpkg("!Pkg ox-chameleon")
+
 Once I had the idea of having the look of the LaTeX document produced match the
 current Emacs theme, I was enraptured. The result is the pseudo-class ~chameleon~,
 which I have implemented in the package =ox-chameleon=.
 
-#+begin_src emacs-lisp :noweb-ref none :tangle packages.el
+#+begin_src emacs-lisp :tangle packages.el
 (package! ox-chameleon :recipe (:local-repo "lisp/ox-chameleon"))
 #+end_src
 
-#+begin_src emacs-lisp :noweb-ref none :tangle yes
+#+begin_src emacs-lisp
 (use-package! ox-chameleon
   :after ox)
 #+end_src
@@ -10358,6 +11315,8 @@ export to a PDF.
 
 *** Beamer Export
 
+#+call: confpkg("ox-beamer", after="ox-beamer")
+
 It's nice to use a different theme
 #+begin_src emacs-lisp
 (setq org-beamer-theme "[progressbar=foot]metropolis")
@@ -10407,6 +11366,8 @@ frame from ~1~ to ~2~.
 
 *** Reveal export
 
+#+call: confpkg("!Pkg org-re-reveal", after="org-re-reveal")
+
 By default reveal is rather nice, there are just a few tweaks that I consider a
 good idea.
 
@@ -10417,6 +11378,8 @@ good idea.
 #+end_src
 
 *** ASCII export
+
+#+call: confpkg("ox-ascii", after="ox-ascii")
 
 To start with, why settle for ASCII when UTF-8 exists?
 #+begin_src emacs-lisp
@@ -10474,7 +11437,12 @@ information."
 #+end_src
 
 *** Markdown Export
+
+#+call: confpkg("ox-md", after="ox-md")
+
 **** GFM
+
+#+call: confpkg("!Pkg ox-gfm")
 
 Because of the /[[https://github.com/commonmark/commonmark-spec/wiki/markdown-flavors][lovely variety in markdown implementations]]/ there isn't actually
 such a thing a standard table spec ... or standard anything really. Because
@@ -10486,7 +11454,7 @@ features that GitHub has.
 (package! ox-gfm :pin "99f93011b069e02b37c9660b8fcb45dab086a07f")
 #+end_src
 
-#+begin_src emacs-lisp :noweb-ref none :tangle yes
+#+begin_src emacs-lisp
 (use-package! ox-gfm
   :after ox)
 #+end_src
@@ -10567,6 +11535,8 @@ contextual information."
 
 *** Babel
 
+#+call: confpkg("Org Babel")
+
 Doom lazy-loads babel languages, with is lovely.
 It also pulls in [[https://github.com/astahlman/ob-async][ob-async]], which is nice, but it would be even better if it was
 used by default.
@@ -10616,6 +11586,8 @@ Not added when either:
 
 *** ESS
 
+#+call: confpkg("Org ESS")
+
 We don't want ~R~ evaluation to hang the editor, hence
 #+begin_src emacs-lisp
 (setq ess-eval-visibly 'nowait)
@@ -10645,6 +11617,8 @@ the language identifier, not =ess-jags=.
 #+end_src
 
 ** LaTeX
+
+#+call: confpkg()
 
 [[xkcd:1301]]
 
@@ -11004,6 +11978,8 @@ but more convenient, like =;=.
 
 **** LAAS
 
+#+call: confpkg("!Pkg LAAS")
+
 This makes use of =aas= (/Auto Activating Snippets/) for CDLaTeX-like symbol input.
 
 #+begin_src emacs-lisp :tangle packages.el
@@ -11040,6 +12016,7 @@ In case of Emacs28,
 
 Since I'm using =mypyls=, as suggested in [[file:~/.config/emacs/modules/lang/python/README.org::*Language Server Protocol Support][:lang python LSP support]] I'll tweak the
 priority of =mypyls=
+
 #+begin_src emacs-lisp
 (after! lsp-python-ms
   (set-lsp-priority! 'mspyls 1))
@@ -11056,7 +12033,7 @@ priority of =mypyls=
                          :pre-build ("make")))
 #+end_src
 
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
 ;; (use-package paper
 ;;   ;; :mode ("\\.pdf\\'"  . paper-mode)
 ;;   ;; :mode ("\\.epub\\'"  . paper-mode)
@@ -11066,6 +12043,8 @@ priority of =mypyls=
 #+end_src
 
 *** Terminal viewing
+
+#+call: confpkg("!Pkg pdftotext")
 
 Sometimes I'm in a terminal and I still want to see the content. Additionally,
 sometimes I'd like to act on the textual content and so would like a plaintext version.
@@ -11077,9 +12056,6 @@ I've integrated this into a little package, =pdftotext.el=.
 
 The output can be slightly nicer without spelling errors, and with prettier page
 feeds (=^L= by default).
-
-#+begin_src emacs-lisp
-#+end_src
 
 This is very nice, now we just need to associate it with =.pdf= files, and make
 sure =pdf-tools= doesn't take priority.
@@ -11105,6 +12081,9 @@ Lastly, whenever Emacs is non-graphical (i.e. a TUI), we want to use this by def
 #+end_src
 
 ** R
+
+#+call: confpkg("R lang")
+
 *** Editor Visuals
 
 #+begin_src emacs-lisp
@@ -11135,14 +12114,15 @@ Lastly, whenever Emacs is non-graphical (i.e. a TUI), we want to use this by def
 
 ** Julia
 
+#+call: confpkg(after="julia-mode")
+
 As mentioned in [[https://github.com/non-Jedi/lsp-julia/issues/35][lsp-julia#35]], =lsp-mode= seems to serve an invalid response to the
 Julia server. The pseudo-fix is rather simple at least
 #+begin_src emacs-lisp
-(after! julia-mode
-  (add-hook 'julia-mode-hook #'rainbow-delimiters-mode-enable)
-  (add-hook! 'julia-mode-hook
-    (setq-local lsp-enable-folding t
-                lsp-folding-range-limit 100)))
+(add-hook 'julia-mode-hook #'rainbow-delimiters-mode-enable)
+(add-hook! 'julia-mode-hook
+  (setq-local lsp-enable-folding t
+              lsp-folding-range-limit 100))
 #+end_src
 
 Julia is also missing a mime type, but that's not too hard to fix.
@@ -11150,7 +12130,7 @@ Julia is also missing a mime type, but that's not too hard to fix.
 #+begin_src xml :tangle ~/.local/share/mime/packages/julia.xml :mkdirp yes :comments no
 <mime-info xmlns='http://www.freedesktop.org/standards/shared-mime-info'>
   <mime-type type="text/julia">
-    <comment>Julia source code</comment>
+    <comment>Julia source sode</comment>
     <glob pattern="*.jl"/>
     <alias type="text/julia"/>
   </mime-type>
@@ -11162,6 +12142,8 @@ update-mime-database ~/.local/share/mime
 #+end_src
 
 ** Graphviz
+
+#+call: confpkg("!Pkg graphviz-dot-mode")
 
 Graphviz is a nice method of visualising simple graphs, based on plaintext
 =.dot= / =.gv= files.
@@ -11183,6 +12165,8 @@ Graphviz is a nice method of visualising simple graphs, based on plaintext
 #+end_src
 
 ** Markdown
+
+#+call: confpkg()
 
 Most of the time when I write markdown, it's going into some app/website which
 will do it's own line wrapping, hence we /only/ want to use visual line wrapping. No hard stuff.
@@ -11208,6 +12192,8 @@ sixth greyed out. Since the sixth level is so small, I'll turn up the boldness a
 #+end_src
 
 ** Beancount
+
+#+call: confpkg("!Pkg Beancount")
 
 There are a number of rather compelling advantages to [[https://plaintextaccounting.org/][plain text accounting]],
 with [[https://www.ledger-cli.org/][ledger]] being the most obvious example. However, [[https://github.com/beancount/beancount][beancount]], a more recent
