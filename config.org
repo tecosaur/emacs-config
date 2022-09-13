@@ -9643,7 +9643,7 @@ This will accomplish the following:
   \\thispagestyle{empty}
   \\hyphenpenalty=10000 % hyphens look bad in titles
   \\renewcommand{\\baselinestretch}{1.1}
-  \\let\\oldtoday\\today
+  \\NewCommandCopy{\\oldtoday}{\\today}
   \\renewcommand{\\today}{\\LARGE\\number\\year\\\\\\large%
     \\ifcase \\month \\or Jan\\or Feb\\or Mar\\or Apr\\or May \\or Jun\\or Jul\\or Aug\\or Sep\\or Oct\\or Nov\\or Dec\\fi
     ~\\number\\day}
