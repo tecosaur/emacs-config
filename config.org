@@ -10288,7 +10288,7 @@ export to a PDF.
 (defun check-for-latex-packages (packages)
   (delq nil (mapcar (lambda (package)
                       (unless
-                          (= 0 (shell-command (format "kpsewhich %s.sty" package)))
+                          (= 0 (call-process "kpsewhich" nil nil nil (concat package ".sty")))
                         package))
                     packages)))
 
@@ -10300,7 +10300,7 @@ export to a PDF.
       '(defun check-for-latex-packages (packages)
          (delq nil (mapcar (lambda (package)
                              (unless
-                                 (= 0 (shell-command (format "kpsewhich %s.sty" package)))
+                                 (= 0 (call-process "kpsewhich" nil nil nil (concat package ".sty")))
                                package))
                            packages))))
      (pp-to-string
