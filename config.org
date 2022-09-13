@@ -1798,7 +1798,8 @@ To make VLF available without delaying startup, we'll just load it in quiet mome
   <<vlf-largefile-prompt>>
   :config
   (advice-remove 'abort-if-file-too-large #'ad-Advice-abort-if-file-too-large)
-  <<vlf-linenum-offset>>)
+  <<vlf-linenum-offset>>
+  <<vlf-search-chunking>>)
 #+end_src
 
 Now, there are one or two tweaks worth applying to VLF. For starters, it goes to
@@ -1857,7 +1858,7 @@ can implement this behaviour fairly easily.
                                  (count-lines (point-min) (point-max))))
             +vlf-cumulative-linenum))))
 
-(add-hook 'vlf-after-chunk-update-hook #'+vlf-log-poses-a)
+(add-hook 'vlf-after-chunk-update-hook #'+vlf-update-linum)
 
 ;; Since this only works with absolute line numbers, let's make sure we use them.
 (add-hook! 'vlf-mode-hook (setq-local display-line-numbers t))
@@ -1868,6 +1869,7 @@ other than =M-x occur=. This is because trying to go to the next match at the en
 of a chunk usually wraps the point to the beginning of the chunk, instead of
 moving to the next chunk.
 
+#+name: vlf-search-chunking
 #+begin_src emacs-lisp :tangle no
 (defun +vlf-next-chunk-or-start ()
   (if (= vlf-file-size vlf-end-pos)
