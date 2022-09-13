@@ -6089,44 +6089,6 @@ Now we'll just add that under the Org mode link localleader for convenience.
 
 ***** Citation
 
-Occasionally I want to cite something, and =org-ref= is /the/ package for that.
-
-Unfortunately, it ignores the ~file = {...}~ =.bib= keys though. Let's fix that.
-I separate files on =;=, which may just be a Zotero/BetterBibLaTeX thing, but it's
-a good idea in my case at least.
-
-#+begin_src emacs-lisp :noweb-ref none
-(use-package! org-ref
-  ;; :after org
-  :defer t
-  :config
-  (defadvice! org-ref-open-bibtex-pdf-a ()
-    :override #'org-ref-open-bibtex-pdf
-    (save-excursion
-      (bibtex-beginning-of-entry)
-      (let* ((bibtex-expand-strings t)
-             (entry (bibtex-parse-entry t))
-             (key (reftex-get-bib-field "=key=" entry))
-             (pdf (or
-                   (car (-filter (lambda (f) (string-match-p "\\.pdf$" f))
-                                 (split-string (reftex-get-bib-field "file" entry) ";")))
-                   (funcall org-ref-get-pdf-filename-function key))))
-        (if (file-exists-p pdf)
-            (org-open-file pdf)
-          (ding)))))
-  (defadvice! org-ref-open-pdf-at-point-a ()
-    "Open the pdf for bibtex key under point if it exists."
-    :override #'org-ref-open-pdf-at-point
-    (interactive)
-    (let* ((results (org-ref-get-bibtex-key-and-file))
-           (key (car results))
-           (pdf-file (funcall org-ref-get-pdf-filename-function key)))
-      (with-current-buffer (find-file-noselect (cdr results))
-        (save-excursion
-          (bibtex-search-entry (car results))
-          (org-ref-open-bibtex-pdf))))))
-#+end_src
-
 There's also the new =org-cite= though. It would be nice to try that out.
 
 To improve =org-cite=.
