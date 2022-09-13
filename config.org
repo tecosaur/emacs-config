@@ -761,6 +761,41 @@ irc                          ; how neckbeards socialize
 ;;twitter                    ; twitter client https://twitter.com/vnought
 #+end_src
 
+*** Profiles
+
+Doom has support for multiple configuration profiles. For general usage, this
+isn't a particularly useful feature, but for niche use cases it's fantastic.
+
+#+begin_src emacs-lisp :tangle ~/.config/emacs/profiles.el
+((orgdev (env ("DOOMDIR" . "~/.config/doom.orgdev"))))
+#+end_src
+
+**** Org development profile
+:PROPERTIES:
+:header-args:emacs-lisp+: :comments no
+:END:
+
+For development purposes, it's handy to have a more minimal config without my
+many customisations and interacting packages. Let's go ahead and create a
+near-minimal new config:
+
+#+begin_src emacs-lisp :tangle ../doom.orgdev/init.el :mkdirp yes
+;;; init.el -*- lexical-binding: t; -*-
+(doom! :completion vertico
+       :editor evil
+       :config (default +bindings))
+#+end_src
+
+#+begin_src emacs-lisp :tangle ../doom.orgdev/packages.el :noweb no-export
+<<org-pkg-statement()>>
+(unpin! org-mode) ; there be bugs
+#+end_src
+
+#+begin_src emacs-lisp :tangle ../doom.orgdev/config.el
+(require 'org)
+(load-theme 'modus-operandi t)
+#+end_src
+
 *** Visual Settings
 **** Font Face
 
