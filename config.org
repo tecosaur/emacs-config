@@ -2472,6 +2472,12 @@ so I'd like to make sure we have a recent version.
 (package! modus-themes :pin "5d35fed1ab7d2d59f64b2c5dcf77c05e64a0322e")
 #+end_src
 
+*** Spacemacs themes
+
+#+begin_src emacs-lisp :tangle packages.el
+(package! spacemacs-theme :pin "e04d1f21107a1565861625209bb9c46a7aa43cc5")
+#+end_src
+
 *** Theme magic
 
 With all our fancy Emacs themes, my terminal is missing out!
