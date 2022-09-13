@@ -5602,9 +5602,12 @@ correct package statement needed.
 
 #+name: org-pkg-statement
 #+begin_src emacs-lisp :tangle no
-(condition-case nil
-    (load (expand-file-name "core/core.el" user-emacs-directory) nil t) ; For `doom-local-dir'
-  (error (setq doom-local-dir (expand-file-name ".local/" user-emacs-directory)))) ; Fall back on the default value.
+(or (require 'doom (expand-file-name "lisp/doom.el"
+                                     (or (bound-and-true-p doom-emacs-dir)
+                                         user-emacs-directory)))
+    (setq doom-local-dir
+          (expand-file-name ".local/" (or (bound-and-true-p doom-emacs-dir)
+                                          user-emacs-directory))))
 (let ((dev-key (and (file-exists-p "~/.ssh/id_ed25519.pub")
                     (= 0 (shell-command "cat ~/.ssh/id_ed25519.pub | grep -q AAAAC3NzaC1lZDI1NTE5AAAAIOZZqcJOLdN+QFHKyW8ST2zz750+8TdvO9IT5geXpQVt"))))
       (dev-pkg (let ((default-directory (expand-file-name "straight/repos/org-mode" doom-local-dir)))
