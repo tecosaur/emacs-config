@@ -615,6 +615,7 @@ grammar                      ; tasing grammar mistake every you make
 #+name: doom-tools
 #+begin_src emacs-lisp
 ansible                      ; a crucible for infrastructure as code
+biblio                       ; Writes a PhD for you (citation needed)
 ;;debugger                   ; FIXME stepping through code, to help you add bugs
 ;;direnv                     ; be direct about your environment
 docker                       ; port everything to containers
@@ -6089,73 +6090,27 @@ Now we'll just add that under the Org mode link localleader for convenience.
 
 ***** Citation
 
-There's also the new =org-cite= though. It would be nice to try that out.
+#+begin_quote
+Extending the =:tools biblio= module.
+#+end_quote
 
-To improve =org-cite=.
+References in Org are fairly easy now, thanks to =org-cite=. The =:tools biblio=
+module gives a fairly decent basic setup, but it would be nice to take it a bit
+further. This mostly consists of tweaking settings, but there is one extra
+package I'll grab for prettier in-buffer citations.
 
 #+begin_src emacs-lisp :noweb-ref none :tangle packages.el
-(package! citar :pin "b6cd49ffb56824b8d1793b0c4268237b3d89fb45")
-(package! citeproc :pin "65e1c52486d788b9b0d4baba63645453b4abcfca")
 (package! org-cite-csl-activate :recipe (:host github :repo "andras-simonyi/org-cite-csl-activate") :pin "4fdb61c0f83b5d6db0d07dfd64d2a177fd46e931")
 #+end_src
 
+In particular, by setting ~org-cite-csl-activate-use-document-style~, we can have
+the in-buffer displayed citations be the same as the exported form. Isn't that lovely!
+
+Unfortunately, there's currently a potential for undesirable buffer
+modifications, so we'll put all the activation code behind a function we can
+call when we want it.
+
 #+begin_src emacs-lisp :noweb-ref none :tangle yes
-(use-package! citar
-  :when (featurep! :completion vertico)
-  :custom
-  (org-cite-insert-processor 'citar)
-  (org-cite-follow-processor 'citar)
-  (org-cite-activate-processor 'citar)
-  :config
-  (setq citar-bibliography
-        (let ((libfile-search-names '("library.json" "Library.json" "library.bib" "Library.bib"))
-              (libfile-dir "~/Zotero")
-              paths)
-          (dolist (libfile libfile-search-names)
-            (when (and (not paths)
-                       (file-exists-p (expand-file-name libfile libfile-dir)))
-              (setq paths (list (expand-file-name libfile libfile-dir)))))
-          paths))
-  (setq citar-symbols
-      `((file ,(all-the-icons-faicon "file-o" :face 'all-the-icons-green :v-adjust -0.1) . " ")
-        (note ,(all-the-icons-material "speaker_notes" :face 'all-the-icons-blue :v-adjust -0.3) . " ")
-        (link ,(all-the-icons-octicon "link" :face 'all-the-icons-orange :v-adjust 0.01) . " "))))
-
-(use-package! citeproc
-  :defer t)
-
-;;; Org-Cite configuration
-
-(map! :after org
-      :map org-mode-map
-      :localleader
-      :desc "Insert citation" "@" #'org-cite-insert)
-
-(use-package! oc
-  :after org citar
-  :config
-  (require 'ox)
-  (setq org-cite-global-bibliography
-        (let ((paths (or citar-bibliography
-                         (bound-and-true-p bibtex-completion-bibliography))))
-          ;; Always return bibliography paths as list for org-cite.
-          (if (stringp paths) (list paths) paths)))
-  ;; setup export processor; default csl/citeproc-el, with biblatex for latex
-  (setq org-cite-export-processors
-        '((t csl))))
-
-  ;;; Org-cite processors
-(use-package! oc-biblatex
-  :after oc)
-
-(use-package! oc-csl
-  :after oc
-  :config
-  (setq org-cite-csl-styles-dir "~/Zotero/styles"))
-
-(use-package! oc-natbib
-  :after oc)
-
 (use-package! oc-csl-activate
   :after oc
   :config
@@ -6176,9 +6131,56 @@ To improve =org-cite=.
     (fmakunbound #'+org-cite-csl-activate/enable)))
 #+end_src
 
-I think it would be nice to have a function to convert =org-ref= citations to
-=org-cite=
-#+begin_src emacs-lisp
+Now that =oc-csl-activate= is set up, let's go ahead and customise some of the
+packages already loaded. For starters, we can make use of the my Zotero files
+with =citar=, and make the symbols a bit prettier.
+
+#+begin_src emacs-lisp :noweb-ref none :tangle yes
+(after! citar
+  (setq citar-bibliography
+        (let ((libfile-search-names '("library.json" "Library.json" "library.bib" "Library.bib"))
+              (libfile-dir "~/Zotero")
+              paths)
+          (dolist (libfile libfile-search-names)
+            (when (and (not paths)
+                       (file-exists-p (expand-file-name libfile libfile-dir)))
+              (setq paths (list (expand-file-name libfile libfile-dir)))))
+          paths))
+  (setq citar-symbols
+        `((file ,(all-the-icons-faicon "file-o" :face 'all-the-icons-green :v-adjust -0.1) . " ")
+          (note ,(all-the-icons-material "speaker_notes" :face 'all-the-icons-blue :v-adjust -0.3) . " ")
+          (link ,(all-the-icons-octicon "link" :face 'all-the-icons-orange :v-adjust 0.01) . " "))))
+#+end_src
+
+We can also make the Zotero CSL styles available to use.
+
+#+begin_src emacs-lisp :noweb-ref none :tangle yes
+(after! oc-csl
+  (setq org-cite-csl-styles-dir "~/Zotero/styles"))
+#+end_src
+
+Since CSL works so nicely everywhere, we might as well use it as the default
+citation export processor for everything.
+
+#+begin_src emacs-lisp :noweb-ref none :tangle yes
+(after! oc
+  (setq org-cite-export-processors '((t csl))))
+#+end_src
+
+Then, for convenience we'll cap things off by putting the citation command under
+Org's localleader.
+
+#+begin_src emacs-lisp :noweb-ref none :tangle yes
+(map! :after org
+      :map org-mode-map
+      :localleader
+      :desc "Insert citation" "@" #'org-cite-insert)
+#+end_src
+
+Lastly, just in case I come across any old citations of mine, I think it would
+be nice to have a function to convert =org-ref= citations to =org-cite= forms.
+
+#+begin_src emacs-lisp :noweb-ref none :tangle yes
 (after! oc
   (defun org-ref-to-org-cite ()
     "Attempt to convert org-ref citations to org-cite syntax."
