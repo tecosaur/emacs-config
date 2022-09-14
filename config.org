@@ -1936,13 +1936,14 @@ I'd like to have just the buffer name, then if applicable the project folder
 (setq frame-title-format
       '(""
         (:eval
-         (if (s-contains-p org-roam-directory (or buffer-file-name ""))
+         (if (string-match-p (regexp-quote (or (bound-and-true-p org-roam-directory) "\u0000"))
+                             (or buffer-file-name ""))
              (replace-regexp-in-string
               ".*/[0-9]*-?" "☰ "
-              (subst-char-in-string ?_ ?  buffer-file-name))
+              (subst-char-in-string ?_ ?\s buffer-file-name))
            "%b"))
         (:eval
-         (let ((project-name (projectile-project-name)))
+         (when-let ((project-name (and (featurep 'projectile) (projectile-project-name))))
            (unless (string= "-" project-name)
              (format (if (buffer-modified-p)  " ◉ %s" "  ●  %s") project-name))))))
 #+end_src
