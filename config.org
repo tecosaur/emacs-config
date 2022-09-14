@@ -8295,21 +8295,22 @@ regurgitate the code, cross our fingers, and hope it works.
      ,@(seq-map (lambda (opt) `(setq-default ,opt ',(symbol-value opt)))
                 (seq-filter #'boundp flycheck-org-lint-variables))))
 
-(flycheck-define-checker org-lint
-  "Org buffer checker using `org-lint'."
-  :command ("emacs" (eval flycheck-emacs-args)
-            "--eval" (eval (concat "(add-to-list 'load-path \""
-                                   (file-name-directory (locate-library "org"))
-                                   "\")"))
-            "--eval" (eval (flycheck-sexp-to-string
-                            (flycheck-org-lint-variables-form)))
-            "--eval" (eval (flycheck-sexp-to-string
-                            (flycheck-org-lint-customisations-form)))
-            "--eval" (eval flycheck-org-lint-form)
-            "--" source)
-  :error-patterns
-  ((error line-start line ": " (message) line-end))
-  :modes org-mode)
+(eval ; To preveant eager macro expansion form loading flycheck early.
+ '(flycheck-define-checker org-lint
+   "Org buffer checker using `org-lint'."
+   :command ("emacs" (eval flycheck-emacs-args)
+             "--eval" (eval (concat "(add-to-list 'load-path \""
+                                    (file-name-directory (locate-library "org"))
+                                    "\")"))
+             "--eval" (eval (flycheck-sexp-to-string
+                             (flycheck-org-lint-variables-form)))
+             "--eval" (eval (flycheck-sexp-to-string
+                             (flycheck-org-lint-customisations-form)))
+             "--eval" (eval flycheck-org-lint-form)
+             "--" source)
+   :error-patterns
+   ((error line-start line ": " (message) line-end))
+   :modes org-mode))
 #+end_src
 
 Turns out it almost works. Running =M-x flycheck-verify-setup= after running that
