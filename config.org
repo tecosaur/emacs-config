@@ -1864,7 +1864,8 @@ Let's make creating an Org buffer just that little bit easier.
     (let ((buffer (generate-new-buffer "*new org*")))
       (set-window-buffer nil buffer)
       (with-current-buffer buffer
-        (org-mode)))))
+        (org-mode)
+        (setq-local doom-real-buffer-p t)))))
 
 (map! :leader
       (:prefix "b"
