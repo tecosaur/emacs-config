@@ -1104,9 +1104,9 @@ my home machine is pretty safe, and my laptop is shutdown a lot.
 
 *** Simple settings
 
-Browsing the web and seeing [[https://github.com/angrybacon/dotemacs/blob/master/dotemacs.org#use-better-defaults][angrybacon/dotemacs]] and comparing with the values
-shown by =SPC h v= and selecting what I thought looks good, I've ended up adding
-the following:
+Inspired by a few sources of modified defaults (such as [[https://github.com/angrybacon/dotemacs/blob/master/dotemacs.org#use-better-defaults][angrybacon/dotemacs]]) and
+my own experiences, I've ended up with a small set of tweaks on top of the
+changes Doom makes:
 
 #+begin_src emacs-lisp
 (setq-default
@@ -1120,7 +1120,8 @@ the following:
       truncate-string-ellipsis "…"                ; Unicode ellispis are nicer than "...", and also save /precious/ space
       password-cache-expiry nil                   ; I can trust my computers ... can't I?
       ;; scroll-preserve-screen-position 'always     ; Don't have `point' jump around
-      scroll-margin 2)                            ; It's nice to maintain a little margin
+      scroll-margin 2                             ; It's nice to maintain a little margin
+      display-time-default-load-average nil)      ; I don't think I've ever found this useful
 
 (display-time-mode 1)                             ; Enable time in the mode-line
 
