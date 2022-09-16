@@ -11456,39 +11456,40 @@ src_elisp{(org-ascii-latex-environment)} functions, which are conveniently very
 slim --- just extracting the content, and indenting. We'll only do something
 different when =utf-8= is set.
 
-#+begin_src emacs-lisp :noweb-ref none :tangle (if (executable-find "latex2text") "yes" "no")
-(after! ox-ascii
-  (defvar org-ascii-convert-latex t
-    "Use latex2text to convert LaTeX elements to unicode.")
+#+begin_src emacs-lisp
+(when (executable-find "latex2text")
+  (after! ox-ascii
+    (defvar org-ascii-convert-latex t
+      "Use latex2text to convert LaTeX elements to unicode.")
 
-  (defadvice! org-ascii-latex-environment-unicode-a (latex-environment _contents info)
-    "Transcode a LATEX-ENVIRONMENT element from Org to ASCII, converting to unicode.
+    (defadvice! org-ascii-latex-environment-unicode-a (latex-environment _contents info)
+      "Transcode a LATEX-ENVIRONMENT element from Org to ASCII, converting to unicode.
 CONTENTS is nil.  INFO is a plist holding contextual
 information."
-    :override #'org-ascii-latex-environment
-    (when (plist-get info :with-latex)
-      (org-ascii--justify-element
-       (org-remove-indentation
-        (let* ((latex (org-element-property :value latex-environment))
+      :override #'org-ascii-latex-environment
+      (when (plist-get info :with-latex)
+        (org-ascii--justify-element
+         (org-remove-indentation
+          (let* ((latex (org-element-property :value latex-environment))
+                 (unicode (and (eq (plist-get info :ascii-charset) 'utf-8)
+                               org-ascii-convert-latex
+                               (doom-call-process "latex2text" "-q" "--code" latex))))
+            (if (= (car unicode) 0) ; utf-8 set, and sucessfully ran latex2text
+                (cdr unicode) latex)))
+         latex-environment info)))
+
+    (defadvice! org-ascii-latex-fragment-unicode-a (latex-fragment _contents info)
+      "Transcode a LATEX-FRAGMENT object from Org to ASCII, converting to unicode.
+CONTENTS is nil.  INFO is a plist holding contextual
+information."
+      :override #'org-ascii-latex-fragment
+      (when (plist-get info :with-latex)
+        (let* ((latex (org-element-property :value latex-fragment))
                (unicode (and (eq (plist-get info :ascii-charset) 'utf-8)
                              org-ascii-convert-latex
                              (doom-call-process "latex2text" "-q" "--code" latex))))
-          (if (= (car unicode) 0) ; utf-8 set, and sucessfully ran latex2text
-              (cdr unicode) latex)))
-       latex-environment info)))
-
-  (defadvice! org-ascii-latex-fragment-unicode-a (latex-fragment _contents info)
-    "Transcode a LATEX-FRAGMENT object from Org to ASCII, converting to unicode.
-CONTENTS is nil.  INFO is a plist holding contextual
-information."
-    :override #'org-ascii-latex-fragment
-    (when (plist-get info :with-latex)
-      (let* ((latex (org-element-property :value latex-fragment))
-             (unicode (and (eq (plist-get info :ascii-charset) 'utf-8)
-                           org-ascii-convert-latex
-                             (doom-call-process "latex2text" "-q" "--code" latex))))
-        (if (and unicode (= (car unicode) 0)) ; utf-8 set, and sucessfully ran latex2text
-            (cdr unicode) latex)))))
+          (if (and unicode (= (car unicode) 0)) ; utf-8 set, and sucessfully ran latex2text
+              (cdr unicode) latex))))))
 #+end_src
 
 *** Markdown Export
@@ -12099,13 +12100,13 @@ priority of =mypyls=
 
 *** Terminal viewing
 
-#+call: confpkg("!Pkg pdftotext")
+#+call: confpkg("!Pkg pdftotext", needs="pdftotext")
 
 Sometimes I'm in a terminal and I still want to see the content. Additionally,
 sometimes I'd like to act on the textual content and so would like a plaintext version.
 Thanks to src_shell{pdftotext} we have a convenient way of performing this conversion.
 I've integrated this into a little package, =pdftotext.el=.
-#+begin_src emacs-lisp :tangle packages.el
+#+begin_src emacs-lisp :tangle (if (executable-find "pdftotext") "packages.el" "no")
 (package! pdftotext :recipe (:local-repo "lisp/pdftotext"))
 #+end_src
 
@@ -12117,7 +12118,7 @@ sure =pdf-tools= doesn't take priority.
 
 Lastly, whenever Emacs is non-graphical (i.e. a TUI), we want to use this by default.
 
-#+begin_src emacs-lisp :tangle (if (executable-find "pdftotext") "yes" "no")
+#+begin_src emacs-lisp
 (use-package! pdftotext
   :init
   (unless (display-graphic-p)
