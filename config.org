@@ -3486,6 +3486,31 @@ hide it?
 (add-hook 'after-change-major-mode-hook #'doom-modeline-conditional-buffer-encoding)
 #+end_src
 
+Moving onto the modeline segments, there's a calendar icon showed next to the
+current time, which I'm not a fan of. Let's replace that by redefining the
+segment.
+
+#+begin_src emacs-lisp
+(doom-modeline-def-segment time
+  (when (and doom-modeline-time
+             (bound-and-true-p display-time-mode)
+             (not doom-modeline--limited-width-p))
+    (concat
+     doom-modeline-spc
+     (when doom-modeline-time-icon
+       (concat
+        (doom-modeline-icon 'wicon
+                            (format-time-string "time-%I")
+                            (char-to-string (+ 61577 (string-to-number (format-time-string "%I"))))
+                            ""
+                            :face 'doom-modeline-time
+                            :v-adjust -0.05)
+        (and (or doom-modeline-icon doom-modeline-unicode-fallback)
+             doom-modeline-spc)))
+     (propertize display-time-string
+                 'face (doom-modeline-face 'doom-modeline-time)))))
+#+end_src
+
 I think the PDF modeline could do with tweaking. I raised [[https://github.com/seagle0128/doom-modeline/pull/425][an issue]] on this,
 however the response was basically "put your preferences in your personal
 config, the current default is sensible" --- so here we are.
