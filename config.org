@@ -1622,39 +1622,29 @@ if the system doesn't have any of those fonts.
 This way whenever fonts are missing, after Doom's UI has initialised, a warning
 listing the missing fonts should appear for at least half a second.
 
-**** Theme and modeline
+**** Theme
 
-~doom-one~ is nice and all, but I find the ~vibrant~ variant nicer. Oh, and with the
-nice selection doom provides there's no reason for me to want the defaults.
+~doom-one~ is nice and all, but I find the ~vibrant~ variant nicer.
 
 #+begin_src emacs-lisp
 (setq doom-theme 'doom-vibrant)
-(remove-hook 'window-setup-hook #'doom-init-theme-h)
-(add-hook 'after-init-hook #'doom-init-theme-h 'append)
+#+end_src
+
+Oh, and with the nice selection doom provides there's no reason for me to want
+the defaults.
+
+#+begin_src emacs-lisp
 (delq! t custom-theme-load-path)
 #+end_src
 
-However, by default ~red~ text is used in the ~modeline~, so let's make that orange
-so I don't feel like something's gone /wrong/ when editing files.
+Lastly, I had some issues with theme race conditions, which seem to be resolved
+by moving =doom-init-theme-h= around. Henrik attempted to help with this in May
+2021 but we didn't manage to pin down the issue. It may be worth periodically
+checking back and seeing if this is still needed.
 
 #+begin_src emacs-lisp
-(custom-set-faces!
-  '(doom-modeline-buffer-modified :foreground "orange"))
-#+end_src
-
-While we're modifying the modeline, =LF UTF-8= is the default file encoding, and
-thus not worth noting in the modeline. So, let's conditionally hide it.
-
-#+begin_src emacs-lisp
-(defun doom-modeline-conditional-buffer-encoding ()
-  "We expect the encoding to be LF UTF-8, so only show the modeline when this is not the case"
-  (setq-local doom-modeline-buffer-encoding
-              (unless (and (memq (plist-get (coding-system-plist buffer-file-coding-system) :category)
-                                 '(coding-category-undecided coding-category-utf-8))
-                           (not (memq (coding-system-eol-type buffer-file-coding-system) '(1 2))))
-                t)))
-
-(add-hook 'after-change-major-mode-hook #'doom-modeline-conditional-buffer-encoding)
+(remove-hook 'window-setup-hook #'doom-init-theme-h)
+(add-hook 'after-init-hook #'doom-init-theme-h 'append)
 #+end_src
 
 **** Miscellaneous
@@ -3465,59 +3455,81 @@ Email and IRC.
 
 *** Doom modeline
 
-#+call: confpkg("!Pkg Doom modeline")
+#+call: confpkg("!Pkg Doom modeline", after="doom-modeline")
 
 #+begin_quote
 From the =:ui modeline= module.
 #+end_quote
 
+This is very nice and pretty, however I have a few niggles with the defaults.
+For starters, by default ~red~ text is used to indicate an unsaved file. This
+makes me feel like something's gone /wrong/, so let's tone that down to orange.
 
-Very nice and pretty, however I think the PDF modeline could do with tweaking.
-I raised [[https://github.com/seagle0128/doom-modeline/pull/425][an issue]] on this, however the response was basically "put your
-preferences in your personal config, the current default is sensible" --- so
-here we are.
+#+begin_src emacs-lisp
+(custom-set-faces!
+  '(doom-modeline-buffer-modified :foreground "orange"))
+#+end_src
+
+While we're modifying the modeline, when we have he default file encoding (=LF
+UTF-8=), it really isn't worth noting in the modeline. So, why not conditionally
+hide it?
+
+#+begin_src emacs-lisp
+(defun doom-modeline-conditional-buffer-encoding ()
+  "We expect the encoding to be LF UTF-8, so only show the modeline when this is not the case"
+  (setq-local doom-modeline-buffer-encoding
+              (unless (and (memq (plist-get (coding-system-plist buffer-file-coding-system) :category)
+                                 '(coding-category-undecided coding-category-utf-8))
+                           (not (memq (coding-system-eol-type buffer-file-coding-system) '(1 2))))
+                t)))
+
+(add-hook 'after-change-major-mode-hook #'doom-modeline-conditional-buffer-encoding)
+#+end_src
+
+I think the PDF modeline could do with tweaking. I raised [[https://github.com/seagle0128/doom-modeline/pull/425][an issue]] on this,
+however the response was basically "put your preferences in your personal
+config, the current default is sensible" --- so here we are.
 
 First up I'm going to want a segment for just the buffer file name, and a PDF
 icon. Then we'll redefine two functions used to generate the modeline.
 
 #+begin_src emacs-lisp
-(after! doom-modeline
-  (doom-modeline-def-segment buffer-name
-    "Display the current buffer's name, without any other information."
-    (concat
-     (doom-modeline-spc)
-     (doom-modeline--buffer-name)))
+(doom-modeline-def-segment buffer-name
+  "Display the current buffer's name, without any other information."
+  (concat
+   (doom-modeline-spc)
+   (doom-modeline--buffer-name)))
 
-  (doom-modeline-def-segment pdf-icon
-    "PDF icon from all-the-icons."
-    (concat
-     (doom-modeline-spc)
-     (doom-modeline-icon 'octicon "file-pdf" nil nil
-                         :face (if (doom-modeline--active)
-                                   'all-the-icons-red
-                                 'mode-line-inactive)
-                         :v-adjust 0.02)))
+(doom-modeline-def-segment pdf-icon
+  "PDF icon from all-the-icons."
+  (concat
+   (doom-modeline-spc)
+   (doom-modeline-icon 'octicon "file-pdf" nil nil
+                       :face (if (doom-modeline--active)
+                                 'all-the-icons-red
+                               'mode-line-inactive)
+                       :v-adjust 0.02)))
 
-  (defun doom-modeline-update-pdf-pages ()
-    "Update PDF pages."
-    (setq doom-modeline--pdf-pages
-          (let ((current-page-str (number-to-string (eval `(pdf-view-current-page))))
-                (total-page-str (number-to-string (pdf-cache-number-of-pages))))
-            (concat
-             (propertize
-              (concat (make-string (- (length total-page-str) (length current-page-str)) ? )
-                      " P" current-page-str)
-              'face 'mode-line)
-             (propertize (concat "/" total-page-str) 'face 'doom-modeline-buffer-minor-mode)))))
+(defun doom-modeline-update-pdf-pages ()
+  "Update PDF pages."
+  (setq doom-modeline--pdf-pages
+        (let ((current-page-str (number-to-string (eval `(pdf-view-current-page))))
+              (total-page-str (number-to-string (pdf-cache-number-of-pages))))
+          (concat
+           (propertize
+            (concat (make-string (- (length total-page-str) (length current-page-str)) ? )
+                    " P" current-page-str)
+            'face 'mode-line)
+           (propertize (concat "/" total-page-str) 'face 'doom-modeline-buffer-minor-mode)))))
 
-  (doom-modeline-def-segment pdf-pages
-    "Display PDF pages."
-    (if (doom-modeline--active) doom-modeline--pdf-pages
-      (propertize doom-modeline--pdf-pages 'face 'mode-line-inactive)))
+(doom-modeline-def-segment pdf-pages
+  "Display PDF pages."
+  (if (doom-modeline--active) doom-modeline--pdf-pages
+    (propertize doom-modeline--pdf-pages 'face 'mode-line-inactive)))
 
-  (doom-modeline-def-modeline 'pdf
-    '(bar window-number pdf-pages pdf-icon buffer-name)
-    '(misc-info matches major-mode process vcs)))
+(doom-modeline-def-modeline 'pdf
+  '(bar window-number pdf-pages pdf-icon buffer-name)
+  '(misc-info matches major-mode process vcs))
 #+end_src
 
 *** Keycast
