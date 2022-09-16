@@ -3501,8 +3501,8 @@ segment.
      (when doom-modeline-time-icon
        (concat
         (doom-modeline-icon 'wicon
-                            (format-time-string "time-%I")
-                            (char-to-string (+ 61577 (string-to-number (format-time-string "%I"))))
+                            (format-time-string "time-%-I")
+                            (char-to-string (+ 61577 (string-to-number (format-time-string "%-I"))))
                             ""
                             :face 'doom-modeline-time
                             :v-adjust -0.05)
