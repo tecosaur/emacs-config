@@ -1548,7 +1548,7 @@ near-minimal new config:
 #+end_src
 
 #+begin_src emacs-lisp :tangle ../doom.orgdev/packages.el :noweb no-export
-(unpin! org-mode) ; there be bugs
+(unpin! org) ; there be bugs
 #+end_src
 
 #+begin_src emacs-lisp :tangle ../doom.orgdev/config.el
@@ -6590,21 +6590,35 @@ correct package statement needed.
                                           user-emacs-directory))))
 (let ((dev-key (and (file-exists-p "~/.ssh/id_ed25519.pub")
                     (= 0 (shell-command "cat ~/.ssh/id_ed25519.pub | grep -q AAAAC3NzaC1lZDI1NTE5AAAAIOZZqcJOLdN+QFHKyW8ST2zz750+8TdvO9IT5geXpQVt"))))
-      (dev-pkg (let ((default-directory (expand-file-name "straight/repos/org-mode" doom-local-dir)))
+      (dev-pkg (let ((default-directory (expand-file-name "straight/repos/org" doom-local-dir)))
                  (and (file-exists-p default-directory)
                       (string= "tec@git.savannah.gnu.org:/srv/git/emacs/org-mode.git\n" (shell-command-to-string "git remote get-url origin")))))
-      (recipe-common '(:files ("*.el" "lisp/*.el" "etc")
+      (recipe-common '(:files (:defaults "etc")
+                       :build t
                        :pre-build
                        (with-temp-file "org-version.el"
-                         (insert "(fset 'org-release (lambda () \"9.5\"))\n"
-                                 (format "(fset 'org-git-version (lambda () \"%s\"))\n"
-                                         (substring (shell-command-to-string "git rev-parse --short HEAD") 0 -1))
-                                 "(provide 'org-version)\n"))
-                       :includes org)))
+                         (let ((version
+                                (version-to-list
+                                 (string-trim
+                                  (with-temp-buffer
+                                    (call-process "git" nil t nil
+                                                  "describe" "--match" "release*" "--abbrev=0" "HEAD")
+                                    (buffer-string))
+                                  "release_")))
+                               (git-version (string-trim
+                                             (with-temp-buffer
+                                               (call-process "git" nil t nil
+                                                             "rev-parse" "--short" "HEAD")
+                                               (buffer-string)))))
+                           (insert (format "(defun org-release () \"The release version of Org.\" \"%d.%d.0\")\n"
+                                           (car version) (1+ (cadr version))) ; Development version = MAJOR.(1+MINOR).0
+                                   (format "(defun org-git-version () \"The truncate git commit hash of Org mode.\" %S)\n"
+                                           git-version)
+                                   "(provide 'org-version)\n"))))))
   (prin1-to-string
-   `(package! org-mode
+   `(package! org
       :recipe (,@(cond ((and dev-key dev-pkg)
-                        (list :host nil :repo nil :local-repo (expand-file-name "straight/repos/org-mode" doom-local-dir)))
+                        (list :host nil :repo nil :local-repo (expand-file-name "straight/repos/org" doom-local-dir)))
                        (dev-key
                         (list :host nil :repo "tec@git.savannah.gnu.org:/srv/git/emacs/org-mode.git"))
                        (t
@@ -6615,7 +6629,7 @@ correct package statement needed.
 
 #+begin_src emacs-lisp :tangle packages.el :noweb no-export
 <<org-pkg-statement()>>
-(unpin! org-mode) ; there be bugs
+(unpin! org) ; there be bugs
 (package! org-contrib
   :recipe (:host nil :repo "https://git.sr.ht/~bzg/org-contrib"
            :files ("lisp/*.el"))
