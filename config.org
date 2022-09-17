@@ -398,16 +398,22 @@ tangling a noweb block to a temp file, with a noweb block that executes babel
 calls in the buffer.
 
 #+name: confpkg-prepare
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :noweb no-export
 (condition-case nil
-    (org-fold-core-ignore-fragility-checks
-      (org-babel-map-executables nil
-        (when (eq (org-element-type (org-element-context)) 'babel-call)
-          (org-babel-lob-execute-maybe))))
+    (progn
+      (message "Intitialising confpkg")
+      <<bootstrap>>
+      (org-fold-core-ignore-fragility-checks
+        (org-babel-map-executables nil
+          (when (eq (org-element-type (org-element-context)) 'babel-call)
+            (org-babel-lob-execute-maybe)))))
   (quit (revert-buffer t t t)))
 #+end_src
 
-#+begin_src emacs-lisp :tangle (make-temp-file "emacs-confpkg-prepare-") :noweb no-export
+See the [[Bootstrap]] section for an explanation of the =<<bootstrap>>= noweb reference.
+
+#+header: :tangle (expand-file-name (make-temp-name "emacs-org-babel-excuses/confpkg-prepare-") temporary-file-directory)
+#+begin_src emacs-lisp :noweb no-export :mkdirp yes
 <<confpkg-prepare()>>
 #+end_src
 
@@ -570,7 +576,6 @@ Now all that's needed is a template to be used.
 This currently makes the included content look much more package-like that in
 truly is. However, I hope that some static analysis in future will allow for
 dependency information to be collected and included.
-
 
 Lastly, should there be an issue or interruption, it's possible that the
 modifications from =#+call: confpkg= may persist. If I've been good with my
@@ -1076,6 +1081,140 @@ the function from the hook and call the =config.el= creation function.
 Within ~confpkg-tangle-finalise~ we carefully order each step so that
 the most important steps go first, to minimise the impact should a particular
 step fail.
+
+*** Bootstrap
+
+This system makes use of some recent commits introduced to Org, such as [[https://git.savannah.gnu.org/cgit/emacs/org-mode.git/commit/?id=cb8bf4a0d][this
+noweb expansion bugfix]] which will be included in Org 9.5.4. This is
+problematic if using Emacs 28.2 or older, so to get around this we must go
+through a bootstrap process.
+
+[[xkcd:1739]]
+
+To start with, we'll check if we are:
++ Running an Org version prior to 9.5.4
++ Running in a ~noninteractive~ session
++ Using an Org that's not installed in the user directory
++ In a session with the symbol ~exit!~ defined
+
+#+name: bootstrap
+#+begin_src emacs-lisp :noweb no-export
+(let ((required-org-version "9.5.4")
+      (standard-output t))
+  (when (and (version< (org-version) required-org-version)
+             (not (string-match-p (regexp-quote (expand-file-name "~"))
+                                  (locate-library "org"))))
+    (cond
+     ((and noninteractive (fboundp 'exit!))
+      (print! (warn "Detected conditions provoking a config bootstrap"))
+      (print! (start "Initiating bootstrap..."))
+      <<bootstrap-perform>>
+      )
+     (t (message "Installed Org version %s is too old, %s is needed.\nRun \"doom sync\" to fix.")))))
+#+end_src
+
+If these conditions are met, we can assume that the loaded Org version is
+insufficient, and that it's likely a Emacs is currently running a command like
+=doom sync=, and so it makes sense to perform the 3-step bootstrap.
+1. Temporarily rename =config.org= to =config.original.org=.
+2. Create a new =config.org= that when tangled results in Org being installed.
+3. Swap back to the original =config.org=, and re-sync.
+
+#+name: bootstrap-perform
+#+begin_src emacs-lisp :noweb no-export
+(print! (item "Temporarily relocating config.org to config.original.org"))
+(rename-file "config.org" "config.original.org" t)
+<<boostrap-create-transient-config>>
+(print! (item "%s") (bold "Re-running sync"))
+(exit! :restart) ; Re-run =doom sync= with the transient config.
+#+end_src
+
+With the approach worked out, we just need to generate a snipped that will
+create a new =config.org= that when tangled:
++ Tangles our Org recipe to =packages.el=
++ Swaps back to the original =config.org=
++ Re-runs =doom sync=
+
+#+name: boostrap-create-transient-config
+#+begin_src emacs-lisp :noweb no-export
+(print! (item "Creating minimal init.el"))
+
+(let ((standard-output #'ignore))
+  (with-temp-buffer
+    (insert
+     ";;; init.el -*- lexical-binding: t; -*-\n\n"
+     (pp (quote
+          <<bootstrap-init>>
+          )))
+    (write-region nil nil "init.el")))
+
+(print! (item "Creating boostrap config.el"))
+
+(let ((standard-output #'ignore))
+  (with-temp-buffer
+    (insert
+     (org-element-interpret-data
+      (list
+       '(keyword (:key "title" :value "Boostrap Stage 1 Config" :post-blank 1))
+       `(src-block
+         (:language "emacs-lisp"
+          :value ,(pp (quote (progn
+                               <<boostrap-transition>>
+                               )))
+          :name "bootstrap-transition"
+          :post-blank 1))
+       `(src-block
+         (:language "emacs-lisp"
+          :parameters
+          ,(concat ":noweb no-export "
+                   ":tangle (expand-file-name (make-temp-name \"emacs-org-babel-excuses/confpkg-prepare-\") temporary-file-directory) "
+                   ":mkdirp yes")
+          :value ,(concat "<<" ; Split to avoid (prematurely) creating a noweb reference.
+                          "bootstrap-transition()"
+                          ">>\n"))))))
+    (write-region nil nil "config.org")))
+#+end_src
+
+For the bootstrap we need a minimal =init.el=, just the literate module should be
+sufficient.
+
+#+name: bootstrap-init
+#+begin_src emacs-lisp
+(doom! :config literate)
+#+end_src
+
+This =config.org= simply provides an entry point for us to run elisp during
+tangle. We just need to make use of it to install Org and re-sync the original
+configuration.
+
+#+name: boostrap-transition
+#+begin_src emacs-lisp :noweb no-export
+(setq standard-output t)
+
+(print! (start "Starting second stage of the bootstrap."))
+(print! (item "Creating minimal packages.el"))
+
+(let ((standard-output #'ignore))
+  (with-temp-buffer
+    (insert
+     ";; -*- no-byte-compile: t; -*-\n\n"
+     (pp (quote
+          <<org-pkg-statement()>>
+          )))
+    (write-region nil nil "packages.el")))
+
+(doom-packages-install)
+
+(print! (item "Switching back to original config.org"))
+(rename-file "config.original.org" "config.org" t)
+
+(print! (item "%s") (bold "Re-running sync"))
+(exit! :restart)
+#+end_src
+
+There we go, that should do the trick, so long as we call the =bootstrap= block at
+the start of the tangle process. This is done by calling =bootstrap= within the
+[[Preparation][confpkg preparation]] stage.
 
 ** Personal Information
 
