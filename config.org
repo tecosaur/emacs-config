@@ -6512,6 +6512,43 @@ to the archive to refer to an earlier email) I'd much rather look at it in mu4e.
 (add-to-list 'browse-url-handlers (cons "^https?://list\\.orgmode\\.org/" #'+browse-url-orgmode-ml))
 #+end_src
 
+***** Setup when composing a new email
+
+Thanks to having a dedicated address for my interactions with the Org ML, and
+Doom's ~+mu4e-set-from-address-h~, we can tell at the end of compose setup whether
+I'm composing an email to the Org ML and then do a little setup for convenience,
+namely:
++ Pre-fill the =To= address
++ Ensure that =org-msg= is set up to send plaintext only
++ Set ~default-directory~ to my local Org repository (where patch files are
+  generated)
++ Move ~(point)~ to the =Subject:= line
+
+#+begin_src emacs-lisp
+(defun +mu4e-compose-org-ml-setup ()
+  (when (string-match-p "\\`orgmode@" user-mail-address)
+    (goto-char (point-min))
+    (re-search-forward "^To: .*$")
+    (replace-match "To: emacs-orgmode@gnu.org")
+    (when (and org-msg-mode
+               (re-search-forward "^:alternatives: (\\(utf-8 html\\))" nil t))
+      (replace-match "utf-8" t t nil 1))
+    (setq default-directory
+          (replace-regexp-in-string
+           (regexp-quote straight-build-dir)
+           "repos"
+           (file-name-directory (locate-library "org"))))
+    (add-transient-hook! 'message-goto-to
+      :after (message-goto-subject))))
+#+end_src
+
+Now to make this take effect, we can just add it a bit later on in
+~mu4e-compose-mode-hook~ (after ~org-msg-post-setup~) by setting a hook depth of 1.
+
+#+begin_src emacs-lisp
+(add-hook 'mu4e-compose-mode-hook #'+mu4e-compose-org-ml-setup 1)
+#+end_src
+
 *** Org Msg
 
 Doom does a fantastic stuff with the defaults with this, so we only make a few
