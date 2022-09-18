@@ -6270,8 +6270,7 @@ We can also use this a signature,
 (setq message-signature mu4e-from-name)
 #+end_src
 
-Lastly, I've got a few extra addresses I'd like ~+mu4e-set-from-address-h~ to be
-aware of.
+I've got a few extra addresses I'd like ~+mu4e-set-from-address-h~ to be aware of.
 
 #+begin_src emacs-lisp
 (defun +mu4e-update-personal-addresses ()
@@ -6295,6 +6294,17 @@ aware of.
 
 (add-transient-hook! 'mu4e-compose-pre-hook
   (+mu4e-update-personal-addresses))
+#+end_src
+
+When composing an email, I think it would make more sense to start off in =insert=
+mode than =normal= mode, which can be accomplished via a compose hook.
+
+#+begin_src emacs-lisp
+(defun +mu4e-evil-enter-insert-mode ()
+  (when (eq (bound-and-true-p evil-state) 'normal)
+    (call-interactively #'evil-append)))
+
+(add-hook 'mu4e-compose-mode-hook #'+mu4e-evil-enter-insert-mode 90)
 #+end_src
 
 **** Working with the Org mailing list
