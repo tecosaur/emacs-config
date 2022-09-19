@@ -3623,16 +3623,21 @@ Email and IRC.
 From the =:ui modeline= module.
 #+end_quote
 
-This is very nice and pretty, however I have a few niggles with the defaults.
-For starters, by default ~red~ text is used to indicate an unsaved file. This
-makes me feel like something's gone /wrong/, so let's tone that down to orange.
+**** Modified buffer colour
+
+The modeline is very nice and pretty, however I have a few niggles with the
+defaults. For starters, by default ~red~ text is used to indicate an unsaved file.
+This makes me feel like something's gone /wrong/, so let's tone that down to
+orange.
 
 #+begin_src emacs-lisp
 (custom-set-faces!
   '(doom-modeline-buffer-modified :foreground "orange"))
 #+end_src
 
-While we're modifying the modeline, when we have he default file encoding (=LF
+**** File encoding
+
+While we're modifying the modeline, when we have the default file encoding (=LF
 UTF-8=), it really isn't worth noting in the modeline. So, why not conditionally
 hide it?
 
@@ -3647,6 +3652,8 @@ hide it?
 
 (add-hook 'after-change-major-mode-hook #'doom-modeline-conditional-buffer-encoding)
 #+end_src
+
+**** Time
 
 Moving onto the modeline segments, there's a calendar icon showed next to the
 current time, which I'm not a fan of. Let's replace that by redefining the
@@ -3672,6 +3679,8 @@ segment.
      (propertize display-time-string
                  'face (doom-modeline-face 'doom-modeline-time)))))
 #+end_src
+
+**** PDF modeline
 
 I think the PDF modeline could do with tweaking. I raised [[https://github.com/seagle0128/doom-modeline/pull/425][an issue]] on this,
 however the response was basically "put your preferences in your personal
