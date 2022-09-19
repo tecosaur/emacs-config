@@ -3064,7 +3064,7 @@ follow [[https://orgmode.org/worg/org-contribute.html#commit-messages][a certain
       change-data
       "\n\n"))))
 
-(add-to-list '+magit-project-commit-templates-alist (cons "org-mode" #'+org-commit-message-template))
+(add-to-list '+magit-project-commit-templates-alist (cons "org" #'+org-commit-message-template))
 #+end_src
 
 This relies on two small entries in the git config files which improves the hunk
