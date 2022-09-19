@@ -3543,6 +3543,29 @@ lightened versions --- let's do that.
      (face-attribute 'default :foreground))))
 #+end_src
 
+*** Simple comment markup
+
+#+call: confpkg("!Pkg simple-comment-markup")
+
+I find that every now and then I sprinkle a little markup in code comments. Of
+course, this doesn't get fortified as it's ultimately meaningless ... but it
+would be nice if it was, just slightly. Surprisingly, I couldn't find a package
+for this, so I made one.
+
+#+begin_src emacs-lisp :tangle packages.el
+(package! simple-comment-markup :recipe (:local-repo "lisp/simple-comment-markup"))
+#+end_src
+
+Let's use both basic Org markup and Markdown code backticks, to cover most
+situations decently.
+
+#+begin_src emacs-lisp
+(use-package! simple-comment-markup
+  :hook (prog-mode . simple-comment-markup-mode)
+  :config
+  (setq simple-comment-markup-set '(org markdown-code)))
+#+end_src
+
 *** Emojify
 
 #+call: confpkg("!Pkg emojify")

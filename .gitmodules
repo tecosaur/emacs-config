@@ -40,3 +40,6 @@
 [submodule "ox-pluto"]
 	path = lisp/ox-pluto
 	url = https://github.com/tecosaur/ox-pluto.git
+[submodule "simple-comment-markup"]
+	path = lisp/simple-comment-markup
+	url = https://git.tecosaur.net/tec/simple-comment-markup.git
