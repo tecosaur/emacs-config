@@ -6318,6 +6318,18 @@ I've got a few extra addresses I'd like ~+mu4e-set-from-address-h~ to be aware o
   (+mu4e-update-personal-addresses))
 #+end_src
 
+Speaking of, it would be good to put emails sent from =@tecosaur.net= in the
+account-specific sent directory, not the catch-all.
+
+#+begin_src emacs-lisp
+(defun +mu4e-account-sent-folder (msg)
+  (if (string-match-p "@tecosaur\\.net\\'"
+                      (plist-get (car (plist-get msg :from)) :email))
+      "/tecosaur-net/sent"
+    "/sent"))
+(setq mu4e-sent-folder #'+mu4e-account-sent-folder)
+#+end_src
+
 When composing an email, I think it would make more sense to start off in =insert=
 mode than =normal= mode, which can be accomplished via a compose hook.
 
