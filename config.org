@@ -822,6 +822,28 @@ Applying lexical binding to the config file is good for a number of reasons,
 among which it's (slightly) faster than dynamic binding (see [[https://nullprogram.com/blog/2016/12/22/][this blog post]] for
 more info).
 
+*** Quieter output
+
+All the babel evaluation here ends up being quite noisy (along with a few other
+things during tangle), let's see if we can change that.
+
+#+name: confpkg-quieter-output
+#+begin_src emacs-lisp
+(when noninteractive
+  (unless (fboundp 'doom-shut-up-a)
+    (defun doom-shut-up-a (fn &rest args)
+      (let ((standard-output #'ignore)
+            (inhibit-message t))
+        (apply fn args))))
+  (advice-add 'org-babel-expand-body:emacs-lisp :around #'doom-shut-up-a)
+  ;; Quiet some other annoying messages
+  (advice-add 'sh-set-shell :around #'doom-shut-up-a)
+  (advice-add 'rng-what-schema :around #'doom-shut-up-a)
+  (advice-add 'python-indent-guess-indent-offset :around #'doom-shut-up-a))
+#+end_src
+
+#+call: confpkg-quieter-output()
+
 *** Reporting load time information
 
 #+call: confpkg("Confpkg timings")
@@ -1075,7 +1097,7 @@ the function from the hook and call the =config.el= creation function.
   (confpkg-annotate-list-dependencies)
   (confpkg-create-config)
   (confpkg-write-dependencies)
-  (message "Processed %s elisp files." (length confpkg--list)))
+  (message "Processed %s elisp files" (length confpkg--list)))
 #+end_src
 
 Within ~confpkg-tangle-finalise~ we carefully order each step so that
