@@ -6510,22 +6510,23 @@ current message on https://list.orgmode.org.
 (after! mu4e
   (defun +mu4e-ml-message-link (msg)
     "Copy the link to MSG on the mailing list archives."
-    (let* ((list-addr (or (mu4e-message-field msg :mailing-list)
-                          (cadar (mu4e-message-field-raw msg :list-post))
-                          (thread-last (append (mu4e-message-field msg :to)
+    (let* ((list-addr (or (mu4e-message-field msg :list)
+                          (thread-last (append (mu4e-message-field-raw msg :list-post)
+                                               (mu4e-message-field msg :to)
                                                (mu4e-message-field msg :cc))
-                            (mapcar (lambda (e) (plist-get e :email)))
-                            (mapcar (lambda (addr)
-                                      (when (string-match-p "emacs.*@gnu\\.org$" addr)
-                                        (replace-regexp-in-string "@" "." addr))))
-                            (delq nil)
-                            (car))))
+                                       (mapcar (lambda (e) (plist-get e :email)))
+                                       (mapcar (lambda (addr)
+                                                 (when (string-match-p "emacs.*@gnu\\.org$" addr)
+                                                   (replace-regexp-in-string "@" "." addr))))
+                                       (delq nil)
+                                       (car))))
            (msg-url
-            (cond
-             ((string= "emacs-orgmode.gnu.org" list-addr)
-              (format "https://list.orgmode.org/%s" (mu4e-message-field msg :message-id)))
-             (t (user-error "Mailing list %s not supported" list-addr)))))
-      (message "Link %s copied to clipboard" (gui-select-text msg-url))
+            (pcase list-addr
+              ("emacs-orgmode.gnu.org"
+               (format "https://list.orgmode.org/%s" (mu4e-message-field msg :message-id)))
+              (_ (user-error "Mailing list %s not supported" list-addr)))))
+      (message "Link %s copied to clipboard"
+               (propertize (gui-select-text msg-url) 'face '((:weight normal :underline nil) link)))
       msg-url))
 
   (add-to-list 'mu4e-view-actions (cons "link to message ML" #'+mu4e-ml-message-link) t))
