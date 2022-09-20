@@ -22,17 +22,17 @@
 #+latex_header: \ihead{\upshape\scshape\leftmark} \chead{\ifstr{\leftmark}{\rightmark}{}{\rightmark}} \ohead[\pagemark]{\pagemark}
 
 #+begin_export html
-<a href="https://github.com/tecosaur/emacs-config/"
+<a href="https://git.tecosaur.net/tec/emacs-config/"
    style="font-family: 'Open Sans'; background-image: none; color: inherit;
           text-decoration: none; position: relative; top: clamp(-26px, calc(1280px - 100vw), 0px); opacity: 0.7;">
-  <img src="https://upload.wikimedia.org/wikipedia/commons/9/91/Octicons-mark-github.svg"
-       class="invertible" alt="GitHub Octicon"
+  <img src="https://git-scm.com/images/logos/downloads/Git-Icon-Black.svg"
+       class="invertible" alt="Git"
        style="height: 1em; position: relative; top: 0.1em;">
-  View on GitHub</a>&ensp;
-<a href="https://www.buymeacoffee.com/tecosaur"
+  Visit repository</a>&ensp;
+<a href="https://liberapay.com/tec"
    style="position: relative;top: clamp(-22px, calc(1280px - 100vw), 0px);">
-  <img src="https://img.shields.io/badge/Buy_me_a%C2%A0coffee-FFDD00?style=flat-square&amp;logo=buy-me-a-coffee&amp;logoColor=black"
-       class="invertible" alt="Buy me a coffee"
+  <img src="https://shields.io/badge/support%20my%20efforts-f6c915?logo=Liberapay&style=flat&logoColor=black"
+       class="invertible" alt="Support my efforts"
        style="border-radius: 4px; opacity: 0.85;"></a>
 #+end_export
 

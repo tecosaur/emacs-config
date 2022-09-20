@@ -5,7 +5,7 @@
 #+html: <a href="https://orgmode.org"><img src="https://img.shields.io/badge/Org-literate%20config-%2377aa99?style=flat-square&logo=org&logoColor=white"></a>
 #+html: <a href="https://github.com/tecosaur/emacs-config/actions"><img src="https://img.shields.io/github/workflow/status/tecosaur/emacs-config/Publish/master.svg?style=flat-square&label=publish&logo=buffer"></a>
 #+html: <a href="https://raw.githubusercontent.com/tecosaur/emacs-config/gh-pages/misc/upgradable-packages.txt"><img src="https://raw.githubusercontent.com/tecosaur/emacs-config/gh-pages/misc/pkg-status.svg"></a>
-#+html: <a href="https://www.buymeacoffee.com/tecosaur"><img src="https://img.shields.io/badge/Buy_me_a%C2%A0coffee-FFDD00?style=flat-square&logo=buy-me-a-coffee&logoColor=black"></a>
+#+html: <a href="https://liberapay.com/tec"><img src="https://shields.io/badge/support%20my%20efforts-f6c915?logo=Liberapay&style=flat-square&logoColor=black"></a>
 
 Here you may find my config. There is only one significant file:
 + =config.org=, my configuration file --- see the [[https://tecosaur.github.io/emacs-config/config.html][HTML]] or [[https://tecosaur.github.io/emacs-config/config.pdf][PDF]] export.
