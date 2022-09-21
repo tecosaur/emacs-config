@@ -3934,6 +3934,8 @@ the obvious customisations and we've got modeline-appropriate clock generation!
 
 (defvar +doom-modeline-micro-clock--cache nil)
 
+(require 'svg)
+
 (defun +doom-modeline-micro-clock ()
   "Return a string containing an current analogue clock."
   (cdr
