@@ -481,12 +481,13 @@ modify the parent heading, and register the config group with the variables we
 created earlier.
 
 #+name: confpkg
-#+begin_src elisp :var name="" needs="" after="" :results silent raw :noweb no-export
+#+begin_src elisp :var name="" needs="" after="" prefix="config-" :results silent raw :noweb no-export
 ;; Babel block for use with #+call
 ;; Arguments:
-;;  + name, the name of the config sub-package
-;;  + needs, (when non-empty) required system executable(s)
-;;  + after, required features
+;;  - name, the name of the config sub-package
+;;  - needs, (when non-empty) required system executable(s)
+;;  - after, required features
+;;  - prefix, the package prefix ("config-" by default)
 (when (or (string-empty-p needs)
           (cl-every #'executable-find (delq nil (split-string needs ","))))
   (let* ((name (if (string-empty-p name)
@@ -503,8 +504,8 @@ created earlier.
             (intern after)) ; Single feature.
            (t after)))
          (confpkg-name
-          (concat "config-" (replace-regexp-in-string
-                             "[^a-z-]" "-" (downcase name))))
+          (concat prefix (replace-regexp-in-string
+                          "[^a-z-]" "-" (downcase name))))
          (confpkg-file (expand-file-name (concat confpkg-name ".el")
                                          "subconf")))
     (unless (file-exists-p confpkg-file)
