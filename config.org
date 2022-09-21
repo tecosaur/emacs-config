@@ -2401,19 +2401,19 @@ of unnecessary keystrokes --- we can simply bind common actions to a single key!
 (defun +doom-dashboard-setup-modified-keymap ()
   (setq +doom-dashboard-mode-map (make-sparse-keymap))
   (map! :map +doom-dashboard-mode-map
-        :desc "Find file" :ne "f" #'find-file
-        :desc "Recent files" :ne "r" #'consult-recent-file
-        :desc "Config dir" :ne "C" #'doom/open-private-config
-        :desc "Open config.org" :ne "c" (cmd! (find-file (expand-file-name "config.org" doom-private-dir)))
-        :desc "Open dotfile" :ne "." (cmd! (doom-project-find-file "~/.config/"))
-        :desc "Notes (roam)" :ne "n" #'org-roam-node-find
-        :desc "Switch buffer" :ne "b" #'+vertico/switch-workspace-buffer
-        :desc "Switch buffers (all)" :ne "B" #'consult-buffer
-        :desc "IBuffer" :ne "i" #'ibuffer
-        :desc "Previous buffer" :ne "p" #'previous-buffer
-        :desc "Set theme" :ne "t" #'consult-theme
-        :desc "Quit" :ne "Q" #'save-buffers-kill-terminal
-        :desc "Show keybindings" :ne "h" (cmd! (which-key-show-keymap '+doom-dashboard-mode-map))))
+        :desc "Find file" :ng "f" #'find-file
+        :desc "Recent files" :ng "r" #'consult-recent-file
+        :desc "Config dir" :ng "C" #'doom/open-private-config
+        :desc "Open config.org" :ng "c" (cmd! (find-file (expand-file-name "config.org" doom-private-dir)))
+        :desc "Open dotfile" :ng "." (cmd! (doom-project-find-file "~/.config/"))
+        :desc "Notes (roam)" :ng "n" #'org-roam-node-find
+        :desc "Switch buffer" :ng "b" #'+vertico/switch-workspace-buffer
+        :desc "Switch buffers (all)" :ng "B" #'consult-buffer
+        :desc "IBuffer" :ng "i" #'ibuffer
+        :desc "Previous buffer" :ng "p" #'previous-buffer
+        :desc "Set theme" :ng "t" #'consult-theme
+        :desc "Quit" :ng "Q" #'save-buffers-kill-terminal
+        :desc "Show keybindings" :ng "h" (cmd! (which-key-show-keymap '+doom-dashboard-mode-map))))
 
 (add-transient-hook! #'+doom-dashboard-mode (+doom-dashboard-setup-modified-keymap))
 (add-transient-hook! #'+doom-dashboard-mode :append (+doom-dashboard-setup-modified-keymap))
