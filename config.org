@@ -10098,7 +10098,7 @@ achieve this with CSS alone. Thankfully we can avoid JS though, by adapting the
 TOC generation code to use a ~label~ for each item, and a hidden ~checkbox~ to keep
 track of state.
 
-To add this, we need to change one line in [[file:~/.config/emacs/.local/straight/repos/org-mode/lisp/ox-html.el::(format "<a href=\"#%s\">%s</a>"][org-html--format-toc-headline]].
+To add this, we need to change one line in [[file:~/.config/emacs/.local/straight/repos/org/lisp/ox-html.el::(format "<a href=\"#%s\">%s</a>"][org-html--format-toc-headline]].
 
 Since we can actually accomplish the desired effect by adding advice /around/ the
 function, without overriding it --- let's do that to reduce the bug surface of
