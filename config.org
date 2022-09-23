@@ -10713,46 +10713,28 @@ tests should be very versatile.
 (defvar org-latex-par-sep t
   "Vertically seperate paragraphs, and remove indentation.")
 
-(defvar org-latex-conditional-features
-  '(("\\[\\[\\(?:file\\|https?\\):\\(?:[^]]\\|\\\\\\]\\)+?\\.\\(?:eps\\|pdf\\|png\\|jpeg\\|jpg\\|jbig2\\)\\]\\]\\|\\\\includegraphics[\\[{]" . image)
-    ("\\[\\[\\(?:file\\|https?\\):\\(?:[^]]+?\\|\\\\\\]\\)\\.svg\\]\\]\\|\\\\includesvg[\\[{]" . svg)
-    ("\\\\(\\|\\\\\\[\\|\\\\begin{\\(?:math\\|displaymath\\|equation\\|align\\|flalign\\|multiline\\|gather\\)[a-z]*\\*?}" . maths)
-    ("^[ \t]*|" . table)
-    ("cref:\\|\\cref{\\|\\[\\[[^\\]+\n?[^\\]\\]\\]" . cleveref)
-    ("[;\\\\]?\\b[A-Z][A-Z]+s?[^A-Za-z]" . acronym)
-    ("[\u2500-\u259F]" . box-drawing)
-    ("\\+[^ ].*[^ ]\\+\\|_[^ ].*[^ ]_\\|\\\\uu?line\\|\\\\uwave\\|\\\\sout\\|\\\\xout\\|\\\\dashuline\\|\\dotuline\\|\\markoverwith" . underline)
-    (":float wrap" . float-wrap)
-    (":float sideways" . rotate)
-    ("^[ \t]*#\\+caption:\\|\\\\caption" . caption)
-    ("\\[\\[xkcd:" . (image caption))
-    (org-latex-use-microtype . microtype)
-    ((and org-latex-italic-quotes "^[ \t]*#\\+begin_quote\\|\\\\begin{quote}") . italic-quotes)
-    (org-latex-par-sep . par-sep)
-    (org-latex-embed-files . embed-files)
-    ((and org-latex-embed-files "^[ \t]*#\\+embed\\|^[ \t]*#\\+begin_src\\|^[ \t]*#\\+BEGIN_SRC") . embed-tangled)
-    ("^[ \t]*\\(?:[-+*]\\|[0-9]+[.)]\\|[A-Za-z]+[.)]\\) \\[[ -X]\\]" . checkbox)
-    ("^[ \t]*#\\+begin_warning\\|\\\\begin{warning}" . box-warning)
-    ("^[ \t]*#\\+begin_info\\|\\\\begin{info}"       . box-info)
-    ("^[ \t]*#\\+begin_notes\\|\\\\begin{notes}"     . box-notes)
-    ("^[ \t]*#\\+begin_success\\|\\\\begin{success}" . box-success)
-    ("^[ \t]*#\\+begin_error\\|\\\\begin{error}"     . box-error))
-  "Org feature tests and associated LaTeX feature flags.
-
-Alist where the car is a test for the presense of the feature,
-and the cdr is either a single feature symbol or list of feature symbols.
-
-When a string, it is used as a regex search in the buffer.
-The feature is registered as present when there is a match.
-
-The car can also be a
-- symbol, the value of which is fetched
-- function, which is called with info as an argument
-- list, which is `eval'uated
-
-If the symbol, function, or list produces a string: that is used as a regex
-search in the buffer. Otherwise any non-nil return value will indicate the
-existance of the feature.")
+(pushnew!
+ org-export-conditional-features
+ '("\\\\(\\|\\\\\\[\\|\\\\begin{\\(?:math\\|displaymath\\|equation\\|align\\|flalign\\|multiline\\|gather\\)[a-z]*\\*?}" . maths)
+ '("cref:\\|\\cref{\\|\\[\\[[^\\]+\n?[^\\]\\]\\]" . cleveref)
+ '("[;\\\\]?\\b[A-Z][A-Z]+s?[^A-Za-z]" . acronym)
+ '("[\u2500-\u259F]" . box-drawing)
+ '("\\+[^ ].*[^ ]\\+\\|_[^ ].*[^ ]_\\|\\\\uu?line\\|\\\\uwave\\|\\\\sout\\|\\\\xout\\|\\\\dashuline\\|\\dotuline\\|\\markoverwith" . underline)
+ '(":float wrap" . float-wrap)
+ '(":float sideways" . rotate)
+ '("^[ \t]*#\\+caption:\\|\\\\caption" . caption)
+ '("\\[\\[xkcd:" . (image caption))
+ '(org-latex-use-microtype . microtype)
+ (cons (lambda (_info) (and org-latex-italic-quotes "^[ \t]*#\\+begin_quote\\|\\\\begin{quote}")) 'italic-quotes)
+ '(org-latex-par-sep . par-sep)
+ '(org-latex-embed-files . embed-files)
+ (cons (lambda (_info) (and org-latex-embed-files "^[ \t]*#\\+embed\\|^[ \t]*#\\+begin_src\\|^[ \t]*#\\+BEGIN_SRC")) 'embed-tangled)
+ '("^[ \t]*\\(?:[-+*]\\|[0-9]+[.)]\\|[A-Za-z]+[.)]\\) \\[[ -X]\\]" . checkbox)
+ '("^[ \t]*#\\+begin_warning\\|\\\\begin{warning}" . box-warning)
+ '("^[ \t]*#\\+begin_info\\|\\\\begin{info}"       . box-info)
+ '("^[ \t]*#\\+begin_notes\\|\\\\begin{notes}"     . box-notes)
+ '("^[ \t]*#\\+begin_success\\|\\\\begin{success}" . box-success)
+ '("^[ \t]*#\\+begin_error\\|\\\\begin{error}"     . box-error))
 #+end_src
 
 Then we provide a way to generate the preamble that provides those features.
@@ -10782,182 +10764,37 @@ introduce an =:order= keyword. Using this I'll arrange snippets as follows.
 + =4= Fancy boxes
 
 #+begin_src emacs-lisp
-(defvar org-latex-feature-implementations
-  '((image         :snippet "\\usepackage{graphicx}" :order 2)
-    (svg           :snippet "\\usepackage[inkscapelatex=false]{svg}" :order 2)
-    (maths         :snippet "\\usepackage[nofont]{bmc-maths}" :order 0.2)
-    (table         :snippet "\\usepackage{longtable}\n\\usepackage{booktabs}" :order 2)
-    (cleveref      :snippet "\\usepackage[capitalize]{cleveref}" :order 1) ; after bmc-maths
-    (underline     :snippet "\\usepackage[normalem]{ulem}" :order 0.5)
-    (float-wrap    :snippet "\\usepackage{wrapfig}" :order 2)
-    (rotate        :snippet "\\usepackage{rotating}" :order 2)
-    (caption       :snippet org-latex-caption-preamble :order 2.1)
-    (microtype     :snippet "\\usepackage[activate={true,nocompatibility},final,tracking=true,kerning=true,spacing=true,factor=2000]{microtype}\n" :order 0.1)
-    (embed-files   :snippet org-latex-embed-files-preamble :order -2)
-    (embed-tangled :requires embed-files :snippet (concat (org-latex-embed-extra-files) "\n") :order -1)
-    (acronym       :snippet "\\newcommand{\\acr}[1]{\\protect\\textls*[110]{\\scshape #1}}\n\\newcommand{\\acrs}{\\protect\\scalebox{.91}[.84]{\\hspace{0.15ex}s}}" :order 0.4)
-    (box-drawing   :snippet "\\usepackage{pmboxdraw}" :order 0.05)
-    (italic-quotes :snippet "\\renewcommand{\\quote}{\\list{}{\\rightmargin\\leftmargin}\\item\\relax\\em}\n" :order 0.5)
-    (par-sep       :snippet "\\setlength{\\parskip}{\\baselineskip}\n\\setlength{\\parindent}{0pt}\n" :order 0.5)
-    (.pifont       :snippet "\\usepackage{pifont}")
-    (.xcoffins     :snippet "\\usepackage{xcoffins}")
-    (checkbox      :requires .pifont :order 3
-                   :snippet (concat (unless (memq 'maths features)
-                                      "\\usepackage{amssymb} % provides \\square")
-                                    org-latex-checkbox-preamble))
-    (.fancy-box    :requires (.pifont .xcoffins) :snippet org-latex-box-preamble :order 3.9)
-    (box-warning   :requires .fancy-box :snippet "\\defsimplebox{warning}{e66100}{Warning}" :order 4)
-    (box-info      :requires .fancy-box :snippet "\\defsimplebox{info}{3584e4}{Information}" :order 4)
-    (box-notes     :requires .fancy-box :snippet "\\defsimplebox{notes}{26a269}{Notes}" :order 4)
-    (box-success   :requires .fancy-box :snippet "\\defsimplebox{success}{26a269}{\\vspace{-\\baselineskip}}" :order 4)
-    (box-error     :requires .fancy-box :snippet "\\defsimplebox{error}{c01c28}{Important}" :order 4))
-  "LaTeX features and details required to implement them.
-
-List where the car is the feature symbol, and the rest forms a plist with the
-following keys:
-- :snippet, which may be either
-  - a string which should be included in the preamble
-  - a symbol, the value of which is included in the preamble
-  - a function, which is evaluated with the list of feature flags as its
-    single argument. The result of which is included in the preamble
-  - a list, which is passed to `eval', with a list of feature flags available
-    as \"features\"
-
-- :requires, a feature or list of features that must be available
-- :when, a feature or list of features that when all available should cause this
-    to be automatically enabled.
-- :prevents, a feature or list of features that should be masked
-- :order, for when ordering is important. Lower values appear first.
-    The default is 0.
-- :eager, when non-nil the feature will be eagerly loaded, i.e. without being detected.")
+(pushnew!
+ org-latex-feature-implementations
+ '(image         :snippet "\\usepackage{graphicx}" :order 2)
+ '(svg           :snippet "\\usepackage[inkscapelatex=false]{svg}" :order 2)
+ '(maths         :snippet "\\usepackage[nofont]{bmc-maths}" :order 0.2)
+ '(table         :snippet "\\usepackage{longtable}\n\\usepackage{booktabs}" :order 2)
+ '(cleveref      :snippet "\\usepackage[capitalize]{cleveref}" :order 1) ; after bmc-maths
+ '(float-wrap    :snippet "\\usepackage{wrapfig}" :order 2)
+ '(rotate        :snippet "\\usepackage{rotating}" :order 2)
+ '(caption       :snippet org-latex-caption-preamble :order 2.1)
+ '(microtype     :snippet "\\usepackage[activate={true,nocompatibility},final,tracking=true,kerning=true,spacing=true,factor=2000]{microtype}\n" :order 0.1)
+ '(embed-files   :snippet org-latex-embed-files-preamble :order -2)
+ `(embed-tangled :requires embed-files :snippet ,(lambda (_info) (concat (org-latex-embed-extra-files) "\n")) :order -1)
+ '(acronym       :snippet "\\newcommand{\\acr}[1]{\\protect\\textls*[110]{\\scshape #1}}\n\\newcommand{\\acrs}{\\protect\\scalebox{.91}[.84]{\\hspace{0.15ex}s}}" :order 0.4)
+ '(box-drawing   :snippet "\\usepackage{pmboxdraw}" :order 0.05)
+ '(italic-quotes :snippet "\\renewcommand{\\quote}{\\list{}{\\rightmargin\\leftmargin}\\item\\relax\\em}\n" :order 0.5)
+ '(par-sep       :snippet "\\setlength{\\parskip}{\\baselineskip}\n\\setlength{\\parindent}{0pt}\n" :order 0.5)
+ '(.pifont       :snippet "\\usepackage{pifont}")
+ '(.xcoffins     :snippet "\\usepackage{xcoffins}")
+ `(checkbox      :requires .pifont :order 3
+   :snippet ,(lambda (_info)
+               (concat (unless (memq 'maths features)
+                         "\\usepackage{amssymb} % provides \\square")
+                       org-latex-checkbox-preamble)))
+ '(.fancy-box    :requires (.pifont .xcoffins) :snippet org-latex-box-preamble :order 3.9)
+ '(box-warning   :requires .fancy-box :snippet "\\defsimplebox{warning}{e66100}{Warning}" :order 4)
+ '(box-info      :requires .fancy-box :snippet "\\defsimplebox{info}{3584e4}{Information}" :order 4)
+ '(box-notes     :requires .fancy-box :snippet "\\defsimplebox{notes}{26a269}{Notes}" :order 4)
+ '(box-success   :requires .fancy-box :snippet "\\defsimplebox{success}{26a269}{\\vspace{-\\baselineskip}}" :order 4)
+ '(box-error     :requires .fancy-box :snippet "\\defsimplebox{error}{c01c28}{Important}" :order 4))
 #+end_src
-
-***** Feature determination
-
-Now that we have ~org-latex-conditional-features~ defined, we need to use it to
-extract a list of features found in an Org buffer.
-
-#+begin_src emacs-lisp
-(defun org-latex-detect-features (&optional buffer info)
-  "List features from `org-latex-conditional-features' detected in BUFFER."
-  (let ((case-fold-search nil))
-    (with-current-buffer (or buffer (current-buffer))
-      (delete-dups
-       (mapcan (lambda (construct-feature)
-                 (when (let ((out (pcase (car construct-feature)
-                                    ((pred stringp) (car construct-feature))
-                                    ((pred functionp) (funcall (car construct-feature) info))
-                                    ((pred listp) (eval (car construct-feature)))
-                                    ((pred symbolp) (symbol-value (car construct-feature)))
-                                    (_ (user-error "org-latex-conditional-features key %s unable to be used" (car construct-feature))))))
-                         (if (stringp out)
-                             (save-excursion
-                               (goto-char (point-min))
-                               (re-search-forward out nil t))
-                           out))
-                   (if (listp (cdr construct-feature)) (cdr construct-feature) (list (cdr construct-feature)))))
-               org-latex-conditional-features)))))
-#+end_src
-
-***** Preamble generation
-
-Once a list of required features has been determined, we want to use
-~org-latex-feature-implementations~ to generate the LaTeX which should be inserted
-into the preamble to provide those features.
-
-First we want to process our fancy keywords in ~org-latex-feature-implementations~
-to produce an /expanded/ list of features. We'll do that by performing the
-following steps.
-+ The dependencies for each listed feature are added to feature list
-  (src_elisp{:requires}).
-+ The src_elisp{:when} conditions of each feature, and available features with
-  src_elisp{:eager t}, are evaluated, and added/removed accordingly
-+ Any features present in a src_elisp{:prevents} value are removed
-+ The feature list is scrubbed of duplicates
-+ The feature list is sorted by src_elisp{:order} (ascending)
-
-#+begin_src emacs-lisp
-(defun org-latex-expand-features (features)
-  "For each feature in FEATURES process :requires, :when, and :prevents keywords and sort according to :order."
-  (dolist (feature features)
-    (unless (assoc feature org-latex-feature-implementations)
-      (message "Feature %s not provided in org-latex-feature-implementations, ignoring." feature)
-      (setq features (remove feature features))))
-  (setq current features)
-  (while current
-    (when-let ((requirements (plist-get (cdr (assq (car current) org-latex-feature-implementations)) :requires)))
-      (setcdr current (if (listp requirements)
-                          (append requirements (cdr current))
-                        (cons requirements (cdr current)))))
-    (setq current (cdr current)))
-  (dolist (potential-feature
-           (append features (delq nil (mapcar (lambda (feat)
-                                                (when (plist-get (cdr feat) :eager)
-                                                  (car feat)))
-                                              org-latex-feature-implementations))))
-    (when-let ((prerequisites (plist-get (cdr (assoc potential-feature org-latex-feature-implementations)) :when)))
-      (setf features (if (if (listp prerequisites)
-                             (cl-every (lambda (preq) (memq preq features)) prerequisites)
-                           (memq prerequisites features))
-                         (append (list potential-feature) features)
-                       (delq potential-feature features)))))
-  (dolist (feature features)
-    (when-let ((prevents (plist-get (cdr (assoc feature org-latex-feature-implementations)) :prevents)))
-      (setf features (cl-set-difference features (if (listp prevents) prevents (list prevents))))))
-  (sort (delete-dups features)
-        (lambda (feat1 feat2)
-          (if (< (or (plist-get (cdr (assoc feat1 org-latex-feature-implementations)) :order) 1)
-                 (or (plist-get (cdr (assoc feat2 org-latex-feature-implementations)) :order) 1))
-              t nil))))
-#+end_src
-
-Now that we have a nice list of the final features to use, we can just pull out
-their snippets and join the result together.
-
-#+begin_src emacs-lisp
-(defun org-latex-generate-features-preamble (features)
-  "Generate the LaTeX preamble content required to provide FEATURES.
-This is done according to `org-latex-feature-implementations'"
-  (let ((expanded-features (org-latex-expand-features features)))
-    (concat
-     (format "\n%% features: %s\n" expanded-features)
-     (mapconcat (lambda (feature)
-                  (when-let ((snippet (plist-get (cdr (assoc feature org-latex-feature-implementations)) :snippet)))
-                    (concat
-                     (pcase snippet
-                       ((pred stringp) snippet)
-                       ((pred functionp) (funcall snippet features))
-                       ((pred listp) (eval `(let ((features ',features)) (,@snippet))))
-                       ((pred symbolp) (symbol-value snippet))
-                       (_ (user-error "org-latex-feature-implementations :snippet value %s unable to be used" snippet)))
-                     "\n")))
-                expanded-features
-                "")
-     "% end features\n")))
-#+end_src
-
-Then Org needs to be advised to actually use this generated preamble content.
-
-#+begin_src emacs-lisp
-(defvar info--tmp nil)
-
-(defadvice! org-latex-save-info (info &optional t_ s_)
-  :before #'org-latex-make-preamble
-  (setq info--tmp info))
-
-(defadvice! org-splice-latex-header-and-generated-preamble-a (orig-fn tpl def-pkg pkg snippets-p &optional extra)
-  "Dynamically insert preamble content based on `org-latex-conditional-preambles'."
-  :around #'org-splice-latex-header
-  (let ((header (funcall orig-fn tpl def-pkg pkg snippets-p extra)))
-    (if snippets-p header
-      (concat header
-              (org-latex-generate-features-preamble (org-latex-detect-features nil info--tmp))
-              "\n"))))
-#+end_src
-
-My use of ~info--tmp~ is somewhat hacky. When I try to upstream this, this should
-become much cleaner as I can pass info through by directly modifying
-~org-latex-make-preamble~.
 
 ***** Reduce default packages
 
@@ -11048,9 +10885,9 @@ Now that all the functionality has been implemented, we should hook it into our
 preamble generation.
 
 #+begin_src emacs-lisp
-(add-to-list 'org-latex-conditional-features '(org-latex-default-fontset . custom-font) t)
-(add-to-list 'org-latex-feature-implementations '(custom-font :snippet (org-latex-fontset :serif :sans :mono) :order 0) t)
-(add-to-list 'org-latex-feature-implementations '(.custom-maths-font :eager t :when (custom-font maths) :snippet (org-latex-fontset :maths) :order 0.3) t)
+(add-to-list 'org-export-conditional-features '(org-latex-default-fontset . custom-font) t)
+(add-to-list 'org-latex-feature-implementations (list 'custom-font :snippet (lambda (_info) (org-latex-fontset :serif :sans :mono)) :order 0) t)
+(add-to-list 'org-latex-feature-implementations (list '.custom-maths-font :eager t :when '(custom-font maths) :snippet (lambda (_info) (org-latex-fontset :maths)) :order 0.3) t)
 #+end_src
 
 Finally, we just need to add some fonts.
@@ -11109,7 +10946,7 @@ When we're using Alegreya we can apply a lovely little tweak to =tabular= which
 (locally) changes the figures used to lining fixed-width.
 
 #+begin_src emacs-lisp
-(add-to-list 'org-latex-conditional-features '((string= (car (org-latex-fontset-entry)) "alegreya") . alegreya-typeface))
+(add-to-list 'org-export-conditional-features (list (lambda (_info) (string= (car (org-latex-fontset-entry)) "alegreya")) 'alegreya-typeface))
 (add-to-list 'org-latex-feature-implementations '(alegreya-typeface) t)
 (add-to-list 'org-latex-feature-implementations'(.alegreya-tabular-figures :eager t :when (alegreya-typeface table) :order 0.5 :snippet "
 \\makeatletter
@@ -11122,7 +10959,7 @@ Due to Alegreya's metrics, the =\LaTeX= symbol doesn't quite look right. We
 can correct for this by redefining it with subtlety shifted kerning.
 
 #+begin_src emacs-lisp
-(add-to-list 'org-latex-conditional-features '("LaTeX" . latex-symbol))
+(add-to-list 'org-export-conditional-features '("LaTeX" . latex-symbol))
 (add-to-list 'org-latex-feature-implementations '(latex-symbol :when alegreya-typeface :order 0.5 :snippet "
 \\makeatletter
 % Kerning around the A needs adjusting
@@ -11251,7 +11088,7 @@ This condition is applied when cover page option is set to auto.")
     (setf info (plist-put info :latex-subtitle-format org-latex-subtitle-coverpage-format))))
 
 (add-to-list 'org-latex-feature-implementations '(cover-page :snippet org-latex-cover-page-maketitle :order 9) t)
-(add-to-list 'org-latex-conditional-features '((org-latex-cover-page-p) . cover-page) t)
+(add-to-list 'org-export-conditional-features (cons (lambda (_info) (org-latex-cover-page-p)) 'cover-page) t)
 #+end_src
 
 **** Condensed lists
@@ -11277,7 +11114,7 @@ Then we can just hook this in with our clever preamble.
 <<latex-condense-lists>>
 ")
 
-(add-to-list 'org-latex-conditional-features '((and org-latex-condense-lists "^[ \t]*[-+]\\|^[ \t]*[1Aa][.)] ") . condensed-lists) t)
+(add-to-list 'org-export-conditional-features (cons (lambda (_info) (and org-latex-condense-lists "^[ \t]*[-+]\\|^[ \t]*[1Aa][.)] ")) 'condensed-lists) t)
 (add-to-list 'org-latex-feature-implementations '(condensed-lists :snippet org-latex-condensed-lists :order 0.7) t)
 #+end_src
 
@@ -11296,40 +11133,24 @@ exporting that as LaTeX commands.
   :after ox-latex)
 #+end_src
 
-We'll modify the way listings are generated to make using this as easy as:
+Using this as in LaTeX exports is now as easy as
+
 #+begin_src emacs-lisp
-(setq org-latex-listings 'engraved) ; NOTE non-standard value
+(setq org-latex-listings 'engraved)
 #+end_src
-
-Thanks to ~org-latex-conditional-features~ and some copy-paste with the =minted=
-entry in ~org-latex-scr-block~ we can easily add this as a recognised
-~org-latex-listings~ value.
-
-#+begin_src emacs-lisp :noweb no-export
-(defvar-local org-export-has-code-p nil)
-
-(defadvice! org-export-expect-no-code (&rest _)
-  :before #'org-export-as
-  (setq org-export-has-code-p nil))
-
-(defadvice! org-export-register-code (&rest _)
-  :after #'org-latex-src-block
-  :after #'org-latex-inline-src-block-engraved
-  (setq org-export-has-code-p t))
-#+end_src
-
-Whenever this is used, in order for it to actually work (and look a little
-better) we add bit to the preamble:
 
 One little annoyance with this is the interaction between microtype and =Verbatim=
 environments. Protrusion is not desirable here. Thankfully, we can patch the
 =Verbatim= environment to turn off protrusion locally.
+
 #+begin_src emacs-lisp
-(add-to-list 'org-latex-feature-implementations
-             '(.no-protrusion-in-code :snippet "\\ifcsname Code\\endcsname\n  \\let\\oldcode\\Code\\renewcommand{\\Code}{\\microtypesetup{protrusion=false}\\oldcode}\n\\fi"
-                                      :when microtype
-                                      :eager t
-                                      :order 98.5) t)
+(add-to-list
+ 'org-latex-feature-implementations
+ '(.no-protrusion-in-code
+   :snippet "\\ifcsname Code\\endcsname\n  \\let\\oldcode\\Code\\renewcommand{\\Code}{\\microtypesetup{protrusion=false}\\oldcode}\n\\fi"
+   :when microtype
+   :eager t
+   :order 98.5) t)
 #+end_src
 
 At some point it would be nice to make the box colours easily customisable. At
@@ -11343,6 +11164,7 @@ switching to that theme and producing (and saving) the style definition if it
 doesn't exist.
 
 Now let's have the example block be styled similarly.
+
 #+begin_src emacs-lisp
 (defadvice! org-latex-example-block-engraved (orig-fn example-block contents info)
   "Like `org-latex-example-block', but supporting an engraved backend"
@@ -11381,8 +11203,8 @@ need to make it automatic
 (defadvice! org-latex-pick-compiler (_contents info)
   :before #'org-latex-template
   :before #'org-beamer-template
-  (when (and org-export-has-code-p
-             (memq 'julia-code (org-latex-detect-features))
+  (when (and (memq 'code (plist-get info :features))
+             (memq 'julia-code (plist-get info :features))
              (save-excursion
                (goto-char (point-min))
                (re-search-forward "[^\x00-\x7F\u200b]" nil t)))
@@ -11415,11 +11237,11 @@ Now all that remains is to hook this into the preamble generation.
 <<julia-mono-fontspec>>
 ")
 
-(add-to-list 'org-latex-feature-implementations '(julia-code :snippet org-latex-julia-mono-fontspec :order 0) t)
-(add-to-list 'org-latex-conditional-features '((and org-export-has-code-p "^[ \t]*#\\+begin_src julia\\|^[ \t]*#\\+BEGIN_SRC julia\\|src_julia") . julia-code) t)
+(add-to-list 'org-latex-feature-implementations '(julia-code :when code :snippet org-latex-julia-mono-fontspec :order 0) t)
+(add-to-list 'org-export-conditional-features '("^[ \t]*#\\+begin_src julia\\|^[ \t]*#\\+BEGIN_SRC julia\\|src_julia" . julia-code) t)
 
 (add-to-list 'org-latex-feature-implementations '(.microtype-lualatex :eager t :when (microtype julia-code) :prevents microtype :order 0.1 :snippet "\\usepackage[activate={true,nocompatibility},final,tracking=true,factor=2000]{microtype}\n"))
-(add-to-list 'org-latex-feature-implementations '(.custom-font-no-mono :eager t :prevents custom-font :order 0 :snippet (org-latex-fontset :serif :sans)) t)
+(add-to-list 'org-latex-feature-implementations (list '.custom-font-no-mono :eager t :prevents 'custom-font :order 0 :snippet (lambda (_info) (org-latex-fontset :serif :sans))) t)
 #+end_src
 
 **** Emojis
@@ -11459,8 +11281,8 @@ buffer to make insertion easier.
 (defun org-latex-emoji-setup ()
   (format "\\newcommand\\emoji[1]{\\raisebox{-0.3ex}{\\includegraphics[height=1.8ex]{%s/#1}}}" (emojify-image-dir)))
 
-(add-to-list 'org-latex-conditional-features '((emojify-emoji-in-buffer-p) . emoji) t)
-(add-to-list 'org-latex-feature-implementations '(emoji :requires image :snippet (org-latex-emoji-setup) :order 3 ))
+(add-to-list 'org-export-conditional-features (cons (lambda (_info) (emojify-emoji-in-buffer-p)) 'emoji) t)
+(add-to-list 'org-latex-feature-implementations (list 'emoji :requires 'image :snippet (lambda (_info) (org-latex-emoji-setup)) :order 3 ))
 #+end_src
 
 Once again making use of =emojify=, we can generate LaTeX commands for our emojis
@@ -11934,14 +11756,14 @@ Now let's just apply this along with some extra beamer tweaks.
   (eq 'beamer (and (plist-get info :back-end)
                    (org-export-backend-name (plist-get info :back-end)))))
 
-(add-to-list 'org-latex-conditional-features '(org-beamer-p . beamer) t)
+(add-to-list 'org-export-conditional-features '(org-beamer-p . beamer) t)
 (add-to-list 'org-latex-feature-implementations '(beamer :requires .missing-koma :prevents (italic-quotes condensed-lists)) t)
 (add-to-list 'org-latex-feature-implementations '(.missing-koma :snippet "\\usepackage{scrextend}" :order 2) t)
 
 (defvar org-beamer-metropolis-tweaks "
 <<beamer-metropolis-tweaks>>
 ")
-(add-to-list 'org-latex-conditional-features '((lambda (info) (and (org-beamer-p info) (string-match-p "metropolis$" org-beamer-theme))) . beamer-metropolis) t)
+(add-to-list 'org-export-conditional-features (cons (lambda (info) (and (org-beamer-p info) (string-match-p "metropolis$" org-beamer-theme))) 'beamer-metropolis) t)
 (add-to-list 'org-latex-feature-implementations '(beamer-metropolis :requires beamer :snippet org-beamer-metropolis-tweaks :order 3) t)
 #+end_src
 
