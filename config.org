@@ -3994,13 +3994,13 @@ icon. Then we'll redefine two functions used to generate the modeline.
 (doom-modeline-def-segment buffer-name
   "Display the current buffer's name, without any other information."
   (concat
-   (doom-modeline-spc)
+   doom-modeline-spc
    (doom-modeline--buffer-name)))
 
 (doom-modeline-def-segment pdf-icon
   "PDF icon from all-the-icons."
   (concat
-   (doom-modeline-spc)
+   doom-modeline-spc
    (doom-modeline-icon 'octicon "file-pdf" nil nil
                        :face (if (doom-modeline--active)
                                  'all-the-icons-red
