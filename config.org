@@ -7123,7 +7123,7 @@ correct package statement needed.
                     (= 0 (shell-command "cat ~/.ssh/id_ed25519.pub | grep -q AAAAC3NzaC1lZDI1NTE5AAAAIOZZqcJOLdN+QFHKyW8ST2zz750+8TdvO9IT5geXpQVt"))))
       (dev-pkg (let ((default-directory (expand-file-name "straight/repos/org" doom-local-dir)))
                  (and (file-exists-p default-directory)
-                      (string= "tec@git.savannah.gnu.org:/srv/git/emacs/org-mode.git\n" (shell-command-to-string "git remote get-url origin")))))
+                      (string= "gitea@git.tecosaur.net:tec/org-mode.git\n" (shell-command-to-string "git remote get-url tecosaur")))))
       (recipe-common '(:files (:defaults "etc")
                        :build t
                        :pre-build
@@ -7151,9 +7151,11 @@ correct package statement needed.
       :recipe (,@(cond ((and dev-key dev-pkg)
                         (list :host nil :repo nil :local-repo (expand-file-name "straight/repos/org" doom-local-dir)))
                        (dev-key
-                        (list :host nil :repo "tec@git.savannah.gnu.org:/srv/git/emacs/org-mode.git"))
+                        (list :host nil :repo "tec@git.savannah.gnu.org:/srv/git/emacs/org-mode.git"
+                              :fork (list :host nil :repo "gitea@git.tecosaur.net:tec/org-mode.git" :branch "dev" :remote "tecosaur")))
                        (t
-                        (list :host 'github :repo "emacs-straight/org-mode")))
+                        (list :host nil :repo "https://git.tecosaur.net/mirrors/org-mode.git" :remote "mirror"
+                              :fork (list :host nil :repo "https://git.tecosaur.net/tec/org-mode.git" :branch "dev" :remote "tecosaur"))))
                ,@recipe-common)
       :pin nil)))
 #+end_src
