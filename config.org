@@ -1129,7 +1129,7 @@ To start with, we'll check if we are:
                                   (locate-library "org"))))
     (cond
      ((and noninteractive (fboundp 'exit!))
-      (print! (warn "Detected conditions provoking a config bootstrap"))
+      (print! (warn (format "Detected conditions provoking a config bootstrap (Org %s)" (org-version))))
       (print! (start "Initiating bootstrap..."))
       <<bootstrap-perform>>
       )
