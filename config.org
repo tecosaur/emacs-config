@@ -7096,7 +7096,7 @@ Then adding a regex for it to =~/.config/git/config=
 #+end_src
 
 *** Packages
-****  Org itself
+**** Org itself
 
 There are actually three possible package statements I may want to use for Org.
 
