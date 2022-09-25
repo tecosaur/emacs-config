@@ -12025,7 +12025,8 @@ Syntax highlighting is nice, so let's turn all of that on
 Lastly, in the event that I use =JAGS=, it would be nice to be able to use =jags= as
 the language identifier, not =ess-jags=.
 #+begin_src emacs-lisp
-(add-to-list '+org-babel-mode-alist '(jags . ess-jags))
+(after! org
+  (add-to-list '+org-babel-mode-alist '(jags . ess-jags)))
 #+end_src
 
 ** LaTeX
