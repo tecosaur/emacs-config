@@ -3587,7 +3587,7 @@ investigation.
   :pin "2291ccf2f2ccc80a6aac4664e8ede736ceb672b7")
 #+end_src
 
-#+begin_src emacs-lisp :tangle packages.el
+#+begin_src emacs-lisp
 (use-package! etrace
   :after elp)
 #+end_src
