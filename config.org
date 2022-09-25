@@ -2437,13 +2437,14 @@ benchmark information by itself.
 #+begin_src emacs-lisp
 (defun +doom-dashboard-benchmark-line ()
   "Insert the load time line."
-  (insert
-   "\n\n"
-   (propertize
-    (+doom-dashboard--center
-     +doom-dashboard--width
-     (doom-display-benchmark-h 'return))
-    'face 'doom-dashboard-loaded)))
+  (when doom-init-time
+    (insert
+     "\n\n"
+     (propertize
+      (+doom-dashboard--center
+       +doom-dashboard--width
+       (doom-display-benchmark-h 'return))
+      'face 'doom-dashboard-loaded))))
 #+end_src
 
 With ~doom-display-benchmark-h~ displayed here, I don't see the need for it to be
