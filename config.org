@@ -6946,14 +6946,55 @@ Now to make this take effect, we can just add it a bit later on in
 *** Org Msg
 
 Doom does a fantastic stuff with the defaults with this, so we only make a few
-minor tweaks.
+minor tweaks. First, some stylistic things:
+
 #+begin_src emacs-lisp
 (setq +org-msg-accent-color "#1a5fb4"
       org-msg-greeting-fmt "\nHi%s,\n\n"
       org-msg-signature "\n\n#+begin_signature\nAll the best,\\\\\n@@html:<b>@@Timothy@@html:</b>@@\n#+end_signature")
+#+end_src
+
+Now, it would be nice to easily jump to and between the ends of the message
+body, so let's make a function for this.
+
+#+begin_src emacs-lisp
+(defun +org-msg-goto-body (&optional end)
+  "Go to either the beginning or the end of the body.
+END can be the symbol top, bottom, or nil to toggle."
+  (interactive)
+  (let ((initial-pos (point)))
+    (org-msg-goto-body)
+    (when (or (eq end 'top)
+              (and (or (eq initial-pos (point)) ; Already at bottom
+                       (<= initial-pos ; Above message body
+                           (save-excursion
+                             (message-goto-body)
+                             (point))))
+                   (not (eq end 'bottom))))
+      (message-goto-body)
+      (search-forward (format org-msg-greeting-fmt
+                              (concat " " (org-msg-get-to-name)))))))
+#+end_src
+
+We can replace the evil binding of =mu4e-compose-goto-bottom= with this function.
+
+#+begin_src emacs-lisp
 (map! :map org-msg-edit-mode-map
       :after org-msg
-      :n "G" #'org-msg-goto-body)
+      :n "G" #'+org-msg-goto-body)
+#+end_src
+
+It would also be good to call this when replying to a message. This has to be
+implemented as advice as the compose hooks are run before ~mu4e~compose-handler~
+moves the point with ~message-goto-<location>~.
+
+#+begin_src emacs-lisp
+(defun +org-msg-goto-body-when-replying (compose-type &rest _)
+  "Call `+org-msg-goto-body' when the current message is a reply."
+  (when (and org-msg-edit-mode (eq compose-type 'reply))
+    (+org-msg-goto-body)))
+
+(advice-add 'mu4e~compose-handler :after #'+org-msg-goto-body-when-replying)
 #+end_src
 
 * Language configuration
