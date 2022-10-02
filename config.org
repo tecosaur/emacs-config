@@ -7610,6 +7610,7 @@ It's nice to be able to link to music
       org-list-allow-alphabetical t        ; Have a. A. a) A) list bullets.
       org-catch-invisible-edits 'smart     ; Try not to accidently do weird stuff in invisible regions.
       org-export-with-sub-superscripts '{} ; Don't treat lone _ / ^ as sub/superscripts, require _{} / ^{}.
+      org-export-allow-bind-keywords t     ; Bind keywords can be handy
       org-image-actual-width '(0.9))       ; Make the in-buffer display closer to the exported result..
 #+end_src
 I also like the src_elisp{:comments} header-argument, so let's make that a
