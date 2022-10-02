@@ -6873,6 +6873,7 @@ namely:
 + Set ~default-directory~ to my local Org repository (where patch files are
   generated)
 + Move ~(point)~ to the =Subject:= line
++ Use a special Org-ML-specific signature
 
 #+begin_src emacs-lisp
 (defun +mu4e-compose-org-ml-setup ()
@@ -6887,6 +6888,18 @@ namely:
     (when (and org-msg-mode
                (re-search-forward "^:alternatives: (\\(utf-8 html\\))" nil t))
       (replace-match "utf-8" t t nil 1))
+    (if org-msg-mode
+        (let ((final-elem (org-element-at-point (point-max))))
+          (when (equal (org-element-property :type final-elem) "signature")
+            (goto-char (org-element-property :contents-begin final-elem))
+            (delete-region (org-element-property :contents-begin final-elem)
+                           (org-element-property :contents-end final-elem))
+            (setq-local org-msg-signature
+                        (format "\n\n#+begin_signature\n%s\n#+end_signature"
+                                (cdr +mu4e-org-ml-signature)))
+            (insert (cdr +mu4e-org-ml-signature) "\n")))
+      (goto-char (point-max))
+      (insert (car +mu4e-org-ml-signature)))
     (setq default-directory
           (replace-regexp-in-string
            (regexp-quote straight-build-dir)
@@ -6896,6 +6909,31 @@ namely:
 (defun +mu4e-goto-subject-not-to-once ()
   (message-goto-subject)
   (advice-remove 'message-goto-to #'+mu4e-goto-subject-not-to-once))
+#+end_src
+
+Now let's set up that signature.
+
+#+begin_src emacs-lisp
+(defvar +mu4e-org-ml-signature
+  (cons
+   "All the best,
+Timothy
+
+-- \
+Timothy (‘tecosaur’/‘TEC’), Org mode contributor.
+Learn more about Org mode at <https://orgmode.org/>.
+Support Org development at <https://liberapay.com/org-mode>,
+or support my work at <https://liberapay.com/tec>.
+"
+   "All the best,\\\\
+@@html:<b>@@Timothy@@html:</b>@@
+
+-\u200b- \\\\
+Timothy (‘tecosaur’/‘TEC’), Org mode contributor.\\\\
+Learn more about Org mode at https://orgmode.org/.\\\\
+Support Org development at https://liberapay.com/org-mode,\\\\
+or support my work at https://liberapay.com/tec.")
+  "Plain and Org version of the org-ml specific signature.")
 #+end_src
 
 Now to make this take effect, we can just add it a bit later on in
