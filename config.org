@@ -6633,11 +6633,15 @@ Speaking of, it would be good to put emails sent from =@tecosaur.net= in the
 account-specific sent directory, not the catch-all.
 
 #+begin_src emacs-lisp
-(defun +mu4e-account-sent-folder (msg)
-  (if (string-match-p "@tecosaur\\.net\\'"
-                      (plist-get (car (plist-get msg :from)) :email))
-      "/tecosaur-net/sent"
-    "/sent"))
+(defun +mu4e-account-sent-folder (&optional msg)
+  (let ((from (if msg
+                  (plist-get (car (plist-get msg :from)) :email)
+                (save-restriction
+                  (mail-narrow-to-head)
+                  (mail-fetch-field "from")))))
+    (if (and from (string-match-p "@tecosaur\\.net>?\\'" from))
+        "/tecosaur-net/Sent"
+      "/sent")))
 (setq mu4e-sent-folder #'+mu4e-account-sent-folder)
 #+end_src
 
