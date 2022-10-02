@@ -6878,8 +6878,12 @@ namely:
 (defun +mu4e-compose-org-ml-setup ()
   (when (string-match-p "\\`orgmode@" user-mail-address)
     (goto-char (point-min))
-    (re-search-forward "^To: .*$")
-    (replace-match "To: emacs-orgmode@gnu.org")
+    (save-restriction
+      (mail-narrow-to-head)
+      (when (string-empty-p (mail-fetch-field "to"))
+        (re-search-forward "^To: .*$")
+        (replace-match "To: emacs-orgmode@gnu.org")
+        (advice-add 'message-goto-to :after #'+mu4e-goto-subject-not-to-once)))
     (when (and org-msg-mode
                (re-search-forward "^:alternatives: (\\(utf-8 html\\))" nil t))
       (replace-match "utf-8" t t nil 1))
@@ -6887,9 +6891,11 @@ namely:
           (replace-regexp-in-string
            (regexp-quote straight-build-dir)
            "repos"
-           (file-name-directory (locate-library "org"))))
-    (add-transient-hook! 'message-goto-to
-      :after (message-goto-subject))))
+           (file-name-directory (locate-library "org"))))))
+
+(defun +mu4e-goto-subject-not-to-once ()
+  (message-goto-subject)
+  (advice-remove 'message-goto-to #'+mu4e-goto-subject-not-to-once))
 #+end_src
 
 Now to make this take effect, we can just add it a bit later on in
