@@ -2043,8 +2043,12 @@ splash screen to something more minimal I switched to just using the /E/.
 [[file:misc/splash-images/emacs-e.svg]]
 
 #+begin_src emacs-lisp
+(defvar fancy-splash-image-directory
+  (expand-file-name "misc/splash-images/" doom-private-dir)
+  "Directory in which to look for splash image templates.")
+
 (defvar fancy-splash-image-template
-  (expand-file-name "misc/splash-images/emacs-e-template.svg" doom-private-dir)
+  (expand-file-name "emacs-e-template.svg" fancy-splash-image-directory)
   "Default template svg used for the splash image.
 Colours are substituted as per `fancy-splash-template-colours'.")
 #+end_src
@@ -2054,11 +2058,19 @@ replacement system.
 
 #+begin_src emacs-lisp
 (defvar fancy-splash-template-colours
-  '(("$colour1" . keywords)
-    ("$colour2" . type)
-    ("$colour3" . base5)
-    ("$colour4" . base8))
-  "List of colour-replacement alists of the form (\"$placeholder\" . 'theme-colour).")
+  '(("$colour1" :doom-color keywords  :face font-lock-keyword-face)
+    ("$colour2" :doom-color type      :face font-lock-type-face)
+    ("$colour3" :doom-color constants :face font-lock-constant-face)
+    ("$colour4" :doom-color functions :face font-lock-function-name-face)
+    ("$colour5" :doom-color strings   :face success)
+    ("$colour6" :doom-color error     :face error)
+    ("$colour7" :doom-color teal      :face font-lock-builtin-face)
+    ("$shadow"  :doom-color base5     :face shadow)
+    ("$light"   :doom-color base8     :face font-lock-doc-face))
+  "Alist of colour-replacement plists.
+Each plist is of the form (\"$placeholder\" :doom-color 'key :face 'face).
+If the current theme is a doom theme :doom-color will be used,
+otherwise the colour will be face foreground.")
 #+end_src
 
 Since we're going to be generating theme-specific versions of splash images, it
@@ -2098,9 +2110,9 @@ mechanics for actually implementing this. To start with, a basic utility
 function to get the relevant file path.
 
 #+begin_src emacs-lisp
-(defun fancy-splash-filename (theme height)
+(defun fancy-splash-filename (theme template height)
   "Get the file name for the splash image with THEME and of HEIGHT."
-  (expand-file-name (format "%s-%d.svg" theme height) fancy-splash-cache-dir))
+  (expand-file-name (format "%s-%s-%d.svg" theme (file-name-base template) height) fancy-splash-cache-dir))
 #+end_src
 
 Now to go about actually generating the images.
@@ -2112,17 +2124,20 @@ The theming is performed using `fancy-splash-template-colours'
 and the current theme."
   (with-temp-buffer
     (insert-file-contents template)
-    (re-search-forward "$height" nil t)
-    (replace-match (number-to-string height) nil nil)
+    (if (re-search-forward "$height" nil t)
+        (replace-match (number-to-string height) nil nil)
+      (warn "fancy splash template problem: $height not found in %s" template))
     (dolist (substitution fancy-splash-template-colours)
       (goto-char (point-min))
-      (while (search-forward (car substitution) nil t)
-        (replace-match
-         (face-attribute (cdr substitution) :foreground nil 'default)
-         nil nil)))
+      (let ((replacement
+             (if (string-match-p "^doom-" (symbol-name (car custom-enabled-themes)))
+                 (doom-color (plist-get (cdr substitution) :doom-color))
+               (face-attribute (plist-get (cdr substitution) :face) :foreground nil 'default))))
+        (while (search-forward (car substitution) nil t)
+          (replace-match replacement nil nil))))
     (unless (file-exists-p fancy-splash-cache-dir)
       (make-directory fancy-splash-cache-dir t))
-    (write-region nil nil (fancy-splash-filename (car custom-enabled-themes) height) nil nil)))
+    (write-region nil nil (fancy-splash-filename (car custom-enabled-themes) template height) nil nil)))
 #+end_src
 
 We may as well generate each theme's appropriate images in bunk.
@@ -2150,6 +2165,7 @@ the current theme, `fancy-splash-generate-all-images' is called. "
   (unless (file-exists-p
            (fancy-splash-filename
             (car custom-enabled-themes)
+            fancy-splash-image-template
             (or height (plist-get (car fancy-splash-sizes) :height))))
     (fancy-splash-generate-all-images)))
 #+end_src
@@ -2158,11 +2174,47 @@ In case we switch out the images used (or something else goes wrong), it would
 be good to have a convenient method to clear this cache.
 
 #+begin_src emacs-lisp
-(defun fancy-splash-clear-cache ()
-  "Delete all cached fancy splash images"
+(defun fancy-splash-clear-cache (&optional delete-files)
+  "Clear all cached fancy splash images.
+Optionally delete all cache files and regenerate the currently relevant set."
+  (interactive (list t))
+  (dolist (size fancy-splash-sizes)
+    (unless (plist-get size :file)
+      (let ((image-file
+             (fancy-splash-filename
+              (car custom-enabled-themes)
+              (or (plist-get size :template)
+                  fancy-splash-image-template)
+              (plist-get size :height))))
+        (image-flush (create-image image-file) t))))
+  (message "Fancy splash image cache cleared!")
+  (when delete-files
+    (delete-directory fancy-splash-cache-dir t)
+    (fancy-splash-generate-all-images)
+    (message "Fancy splash images cache deleted!")))
+#+end_src
+
+In a similar way, it could be fun to allow for switching the template used. We
+can support this by looking for files ending in =-template.svg= and running
+~image-flush~ via ~fancy-splash-clear-cache~.
+
+#+begin_src emacs-lisp
+(defun fancy-splash-switch-template ()
+  "Switch the template used for the fancy splash image."
   (interactive)
-  (delete-directory fancy-splash-cache-dir t)
-  (message "Fancy splash image cache cleared!"))
+  (let ((new (completing-read
+              "Splash template: "
+              (mapcar
+               (lambda (template)
+                 (replace-regexp-in-string "-template\\.svg$" "" template))
+               (directory-files fancy-splash-image-directory nil "-template\\.svg\\'"))
+              nil t)))
+    (setq fancy-splash-image-template
+          (expand-file-name (concat new "-template.svg") fancy-splash-image-directory))
+    (fancy-splash-clear-cache)
+    (message "") ; Clear message from `fancy-splash-clear-cache'.
+    (setq fancy-splash--last-size nil)
+    (fancy-splash-apply-appropriate-image)))
 #+end_src
 
 Now we can ensure that the desired images exist, we need to work out which
@@ -2197,6 +2249,7 @@ in hooks that call functions with arguments."
       (setq fancy-splash-image
             (or (plist-get appropriate-size :file)
                 (fancy-splash-filename (car custom-enabled-themes)
+                                       fancy-splash-image-template
                                        (plist-get appropriate-size :height)))
             +doom-dashboard-banner-padding (plist-get appropriate-size :padding)
             fancy-splash--last-size appropriate-size
