@@ -2059,7 +2059,7 @@ splash screen to something more minimal I switched to just using the /E/.
 
 #+attr_latex: :width 0.2\linewidth
 #+attr_html: :style width:20% :alt Fancy Emacs "E"
-[[file:misc/splash-images/emacs-e.svg]]
+[[file:misc/splash-images/emacs-e-template.svg]]
 
 #+begin_src emacs-lisp
 (defvar fancy-splash-image-directory
