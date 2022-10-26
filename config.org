@@ -481,13 +481,20 @@ modify the parent heading, and register the config group with the variables we
 created earlier.
 
 #+name: confpkg
-#+begin_src elisp :var name="" needs="" after="" prefix="config-" :results silent raw :noweb no-export
+#+begin_src elisp :var name="" needs="" after="" prefix="config-" via="copy" :results silent raw :noweb no-export
 ;; Babel block for use with #+call
 ;; Arguments:
 ;;  - name, the name of the config sub-package
 ;;  - needs, (when non-empty) required system executable(s)
 ;;  - after, required features
 ;;  - prefix, the package prefix ("config-" by default)
+;;  - via, how this configuration should be included in config.el,
+;;    the current options are:
+;;    + "copy", copy the configuration lisp
+;;    + "require", insert a require statement
+;;    + "none", do not do anything to load this configuration.
+;;      This only makes sense when configuration is either being
+;;      temporarily disabled or loaded indirectly/elsewhere.
 (when (or (string-empty-p needs)
           (cl-every #'executable-find (delq nil (split-string needs ","))))
   (let* ((name (if (string-empty-p name)
@@ -517,7 +524,8 @@ created earlier.
     (push (list :name name
                 :package confpkg-name
                 :file confpkg-file
-                :after after)
+                :after after
+                :via (intern via))
           confpkg--list)
     (format-spec
      "#+begin_src emacs-lisp :tangle %f :mkdirp yes :noweb no-export :noweb-ref none :comments no
@@ -737,79 +745,90 @@ tempbuffer. We can call this with the finalising step.
 ;; SPDX-FileCopyrightText: © 2020-%s %s <%s>
 ;; SPDX-License-Identifier: MIT
 
-;; Generated at %s from the literate configuration.\n"
+;; Generated at %s from the literate configuration.
+
+(add-to-list 'load-path %S)\n"
                (format-time-string "%Y")
                (cadr (assoc "AUTHOR" keywords))
                (cadr (assoc "EMAIL" keywords))
-               (format-time-string "%FT%T%z")))
+               (format-time-string "%FT%T%z")
+               (expand-file-name "subconf/")))
       (mapc
        (lambda (confpkg)
          (insert
-          (with-temp-buffer
-            (insert-file-contents (plist-get confpkg :file))
-            (goto-char (point-min))
-            (narrow-to-region
-             (re-search-forward "^;;; Code:\n+")
-             (progn
-               (goto-char (point-max))
-               (re-search-backward (format "[^\n\t ][\n\t ]*\n[\t ]*(provide '%s)" (plist-get confpkg :package)))
-               (1+ (point))))
-            (goto-char (point-min))
-            (insert "\n;;:------------------------"
-                    "\n;;; " (plist-get confpkg :name)
-                    "\n;;:------------------------\n\n")
-            (when (plist-get confpkg :defines)
-              (insert ";; This block defines "
-                      (mapconcat
-                       (lambda (d) (format "`%s'" d))
-                       (plist-get confpkg :defines)
-                       ", ")
-                      ".")
-              (when (re-search-backward "\\([^, ]+\\), \\([^, ]+\\), \\([^, ]+\\).\\="
-                                        (line-beginning-position) t)
-                (replace-match "\\1, \\2, and \\3."))
-              (when (re-search-backward "\\([^, ]+\\), \\([^, ]+\\).\\="
-                                        (line-beginning-position) t)
-                (replace-match "\\1 and \\2."))
-              (insert "\n\n")
-              (forward-line -2)
-              (setq-local comment-start ";")
-              (fill-comment-paragraph)
-              (forward-paragraph 1)
-              (forward-line 1))
-            (if (equal (plist-get confpkg :package) "config-confpkg-timings")
-                (progn
-                  (goto-char (point-max))
-                  (insert "\n\n\
+          (if (eq 'none (plist-get confpkg :via))
+              (format "\n;;; %s intentionally omitted.\n" (plist-get confpkg :name))
+            (with-temp-buffer
+              (cond
+               ((eq 'copy (plist-get confpkg :via))
+                (insert-file-contents (plist-get confpkg :file))
+                (goto-char (point-min))
+                (narrow-to-region
+                 (re-search-forward "^;;; Code:\n+")
+                 (progn
+                   (goto-char (point-max))
+                   (re-search-backward (format "[^\n\t ][\n\t ]*\n[\t ]*(provide '%s)" (plist-get confpkg :package)))
+                   (match-end 0))))
+               ((eq 'require (plist-get confpkg :via))
+                (insert (format "(require '%s)\n" (plist-get confpkg :package))))
+               (t (insert (format "(warn \"%s confpkg :via has unrecognised value: %S\" %S %S)"
+                                  (plist-get confpkg :name) (plist-get confpkg :via)))))
+              (goto-char (point-min))
+              (insert "\n;;:------------------------"
+                      "\n;;; " (plist-get confpkg :name)
+                      "\n;;:------------------------\n\n")
+              (when (plist-get confpkg :defines)
+                (insert ";; This block defines "
+                        (mapconcat
+                         (lambda (d) (format "`%s'" d))
+                         (plist-get confpkg :defines)
+                         ", ")
+                        ".")
+                (when (re-search-backward "\\([^, ]+\\), \\([^, ]+\\), \\([^, ]+\\).\\="
+                                          (line-beginning-position) t)
+                  (replace-match "\\1, \\2, and \\3."))
+                (when (re-search-backward "\\([^, ]+\\), \\([^, ]+\\).\\="
+                                          (line-beginning-position) t)
+                  (replace-match "\\1 and \\2."))
+                (insert "\n\n")
+                (forward-line -2)
+                (setq-local comment-start ";")
+                (fill-comment-paragraph)
+                (forward-paragraph 1)
+                (forward-line 1))
+              (if (equal (plist-get confpkg :package) "config-confpkg-timings")
+                  (progn
+                    (goto-char (point-max))
+                    (insert "\n\n\
 (confpkg-create-record 'doom-pre-config (float-time (time-subtract (current-time) before-init-time)))
 (confpkg-start-record 'config)
 (confpkg-create-record 'config-defered 0.0 'config)
 (confpkg-create-record 'set-hooks 0.0 'config-defered)
 (confpkg-create-record 'load-hooks 0.0 'config-defered)
 (confpkg-create-record 'requires 0.0 'root)\n"))
-              (let ((after (plist-get confpkg :after))
-                    (name (replace-regexp-in-string
-                           "config--?" ""
-                           (plist-get confpkg :package))))
-                (when after
-                  (insert (format "(confpkg-with-record '%S\n"
-                                  (list (concat "hook: " name) 'set-hooks))
-                          (format (if (symbolp after) ; If single feature.
-                                      "  (with-eval-after-load '%s\n"
-                                    "  (after! %s\n")
-                                  after)))
-                (insert
-                 (format "(confpkg-with-record '%S\n"
-                         (list (concat "load: " name)
-                               (if after 'load-hooks 'config)))))
-              (goto-char (point-max))
-              (when (string-match-p ";" (thing-at-point 'line))
+                (let ((after (plist-get confpkg :after))
+                      (name (replace-regexp-in-string
+                             "config--?" ""
+                             (plist-get confpkg :package))))
+                  (when after
+                    (insert (format "(confpkg-with-record '%S\n"
+                                    (list (concat "hook: " name) 'set-hooks))
+                            (format (if (symbolp after) ; If single feature.
+                                        "  (with-eval-after-load '%s\n"
+                                      "  (after! %s\n")
+                                    after)))
+                  (insert
+                   (format "(confpkg-with-record '%S\n"
+                           (list (concat "load: " name)
+                                 (if after 'load-hooks 'config)))))
+                (goto-char (point-max))
+                (when (string-match-p ";" (thing-at-point 'line))
+                  (insert "\n"))
+                (insert ")")
+                (when (plist-get confpkg :after)
+                  (insert "))"))
                 (insert "\n"))
-              (insert ")")
-              (when (plist-get confpkg :after)
-                (insert "))"))
-              (insert "\n"))
-            (buffer-string))))
+              (buffer-string)))))
        (let ((confpkg-timings ;; Ensure timings is put first.
               (cl-some (lambda (p) (and (equal (plist-get p :package) "config-confpkg-timings") p))
                        confpkg--list)))
