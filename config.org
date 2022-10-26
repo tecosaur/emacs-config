@@ -2058,15 +2058,19 @@ replacement system.
 
 #+begin_src emacs-lisp
 (defvar fancy-splash-template-colours
-    ("$shadow"  :doom-color base5     :face shadow)
-    ("$light"   :doom-color base8     :face font-lock-doc-face))
-  '(("#111111"   :doom-color keywords  :face font-lock-keyword-face)
-    ("#222222"   :doom-color type      :face font-lock-type-face)
-    ("#333333"   :doom-color constants :face font-lock-constant-face)
-    ("#444444"   :doom-color functions :face font-lock-function-name-face)
-    ("#555555"   :doom-color strings   :face success)
-    ("#666666"   :doom-color error     :face error)
-    ("#777777"   :doom-color teal      :face font-lock-builtin-face)
+  '(("#000001" :face ansi-color-black)
+    ("#111112" :face font-lock-keyword-face)
+    ("#222223" :face font-lock-type-face)
+    ("#333334" :face font-lock-constant-face)
+    ("#444445" :face font-lock-function-name-face)
+    ("#555556" :face font-lock-string-face)
+    ("#666667" :face error)
+    ("#ff0000" :face ansi-color-red)
+    ("#00ff00" :face ansi-color-green)
+    ("#0000ff" :face ansi-color-blue)
+    ("$ddddde" :face shadow)
+    ("#eeeeef" :face ansi-color-bright-white)
+    ("#fffff1" :face ansi-color-white))
   "Alist of colour-replacement plists.
 Each plist is of the form (\"$placeholder\" :doom-color 'key :face 'face).
 If the current theme is a doom theme :doom-color will be used,
@@ -2130,9 +2134,8 @@ and the current theme."
     (dolist (substitution fancy-splash-template-colours)
       (goto-char (point-min))
       (let ((replacement
-             (if (string-match-p "^doom-" (symbol-name (car custom-enabled-themes)))
-                 (doom-color (plist-get (cdr substitution) :doom-color))
-               (face-attribute (plist-get (cdr substitution) :face) :foreground nil 'default))))
+               (face-attribute (plist-get (cdr substitution) :face)
+                               :foreground nil 'default)))
         (while (search-forward (car substitution) nil t)
           (replace-match replacement nil nil))))
     (unless (file-exists-p fancy-splash-cache-dir)
