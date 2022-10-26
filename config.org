@@ -2058,15 +2058,15 @@ replacement system.
 
 #+begin_src emacs-lisp
 (defvar fancy-splash-template-colours
-  '(("$colour1" :doom-color keywords  :face font-lock-keyword-face)
-    ("$colour2" :doom-color type      :face font-lock-type-face)
-    ("$colour3" :doom-color constants :face font-lock-constant-face)
-    ("$colour4" :doom-color functions :face font-lock-function-name-face)
-    ("$colour5" :doom-color strings   :face success)
-    ("$colour6" :doom-color error     :face error)
-    ("$colour7" :doom-color teal      :face font-lock-builtin-face)
     ("$shadow"  :doom-color base5     :face shadow)
     ("$light"   :doom-color base8     :face font-lock-doc-face))
+  '(("#111111"   :doom-color keywords  :face font-lock-keyword-face)
+    ("#222222"   :doom-color type      :face font-lock-type-face)
+    ("#333333"   :doom-color constants :face font-lock-constant-face)
+    ("#444444"   :doom-color functions :face font-lock-function-name-face)
+    ("#555555"   :doom-color strings   :face success)
+    ("#666666"   :doom-color error     :face error)
+    ("#777777"   :doom-color teal      :face font-lock-builtin-face)
   "Alist of colour-replacement plists.
 Each plist is of the form (\"$placeholder\" :doom-color 'key :face 'face).
 If the current theme is a doom theme :doom-color will be used,
