@@ -4005,6 +4005,8 @@ which is exactly what we need. With that sorted, we just add some caching and
 the obvious customisations and we've got modeline-appropriate clock generation!
 
 #+begin_src emacs-lisp
+(require 'svg)
+
 (defvar +doom-modeline-micro-clock-minute-resolution 1
   "The clock will be updated every this many minutes, truncating.")
 (defvar +doom-modeline-micro-clock-inverse-size 2.8
@@ -4012,7 +4014,10 @@ the obvious customisations and we've got modeline-appropriate clock generation!
 
 (defvar +doom-modeline-micro-clock--cache nil)
 
-(require 'svg)
+(defvar +doom-modeline-clock-text-format "%c")
+
+(defun +doom-modeline--clock-text (&optional _window _object _pos)
+  (format-time-string +doom-modeline-clock-text-format))
 
 (defun +doom-modeline-micro-clock ()
   "Return a string containing an current analogue clock."
@@ -4037,7 +4042,9 @@ the obvious customisations and we've got modeline-appropriate clock generation!
                     " "
                     'display
                     (append (get-text-property 0 'display (buffer-string))
-                            '(:ascent center)))))))))
+                            '(:ascent center))
+                    'face 'doom-modeline-time
+                    'help-echo #'+doom-modeline--clock-text)))))))
 #+end_src
 
 With clock generation sorted out, all that's to be done is replacing the =time=
