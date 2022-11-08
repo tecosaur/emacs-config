@@ -2195,11 +2195,18 @@ and the current theme."
         (warn "Warning! fancy splash template: neither $height nor height=100 not found in %s" template)))
     (dolist (substitution fancy-splash-template-colours)
       (goto-char (point-min))
-      (let ((replacement
-               (face-attribute (plist-get (cdr substitution) :face)
-                               :foreground nil 'default)))
+      (let* ((replacement-colour
+              (face-attribute (plist-get (cdr substitution) :face)
+                              (or (plist-get (cdr substitution) :attr) :foreground)
+                              nil 'default))
+             (replacement-hex
+              (if (string-prefix-p "#" replacement-colour)
+                  replacement-colour
+                (apply 'format "#%02x%02x%02x"
+                       (mapcar (lambda (c) (ash c -8))
+                               (color-values replacement-colour))))))
         (while (search-forward (car substitution) nil t)
-          (replace-match replacement nil nil))))
+          (replace-match replacement-hex nil nil))))
     (unless (file-exists-p fancy-splash-cache-dir)
       (make-directory fancy-splash-cache-dir t))
     (let ((inhibit-message t))
