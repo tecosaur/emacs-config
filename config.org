@@ -3775,7 +3775,7 @@ That's no problem though, we just need to help TRAMP find them.
 Sometimes pressing =TAB= is just too much.
 #+begin_src emacs-lisp :tangle packages.el
 (package! aas :recipe (:host github :repo "ymarco/auto-activating-snippets")
-  :pin "566944e3b336c29d3ac11cd739a954c9d112f3fb")
+  :pin "e92b5cffa4e87c221c24f3e72ae33959e1ec2b68")
 #+end_src
 
 #+begin_src emacs-lisp
@@ -3844,7 +3844,7 @@ Nested snippets are good, so let's enable that.
 
 For when you want to change the case pattern for a symbol.
 #+begin_src emacs-lisp :tangle packages.el
-(package! string-inflection :pin "fd7926ac17293e9124b31f706a4e8f38f6a9b855")
+(package! string-inflection :pin "50ad54970b3cc79b6b83979bde9889ad9a9e1a9c")
 #+end_src
 
 #+begin_src emacs-lisp
@@ -3904,7 +3904,7 @@ and colouring 🙂.
 [[https://tecosaur.com/lfs/emacs-config/screenshots/info-colours.png]]
 
 #+begin_src emacs-lisp :tangle packages.el
-(package! info-colors :pin "47ee73cc19b1049eef32c9f3e264ea7ef2aaf8a5")
+(package! info-colors :pin "2e237c301ba62f0e0286a27c1abe48c4c8441143")
 #+end_src
 
 To use this we'll just hook it into =Info=.
@@ -3926,7 +3926,7 @@ welcomed into Emacs 28. However, he is also rather attentive with updates, and
 so I'd like to make sure we have a recent version.
 
 #+begin_src emacs-lisp :tangle packages.el
-(package! modus-themes :pin "5d35fed1ab7d2d59f64b2c5dcf77c05e64a0322e")
+(package! modus-themes :pin "57599b1d73fe33b324be9358991114222a0a63f7")
 #+end_src
 
 *** Spacemacs themes
@@ -4313,7 +4313,7 @@ Let's just make sure this is lazy-loaded appropriately.
 
 In a similar manner to [[Keycast]], [[https://gitlab.com/ambrevar/emacs-gif-screencast][gif-screencast]] may come in handy.
 #+begin_src emacs-lisp :tangle packages.el
-(package! gif-screencast :pin "5517a557a17d8016c9e26b0acb74197550f829b9")
+(package! gif-screencast :pin "adec408e6adab2e8e057fe0ad828749f473bfb83")
 #+end_src
 
 We can lazy load this using the start/stop commands.
@@ -4554,7 +4554,7 @@ appealing, and Steve Purcell has been nice enough to make a package to display
 these as horizontal rules.
 #+begin_src emacs-lisp :tangle packages.el
 (package! page-break-lines :recipe (:host github :repo "purcell/page-break-lines")
-  :pin "cc283621c64e4f1133a63e0945658a4abecf42ef")
+  :pin "79eca86e0634ac68af862e15c8a236c37f446dcd")
 #+end_src
 
 #+begin_src emacs-lisp
@@ -4715,7 +4715,7 @@ Now, we just identify the files in question.
 
 XKCD comics are fun.
 #+begin_src emacs-lisp :tangle packages.el
-(package! xkcd :pin "688d0b4ea234adda0c05784e6bb22ab9d71f0884")
+(package! xkcd :pin "80011da2e7def8f65233d4e0d790ca60d287081d")
 #+end_src
 
 We want to set this up so it loads nicely in [[*Extra links][Extra links]].
@@ -5078,7 +5078,7 @@ we're at it.
 What's even the point of using Emacs unless you're constantly telling everyone
 about it?
 #+begin_src emacs-lisp :tangle packages.el
-(package! elcord :pin "70fd716e673b724b30b921f4cfa0033f9c02d0f2")
+(package! elcord :pin "a0fe08dac6417a7a0c4e48dc6f43fd65dbeb41dd")
 #+end_src
 
 #+begin_src emacs-lisp
@@ -5119,7 +5119,7 @@ good option.
 
 Then for reading them, the only currently viable options seems to be [[https://depp.brause.cc/nov.el/][nov.el]].
 #+begin_src emacs-lisp :tangle packages.el
-(package! nov :pin "8f5b42e9d9f304b422c1a7918b43ee323a7d3532")
+(package! nov :pin "cb5f45cbcfbcf263cdeb2d263eb15edefc8b07cb")
 #+end_src
 
 Together these should give me a rather good experience reading ebooks.
@@ -7496,7 +7496,7 @@ correct package statement needed.
 (package! org-contrib
   :recipe (:host nil :repo "https://git.sr.ht/~bzg/org-contrib"
            :files ("lisp/*.el"))
-  :pin "c6aef31ccfc7c4418c3b51e98f7c3bd8e255f5e6")
+  :pin "6422b265f1150204f024e33d54f2dcfd8323005c")
 #+end_src
 
 **** Visuals
@@ -7508,7 +7508,7 @@ Fontifying =org-mode= buffers to be as pretty as possible is of paramount import
 and Minad's lovely =org-modern= goes a long way in this regard.
 
 #+begin_src emacs-lisp :tangle packages.el
-(package! org-modern :pin "537e6b75e38bc0eff083c390c257098c9fc9ab49")
+(package! org-modern :pin "59b2e3c94756b4e37b2cf7b9f81028c6d4758672")
 #+end_src
 
 ...with a touch of configuration...
@@ -7604,7 +7604,7 @@ occur at the border a bit more fiddley. We can improve this situation without
 sacrificing visual amenities with the =org-appear= package.
 #+begin_src emacs-lisp :tangle packages.el
 (package! org-appear :recipe (:host github :repo "awth13/org-appear")
-  :pin "60ba267c5da336e75e603f8c7ab3f44e6f4e4dac")
+  :pin "eb9f9db40aa529fe4b977235d86494b115281d17")
 #+end_src
 
 #+begin_src emacs-lisp
@@ -7695,7 +7695,7 @@ I like the idea of being able to make HTTP requests with Babel.
 There's a really cool package in development to /transclude/ Org document content.
 #+begin_src emacs-lisp :tangle packages.el
 (package! org-transclusion :recipe (:host github :repo "nobiot/org-transclusion")
-  :pin "5cb94542e18722bf72a281441e944a8039b5301f")
+  :pin "20cfc81a5651df5d356abdfb6eb1ff5ae3f76a1f")
 #+end_src
 
 #+begin_src emacs-lisp
@@ -7959,7 +7959,7 @@ further. This mostly consists of tweaking settings, but there is one extra
 package I'll grab for prettier in-buffer citations.
 
 #+begin_src emacs-lisp :tangle packages.el
-(package! org-cite-csl-activate :recipe (:host github :repo "andras-simonyi/org-cite-csl-activate") :pin "4fdb61c0f83b5d6db0d07dfd64d2a177fd46e931")
+(package! org-cite-csl-activate :recipe (:host github :repo "andras-simonyi/org-cite-csl-activate") :pin "9e68d9204469c674f49a20bdf7ea85da4f4bf720")
 #+end_src
 
 In particular, by setting ~org-cite-csl-activate-use-document-style~, we can have
@@ -8160,7 +8160,7 @@ functionality as in LaTeX. Let's try viewing possible output files with this.
 
 The agenda is nice, but a souped up version is nicer.
 #+begin_src emacs-lisp :tangle packages.el
-(package! org-super-agenda :pin "3108bc3f725818f0e868520d2c243abe9acbef4e")
+(package! org-super-agenda :pin "f4f528985397c833c870967884b013cf91a1da4a")
 #+end_src
 
 #+begin_src emacs-lisp
@@ -8588,7 +8588,7 @@ Org-roam is nice by itself, but there are so /extra/ nice packages which integra
 with it.
 
 #+begin_src emacs-lisp :noweb-ref none :tangle packages.el
-(package! org-roam-ui :recipe (:host github :repo "org-roam/org-roam-ui" :files ("*.el" "out")) :pin "9474a254390b1e42488a1801fed5826b32a8030b")
+(package! org-roam-ui :recipe (:host github :repo "org-roam/org-roam-ui" :files ("*.el" "out")) :pin "6bf6a5eecc1fa7ddbb1fcda85e08fe9c393f9298")
 (package! websocket :pin "82b370602fa0158670b1c6c769f223159affce9b") ; dependency of `org-roam-ui'
 #+end_src
 
@@ -9505,7 +9505,7 @@ What's better than syntax-highlighted LaTeX is /rendered/ LaTeX though, and we c
 have this be performed automatically with =org-fragtog=.
 
 #+begin_src emacs-lisp :tangle packages.el
-(package! org-fragtog :pin "680606189d5d28039e6f9301b55ec80517a24005")
+(package! org-fragtog :pin "c675563af3f9ab5558cfd5ea460e2a07477b0cfd")
 #+end_src
 
 #+begin_src emacs-lisp
@@ -12193,7 +12193,7 @@ elements (a lot of them). So ~ox-gfm~ is handy for exporting markdown with all t
 features that GitHub has.
 
 #+begin_src emacs-lisp :noweb-ref none :tangle packages.el
-(package! ox-gfm :pin "99f93011b069e02b37c9660b8fcb45dab086a07f")
+(package! ox-gfm :pin "46faa67dbb3fb0cd7a76c3fe518f16e4195c22c7")
 #+end_src
 
 #+begin_src emacs-lisp
@@ -12947,7 +12947,7 @@ Of course, there's an Emacs mode for this.
 
 #+begin_src emacs-lisp :tangle packages.el
 (package! beancount :recipe (:host github :repo "beancount/beancount-mode")
-  :pin "ea8257881b7e276e8d170d724e3b2e179f25cb77")
+  :pin "e8a5bce28c796320fa0c83f169d518aba330fd3d")
 #+end_src
 
 #+begin_src emacs-lisp
