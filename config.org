@@ -2101,6 +2101,33 @@ If the current theme is a doom theme :doom-color will be used,
 otherwise the colour will be face foreground.")
 #+end_src
 
+To make it easier to produce themable images, we can also provide an Inkscape
+colour palette.
+
+#+begin_src text :tangle ~/.config/inkscape/palettes/Emacs Fancy Splash.gpl :mkdirp yes
+GIMP Palette
+Name: Emacs Fancy Splash Template
+#
+ 17  17  18 #111112 Foreground
+139 140 141 #8b8c8d Shadow
+238 238 239 #eeeeef Background
+230  97   0 #e66100 Colour 1 (Highlight)
+ 28 113 216 #1c71d8 Colour 2 (Keyword)
+245 194  17 #f5c211 Colour 3 (Type)
+129  61 156 #813d9c Colour 4 (Constant)
+134  94  60 #865e3c Colour 5 (Function)
+ 46 194 126 #2ec27e Colour 6 (String)
+192  28  40 #c01c28 Colour 7 (Error)
+  0   0   1 #000001 Black
+255   0   0 #ff0000 Red
+255   0 255 #ff00ff Magenta
+  0 255   0 #00ff00 Green
+255 255   0 #ffff00 Yellow
+  0   0 255 #0000ff Blue
+  0 255 255 #00ffff Cyan
+255 255 254 #fffffe White
+#+end_src
+
 Since we're going to be generating theme-specific versions of splash images, it
 would be good to have a cache directory.
 
