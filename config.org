@@ -2183,6 +2183,7 @@ The theming is performed using `fancy-splash-template-colours'
 and the current theme."
   (with-temp-buffer
     (insert-file-contents template)
+    (goto-char (point-min))
     (if (re-search-forward "$height" nil t)
         (replace-match (number-to-string height) t t)
       (if (re-search-forward "height=\"100\\(?:\\.0[0-9]*\\)?\"" nil t)
