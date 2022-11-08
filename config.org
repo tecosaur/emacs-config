@@ -2077,19 +2077,24 @@ replacement system.
 
 #+begin_src emacs-lisp
 (defvar fancy-splash-template-colours
-  '(("#000001" :face ansi-color-black)
-    ("#111112" :face font-lock-keyword-face)
-    ("#222223" :face font-lock-type-face)
-    ("#333334" :face font-lock-constant-face)
-    ("#444445" :face font-lock-function-name-face)
-    ("#555556" :face font-lock-string-face)
-    ("#666667" :face error)
+  '(("#111112" :face default   :attr :foreground)
+    ("#8b8c8d" :face shadow)
+    ("#eeeeef" :face default   :attr :background)
+    ("#e66100" :face highlight :attr :background)
+    ("#1c71d8" :face font-lock-keyword-face)
+    ("#f5c211" :face font-lock-type-face)
+    ("#813d9c" :face font-lock-constant-face)
+    ("#865e3c" :face font-lock-function-name-face)
+    ("#2ec27e" :face font-lock-string-face)
+    ("#c01c28" :face error)
+    ("#000001" :face ansi-color-black)
     ("#ff0000" :face ansi-color-red)
+    ("#ff00ff" :face ansi-color-magenta)
     ("#00ff00" :face ansi-color-green)
+    ("#ffff00" :face ansi-color-yellow)
     ("#0000ff" :face ansi-color-blue)
-    ("$ddddde" :face shadow)
-    ("#eeeeef" :face ansi-color-bright-white)
-    ("#fffff1" :face ansi-color-white))
+    ("#00ffff" :face ansi-color-cyan)
+    ("#fffffe" :face ansi-color-white))
   "Alist of colour-replacement plists.
 Each plist is of the form (\"$placeholder\" :doom-color 'key :face 'face).
 If the current theme is a doom theme :doom-color will be used,
