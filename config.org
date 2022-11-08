@@ -2170,7 +2170,11 @@ function to get the relevant file path.
   (expand-file-name (format "%s-%s-%d.svg" theme (file-name-base template) height) fancy-splash-cache-dir))
 #+end_src
 
-Now to go about actually generating the images.
+Now to go about actually generating the images. To adjust the sizing on demand,
+we will offer two mechanisms:
+1. A special =$height= token which is replaced with the desired height
+2. Recognition of =height=100=, in which case =100= will be replaced with the
+   desired height and any =width= property will be removed.
 
 #+begin_src emacs-lisp
 (defun fancy-splash-generate-image (template height)
@@ -2180,8 +2184,14 @@ and the current theme."
   (with-temp-buffer
     (insert-file-contents template)
     (if (re-search-forward "$height" nil t)
-        (replace-match (number-to-string height) nil nil)
-      (warn "fancy splash template problem: $height not found in %s" template))
+        (replace-match (number-to-string height) t t)
+      (if (re-search-forward "height=\"100\\(?:\\.0[0-9]*\\)?\"" nil t)
+          (progn
+            (replace-match (format "height=\"%s\"" height) t t)
+            (goto-char (point-min))
+            (when (re-search-forward "width=\"[\\.0-9]+\"[ \t\n]*" nil t)
+              (replace-match "")))
+        (warn "Warning! fancy splash template: neither $height nor height=100 not found in %s" template)))
     (dolist (substitution fancy-splash-template-colours)
       (goto-char (point-min))
       (let ((replacement
