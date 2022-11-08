@@ -2101,6 +2101,111 @@ If the current theme is a doom theme :doom-color will be used,
 otherwise the colour will be face foreground.")
 #+end_src
 
+If we want to make sure an image is themed, we can look for unrecognised hex
+strings that are not greyscale (as greyscale can be expected in the form of a
+transparent overlay).
+
+#+begin_src emacs-lisp
+(defun fancy-splash-check-buffer ()
+  "Check the current SVG buffer for bad colours."
+  (interactive)
+  (when (eq major-mode 'image-mode)
+    (xml-mode))
+  (when (and (featurep 'rainbow-mode)
+             (not (bound-and-true-p rainbow-mode)))
+    (rainbow-mode 1))
+  (let* ((colours (mapcar #'car fancy-splash-template-colours))
+         (colourise-hex
+          (lambda (hex)
+            (propertize
+             hex
+             'face `((:foreground
+                      ,(if (< 0.5
+                              (cl-destructuring-bind (r g b) (x-color-values hex)
+                                ;; Values taken from `rainbow-color-luminance'
+                                (/ (+ (* .2126 r) (* .7152 g) (* .0722 b))
+                                   (* 256 255 1.0))))
+                           "white" "black")
+                      (:background ,hex))))))
+         (cn 96)
+         (colour-menu-entries
+          (mapcar
+           (lambda (colour)
+             (cl-incf cn)
+             (cons cn
+                   (cons
+                    (substring-no-properties colour)
+                    (format " (%s) %s %s"
+                            (propertize (char-to-string cn)
+                                        'face 'font-lock-keyword-face)
+                            (funcall colourise-hex colour)
+                            (propertize
+                             (symbol-name
+                              (plist-get
+                               (cdr (assoc colour fancy-splash-template-colours))
+                               :face))
+                             'face 'shadow)))))
+           colours))
+         (colour-menu-template
+          (format
+           "Colour %%s is unexpected! Should this be one of the following?\n
+%s
+ %s to ignore
+ %s to quit"
+           (mapconcat
+            #'cddr
+            colour-menu-entries
+            "\n")
+           (propertize "SPC" 'face 'font-lock-keyword-face)
+           (propertize "ESC" 'face 'font-lock-keyword-face)))
+         (colour-menu-choice-keys
+          (append (mapcar #'car colour-menu-entries)
+                  (list ?\s)))
+         (buf (get-buffer-create "*fancy-splash-lint-colours-popup*"))
+         (good-colour-p
+          (lambda (colour)
+            (or (assoc colour fancy-splash-template-colours)
+                ;; Check if greyscale
+                (or (and (= (length colour) 4)
+                         (= (aref colour 1)   ; r
+                            (aref colour 2)   ; g
+                            (aref colour 3))) ; b
+                    (and (= (length colour) 7)
+                         (string= (substring colour 1 3)       ; rr =
+                                  (substring colour 3 5))      ; gg
+                         (string= (substring colour 3 5)       ; gg =
+                                  (substring colour 5 7))))))) ; bb
+         (prompt-to-replace
+          (lambda (target)
+            (with-current-buffer buf
+              (erase-buffer)
+              (insert (format colour-menu-template
+                              (funcall colourise-hex target)))
+              (setq-local cursor-type nil)
+              (set-buffer-modified-p nil)
+              (goto-char (point-min)))
+            (save-window-excursion
+              (pop-to-buffer buf)
+              (fit-window-to-buffer (get-buffer-window buf))
+              (car (alist-get
+                    (read-char-choice
+                     (format "Select replacement, %s-%s or SPC: "
+                             (char-to-string (caar colour-menu-entries))
+                             (char-to-string (caar (last colour-menu-entries))))
+                     colour-menu-choice-keys)
+                    colour-menu-entries))))))
+    (save-excursion
+      (goto-char (point-min))
+      (while (re-search-forward "#[0-9A-Fa-f]\\{6\\}\\|#[0-9A-Fa-f]\\{3\\}" nil t)
+        (recenter)
+        (let* ((colour (match-string 0))
+               (replacement (and (not (funcall good-colour-p colour))
+                                 (funcall prompt-to-replace colour))))
+          (when replacement
+            (replace-match replacement t t))))
+      (message "Done"))))
+#+end_src
+
 To make it easier to produce themable images, we can also provide an Inkscape
 colour palette.
 
