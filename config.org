@@ -2202,7 +2202,8 @@ and the current theme."
           (replace-match replacement nil nil))))
     (unless (file-exists-p fancy-splash-cache-dir)
       (make-directory fancy-splash-cache-dir t))
-    (write-region nil nil (fancy-splash-filename (car custom-enabled-themes) template height) nil nil)))
+    (let ((inhibit-message t))
+      (write-region nil nil (fancy-splash-filename (car custom-enabled-themes) template height)))))
 #+end_src
 
 We may as well generate each theme's appropriate images in bunk.
