@@ -2295,8 +2295,8 @@ and the current theme."
           (progn
             (replace-match (format "height=\"%s\"" height) t t)
             (goto-char (point-min))
-            (when (re-search-forward "width=\"[\\.0-9]+\"[ \t\n]*" nil t)
-              (replace-match "")))
+            (when (re-search-forward "\\([ \t\n]\\)width=\"[\\.0-9]+\"[ \t\n]*" nil t)
+              (replace-match "\\1")))
         (warn "Warning! fancy splash template: neither $height nor height=100 not found in %s" template)))
     (dolist (substitution fancy-splash-template-colours)
       (goto-char (point-min))
