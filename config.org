@@ -6057,7 +6057,7 @@ fi
 
 ** Mail
 
-#+call: confpkg()
+#+call: confpkg(after="mu4e", via="require", pre="org-msg-accent")
 
 [[xkcd:1467]]
 
@@ -6739,10 +6739,7 @@ has a chance of loading. Alternatively, I may need to add the =/usr/share/= path
 
 Let's also just shove all the Elisp code here in an src_elisp{(after! ...)} block.
 #+begin_src emacs-lisp :noweb no-export :noweb-prefix no
-<<add-mu4e-load-path()>>
-
-(after! mu4e
-  <<mu4e-conf>>)
+<<mu4e-conf>>
 #+end_src
 
 **** Viewing Mail
@@ -7238,9 +7235,16 @@ Doom does a fantastic stuff with the defaults with this, so we only make a few
 minor tweaks. First, some stylistic things:
 
 #+begin_src emacs-lisp
-(setq +org-msg-accent-color "#1a5fb4"
-      org-msg-greeting-fmt "\nHi%s,\n\n"
+(setq org-msg-greeting-fmt "\nHi%s,\n\n"
       org-msg-signature "\n\n#+begin_signature\nAll the best,\\\\\n@@html:<b>@@Timothy@@html:</b>@@\n#+end_signature")
+#+end_src
+
+We also want to set the accent colour used in the Doom =mu4e= module's
+construction of the default org-msg style.
+
+# Noweb ref set to enable use with confpkg pre.
+#+begin_src emacs-lisp :noweb-ref org-msg-accent
+(setq +org-msg-accent-color "#1a5fb4")
 #+end_src
 
 Now, it would be nice to easily jump to and between the ends of the message
