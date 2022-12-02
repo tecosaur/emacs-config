@@ -7612,7 +7612,7 @@ and Minad's lovely =org-modern= goes a long way in this regard.
           ("name" . "⁍")
           ("header" . "›")
           ("caption" . "☰")
-          ("RESULTS" . "🠶")))
+          ("results" . "🠶")))
   (custom-set-faces! '(org-modern-statistics :inherit org-checkbox-statistics-todo)))
 #+end_src
 
