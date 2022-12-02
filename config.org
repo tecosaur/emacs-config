@@ -6731,6 +6731,7 @@ has a chance of loading. Alternatively, I may need to add the =/usr/share/= path
 #+name: add-mu4e-load-path
 #+begin_src emacs-lisp :noweb-ref none
 (cond
+ ((cl-some (lambda (path) (string-match-p "mu4e" path)) load-path) nil)
  ((file-directory-p "/usr/local/share/emacs/site-lisp/mu4e")
   (quote (add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu4e")))
  ((file-directory-p "/usr/share/emacs/site-lisp/mu4e")
