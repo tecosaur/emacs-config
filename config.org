@@ -268,6 +268,39 @@ external setup (i.e. outside of this config).
   If this causes issues, just delete the src_elisp{(setq ispell-dictionary ...)}
   bit.
 
+There are also a number of files I may tangle to /other than/
+={init,config,package}.el=. The complete list (excluding confpkg generated files)
+is as follows:
+
+#+begin_src emacs-lisp :results value list replace :exports results :eval yes
+(mapcar
+ (lambda (path)
+   (format "=%s="
+           (replace-regexp-in-string
+            (regexp-quote (getenv "HOME")) "~"
+            (expand-file-name path default-directory))))
+ (sort
+  (cl-remove-if
+   (lambda (path)
+     (or (member path '("yes" "no"))
+         (string-match-p "^/tmp" path)))
+   (cl-delete-duplicates
+    (org-element-map (org-element-parse-buffer)
+        'src-block
+      (lambda (src)
+        (let ((dest (alist-get :tangle
+                               (org-babel-parse-header-arguments
+                                (org-element-property :parameters src) t))))
+          (if (and (stringp dest) (string-match-p "^(if" dest))
+              (car (cl-set-difference
+                    (mapcar #'eval (seq-drop (read dest) 2))
+                    '("yes" "no")
+                    :test #'equal))
+            dest))))
+    :test #'equal))
+  #'string<))
+#+end_src
+
 Oh, did I mention that I started this config when I didn't know any =elisp=, and
 this whole thing is a hack job? If you can suggest any improvements, please do
 so, no matter how much criticism you include I'll appreciate it :)
