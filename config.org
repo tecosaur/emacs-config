@@ -11626,79 +11626,115 @@ It would be nice to actually include emojis where used.
 Thanks to =emojify=, we have a folder of emoji images just sitting and waiting to
 be used 🙂.
 
-First up, we want to detect when emojis are actually present. We can try
-checking the unicode ranges with a collection of =[?-?]= regex groups, but Emojis
-are actually spread around a fair bit and so this isn't very straightforward.
-Instead I can iterate thorough non-ASCII characters and check if any have the
-text property =emojified=.
+First up, we want to detect when emojis are actually present. Manually
+constructing a regex for this would be a huge pain with the way the codepoints
+are scattered around, but thanks to ~char-script-table~ we don't have to!
 
 #+begin_src emacs-lisp
-(defun emojify-emoji-in-buffer-p ()
-  "Determine if any emojis are present in the current buffer, using `emojify-mode'."
-  (require 'emojify)
-  (unless emojify-mode
-    (emojify-mode 1)
-    (emojify-display-emojis-in-region (point-min) (point-max)))
-  (let (emoji-found end)
-    (save-excursion
-      (goto-char (point-min))
-      (while (not (or emoji-found end))
-        (if-let ((pos (re-search-forward "[^[:ascii:]]" nil t)))
-            (when (get-text-property (1- pos) 'emojified)
-              (setq emoji-found t))
-          (setq end t))))
-    emoji-found))
+(defvar +emoji-rx
+  (let (emojis)
+    (map-char-table
+     (lambda (char set)
+       (when (eq set 'emoji)
+         (push (copy-tree char) emojis)))
+     char-script-table)
+    (rx-to-string `(any ,@emojis)))
+  "A regexp to find all emoji-script characters.")
+#+end_src
+
+Once we've found an Emoji, we would like to include it in LaTeX. We'll set up
+the infrastructure for this with the help of two packages
++ =accsupp=, to provide the copy-paste text overlay
++ =transparent=, to provide invisible text to enable text copying at the image
+
+With these packages we can insert an emoji image at the point and then place
+some invisible text on-top of it that copies as the emoji codepoint.
+
+Unfortunately though, =accsupp= doesn't seem to accept five digit hexadecimal
+codepoints at this point in time, instead we need to convert to UTF-16 surrogate
+pairs, so we'll give our =\DeclareEmoji= command two arguments: one for the
+non-surrogate form required by =\DeclareUnicodeCharacter=, and another for the
+surrogate form required by =\BeginAccSupp=.
+
+#+name: latex-emoji-preamble
+#+begin_src LaTeX
+\usepackage{accsupp}
+\usepackage{transparent}
+\newsavebox\emojibox
+
+\NewDocumentCommand\DeclareEmoji{m m}{%
+  \DeclareUnicodeCharacter{#1}{%
+    \sbox\emojibox{\raisebox{-0.3ex}{%
+        \includegraphics[height=1.8ex]{EMOJI-FOLDER/#1}}}%
+    \usebox\emojibox
+    \llap{%
+      \resizebox{\wd\emojibox}{\height}{%
+        \BeginAccSupp{method=hex,unicode,ActualText=#2}%
+        \texttransparent{0}{X}%
+        \EndAccSupp{}}}}}
 #+end_src
 
 Once we know that there are emojis present we can add a bit of preamble to the
 buffer to make insertion easier.
 
-#+begin_src emacs-lisp
-(defun org-latex-emoji-setup ()
-  (format "\\newcommand\\emoji[1]{\\raisebox{-0.3ex}{\\includegraphics[height=1.8ex]{%s/#1}}}" (emojify-image-dir)))
+#+begin_src emacs-lisp :noweb no-export :noweb-prefix no
+(defconst org-latex-emoji-dir
+  (expand-file-name "emojis/twemoji-v2/" doom-cache-dir)
+  "Directory where emojis should be saved and look for.")
 
-(add-to-list 'org-export-conditional-features (cons (lambda (_info) (emojify-emoji-in-buffer-p)) 'emoji) t)
-(add-to-list 'org-latex-feature-implementations (list 'emoji :requires 'image :snippet (lambda (_info) (org-latex-emoji-setup)) :order 3 ))
-#+end_src
+(defvar org-latex-emoji-preamble <<grab("latex-emoji-preamble")>>
+  "LaTeX preamble snippet that will allow for emojis to be declared.
+Containes the string \"EMOJI-FOLDER\" which should be replaced with
+the value of `org-latex-emoji-dir'.")
 
-Once again making use of =emojify=, we can generate LaTeX commands for our emojis
-fairly easily.
+(defun org-latex-emoji-utf16 (char)
+  "Return the pair of UTF-16 surrogates that represent CHAR."
+  (list
+   (+ #xD7C0 (ash char -10))
+   (+ #xDC00 (logand char #x03FF))))
 
-#+begin_src emacs-lisp
-(defun emojify-latexify-emoji-in-buffer ()
-  (unless emojify-mode
-    (emojify-mode 1)
-    (emojify-display-emojis-in-region (point-min) (point-max)))
-  (let (end)
-    (save-excursion
-      (goto-char (point-min))
-      (while (not end)
-        (if-let ((pos (re-search-forward "[^[:ascii:]]\\{1,2\\}" nil t)))
-            (when-let ((char (get-text-property (1- pos) 'emojify-text))
-                       (emoji (emojify-get-emoji char)))
-              (replace-match (format "\\\\emoji{%s}" (file-name-sans-extension (ht-get emoji "image")))))
-          (setq end t))))))
-#+end_src
+(defun org-latex-emoji-declaration (char)
+  (format "\\DeclareEmoji{%X}{%s} %% %s"
+          char
+          (if (< char #xFFFF)
+              (format "%X" char)
+            (apply #'format "%X%X" (org-latex-emoji-utf16 char)))
+          (capitalize (get-char-code-property char 'name))))
 
-Now we just need to hook this handy function into Org's export.
-We can't use standard string-replacement as we rely on the buffer modifications
-enacted by src_elisp{(emojify-mode)}.
+(defun org-latex-emoji-setup (&optional _info)
+  (concat
+   (replace-regexp-in-string
+    "EMOJI-FOLDER"
+    (directory-file-name
+     (if (getenv "HOME")
+         (replace-regexp-in-string
+          (regexp-quote (getenv "HOME"))
+          "\\string~"
+          org-latex-emoji-dir t t)
+       org-latex-emoji-dir))
+    org-latex-emoji-preamble t t)
+   "\n\n"
+   (mapconcat
+    #'org-latex-emoji-declaration
+    (let (unicode-cars)
+      (save-excursion
+        (goto-char (point-min))
+        (while (re-search-forward +emoji-rx nil t)
+          (push (aref (match-string 0) 0) unicode-cars)))
+      (cl-delete-duplicates unicode-cars))
+    "\n")
+   "\n"))
 
-As I have not yet implemented a nice way of sharing feature detection
-information outside of src_elisp{(org-latex-generate-features-preamble)}, we'll
-use the same check before attempting to LaTeXify emojis and hope that nothing
-strange happens.
+(add-to-list 'org-export-conditional-features
+             (cons (lambda (_info)
+                     (save-excursion
+                       (goto-char (point-min))
+                       (re-search-forward +emoji-rx nil t)))
+                   'emoji)
+             t)
 
-#+begin_src emacs-lisp
-(defun +org-latex-convert-emojis (text backend _info)
-  (when (org-export-derived-backend-p backend 'latex)
-    (with-temp-buffer
-      (insert text)
-      (when (emojify-emoji-in-buffer-p)
-        (emojify-latexify-emoji-in-buffer)
-        (buffer-string)))))
-
-(add-to-list 'org-export-filter-final-output-functions #'+org-latex-convert-emojis)
+(add-to-list 'org-latex-feature-implementations
+             (list 'emoji :requires 'image :snippet #'org-latex-emoji-setup :order 3))
 #+end_src
 
 This works fairly nicely, there's just one little QOL upgrade that we can
@@ -11733,14 +11769,16 @@ command to do so for us.
     (org-latex-emoji-install-vector-graphics--install dir))
   (message "Vector emojis installed."))
 
+(defconst org-latex-emoji-source-url
+  "https://github.com/twitter/twemoji/archive/refs/tags/v14.0.2.zip"
+  "URL to the (tw)emoji source archive.")
+
 (defun org-latex-emoji-install-vector-graphics--download ()
-  (message "Locating latest emojis...")
-  (let* ((twemoji-url (substring (shell-command-to-string "echo \"https://github.com$(curl -sL https://github.com/twitter/twemoji/releases/latest | grep '.zip\"' | cut -d '\"' -f 2)\"") 0 -1))
-         (twemoji-version (replace-regexp-in-string "^.*tags/v\\(.*\\)\\.zip" "\\1" twemoji-url))
+  (let* ((twemoji-version (replace-regexp-in-string "^.*tags/v\\(.*\\)\\.zip" "\\1" org-latex-emoji-source-url))
          (twemoji-dest-folder (make-temp-file "twemoji-" t)))
     (message "Downloading Twemoji v%s" twemoji-version)
     (let ((default-directory twemoji-dest-folder))
-      (call-process "curl" nil nil nil "-L" twemoji-url "--output" "twemoji.zip")
+      (call-process "curl" nil nil nil "-L" org-latex-emoji-source-url "--output" "twemoji.zip")
       (message "Unzipping")
       (call-process "unzip" nil nil nil "twemoji.zip")
       (concat twemoji-dest-folder "/twemoji-" twemoji-version "/assets/svg"))))
@@ -11765,15 +11803,18 @@ command to do so for us.
             (while (> threads max-threads)
               (sleep-for 0.01)))
           (while (> threads 0)
-            (sleep-for 0.01))
-          (message "Finished conversion!")))
-    (shell-command "inkscape --batch-process --export-type='pdf' *.svg")))
+            (sleep-for 0.01)))
+      (message "Cairosvg not found. Proceeding with inkscape as a fallback.")
+      (shell-command "inkscape --batch-process --export-type='pdf' *.svg"))
+    (message "Finished conversion!")))
 
 (defun org-latex-emoji-install-vector-graphics--install (dir)
   (message "Installing vector emojis into emoji directory")
   (let ((images (directory-files dir t ".*.pdf"))
-        (emoji-dir (concat (emojify-image-dir) "/")))
-    (mapcar
+        (emoji-dir (file-name-as-directory org-latex-emoji-dir)))
+    (unless (file-exists-p emoji-dir)
+      (make-directory emoji-dir t))
+    (mapc
      (lambda (image)
        (rename-file image emoji-dir t))
      images)))
@@ -11808,8 +11849,11 @@ since we want to let emoji processing occur first.
     (let (case-replace)
       (replace-regexp-in-string "[^[:ascii:]]"
                                 (lambda (nonascii)
-                                  (if (string-match-p +org-pdflatex-inputenc-encoded-chars nonascii) nonascii
-                                    (or (cdr (assoc nonascii +org-latex-non-ascii-char-substitutions)) "¿")))
+                                  (if (or (string-match-p +org-pdflatex-inputenc-encoded-chars nonascii)
+                                          (string-match-p +emoji-rx nonascii))
+                                      nonascii
+                                    (or (cdr (assoc nonascii +org-latex-non-ascii-char-substitutions))
+                                        "¿")))
                                 text))))
 
 (add-to-list 'org-export-filter-plain-text-functions #'+org-latex-replace-non-ascii-chars t)
