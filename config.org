@@ -12107,15 +12107,25 @@ Now let's just apply this along with some extra beamer tweaks.
   (eq 'beamer (and (plist-get info :back-end)
                    (org-export-backend-name (plist-get info :back-end)))))
 
-(add-to-list 'org-export-conditional-features '(org-beamer-p . beamer) t)
-(add-to-list 'org-latex-feature-implementations '(beamer :requires .missing-koma :prevents (italic-quotes condensed-lists)) t)
-(add-to-list 'org-latex-feature-implementations '(.missing-koma :snippet "\\usepackage{scrextend}" :order 2) t)
+(add-to-list 'org-export-conditional-features
+             '(org-beamer-p . beamer) t)
+(add-to-list 'org-latex-feature-implementations
+             '(beamer :requires .missing-koma :prevents (italic-quotes condensed-lists)) t)
+(add-to-list 'org-latex-feature-implementations
+             '(.missing-koma :snippet "\\usepackage{scrextend}" :order 2) t)
 
-(add-to-list 'org-export-conditional-features (cons (lambda (info) (and (org-beamer-p info) (string-match-p "metropolis$" org-beamer-theme))) 'beamer-metropolis) t)
-(add-to-list 'org-latex-feature-implementations '(beamer-metropolis :requires beamer :snippet org-beamer-metropolis-tweaks :order 3) t)
 (defvar org-beamer-metropolis-tweaks
   <<grab("beamer-metropolis-tweaks")>>
   "LaTeX preamble snippet that tweaks the Beamer metropolis theme styling.")
+
+(add-to-list 'org-export-conditional-features
+             (cons (lambda (info)
+                     (and (org-beamer-p info)
+                          (string-match-p "metropolis$" org-beamer-theme)))
+                   'beamer-metropolis)
+             t)
+(add-to-list 'org-latex-feature-implementations
+             '(beamer-metropolis :requires beamer :snippet org-beamer-metropolis-tweaks :order 3) t)
 #+end_src
 
 And I think that it's natural to divide a presentation into sections, e.g.
