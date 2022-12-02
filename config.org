@@ -4097,6 +4097,16 @@ orange.
   '(doom-modeline-buffer-modified :foreground "orange"))
 #+end_src
 
+**** Height
+
+The default size (=25=) makes for a rather narrow mode line. To me, the modeline
+feels a bit comfier if we give it a bit more space. I find =45= adds roughly a
+third of the line height as padding above and below.
+
+#+begin_src emacs-lisp
+(setq doom-modeline-height 45)
+#+end_src
+
 **** File encoding
 
 While we're modifying the modeline, when we have the default file encoding (=LF
@@ -4165,7 +4175,7 @@ the obvious customisations and we've got modeline-appropriate clock generation!
 
 (defvar +doom-modeline-micro-clock-minute-resolution 1
   "The clock will be updated every this many minutes, truncating.")
-(defvar +doom-modeline-micro-clock-inverse-size 2.8
+(defvar +doom-modeline-micro-clock-inverse-size 4.8
   "The size of the clock, as an inverse proportion to the mode line height.")
 
 (defvar +doom-modeline-micro-clock--cache nil)
