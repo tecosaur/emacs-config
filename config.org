@@ -3007,6 +3007,25 @@ anything to be run.
 <<run-setup()>>
 #+end_src
 
+*** Grabbing source block content as a string
+
+In a few places in this configuration, it is desirable to grab a source block's
+content as a string. We can use a noweb =<<replacement>>= form, however that
+doesn't work with string escaping.
+
+We can get around this by using noweb execution and write an name (unexported)
+babel block that will grab the content of another named source block as a
+string.
+
+#+name: grab
+#+begin_src emacs-lisp :var block-name="" :noweb-ref none
+(when-let ((block-pos (org-babel-find-named-block block-name))
+           (block (org-element-at-point block-pos)))
+  (format "%S" (string-trim (org-element-property :value block))))
+#+end_src
+
+There we go, that's all it takes! This can be used via the form =<<grab("block-name")>>=.
+
 * Packages
 ** Loading instructions
 :PROPERTIES:
@@ -10742,29 +10761,29 @@ For example, I rather like section numbers in the margin, which can be
 accomplished with
 #+name: latex-hanging-secnum
 #+begin_src LaTeX
-\\renewcommand\\sectionformat{\\llap{\\thesection\\autodot\\enskip}}
-\\renewcommand\\subsectionformat{\\llap{\\thesubsection\\autodot\\enskip}}
-\\renewcommand\\subsubsectionformat{\\llap{\\thesubsubsection\\autodot\\enskip}}
+\renewcommand\sectionformat{\llap{\thesection\autodot\enskip}}
+\renewcommand\subsectionformat{\llap{\thesubsection\autodot\enskip}}
+\renewcommand\subsubsectionformat{\llap{\thesubsubsection\autodot\enskip}}
 #+end_src
 
 It can also be nice to have big =\chapter=​s.
 #+name: latex-big-chapter
 #+begin_src LaTeX
-\\RedeclareSectionCommand[afterindent=false, beforeskip=0pt, afterskip=0pt, innerskip=0pt]{chapter}
-\\setkomafont{chapter}{\\normalfont\\Huge}
-\\renewcommand*{\\chapterheadstartvskip}{\\vspace*{0\\baselineskip}}
-\\renewcommand*{\\chapterheadendvskip}{\\vspace*{0\\baselineskip}}
-\\renewcommand*{\\chapterformat}{%
-  \\fontsize{60}{30}\\selectfont\\rlap{\\hspace{6pt}\\thechapter}}
-\\renewcommand*\\chapterlinesformat[3]{%
-  \\parbox[b]{\\dimexpr\\textwidth-0.5em\\relax}{%
-    \\raggedleft{{\\large\\scshape\\bfseries\\chapapp}\\vspace{-0.5ex}\\par\\Huge#3}}%
-    \\hfill\\makebox[0pt][l]{#2}}
+\RedeclareSectionCommand[afterindent=false, beforeskip=0pt, afterskip=0pt, innerskip=0pt]{chapter}
+\setkomafont{chapter}{\normalfont\Huge}
+\renewcommand*{\chapterheadstartvskip}{\vspace*{0\baselineskip}}
+\renewcommand*{\chapterheadendvskip}{\vspace*{0\baselineskip}}
+\renewcommand*{\chapterformat}{%
+  \fontsize{60}{30}\selectfont\rlap{\hspace{6pt}\thechapter}}
+\renewcommand*\chapterlinesformat[3]{%
+  \parbox[b]{\dimexpr\textwidth-0.5em\relax}{%
+    \raggedleft{{\large\scshape\bfseries\chapapp}\vspace{-0.5ex}\par\Huge#3}}%
+    \hfill\makebox[0pt][l]{#2}}
 #+end_src
 
 Now let's just sprinkle some KOMA all over the Org LaTeX classes.
 
-#+begin_src emacs-lisp :noweb no-export
+#+begin_src emacs-lisp :noweb no-export :noweb-prefix no
 (after! ox-latex
   (let* ((article-sections '(("\\section{%s}" . "\\section*{%s}")
                              ("\\subsection{%s}" . "\\subsection*{%s}")
@@ -10773,12 +10792,8 @@ Now let's just sprinkle some KOMA all over the Org LaTeX classes.
                              ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
          (book-sections (append '(("\\chapter{%s}" . "\\chapter*{%s}"))
                                 article-sections))
-         (hanging-secnum-preamble "
-<<latex-hanging-secnum>>
-")
-         (big-chap-preamble "
-<<latex-big-chapter>>
-"))
+         (hanging-secnum-preamble <<grab("latex-hanging-secnum")>>)
+         (big-chap-preamble <<grab("latex-big-chapter">>))
     (setcdr (assoc "article" org-latex-classes)
             `(,(concat "\\documentclass{scrartcl}" hanging-secnum-preamble)
               ,@article-sections))
@@ -10800,9 +10815,8 @@ Now let's just sprinkle some KOMA all over the Org LaTeX classes.
                    ,@book-sections))))
 
 (setq org-latex-tables-booktabs t
-      org-latex-hyperref-template "
-<<latex-fancy-hyperref>>
-"
+      org-latex-hyperref-template
+      <<grab("latex-fancy-hyperref")>>
       org-latex-reference-command "\\cref{%s}")
 #+end_src
 
@@ -10810,10 +10824,10 @@ Now let's just sprinkle some KOMA all over the Org LaTeX classes.
 The =hyperref= setup needs to be handled separately however.
 #+name: latex-fancy-hyperref
 #+begin_src LaTeX
-\\providecolor{url}{HTML}{0077bb}
-\\providecolor{link}{HTML}{882255}
-\\providecolor{cite}{HTML}{999933}
-\\hypersetup{
+\providecolor{url}{HTML}{0077bb}
+\providecolor{link}{HTML}{882255}
+\providecolor{cite}{HTML}{999933}
+\hypersetup{
   pdfauthor={%a},
   pdftitle={%t},
   pdfkeywords={%k},
@@ -10824,11 +10838,12 @@ The =hyperref= setup needs to be handled separately however.
   colorlinks=true,
   linkcolor=link,
   urlcolor=url,
-  citecolor=cite\n}
-\\urlstyle{same}
+  citecolor=cite
+}
+\urlstyle{same}
 %% hide links styles in toc
-\\NewCommandCopy{\\oldtoc}{\\tableofcontents}
-\\renewcommand{\\tableofcontents}{\\begingroup\\hypersetup{hidelinks}\\oldtoc\\endgroup}
+\NewCommandCopy{\oldtoc}{\tableofcontents}
+\renewcommand{\tableofcontents}{\begingroup\hypersetup{hidelinks}\oldtoc\endgroup}
 #+end_src
 
 **** A cleverer preamble
@@ -10840,8 +10855,8 @@ For example, I almost always want to include the snippet below.
 
 #+name: org-latex-embed-files-preamble
 #+begin_src LaTeX
-\\usepackage[main,include]{embedall}
-\\IfFileExists{./\\jobname.org}{\\embedfile[desc=The original file]{\\jobname.org}}{}
+\usepackage[main,include]{embedall}
+\IfFileExists{./\jobname.org}{\embedfile[desc=The original file]{\jobname.org}}{}
 #+end_src
 
 We could have every package we could possibly need in every one of
@@ -10866,21 +10881,21 @@ Captions could do with a bit of tweaking such that
 
 #+name: org-latex-caption-preamble
 #+begin_src LaTeX
-\\usepackage{subcaption}
-\\usepackage[hypcap=true]{caption}
-\\setkomafont{caption}{\\sffamily\\small}
-\\setkomafont{captionlabel}{\\upshape\\bfseries}
-\\captionsetup{justification=raggedright,singlelinecheck=true}
-\\usepackage{capt-of} % required by Org
+\usepackage{subcaption}
+\usepackage[hypcap=true]{caption}
+\setkomafont{caption}{\sffamily\small}
+\setkomafont{captionlabel}{\upshape\bfseries}
+\captionsetup{justification=raggedright,singlelinecheck=true}
+\usepackage{capt-of} % required by Org
 #+end_src
 
 The default checkboxes look rather ugly, so let's provide some prettier alternatives.
 
 #+name: org-latex-checkbox-preamble
 #+begin_src LaTeX
-\\newcommand{\\checkboxUnchecked}{$\\square$}
-\\newcommand{\\checkboxTransitive}{\\rlap{\\raisebox{-0.1ex}{\\hspace{0.35ex}\\Large\\textbf -}}$\\square$}
-\\newcommand{\\checkboxChecked}{\\rlap{\\raisebox{0.2ex}{\\hspace{0.35ex}\\scriptsize \\ding{52}}}$\\square$}
+\newcommand{\checkboxUnchecked}{$\square$}
+\newcommand{\checkboxTransitive}{\rlap{\raisebox{-0.1ex}{\hspace{0.35ex}\Large\textbf -}}$\square$}
+\newcommand{\checkboxChecked}{\rlap{\raisebox{0.2ex}{\hspace{0.35ex}\scriptsize \ding{52}}}$\square$}
 #+end_src
 
 It's nice to have "message blocks", things like info/warning/error/success.
@@ -10888,57 +10903,53 @@ A LaTeX macro should make them trivial to create.
 
 #+name: org-latex-box-preamble
 #+begin_src LaTeX
-\\ExplSyntaxOn
-\\NewCoffin\\Content
-\\NewCoffin\\SideRule
-\\NewDocumentCommand{\\defsimplebox}{O{\\ding{117}} O{0.36em} m m m}{%
+\ExplSyntaxOn
+\NewCoffin\Content
+\NewCoffin\SideRule
+\NewDocumentCommand{\defsimplebox}{O{\ding{117}} O{0.36em} m m m}{%
   % #1 ding, #2 ding offset, #3 name, #4 colour, #5 default label
-  \\definecolor{#3}{HTML}{#4}
-  \\NewDocumentEnvironment{#3}{ O{#5} }
+  \definecolor{#3}{HTML}{#4}
+  \NewDocumentEnvironment{#3}{ O{#5} }
   {
-    \\vcoffin_set:Nnw \\Content { \\linewidth }
-    \\noindent \\ignorespaces
-    \\par\\vspace{-0.7\\baselineskip}%
-    \\textcolor{#3}{#1}~\\textcolor{#3}{\\textbf{##1}}%
-    \\vspace{-0.8\\baselineskip}
-    \\begin{addmargin}[1em]{1em}
+    \vcoffin_set:Nnw \Content { \linewidth }
+    \noindent \ignorespaces
+    \par\vspace{-0.7\baselineskip}%
+    \textcolor{#3}{#1}~\textcolor{#3}{\textbf{##1}}%
+    \vspace{-0.8\baselineskip}
+    \begin{addmargin}[1em]{1em}
     }
     {
-    \\end{addmargin}
-    \\vspace{-0.5\\baselineskip}
-    \\vcoffin_set_end:
-    \\SetHorizontalCoffin\\SideRule{\\color{#3}\\rule{1pt}{\\CoffinTotalHeight\\Content}}
-    \\JoinCoffins*\\Content[l,t]\\SideRule[l,t](#2,-0.7em)
-    \\noindent\\TypesetCoffin\\Content
-    \\vspace*{\\CoffinTotalHeight\\Content}\\bigskip
-    \\vspace{-2\\baselineskip}
+    \end{addmargin}
+    \vspace{-0.5\baselineskip}
+    \vcoffin_set_end:
+    \SetHorizontalCoffin\SideRule{\color{#3}\rule{1pt}{\CoffinTotalHeight\Content}}
+    \JoinCoffins*\Content[l,t]\SideRule[l,t](#2,-0.7em)
+    \noindent\TypesetCoffin\Content
+    \vspace*{\CoffinTotalHeight\Content}\bigskip
+    \vspace{-2\baselineskip}
   }
 }
-\\ExplSyntaxOff
+\ExplSyntaxOff
 #+end_src
 
 Lastly, we will pass this content into some global variables we for ease of
 access.
 
-#+begin_src emacs-lisp :noweb no-export
-(defvar org-latex-embed-files-preamble "
-<<org-latex-embed-files-preamble>>
-"
+#+begin_src emacs-lisp :noweb no-export :noweb-prefix no
+(defvar org-latex-embed-files-preamble
+  <<grab("org-latex-embed-files-preamble")>>
   "Preamble that embeds files within the pdf.")
 
-(defvar org-latex-caption-preamble "
-<<org-latex-caption-preamble>>
-"
+(defvar org-latex-caption-preamble
+  <<grab("org-latex-caption-preamble")>>
   "Preamble that improves captions.")
 
-(defvar org-latex-checkbox-preamble "
-<<org-latex-checkbox-preamble>>
-"
+(defvar org-latex-checkbox-preamble
+  <<grab("org-latex-checkbox-preamble")>>
   "Preamble that improves checkboxes.")
 
-(defvar org-latex-box-preamble "
-<<org-latex-box-preamble>>
-"
+(defvar org-latex-box-preamble
+  <<grab("org-latex-box-preamble")>>
   "Preamble that provides a macro for custom boxes.")
 #+end_src
 
@@ -11333,53 +11344,53 @@ This will accomplish the following:
 
 #+name: latex-cover-page
 #+begin_src LaTeX
-\\usepackage{tikz}
-\\usetikzlibrary{shapes.geometric}
-\\usetikzlibrary{calc}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric}
+\usetikzlibrary{calc}
 
-\\newsavebox\\orgicon
-\\begin{lrbox}{\\orgicon}
-  \\begin{tikzpicture}[y=0.80pt, x=0.80pt, inner sep=0pt, outer sep=0pt]
-    \\path[fill=black!6] (16.15,24.00) .. controls (15.58,24.00) and (13.99,20.69) .. (12.77,18.06)arc(215.55:180.20:2.19) .. controls (12.33,19.91) and (11.27,19.09) .. (11.43,18.05) .. controls (11.36,18.09) and (10.17,17.83) .. (10.17,17.82) .. controls (9.94,18.75) and (9.37,19.44) .. (9.02,18.39) .. controls (8.32,16.72) and (8.14,15.40) .. (9.13,13.80) .. controls (8.22,9.74) and (2.18,7.75) .. (2.81,4.47) .. controls (2.99,4.47) and (4.45,0.99) .. (9.15,2.41) .. controls (14.71,3.99) and (17.77,0.30) .. (18.13,0.04) .. controls (18.65,-0.49) and (16.78,4.61) .. (12.83,6.90) .. controls (10.49,8.18) and (11.96,10.38) .. (12.12,11.15) .. controls (12.12,11.15) and (14.00,9.84) .. (15.36,11.85) .. controls (16.58,11.53) and (17.40,12.07) .. (18.46,11.69) .. controls (19.10,11.41) and (21.79,11.58) .. (20.79,13.08) .. controls (20.79,13.08) and (21.71,13.90) .. (21.80,13.99) .. controls (21.97,14.75) and (21.59,14.91) .. (21.47,15.12) .. controls (21.44,15.60) and (21.04,15.79) .. (20.55,15.44) .. controls (19.45,15.64) and (18.36,15.55) .. (17.83,15.59) .. controls (16.65,15.76) and (15.67,16.38) .. (15.67,16.38) .. controls (15.40,17.19) and (14.82,17.01) .. (14.09,17.32) .. controls (14.70,18.69) and (14.76,19.32) .. (15.50,21.32) .. controls (15.76,22.37) and (16.54,24.00) .. (16.15,24.00) -- cycle(7.83,16.74) .. controls (6.83,15.71) and (5.72,15.70) .. (4.05,15.42) .. controls (2.75,15.19) and (0.39,12.97) .. (0.02,10.68) .. controls (-0.02,10.07) and (-0.06,8.50) .. (0.45,7.18) .. controls (0.94,6.05) and (1.27,5.45) .. (2.29,4.85) .. controls (1.41,8.02) and (7.59,10.18) .. (8.55,13.80) -- (8.55,13.80) .. controls (7.73,15.00) and (7.80,15.64) .. (7.83,16.74) -- cycle;
-  \\end{tikzpicture}
-\\end{lrbox}
+\newsavebox\orgicon
+\begin{lrbox}{\orgicon}
+  \begin{tikzpicture}[y=0.80pt, x=0.80pt, inner sep=0pt, outer sep=0pt]
+    \path[fill=black!6] (16.15,24.00) .. controls (15.58,24.00) and (13.99,20.69) .. (12.77,18.06)arc(215.55:180.20:2.19) .. controls (12.33,19.91) and (11.27,19.09) .. (11.43,18.05) .. controls (11.36,18.09) and (10.17,17.83) .. (10.17,17.82) .. controls (9.94,18.75) and (9.37,19.44) .. (9.02,18.39) .. controls (8.32,16.72) and (8.14,15.40) .. (9.13,13.80) .. controls (8.22,9.74) and (2.18,7.75) .. (2.81,4.47) .. controls (2.99,4.47) and (4.45,0.99) .. (9.15,2.41) .. controls (14.71,3.99) and (17.77,0.30) .. (18.13,0.04) .. controls (18.65,-0.49) and (16.78,4.61) .. (12.83,6.90) .. controls (10.49,8.18) and (11.96,10.38) .. (12.12,11.15) .. controls (12.12,11.15) and (14.00,9.84) .. (15.36,11.85) .. controls (16.58,11.53) and (17.40,12.07) .. (18.46,11.69) .. controls (19.10,11.41) and (21.79,11.58) .. (20.79,13.08) .. controls (20.79,13.08) and (21.71,13.90) .. (21.80,13.99) .. controls (21.97,14.75) and (21.59,14.91) .. (21.47,15.12) .. controls (21.44,15.60) and (21.04,15.79) .. (20.55,15.44) .. controls (19.45,15.64) and (18.36,15.55) .. (17.83,15.59) .. controls (16.65,15.76) and (15.67,16.38) .. (15.67,16.38) .. controls (15.40,17.19) and (14.82,17.01) .. (14.09,17.32) .. controls (14.70,18.69) and (14.76,19.32) .. (15.50,21.32) .. controls (15.76,22.37) and (16.54,24.00) .. (16.15,24.00) -- cycle(7.83,16.74) .. controls (6.83,15.71) and (5.72,15.70) .. (4.05,15.42) .. controls (2.75,15.19) and (0.39,12.97) .. (0.02,10.68) .. controls (-0.02,10.07) and (-0.06,8.50) .. (0.45,7.18) .. controls (0.94,6.05) and (1.27,5.45) .. (2.29,4.85) .. controls (1.41,8.02) and (7.59,10.18) .. (8.55,13.80) -- (8.55,13.80) .. controls (7.73,15.00) and (7.80,15.64) .. (7.83,16.74) -- cycle;
+  \end{tikzpicture}
+\end{lrbox}
 
-\\makeatletter
-\\g@addto@macro\\tableofcontents{\\clearpage}
-\\renewcommand\\maketitle{
-  \\thispagestyle{empty}
-  \\hyphenpenalty=10000 % hyphens look bad in titles
-  \\renewcommand{\\baselinestretch}{1.1}
-  \\NewCommandCopy{\\oldtoday}{\\today}
-  \\renewcommand{\\today}{\\LARGE\\number\\year\\\\\\large%
-    \\ifcase \\month \\or Jan\\or Feb\\or Mar\\or Apr\\or May \\or Jun\\or Jul\\or Aug\\or Sep\\or Oct\\or Nov\\or Dec\\fi
-    ~\\number\\day}
-  \\begin{tikzpicture}[remember picture,overlay]
+\makeatletter
+\g@addto@macro\tableofcontents{\clearpage}
+\renewcommand\maketitle{
+  \thispagestyle{empty}
+  \hyphenpenalty=10000 % hyphens look bad in titles
+  \renewcommand{\baselinestretch}{1.1}
+  \NewCommandCopy{\oldtoday}{\today}
+  \renewcommand{\today}{\LARGE\number\year\\\large%
+    \ifcase \month \or Jan\or Feb\or Mar\or Apr\or May \or Jun\or Jul\or Aug\or Sep\or Oct\or Nov\or Dec\fi
+    ~\number\day}
+  \begin{tikzpicture}[remember picture,overlay]
     %% Background Polygons %%
-    \\foreach \\i in {2.5,...,22} % bottom left
-    {\\node[rounded corners,black!3.5,draw,regular polygon,regular polygon sides=6, minimum size=\\i cm,ultra thick] at ($(current page.west)+(2.5,-4.2)$) {} ;}
-    \\foreach \\i in {0.5,...,22} % top left
-    {\\node[rounded corners,black!5,draw,regular polygon,regular polygon sides=6, minimum size=\\i cm,ultra thick] at ($(current page.north west)+(2.5,2)$) {} ;}
-    \\node[rounded corners,fill=black!4,regular polygon,regular polygon sides=6, minimum size=5.5 cm,ultra thick] at ($(current page.north west)+(2.5,2)$) {};
-    \\foreach \\i in {0.5,...,24} % top right
-    {\\node[rounded corners,black!2,draw,regular polygon,regular polygon sides=6, minimum size=\\i cm,ultra thick] at ($(current page.north east)+(0,-8.5)$) {} ;}
-    \\node[fill=black!3,rounded corners,regular polygon,regular polygon sides=6, minimum size=2.5 cm,ultra thick] at ($(current page.north east)+(0,-8.5)$) {};
-    \\foreach \\i in {21,...,3} % bottom right
-    {\\node[black!3,rounded corners,draw,regular polygon,regular polygon sides=6, minimum size=\\i cm,ultra thick] at ($(current page.south east)+(-1.5,0.75)$) {} ;}
-    \\node[fill=black!3,rounded corners,regular polygon,regular polygon sides=6, minimum size=2 cm,ultra thick] at ($(current page.south east)+(-1.5,0.75)$) {};
-    \\node[align=center, scale=1.4] at ($(current page.south east)+(-1.5,0.75)$) {\\usebox\\orgicon};
+    \foreach \i in {2.5,...,22} % bottom left
+    {\node[rounded corners,black!3.5,draw,regular polygon,regular polygon sides=6, minimum size=\i cm,ultra thick] at ($(current page.west)+(2.5,-4.2)$) {} ;}
+    \foreach \i in {0.5,...,22} % top left
+    {\node[rounded corners,black!5,draw,regular polygon,regular polygon sides=6, minimum size=\i cm,ultra thick] at ($(current page.north west)+(2.5,2)$) {} ;}
+    \node[rounded corners,fill=black!4,regular polygon,regular polygon sides=6, minimum size=5.5 cm,ultra thick] at ($(current page.north west)+(2.5,2)$) {};
+    \foreach \i in {0.5,...,24} % top right
+    {\node[rounded corners,black!2,draw,regular polygon,regular polygon sides=6, minimum size=\i cm,ultra thick] at ($(current page.north east)+(0,-8.5)$) {} ;}
+    \node[fill=black!3,rounded corners,regular polygon,regular polygon sides=6, minimum size=2.5 cm,ultra thick] at ($(current page.north east)+(0,-8.5)$) {};
+    \foreach \i in {21,...,3} % bottom right
+    {\node[black!3,rounded corners,draw,regular polygon,regular polygon sides=6, minimum size=\i cm,ultra thick] at ($(current page.south east)+(-1.5,0.75)$) {} ;}
+    \node[fill=black!3,rounded corners,regular polygon,regular polygon sides=6, minimum size=2 cm,ultra thick] at ($(current page.south east)+(-1.5,0.75)$) {};
+    \node[align=center, scale=1.4] at ($(current page.south east)+(-1.5,0.75)$) {\usebox\orgicon};
     %% Text %%
-    \\node[left, align=right, black, text width=0.8\\paperwidth, minimum height=3cm, rounded corners,font=\\Huge\\bfseries] at ($(current page.north east)+(-2,-8.5)$)
-    {\\@title};
-    \\node[left, align=right, black, text width=0.8\\paperwidth, minimum height=2cm, rounded corners, font=\\Large] at ($(current page.north east)+(-2,-11.8)$)
-    {\\scshape \\@author};
-    \\renewcommand{\\baselinestretch}{0.75}
-    \\node[align=center,rounded corners,fill=black!3,text=black,regular polygon,regular polygon sides=6, minimum size=2.5 cm,inner sep=0, font=\\Large\\bfseries ] at ($(current page.west)+(2.5,-4.2)$)
-    {\\@date};
-  \\end{tikzpicture}
-  \\let\\today\\oldtoday
-  \\clearpage}
-\\makeatother
+    \node[left, align=right, black, text width=0.8\paperwidth, minimum height=3cm, rounded corners,font=\Huge\bfseries] at ($(current page.north east)+(-2,-8.5)$)
+    {\@title};
+    \node[left, align=right, black, text width=0.8\paperwidth, minimum height=2cm, rounded corners, font=\Large] at ($(current page.north east)+(-2,-11.8)$)
+    {\scshape \@author};
+    \renewcommand{\baselinestretch}{0.75}
+    \node[align=center,rounded corners,fill=black!3,text=black,regular polygon,regular polygon sides=6, minimum size=2.5 cm,inner sep=0, font=\Large\bfseries ] at ($(current page.west)+(2.5,-4.2)$)
+    {\@date};
+  \end{tikzpicture}
+  \let\today\oldtoday
+  \clearpage}
+\makeatother
 #+end_src
 
 Now we've got a nice cover page to work with, we just need to use it every now
@@ -11389,7 +11400,7 @@ or not a cover page should be used based on the word count --- I'll have this be
 the global default. Then we just want to insert a LaTeX snippet tweak the
 subtitle format to use the cover page.
 
-#+begin_src emacs-lisp :noweb no-export
+#+begin_src emacs-lisp :noweb no-export :noweb-prefix no
 (defvar org-latex-cover-page 'auto
   "When t, use a cover page by default.
 When auto, use a cover page when the document's wordcount exceeds
@@ -11401,10 +11412,9 @@ Set with #+option: coverpage:{yes,auto,no} in org buffers.")
 This condition is applied when cover page option is set to auto.")
 (defvar org-latex-subtitle-coverpage-format "\\\\\\bigskip\n\\LARGE\\mdseries\\itshape\\color{black!80} %s\\par"
   "Variant of `org-latex-subtitle-format' to use with the cover page.")
-(defvar org-latex-cover-page-maketitle "
-<<latex-cover-page>>
-"
-  "LaTeX snippet for the preamble that sets \\maketitle to produce a cover page.")
+(defvar org-latex-cover-page-maketitle
+  <<grab("latex-cover-page")>>
+  "LaTeX preamble snippet that sets \\maketitle to produce a cover page.")
 
 (eval '(cl-pushnew '(:latex-cover-page nil "coverpage" org-latex-cover-page)
                    (org-export-backend-options (org-export-get-backend 'latex))))
@@ -11440,20 +11450,20 @@ much space it puts between list items by default. I'm generally not a fan.
 Thankfully this is easy to correct with a small snippet:
 #+name: latex-condense-lists
 #+begin_src LaTeX
-\\newcommand{\\setuplistspacing}{\\setlength{\\itemsep}{-0.5ex}\\setlength{\\parskip}{1.5ex}\\setlength{\\parsep}{0pt}}
-\\let\\olditem\\itemize\\renewcommand{\\itemize}{\\olditem\\setuplistspacing}
-\\let\\oldenum\\enumerate\\renewcommand{\\enumerate}{\\oldenum\\setuplistspacing}
-\\let\\olddesc\\description\\renewcommand{\\description}{\\olddesc\\setuplistspacing}
+\newcommand{\setuplistspacing}{\setlength{\itemsep}{-0.5ex}\setlength{\parskip}{1.5ex}\setlength{\parsep}{0pt}}
+\let\olditem\itemize\renewcommand{\itemize}{\olditem\setuplistspacing}
+\let\oldenum\enumerate\renewcommand{\enumerate}{\oldenum\setuplistspacing}
+\let\olddesc\description\renewcommand{\description}{\olddesc\setuplistspacing}
 #+end_src
 
 Then we can just hook this in with our clever preamble.
 
-#+begin_src emacs-lisp :noweb no-export
+#+begin_src emacs-lisp :noweb no-export :noweb-prefix no
 (defvar org-latex-condense-lists t
   "Reduce the space between list items.")
-(defvar org-latex-condensed-lists "
-<<latex-condense-lists>>
-")
+(defvar org-latex-condensed-lists
+  <<grab("latex-condense-lists")>>
+  "LaTeX preamble snippet that reduces the space between list items.")
 
 (add-to-list 'org-export-conditional-features (cons (lambda (_info) (and org-latex-condense-lists "^[ \t]*[-+]\\|^[ \t]*[1Aa][.)] ")) 'condensed-lists) t)
 (add-to-list 'org-latex-feature-implementations '(condensed-lists :snippet org-latex-condensed-lists :order 0.7) t)
@@ -11563,20 +11573,20 @@ this just as a fallback font (when it isn't a pain to do so).
 
 #+name: julia-mono-fontspec
 #+begin_src LaTeX
-\\ifcsname directlua\\endcsname
-  \\usepackage{fontspec}
-  \\newfontfamily\\JuliaMono{JuliaMono-Regular.ttf}[Path=/usr/share/fonts/truetype/, Extension=.ttf]
-  \\newfontface\\JuliaMonoRegular{JuliaMono-Regular}
-  \\setmonofont{JuliaMonoRegular}[Contextuals=Alternate, Scale=MatchLowercase]
-\\fi
+\ifcsname directlua\endcsname
+  \usepackage{fontspec}
+  \newfontfamily\JuliaMono{JuliaMono-Regular.ttf}[Path=/usr/share/fonts/truetype/, Extension=.ttf]
+  \newfontface\JuliaMonoRegular{JuliaMono-Regular}
+  \setmonofont{JuliaMonoRegular}[Contextuals=Alternate, Scale=MatchLowercase]
+\fi
 #+end_src
 
 Now all that remains is to hook this into the preamble generation.
 
-#+begin_src emacs-lisp :noweb no-export
-(setq org-latex-julia-mono-fontspec "
-<<julia-mono-fontspec>>
-")
+#+begin_src emacs-lisp :noweb no-export :noweb-prefix no
+(defvar org-latex-julia-mono-fontspec
+  <<grab("julia-mono-fontspec")>>
+  "LaTeX preamble snippet that sets LuaLaTeX's fontspec to use Julia Mono.")
 
 (add-to-list 'org-latex-feature-implementations '(julia-code :when code :snippet org-latex-julia-mono-fontspec :order 0) t)
 (add-to-list 'org-export-conditional-features '("^[ \t]*#\\+begin_src julia\\|^[ \t]*#\\+BEGIN_SRC julia\\|src_julia" . julia-code) t)
@@ -12076,23 +12086,23 @@ It's nice to use a different theme
 When using metropolis though, we want to make a few tweaks:
 #+name: beamer-metropolis-tweaks
 #+begin_src LaTeX
-\\NewCommandCopy{\\moldusetheme}{\\usetheme}
-\\renewcommand*{\\usetheme}[2][]{\\moldusetheme[#1]{#2}
-  \\setbeamertemplate{items}{$\\bullet$}
-  \\setbeamerfont{block title}{size=\\normalsize, series=\\bfseries\\parbox{0pt}{\\rule{0pt}{4ex}}}}
+\NewCommandCopy{\moldusetheme}{\usetheme}
+\renewcommand*{\usetheme}[2][]{\moldusetheme[#1]{#2}
+  \setbeamertemplate{items}{$\bullet$}
+  \setbeamerfont{block title}{size=\normalsize, series=\bfseries\parbox{0pt}{\rule{0pt}{4ex}}}}
 
-\\makeatletter
-\\newcommand{\\setmetropolislinewidth}{
-  \\setlength{\\metropolis@progressinheadfoot@linewidth}{1.2px}}
-\\makeatother
+\makeatletter
+\newcommand{\setmetropolislinewidth}{
+  \setlength{\metropolis@progressinheadfoot@linewidth}{1.2px}}
+\makeatother
 
-\\usepackage{etoolbox}
-\\AtEndPreamble{\\setmetropolislinewidth}
+\usepackage{etoolbox}
+\AtEndPreamble{\setmetropolislinewidth}
 #+end_src
 
 Now let's just apply this along with some extra beamer tweaks.
 
-#+begin_src emacs-lisp :noweb no-export
+#+begin_src emacs-lisp :noweb no-export :noweb-prefix no
 (defun org-beamer-p (info)
   (eq 'beamer (and (plist-get info :back-end)
                    (org-export-backend-name (plist-get info :back-end)))))
@@ -12101,11 +12111,11 @@ Now let's just apply this along with some extra beamer tweaks.
 (add-to-list 'org-latex-feature-implementations '(beamer :requires .missing-koma :prevents (italic-quotes condensed-lists)) t)
 (add-to-list 'org-latex-feature-implementations '(.missing-koma :snippet "\\usepackage{scrextend}" :order 2) t)
 
-(defvar org-beamer-metropolis-tweaks "
-<<beamer-metropolis-tweaks>>
-")
 (add-to-list 'org-export-conditional-features (cons (lambda (info) (and (org-beamer-p info) (string-match-p "metropolis$" org-beamer-theme))) 'beamer-metropolis) t)
 (add-to-list 'org-latex-feature-implementations '(beamer-metropolis :requires beamer :snippet org-beamer-metropolis-tweaks :order 3) t)
+(defvar org-beamer-metropolis-tweaks
+  <<grab("beamer-metropolis-tweaks")>>
+  "LaTeX preamble snippet that tweaks the Beamer metropolis theme styling.")
 #+end_src
 
 And I think that it's natural to divide a presentation into sections, e.g.
