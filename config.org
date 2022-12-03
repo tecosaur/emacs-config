@@ -7536,45 +7536,39 @@ correct package statement needed.
     (setq doom-local-dir
           (expand-file-name ".local/" (or (bound-and-true-p doom-emacs-dir)
                                           user-emacs-directory))))
-(let ((dev-key (and (file-exists-p "~/.ssh/id_ed25519.pub")
-                    (= 0 (shell-command "cat ~/.ssh/id_ed25519.pub | grep -q AAAAC3NzaC1lZDI1NTE5AAAAIOZZqcJOLdN+QFHKyW8ST2zz750+8TdvO9IT5geXpQVt"))))
-      (dev-pkg (let ((default-directory (expand-file-name "straight/repos/org" doom-local-dir)))
-                 (and (file-exists-p default-directory)
-                      (string= "gitea@git.tecosaur.net:tec/org-mode.git\n" (shell-command-to-string "git remote get-url tecosaur")))))
+(let ((dev-key-p (and (file-exists-p "~/.ssh/id_ed25519.pub")
+                      (= 0 (shell-command "cat ~/.ssh/id_ed25519.pub | grep -q AAAAC3NzaC1lZDI1NTE5AAAAIOZZqcJOLdN+QFHKyW8ST2zz750+8TdvO9IT5geXpQVt"))))
       (recipe-common '(:files (:defaults "etc")
                        :build t
                        :pre-build
                        (with-temp-file "org-version.el"
-                         (let ((version
-                                (version-to-list
-                                 (string-trim
-                                  (with-temp-buffer
-                                    (call-process "git" nil t nil
-                                                  "describe" "--match" "release*" "--abbrev=0" "HEAD")
-                                    (buffer-string))
-                                  "release_")))
+                         (require 'lisp-mnt)
+                         (let ((version ;; (lm-version "lisp/org.el")
+                                (with-temp-buffer
+                                  (insert-file-contents "lisp/org.el")
+                                  (lm-header "version")))
                                (git-version (string-trim
                                              (with-temp-buffer
                                                (call-process "git" nil t nil
                                                              "rev-parse" "--short" "HEAD")
                                                (buffer-string)))))
-                           (insert (format "(defun org-release () \"The release version of Org.\" \"%d.%d.0\")\n"
-                                           (car version) (1+ (cadr version))) ; Development version = MAJOR.(1+MINOR).0
+                           (insert (format "(defun org-release () \"The release version of Org.\" %S)\n"
+                                           version)
                                    (format "(defun org-git-version () \"The truncate git commit hash of Org mode.\" %S)\n"
                                            git-version)
                                    "(provide 'org-version)\n"))))))
-  (prin1-to-string
-   `(package! org
-      :recipe (,@(cond ((and dev-key dev-pkg)
-                        (list :host nil :repo nil :local-repo (expand-file-name "straight/repos/org" doom-local-dir)))
-                       (dev-key
-                        (list :host nil :repo "tec@git.savannah.gnu.org:/srv/git/emacs/org-mode.git"
-                              :fork (list :host nil :repo "gitea@git.tecosaur.net:tec/org-mode.git" :branch "dev" :remote "tecosaur")))
-                       (t
-                        (list :host nil :repo "https://git.tecosaur.net/mirrors/org-mode.git" :remote "mirror"
-                              :fork (list :host nil :repo "https://git.tecosaur.net/tec/org-mode.git" :branch "dev" :remote "tecosaur"))))
-               ,@recipe-common)
-      :pin nil)))
+  (with-temp-buffer
+    (insert
+     (pp `(package! org
+            :recipe (,@(if dev-key-p
+                           (list :host nil :repo "tec@git.savannah.gnu.org:/srv/git/emacs/org-mode.git" :local-repo "lisp/org"
+                                 :fork (list :host nil :repo "gitea@git.tecosaur.net:tec/org-mode.git" :branch "dev" :remote "tecosaur"))
+                         (list :host nil :repo "https://git.tecosaur.net/mirrors/org-mode.git" :remote "mirror"
+                               :fork (list :host nil :repo "https://git.tecosaur.net/tec/org-mode.git" :branch "dev" :remote "tecosaur")))
+                     ,@recipe-common)
+            :pin nil)))
+    (untabify (point-min) (point-max))
+    (buffer-string)))
 #+end_src
 
 #+begin_src emacs-lisp :tangle packages.el :noweb no-export
