@@ -11852,6 +11852,24 @@ If SVG-P is set \"includegraphics\" will be replaced with \"includesvg\"."
              (list 'emoji :requires 'image :snippet #'org-latex-emoji-setup :order 3))
 #+end_src
 
+Unfortunately this isn't a global solution, as LuaLaTeX doesn't have
+=\DeclareUnicodeCharacter=. However, we can fix this with a hack for the one case
+when we know it will be used.
+
+#+begin_src emacs-lisp
+(add-to-list 'org-latex-feature-implementations
+             '(.emoji-lualatex-hack
+               :when (emoji julia-code) ; LuaLaTeX is used with julia-code.
+               :eager t
+               :snippet
+               "\
+\\usepackage{newunicodechar}
+\\newcommand{\\DeclareUnicodeCharacter}[2]{%
+    \\begingroup\\lccode`|=\\string\"#1\\relax
+    \\lowercase{\\endgroup\\newunicodechar{|}}{#2}}"
+               :order 2.9))
+#+end_src
+
 This works fairly nicely, there's just one little QOL upgrade that we can
 perform. =emojify= downloads the ~72x72~ versions of Twemoji, however SVG versions
 are also produced. We could use ~inkscape~ to convert those to PDFs, which would
