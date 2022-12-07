@@ -446,7 +446,7 @@ calls in the buffer.
 See the [[Bootstrap]] section for an explanation of the =<<bootstrap>>= noweb reference.
 
 #+header: :tangle (expand-file-name (make-temp-name "emacs-org-babel-excuses/confpkg-prepare-") temporary-file-directory)
-#+begin_src emacs-lisp :noweb no-export :mkdirp yes
+#+begin_src emacs-lisp :noweb no-export :mkdirp yes :export-embed no
 <<confpkg-prepare()>>
 #+end_src
 
