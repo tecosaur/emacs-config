@@ -7059,7 +7059,7 @@ change that.
 #+begin_src emacs-lisp
 (after! mu4e
   (defvar +org-ml-target-dir
-    (expand-file-name "straight/repos/org-mode/" doom-local-dir))
+    (expand-file-name "lisp/org/" doom-user-dir))
   (defvar +org-ml-max-age 600
     "Maximum permissible age in seconds.")
   (defvar +org-ml--cache-timestamp 0)
@@ -7520,7 +7520,7 @@ There are actually three possible package statements I may want to use for Org.
 If I'm on a machine where I can push changes, I want to be able to develop Org.
 I can check this by checking the content of the SSH key =~/.ssh/id_ed25519.pub=.
 1. If this key exists and there isn't a repo at
-   =$straight-base-dir/straight/repos/org-mode= with the right remote, we should
+   =$doom-user-dir/lisp/org= with the right remote, we should
    install it as such.
 2. If the key exists and repo are both set up, the package should just be ignored.
 3. If the key does not exist, the Org's ~HEAD~ should just be used
@@ -10512,7 +10512,7 @@ achieve this with CSS alone. Thankfully we can avoid JS though, by adapting the
 TOC generation code to use a ~label~ for each item, and a hidden ~checkbox~ to keep
 track of state.
 
-To add this, we need to change one line in [[file:~/.config/emacs/.local/straight/repos/org/lisp/ox-html.el::(format "<a href=\"#%s\">%s</a>"][org-html--format-toc-headline]].
+To add this, we need to change one line in [[file:lisp/org/lisp/ox-html.el::(format "<a href=\"#%s\">%s</a>"][org-html--format-toc-headline]].
 
 Since we can actually accomplish the desired effect by adding advice /around/ the
 function, without overriding it --- let's do that to reduce the bug surface of
