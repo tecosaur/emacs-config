@@ -11019,14 +11019,35 @@ can embed whatever we want.
    (lambda (file-desc)
      (format "\\IfFileExists{%1$s}{\\embedfile[desc=%2$s]{%1$s}}{}"
              (thread-last (car file-desc)
-               (replace-regexp-in-string "\\\\" "\\\\\\\\")
-               (replace-regexp-in-string "~" "\\\\string~"))
+                          (replace-regexp-in-string "\\\\" "\\\\\\\\")
+                          (replace-regexp-in-string "~" "\\\\string~"))
              (cdr file-desc)))
    (append
-    (mapcar (lambda (f-block)
-              (let ((file-lang (cons (or (car f-block) (caddr (cadr f-block))) (caadr f-block))))
-                (cons (car file-lang) (format "Tangled %s file" (cdr file-lang)))))
-            (org-babel-tangle-collect-blocks)) ; all files being tangled to
+    (let (tangle-fspecs) ; All files being tangled to.
+      (org-babel-map-src-blocks nil
+        (when-let ((info (and (not (org-in-commented-heading-p))
+                              (not (org-in-archived-heading-p))
+                              (org-babel-get-src-block-info 'no-eval)))
+                   (tangle-value
+                    (pcase (alist-get :tangle (caddr info))
+                      ((and (pred (string-match-p "^(.*)$")) expr)
+                       (eval (read expr)))
+                      (val val)))
+                   (tangle-file
+                    (pcase tangle-value
+                      ((or "no" (guard (member (alist-get :export-embed (caddr info)) '("no" "nil"))))
+                       nil)
+                      ("yes"
+                       (file-name-with-extension
+                        (file-name-nondirectory (buffer-file-name))
+                        (or (alist-get (car info) org-babel-tangle-lang-exts nil nil #'equal)
+                            (car info))))
+
+                      (val val))))
+          (push
+           (cons tangle-file (format "Tangled %s file" (car info)))
+           tangle-fspecs)))
+      (nreverse tangle-fspecs))
     (let (extra-files)
       (save-excursion
         (goto-char (point-min))
