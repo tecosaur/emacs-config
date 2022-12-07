@@ -11931,7 +11931,7 @@ and they will be renamed to the first capture group of the regexp."
              (rename-file image
                           (expand-file-name
                            (file-name-with-extension
-                            (downcase (match-string 1 (file-name-nondirectory image)))
+                            (upcase (match-string 1 (file-name-nondirectory image)))
                             (file-name-extension image))
                            emoji-dir)
                           t))
