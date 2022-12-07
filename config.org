@@ -2688,7 +2688,8 @@ of unnecessary keystrokes --- we can simply bind common actions to a single key!
         :desc "Find file" :ng "f" #'find-file
         :desc "Recent files" :ng "r" #'consult-recent-file
         :desc "Config dir" :ng "C" #'doom/open-private-config
-        :desc "Open config.org" :ng "c" (cmd! (find-file (expand-file-name "config.org" doom-private-dir)))
+        :desc "Open config.org" :ng "c" (cmd! (find-file (expand-file-name "config.org" doom-user-dir)))
+        :desc "Open org-mode root" :ng "O" (cmd! (find-file (expand-file-name "lisp/org/" doom-user-dir)))
         :desc "Open dotfile" :ng "." (cmd! (doom-project-find-file "~/.config/"))
         :desc "Notes (roam)" :ng "n" #'org-roam-node-find
         :desc "Switch buffer" :ng "b" #'+vertico/switch-workspace-buffer
