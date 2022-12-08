@@ -11978,7 +11978,9 @@ and they will be renamed to the first capture group of the regexp."
                           t))
          (rename-file image
                       (expand-file-name
-                       (downcase (file-name-nondirectory image))
+                       (file-name-with-extension
+                        (upcase (file-name-nondirectory image))
+                        (file-name-extension image))
                        emoji-dir)
                       t)))
      images)
