@@ -1,13 +1,14 @@
-FROM ubuntu:21.04
+FROM ubuntu:22.04
 MAINTAINER TEC <tec@tecosaur.com>
 
 ENV LANG=C.UTF-8
 ENV DEBIAN_FRONTEND=noninteractive
 
-# RUN echo "\033[1;34mAdd Emacs PPA.\033[0m" &&\
-#   apt-get update &&\
-#   apt-get install -y apt-utils software-properties-common &&\
-#   add-apt-repository -y ppa:kelleyk/emacs
+RUN echo "\033[1;34mAdd Emacs PPA.\033[0m" &&\
+  apt-get update &&\
+  apt-get install -y apt-utils software-properties-common &&\
+  add-apt-repository -y ppa:kelleyk/emacs &&\
+  apt-get update
 
 RUN echo "\033[1;34mUpdate.\033[0m" &&\
   apt-get update &&\
@@ -31,8 +32,8 @@ RUN echo "\033[1;34mUpdate.\033[0m" &&\
   echo "\033[1;34mInstalling utilities.\033[0m" &&\
   apt-get install -y sudo git gcc sqlite sqlite3 wget ncurses-term ripgrep xclip &&\
   echo "\033[1;34mInstalling Emacs\033[0m" &&\
-  # Emacs 27.1 (nox)
-  apt-get install -y emacs-nox &&\
+# Emacs 28 (no-X)
+  apt-get install -y emacs28-nox &&\
   echo "\033[1;34mInstalling TeX Live packages.\033[0m" &&\
 # install TeX Live and ghostscript as well as other tools (inkscape for svg)
   git clone https://github.com/tecosaur/BMC.git /usr/share/texmf/tex/latex/bmc &&\
