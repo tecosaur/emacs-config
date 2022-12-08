@@ -43,9 +43,9 @@ jobs:
         if: github.event_name != 'schedule' || steps.doomcache.outputs.cache-hit != 'true'
         run: runner '~/.emacs.d/bin/doom install --no-env --no-fonts'
 
-      - name: Export config
-        if: github.event_name != 'schedule' || steps.doomcache.outputs.cache-hit != 'true'
-        run: runner 'cd ~/.config/doom/misc/config-publishing && ./publish.sh'
+      # - name: Export config
+      #   if: github.event_name != 'schedule' || steps.doomcache.outputs.cache-hit != 'true'
+      #   run: runner 'cd ~/.config/doom/misc/config-publishing && ./publish.sh'
 
       - name: Deploy
         if: github.event_name != 'pull_request' && ( github.event_name != 'schedule' || steps.doomcache.outputs.cache-hit != 'true')
