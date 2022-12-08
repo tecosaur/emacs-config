@@ -34,6 +34,8 @@ RUN echo "\033[1;34mUpdate.\033[0m" &&\
   echo "\033[1;34mInstalling Emacs\033[0m" &&\
 # Emacs 28 (no-X)
   apt-get install -y emacs28-nox &&\
+  echo "\033[1;34mInstalling cairosvg and curl (for emojis).\033[0m" &&\
+  apt-get install -y curl cairosvg &&\
   echo "\033[1;34mInstalling TeX Live packages.\033[0m" &&\
 # install TeX Live and ghostscript as well as other tools (inkscape for svg)
   git clone https://github.com/tecosaur/BMC.git /usr/share/texmf/tex/latex/bmc &&\
