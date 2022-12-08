@@ -17,18 +17,18 @@ jobs:
         password: ${{ secrets.GHCR_TOKEN }}
 
     steps:
-      - name: Clone Doom to ~/.emacs.d
-        run: runner 'git clone --depth 1 https://github.com/hlissner/doom-emacs ~/.emacs.d'
+      - name: Clone Doom to ~/.config/emacs
+        run: runner 'git clone --depth 1 https://github.com/hlissner/doom-emacs ~/.config/emacs'
 
       - name: Get Doom's version
         id: doom-version
-        run: runner 'cd ~/.emacs.d && echo "::set-output name=hash::$(git log -1 | head -1 | awk '"'"'{print substr($2,1,7)}'"'"')"'
+        run: runner 'cd ~/.config/emacs && echo "::set-output name=hash::$(git log -1 | head -1 | awk '"'"'{print substr($2,1,7)}'"'"')"'
 
       - name: Cache Doom's Install
         id: doomcache
         uses: actions/cache@v2
         with:
-          path: /home/runner/.emacs.d
+          path: /home/runner/.config/emacs
           key: ${{ runner.os }}-doom@${{ steps.doom-version.outputs.hash }}
 
       - name: Checkout config
@@ -37,11 +37,15 @@ jobs:
 
       - name: Create bootstrap init.el
         if: github.event_name != 'schedule' || steps.doomcache.outputs.cache-hit != 'true'
-        run: runner "echo '(doom! :config literate)' > ~/.config/doom/init.el"
+        run: runner 'echo "(doom! :config literate)" > ~/.config/doom/init.el'
 
-      - name: Setup Doom
+      - name: Install Doom
         if: github.event_name != 'schedule' || steps.doomcache.outputs.cache-hit != 'true'
-        run: runner '~/.emacs.d/bin/doom install --no-env --no-fonts'
+        run: runner '~/.config/emacs/bin/doom install --no-env --no-fonts'
+
+      - name: Run Doom sync
+        if: github.event_name != 'schedule' || steps.doomcache.outputs.cache-hit != 'true'
+        run: runner '~/.config/emacs/bin/doom sync'
 
       # - name: Export config
       #   if: github.event_name != 'schedule' || steps.doomcache.outputs.cache-hit != 'true'
