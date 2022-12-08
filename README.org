@@ -27,7 +27,7 @@ generate the =init.el= once.
 
 #+begin_src shell :eval query
 git clone --recurse-submodules git@github.com:tecosaur/emacs-config.git ~/.config/doom
-emacs --batch --eval "(progn (require 'org) (setq org-confirm-babel-evaluate nil) (org-babel-tangle-file \"~/.config/doom/config.org\"))"
+echo "(doom! :config literate)" > ~/.config/doom/init.el
 git clone --depth 1 https://github.com/hlissner/doom-emacs ~/.emacs.d
 ~/.emacs.d/bin/doom install; ~/.config/doom/setup.sh
 #+end_src

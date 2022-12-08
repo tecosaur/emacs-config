@@ -35,9 +35,9 @@ jobs:
         if: github.event_name != 'schedule' || steps.doomcache.outputs.cache-hit != 'true'
         run: runner 'git clone --depth 1 --recurse-submodules https://github.com/tecosaur/emacs-config.git ~/.config/doom'
 
-      - name: Generate init.el et. al from config.org
+      - name: Create bootstrap init.el
         if: github.event_name != 'schedule' || steps.doomcache.outputs.cache-hit != 'true'
-        run: runner "cd ~/.config/doom && emacs --batch --eval \"(require 'org)\" --eval '(progn (setq org-confirm-babel-evaluate nil) (org-babel-tangle-file \"config.org\"))'"
+        run: runner "echo '(doom! :config literate)' > ~/.config/doom/init.el"
 
       - name: Setup Doom
         if: github.event_name != 'schedule' || steps.doomcache.outputs.cache-hit != 'true'
