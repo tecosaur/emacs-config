@@ -1206,7 +1206,8 @@ To start with, we'll check if we are:
       (print! (start "Initiating bootstrap..."))
       <<bootstrap-perform>>
       )
-     (t (message "Installed Org version %s is too old, %s is needed.\nRun \"doom sync\" to fix.")))))
+     (t (message "Installed Org version %s is too old, %s is needed.\nRun \"doom sync\" to fix."
+                 (org-version) required-org-version)))))
 #+end_src
 
 If these conditions are met, we can assume that the loaded Org version is
