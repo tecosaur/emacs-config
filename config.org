@@ -4001,13 +4001,13 @@ welcomed into Emacs 28. However, he is also rather attentive with updates, and
 so I'd like to make sure we have a recent version.
 
 #+begin_src emacs-lisp :tangle packages.el
-(package! modus-themes :pin "57599b1d73fe33b324be9358991114222a0a63f7")
+(package! modus-themes :pin "18dd2457d233859ad4d102d797d6744525177ac4")
 #+end_src
 
 *** Spacemacs themes
 
 #+begin_src emacs-lisp :tangle packages.el
-(package! spacemacs-theme :pin "e04d1f21107a1565861625209bb9c46a7aa43cc5")
+(package! spacemacs-theme :pin "1ec73d68b0f120f92538d9a329a3a46e32f74510")
 #+end_src
 
 *** Theme magic
@@ -5163,7 +5163,7 @@ we're at it.
 What's even the point of using Emacs unless you're constantly telling everyone
 about it?
 #+begin_src emacs-lisp :tangle packages.el
-(package! elcord :pin "a0fe08dac6417a7a0c4e48dc6f43fd65dbeb41dd")
+(package! elcord :pin "d0c9ace493d088bc70f7422705ff27dfcf162cca")
 #+end_src
 
 #+begin_src emacs-lisp
@@ -7592,7 +7592,7 @@ Fontifying =org-mode= buffers to be as pretty as possible is of paramount import
 and Minad's lovely =org-modern= goes a long way in this regard.
 
 #+begin_src emacs-lisp :tangle packages.el
-(package! org-modern :pin "59b2e3c94756b4e37b2cf7b9f81028c6d4758672")
+(package! org-modern :pin "7d037569bc4a05f40262ea110c4cda05c69b5c52")
 #+end_src
 
 ...with a touch of configuration...
@@ -7779,7 +7779,7 @@ I like the idea of being able to make HTTP requests with Babel.
 There's a really cool package in development to /transclude/ Org document content.
 #+begin_src emacs-lisp :tangle packages.el
 (package! org-transclusion :recipe (:host github :repo "nobiot/org-transclusion")
-  :pin "20cfc81a5651df5d356abdfb6eb1ff5ae3f76a1f")
+  :pin "cf51df7b87e0d32ba13ac5380557e81d9845d81b")
 #+end_src
 
 #+begin_src emacs-lisp
@@ -8672,7 +8672,7 @@ Org-roam is nice by itself, but there are so /extra/ nice packages which integra
 with it.
 
 #+begin_src emacs-lisp :noweb-ref none :tangle packages.el
-(package! org-roam-ui :recipe (:host github :repo "org-roam/org-roam-ui" :files ("*.el" "out")) :pin "6bf6a5eecc1fa7ddbb1fcda85e08fe9c393f9298")
+(package! org-roam-ui :recipe (:host github :repo "org-roam/org-roam-ui" :files ("*.el" "out")) :pin "5ac74960231db0bf7783c2ba7a19a60f582e91ab")
 (package! websocket :pin "82b370602fa0158670b1c6c769f223159affce9b") ; dependency of `org-roam-ui'
 #+end_src
 
@@ -13186,7 +13186,7 @@ update-mime-database ~/.local/share/mime
 Graphviz is a nice method of visualising simple graphs, based on plaintext
 =.dot= / =.gv= files.
 #+begin_src emacs-lisp :tangle packages.el
-(package! graphviz-dot-mode :pin "6e96a89762760935a7dff6b18393396f6498f976")
+(package! graphviz-dot-mode :pin "46afe4825b4a3a5d1a1ac65ec7f585051f756b78")
 #+end_src
 
 #+begin_src emacs-lisp
@@ -13242,7 +13242,7 @@ Of course, there's an Emacs mode for this.
 
 #+begin_src emacs-lisp :tangle packages.el
 (package! beancount :recipe (:host github :repo "beancount/beancount-mode")
-  :pin "e8a5bce28c796320fa0c83f169d518aba330fd3d")
+  :pin "687775da63784d153a3c1cfee9801090c6b51842")
 #+end_src
 
 #+begin_src emacs-lisp
