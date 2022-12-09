@@ -12,7 +12,7 @@ Here you may find my config. There is only one significant file:
 
 [[file:misc/screenshots/splash-screen.png]]
 
-=config.org= /generates/ the [[https://tecosaur.github.io/emacs-config/init.el.html][init.el]], [[https://tecosaur.github.io/emacs-config/config.el.html][config.el]], and [[https://tecosaur.github.io/emacs-config/packages.el.html][packages.el]] files, as well as
+=config.org= /generates/ the [[https://tecosaur.github.io/emacs-config/engraved/init.el.html][init.el]], [[https://tecosaur.github.io/emacs-config/engraved/config.el.html][config.el]], and [[https://tecosaur.github.io/emacs-config/engraved/packages.el.html][packages.el]] files, as well as
 about a dozen others.
 
 Other than that, resources are put in [[file:misc/][misc]], and you may find submodules for
