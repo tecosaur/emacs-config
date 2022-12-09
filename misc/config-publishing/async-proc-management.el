@@ -67,8 +67,10 @@
             (message "\033[0;31m      %s\033[0m"
                      'unmodified
                      (with-temp-buffer
-                       (insert-file-contents-literally (expand-file-name ,(format "%s-log.txt" (file-name-base file))
-                                                                         (file-name-directory load-file-name)))
+                       (let ((log-file ,(expand-file-name (format "%s-log.txt" (file-name-base file))
+                                                          (file-name-directory load-file-name))))
+                         (when (file-exists-p log-file)
+                           (insert-file-contents-literally log-file)))
                        (buffer-substring-no-properties (point-min) (point-max))))
             (message "[1;31] Config publishing aborted%s" (apm-space-fill-line 23))
             (kill-emacs 1)))))))

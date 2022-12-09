@@ -4,7 +4,7 @@
 (setq log-file (expand-file-name (format "%s-log.txt" (file-name-base load-file-name))))
 
 (load (expand-file-name "initialise.el" (file-name-directory load-file-name)) nil t)
-(initialise t)
+(initialise 'full)
 
 ;;; Actually do the exporting now
 
@@ -14,8 +14,6 @@
 (require 'vc) ; need this for modification-time macro
 (require 'org)
 (require 'ox-latex)
-
-(require 'emojify) ; this should not be needed
 
 (advice-add 'pdf-tools-install :around #'ignore)
 (advice-add 'pdf-info-features :around #'ignore)
@@ -29,11 +27,17 @@
 (require 'highlight-quoted)
 (require 'rainbow-delimiters)
 
-(setq org-mode-hook nil)
+(require 'engrave-faces-latex)
+(load (expand-file-name "doom-one-light-engraved-theme.el"))
+(engrave-faces-use-theme 'doom-one-light)
+
 (with-temp-buffer
   (let ((default-directory config-root)
         (buffer-file-name (expand-file-name "config.org" config-root))
-        (org-export-coding-system org-html-coding-system)
+        (org-export-coding-system 'utf-8)
+        (org-export-with-broken-links t)
+        (org-resource-download-policy t)
+        (org-persist-disable-when-emacs-Q nil)
         org-mode-hook org-load-hook)
     (insert-file-contents (expand-file-name "config.org" config-root))
     (goto-char (point-max))
@@ -41,9 +45,9 @@
     (message "[33] Exporting %s" (buffer-file-name))
     (org-mode)
     ;; There isn't actually any Julia code in config.org
-    (setq org-latex-conditional-features
-          (delq (rassq 'julia-code org-latex-conditional-features)
-                org-latex-conditional-features))
+    (setq org-export-conditional-features
+          (delq (rassq 'julia-code org-export-conditional-features)
+                org-export-conditional-features))
     (org-latex-export-to-pdf)))
 
 (publish "config.pdf")

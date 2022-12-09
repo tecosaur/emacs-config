@@ -4,7 +4,7 @@
 (setq log-file (expand-file-name (format "%s-log.txt" (file-name-base load-file-name))))
 
 (load (expand-file-name "initialise.el" (file-name-directory load-file-name)) nil t)
-(initialise t)
+(initialise 'full)
 
 ;;; Actually do the exporting now
 
@@ -23,7 +23,8 @@
 (with-temp-buffer
   (let ((default-directory config-root)
         (buffer-file-name (expand-file-name "config.org" config-root))
-        (org-export-coding-system org-html-coding-system)
+        (org-export-coding-system 'utf-8)
+        (org-export-with-broken-links t)
         org-mode-hook org-load-hook)
     (insert-file-contents (expand-file-name "config.org" config-root))
     (goto-char (point-max))

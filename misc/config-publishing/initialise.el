@@ -10,14 +10,17 @@
                        (directory-file-name
                         (file-name-directory load-file-name))))))
 
-;;; Report errors
-
-(setq debug-on-error t
-      doom-debug-p t)
+(add-to-list 'load-path ; Allow require-ing subconf modules.
+             (expand-file-name "subconf" config-root))
 
 (defvar log-file "unnamed-log.txt")
 
 (write-region "" nil log-file)
+
+(setq print-level nil
+      print-length nil
+      print-escape-newlines t
+      print-quoted t)
 
 ;;; Messaging
 
@@ -58,23 +61,28 @@
                    args)))))
 
 (when message-colour
-  (advice-add 'debug :around #'red-error)
-  (advice-add 'message :around #'timed-coloured-message)
-  (advice-add 'doom--print :around #'timed-coloured-message))
+  (advice-add 'debug :around #'red-error))
+;; (advice-add 'message :around #'timed-coloured-message))
+;; (advice-add 'doom--print :around #'timed-coloured-message))
 
 ;;; Initialisation
 
-(defun initialise (&optional full)
+(defun initialise (&optional mode)
   (advice-add 'theme-magic-from-emacs :override #'ignore)
   (advice-add 'format-all-buffer :override #'ignore)
 
-  (if full
-      (load (expand-file-name "~/.emacs.d/init.el"))
-    (setq gc-cons-threshold 16777216
-          gcmh-high-cons-threshold 16777216)
-    (load (expand-file-name "core/core.el" user-emacs-directory) nil t)
-    (require 'core-cli)
-    (doom-initialize))
+  (pcase mode
+    ('full
+     (load "~/.config/emacs/early-init.el")
+     (require 'doom-start)
+     (require 'flycheck) ; To avoid issues that crop up with org-flycheck.
+     (defmacro flycheck-prepare-emacs-lisp-form (&rest _)))
+    ('light
+     (setq gc-cons-threshold 16777216
+           gcmh-high-cons-threshold 16777216)
+     (load "~/.config/emacs/lisp/doom.el")
+     (require 'doom-cli)
+     (doom-initialize-packages)))
 
   (setq doom-cli-log-error-file log-file)
   (write-region "" nil log-file nil :silent)
@@ -83,10 +91,12 @@
 
   (advice-add 'ask-user-about-supersession-threat :override #'ignore)
 
+  (setq debug-on-error t
+        doom-debug-p t)
   (add-hook! 'doom-debug-mode-hook
     (explain-pause-mode -1))
 
-  (setq emojify-download-emojis-p t)
+  (setq emojify-download-emojis-p nil)
   (unless (boundp 'image-types) ; why on earth is this needed?
     (setq image-types '(svg png gif tiff jpeg xpm xbm pbm)))
 
@@ -109,19 +119,38 @@
         (make-directory dir t))
       (push dir known-existing-dirs))))
 
+(require 'dired)
+
 (defun publish (&rest files)
   "Move each file into `publish'.
-Names containing \"*\" are treated as a glob."
-  (dolist (file files)
-    (if (string-match-p "\\*" file)
-        (apply #'publish
-               (directory-files (expand-file-name (or (file-name-directory file) "./") config-root)
-                                t
-                                (dired-glob-regexp (file-name-nondirectory file))))
-      (unless (string-match-p "/\\.\\.?$" file)
-        (message (concat (when message-colour "[34] ") "Publishing %s") file)
-        (let ((target (replace-regexp-in-string (regexp-quote config-root)
-                                                publish-dir
-                                                (expand-file-name file config-root))))
-          (ensure-dir-exists target)
-          (copy-file (expand-file-name file config-root) target t))))))
+Names containing \"*\" are treated as a glob.
+In addition to strings, files may also be a (glob . target-dir) cons cell."
+  (message "files: %S" files)
+  (let (uproot)
+    (when (eq (car files) :uproot)
+      (setq uproot t)
+      (pop files))
+    (dolist (file files)
+      (if (consp file)
+          (let ((publish-dir (file-name-as-directory (expand-file-name (cdr file) publish-dir))))
+            (if uproot
+                (publish :uproot (car file))
+              (publish (car file))))
+        (if (string-match-p "\\*" file)
+            (apply #'publish
+                   (append
+                    (and uproot (list :uproot))
+                    (directory-files (expand-file-name (or (file-name-directory file) "./") config-root)
+                                     t
+                                     (dired-glob-regexp (file-name-nondirectory file)))))
+          (unless (string-match-p "/\\.\\.?$" file)
+            (let ((target (if uproot
+                              (expand-file-name (file-name-nondirectory file) publish-dir)
+                            (replace-regexp-in-string (regexp-quote config-root)
+                                                      publish-dir
+                                                      (expand-file-name file config-root)))))
+              (message (concat (when message-colour "[34] ") "Publishing %s -> %s")
+                       (replace-regexp-in-string (regexp-quote config-root) "" file)
+                       (replace-regexp-in-string (regexp-quote config-root) "" target))
+              (ensure-dir-exists target)
+              (copy-file (expand-file-name file config-root) target t))))))))

@@ -3,8 +3,8 @@ on:
   pull_request:
   push:
     branches: master
-  schedule:
-    - cron: "0 */2 * * *" # every 2h
+  # schedule:
+  #   - cron: "0 */2 * * *" # every 2h
 
 jobs:
   deploy:
@@ -22,14 +22,14 @@ jobs:
 
       - name: Get Doom's version
         id: doom-version
-        run: runner 'cd ~/.config/emacs && echo "::set-output name=hash::$(git log -1 | head -1 | awk '"'"'{print substr($2,1,7)}'"'"')"'
+        run: runner 'cd ~/.config/emacs && echo "doom_hash=$(git log -1 | head -1 | awk '"'"'{print substr($2,1,8)}'"'"')"' >> $GITHUB_ENV
 
       - name: Cache Doom's Install
         id: doomcache
         uses: actions/cache@v2
         with:
           path: /home/runner/.config/emacs
-          key: ${{ runner.os }}-doom@${{ steps.doom-version.outputs.hash }}
+          key: ${{ runner.os }}-doom@${{ env.doom_hash }}
 
       - name: Checkout config
         if: github.event_name != 'schedule' || steps.doomcache.outputs.cache-hit != 'true'
@@ -47,22 +47,26 @@ jobs:
         if: github.event_name != 'schedule' || steps.doomcache.outputs.cache-hit != 'true'
         run: runner '~/.config/emacs/bin/doom sync'
 
+      - name: Rebuild changed packages
+        if: github.event_name != 'schedule' || steps.doomcache.outputs.cache-hit != 'true'
+        run: runner '~/.config/emacs/bin/doom build -r'
+
       - name: Ensure emoji vector graphics exist
         if: github.event_name != 'schedule' || steps.doomcache.outputs.cache-hit != 'true'
         run: runner "emacs --batch --eval \"(progn (load \\\"~/.config/emacs/lisp/doom.el\\\") (require 'doom-cli) (doom-initialize-packages) (load \\\"~/.config/doom/subconf/ox-latex-emoji.el\\\") (unless (file-exists-p (expand-file-name \\\"twemoji\\\" org-latex-emoji-base-dir)) (org-latex-emoji-install \\\"twemoji\\\" t)))\""
 
-      # - name: Export config
-      #   if: github.event_name != 'schedule' || steps.doomcache.outputs.cache-hit != 'true'
-      #   run: runner 'cd ~/.config/doom/misc/config-publishing && ./publish.sh'
+      - name: Export config
+        if: github.event_name != 'schedule' || steps.doomcache.outputs.cache-hit != 'true'
+        run: runner 'cd ~/.config/doom/misc/config-publishing && ./publish.sh'
 
       - name: Deploy
-        if: github.event_name != 'pull_request' && ( github.event_name != 'schedule' || steps.doomcache.outputs.cache-hit != 'true')
+        if: github.event_name != 'pull_request' && (github.event_name != 'schedule' || steps.doomcache.outputs.cache-hit != 'true') && success()
         uses: peaceiris/actions-gh-pages@v3
         with:
-          deploy_key: ${{ secrets.ACTIONS_DEPLOY_KEY }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: /home/runner/.config/doom/publish
           force_orphan: true
 
-      # - name: Debug over SSH (tmate)
-      #   if: ${{ failure() }}
-      #   uses: mxschmitt/action-tmate@v3.1
+      - name: Debug over SSH (tmate)
+        if: ${{ failure() }}
+        uses: mxschmitt/action-tmate@v3.1

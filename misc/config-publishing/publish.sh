@@ -13,13 +13,15 @@
 
 (load (expand-file-name "async-proc-management.el") nil t)
 
-(apm-exec '("htmlize.sh")) ; "check-package-updates.sh"))
+(apm-exec '("subconf.sh" "engrave.sh"))
 
 (if (not (file-exists-p (concat user-emacs-directory "xkcd/")))
     (apm-exec "org-html.sh" :then "org-pdf.sh")
   (apm-exec '("org-html.sh" "org-pdf.sh")))
 
 (apm-wait-and-monitor)
+
+(publish :uproot (cons (format "%s*-log.txt" (file-name-directory load-file-name)) "logs"))
 
 (if (= 0 exit-code)
     (message "[1;32] Config publish content generated!%s" (apm-space-fill-line 33))
