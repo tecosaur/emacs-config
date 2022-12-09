@@ -3030,7 +3030,7 @@ alias et="e -t"
 
 *** Prompt to run setup script
 
-#+call: pkgconf("Setup script prompt")
+#+call: confpkg("Setup script prompt")
 
 At various points in this config, content is conditionally tangled to
 =./setup.sh=. It's no good just putting content there if it isn't run though.
