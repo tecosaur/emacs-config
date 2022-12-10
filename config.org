@@ -12045,7 +12045,7 @@ since we want to let emoji processing occur first.
       (replace-regexp-in-string "[^[:ascii:]]"
                                 (lambda (nonascii)
                                   (if (or (string-match-p +org-pdflatex-inputenc-encoded-chars nonascii)
-                                          (string-match-p +emoji-rx nonascii))
+                                          (string-match-p org-latex-emoji--rx nonascii))
                                       nonascii
                                     (or (cdr (assoc nonascii +org-latex-non-ascii-char-substitutions))
                                         "¿")))
