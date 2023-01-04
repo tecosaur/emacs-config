@@ -17,9 +17,9 @@
 #+startup: fold
 
 #+latex_class: book
-#+latex_header: \usepackage[autooneside=false,automark,headsepline]{scrlayer-scrpage}
-#+latex_header: \clearpairofpagestyles \renewcommand*{\chaptermarkformat}{} \renewcommand*{\sectionmarkformat}{}
-#+latex_header: \ihead{\upshape\scshape\leftmark} \chead{\Ifstr{\leftmark}{\rightmark}{}{\rightmark}} \ohead[\pagemark]{\pagemark}
+#+latex_header_extra: \usepackage[autooneside=false,automark,headsepline]{scrlayer-scrpage}
+#+latex_header_extra: \clearpairofpagestyles \renewcommand*{\chaptermarkformat}{} \renewcommand*{\sectionmarkformat}{}
+#+latex_header_extra: \ihead{\upshape\scshape\leftmark} \chead{\Ifstr{\leftmark}{\rightmark}{}{\rightmark}} \ohead[\pagemark]{\pagemark}
 #+latex_engraved_theme: doom-one-light
 
 #+begin_export html
