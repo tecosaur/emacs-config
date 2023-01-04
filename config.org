@@ -9631,35 +9631,42 @@ have this be performed automatically with =org-fragtog=.
 
 It's nice to customise the look of LaTeX fragments so they fit better in the
 text --- like this \(\sqrt{\beta^2+3}-\sum_{\phi=1}^\infty \frac{x^\phi-1}{\Gamma(a)}\).
-Let's start by adding a sans font. I'd also like to use some of the
-functionality from =bmc-maths=, so we'll load that too.
 
-#+begin_src emacs-lisp
-(setq org-format-latex-header "\\documentclass{article}
-\\usepackage[usenames]{xcolor}
+The default snippet preamble basically just sets the margins and text size, with
+templates to be filled in by ~org-latex-default-packages-alist~ and
+=#+latex_header:= entries (but not =#+latex_header_extra:=).
 
-\\usepackage[T1]{fontenc}
-
-\\usepackage{booktabs}
-
-\\pagestyle{empty}             % do not remove
+#+name: latex-default-snippet-preamble
+#+begin_src LaTeX
+\documentclass{article}
+[DEFAULT-PACKAGES]
+[PACKAGES]
+\pagestyle{empty} % do not remove
 % The settings below are copied from fullpage.sty
-\\setlength{\\textwidth}{\\paperwidth}
-\\addtolength{\\textwidth}{-3cm}
-\\setlength{\\oddsidemargin}{1.5cm}
-\\addtolength{\\oddsidemargin}{-2.54cm}
-\\setlength{\\evensidemargin}{\\oddsidemargin}
-\\setlength{\\textheight}{\\paperheight}
-\\addtolength{\\textheight}{-\\headheight}
-\\addtolength{\\textheight}{-\\headsep}
-\\addtolength{\\textheight}{-\\footskip}
-\\addtolength{\\textheight}{-3cm}
-\\setlength{\\topmargin}{1.5cm}
-\\addtolength{\\topmargin}{-2.54cm}
-% my custom stuff
-\\usepackage[nofont,plaindd]{bmc-maths}
-\\usepackage{arev}
-")
+\setlength{\textwidth}{\paperwidth}
+\addtolength{\textwidth}{-3cm}
+\setlength{\oddsidemargin}{1.5cm}
+\addtolength{\oddsidemargin}{-2.54cm}
+\setlength{\evensidemargin}{\oddsidemargin}
+\setlength{\textheight}{\paperheight}
+\addtolength{\textheight}{-\headheight}
+\addtolength{\textheight}{-\headsep}
+\addtolength{\textheight}{-\footskip}
+\addtolength{\textheight}{-3cm}
+\setlength{\topmargin}{1.5cm}
+\addtolength{\topmargin}{-2.54cm}
+#+end_src
+
+To this, we make two additions:
++ Selection of a maths font that fits better with displayed text.
++ My collection [[*Maths notation conveniences][mathematical notation conveniences]].
+
+#+begin_src emacs-lisp :noweb no-export :noweb-prefix no
+(setq org-latex-preview-header
+      (concat
+       <<grab("latex-default-snippet-preamble")>>
+       "\n% Custom font\n\\usepackage{arev}\n\n"
+       <<grab("latex-maths-conveniences")>>))
 #+end_src
 
 Since we can, instead of making the background colour match the =default= face,
@@ -10983,6 +10990,15 @@ The default checkboxes look rather ugly, so let's provide some prettier alternat
 \newcommand{\checkboxChecked}{\rlap{\raisebox{0.2ex}{\hspace{0.35ex}\scriptsize \ding{52}}}$\square$}
 #+end_src
 
+We set up a maths typesetting preamble [[*Maths notation conveniences][later on]], but it would be nice to save it
+to a variable here:
+
+#+begin_src emacs-lisp :noweb no-export :noweb-prefix no
+(defvar org-latex-maths-preamble
+  <<grab("latex-maths-conveniences")>>
+  "Preamble that sets up a bunch of mathematical conveniences.")
+#+end_src
+
 It's nice to have "message blocks", things like info/warning/error/success.
 A LaTeX macro should make them trivial to create.
 
@@ -11240,8 +11256,8 @@ introduce an =:order= keyword. Using this I'll arrange snippets as follows.
  org-latex-feature-implementations
  '(image         :snippet "\\usepackage{graphicx}" :order 2)
  '(svg           :snippet "\\usepackage[inkscapelatex=false]{svg}" :order 2)
- '(maths         :snippet "\\usepackage[nofont]{bmc-maths}" :order 0.2)
  '(table         :snippet "\\usepackage{longtable}\n\\usepackage{booktabs}" :order 2)
+ '(maths         :snippet org-latex-maths-preamble :order 0.2)
  '(cleveref      :snippet "\\usepackage[capitalize]{cleveref}" :order 1) ; after bmc-maths
  '(float-wrap    :snippet "\\usepackage{wrapfig}" :order 2)
  '(rotate        :snippet "\\usepackage{rotating}" :order 2)
@@ -11446,6 +11462,205 @@ can correct for this by redefining it with subtlety shifted kerning.
         \\kern-.10em%
         \\TeX}
 \\makeatother\n") t)
+#+end_src
+
+**** Maths notation conveniences
+:PROPERTIES:
+:header-args:LaTeX: :noweb-ref latex-maths-conveniences
+:END:
+
+Maths has a way of popping up relentlessly. I think this says something both
+about me and the subject itself. While the LaTeX set of commands is quite
+reasonable, we can make a few common bits of notation a tad more convenient.
+
+***** Packages
+
+First, there are a few useful packages we want to use.
+
+#+begin_src LaTeX
+%% Maths-related packages
+% More maths environments, commands, and symbols.
+\usepackage{amsmath, amssymb}
+% Slanted fractions with \sfrac{a}{b}, in text and maths.
+\usepackage{xfrac}
+% Visually cancel expressions with \cancel{value} and \cancelto{expression}{value}
+\usepackage[makeroom]{cancel}
+% Improvements on amsmath and utilities for mathematical typesetting
+\usepackage{mathtools}
+#+end_src
+
+***** Custom delimiters
+
+Next up we want to make the various types of rounding-related and absolute value
+delimitors accessible as commands.
+
+#+begin_src LaTeX
+% Deliminators
+\DeclarePairedDelimiter{\abs}{\lvert}{\rvert}
+\DeclarePairedDelimiter{\norm}{\lVert}{\rVert}
+
+\DeclarePairedDelimiter{\ceil}{\lceil}{\rceil}
+\DeclarePairedDelimiter{\floor}{\lfloor}{\rfloor}
+\DeclarePairedDelimiter{\round}{\lfloor}{\rceil}
+#+end_src
+
+***** Number sets
+
+Then we have the various common number sets, it would be nice to have a
+convenient way of typing them and optionally giving them powers. It's fairly
+easy to support both =\XX= and =\XX[n]=.
+
+#+begin_src LaTeX
+\newcommand{\RR}[1][]{\ensuremath{\ifstrempty{#1}{\mathbb{R}}{\mathbb{R}^{#1}}}} % Real numbers
+\newcommand{\NN}[1][]{\ensuremath{\ifstrempty{#1}{\mathbb{N}}{\mathbb{N}^{#1}}}} % Natural numbers
+\newcommand{\ZZ}[1][]{\ensuremath{\ifstrempty{#1}{\mathbb{Z}}{\mathbb{Z}^{#1}}}} % Integer numbers
+\newcommand{\QQ}[1][]{\ensuremath{\ifstrempty{#1}{\mathbb{Q}}{\mathbb{Q}^{#1}}}} % Rational numbers
+\newcommand{\CC}[1][]{\ensuremath{\ifstrempty{#1}{\mathbb{C}}{\mathbb{C}^{#1}}}} % Complex numbers
+#+end_src
+
+***** Derivatives
+
+Derivatives are actually a bit of a pain to typeset, it would be nice to have a
+=\dv= command that supports:
++ =\dv{x}= for the derivative with respect to =x=
++ =\dv{f}{x}= for the derivative of =f= with respect to =x=
++ =\dv[2]{f}{x}= for the second order derivative of =f= with respect to =x=
+
+Similarly, it would be nice to have a partial derivate counterpart =\pdv= which
+behaves in a similar way, but with the possibility of providing multiple
+comma-delimited variables --- e.g. =\pdv{f}{x,y,z}=.
+
+#+begin_src LaTeX
+% Easy derivatives
+\ProvideDocumentCommand\dv{o m g}{%
+  \IfNoValueTF{#3}{%
+    \dv[#1]{}{#2}}{%
+    \IfNoValueTF{#1}{%
+      \frac{\dd #2}{\dd #3}%
+    }{\frac{\dd[#1] #2}{\dd {#3}^{#1}}}}}
+% Easy partial derivatives
+\ExplSyntaxOn
+\ProvideDocumentCommand\pdv{o m g}{%
+  \IfNoValueTF{#3}{\pdv[#1]{}{#2}}%
+  {\ifnum\clist_count:n{#3}<2
+    \IfValueTF{#1}{\frac{\partial^{#1} #2}{\partial {#3}^{#1}}}%
+    {\frac{\partial #2}{\partial #3}}
+    \else
+    \frac{\IfValueTF{#1}{\partial^{#1}}{\partial^{\clist_count:n{#3}}}#2}%
+    {\clist_map_inline:nn{#3}{\partial ##1 \,}\!}
+    \fi}}
+\ExplSyntaxOff
+#+end_src
+
+***** Common operators
+
+The default set of operators could benefit from a bit of expansion.
+
+#+begin_src LaTeX
+% Laplacian
+\DeclareMathOperator{\Lap}{\mathcal{L}}
+
+% Statistics
+\DeclareMathOperator{\Var}{Var} % varience
+\DeclareMathOperator{\Cov}{Cov} % covarience
+\newcommand{\EE}{\ensuremath{\mathbb{E}}} % expected value
+\DeclareMathOperator{\E}{E} % expected value
+#+end_src
+
+***** Slanted inequalities
+
+As a matter of personal taste, I prefer the slanted less/greater than or equal
+to operators, and would like to use them by default.
+
+#+begin_src LaTeX
+% I prefer the slanted \leq/\geq
+\let\barleq\leq % Save them in case they're every wanted
+\let\bargeq\geq
+\renewcommand{\leq}{\leqslant}
+\renewcommand{\geq}{\geqslant}
+#+end_src
+
+***** Alignment of matrix columns
+
+By default, everything in a matrix is centred, which I actually find often
+undesirable. It would be much nicer to take the alignment as an optional
+argument of the environment, and default to right-alignment.
+
+#+begin_src LaTeX
+% Redefine the matrix environment to allow for alignment
+% via an optional argument, and use r as the default.
+\makeatletter
+\renewcommand*\env@matrix[1][r]{\hskip -\arraycolsep%
+    \let\@ifnextchar\new@ifnextchar
+    \array{*\c@MaxMatrixCols #1}}
+\makeatother
+#+end_src
+
+***** Slanted derivative "d"
+
+Determining an appropriate styling for a derivative "d" (e.g. "dx") is
+surprisingly hard, as the "d" is neither:
++ An operator (which are typeset as upright roman)
++ A variable (which are typeset as italic roman)
+
+The ISO 80000-2 standard (2009) specifies that it should be upright, however (a)
+it is still not an operator, (b) not used in any maths book I've seen, and (c)
+doesn't look very good. I'm not entirely comfortable with the variable styling
+either though, so perhaps something else is in order?
+
+After trying a few different options, I rather like the idea of using a /slanted
+roman "d"/. This stylistically works for me, while being just distinct enough
+from other faces. As long as we are creating a PDF, we can apply a transform
+that slants a "d".
+
+#+begin_src LaTeX
+% Slanted roman "d" for derivatives
+\ifcsname pdfoutput\endcsname
+  \ifnum\pdfoutput>0 % PDF
+    \newsavebox\diffdbox{}
+    \newcommand{\slantedromand}{{\mathpalette\makesl{d}}}
+    \newcommand{\makesl}[2]{%
+      \begingroup
+      \sbox{\diffdbox}{$\mathsurround=0pt#1\mathrm{#2}$}%
+      \pdfsave%
+      \pdfsetmatrix{1 0 0.2 1}%
+      \rlap{\usebox{\diffdbox}}%
+      \pdfrestore%
+      \hskip\wd\diffdbox%
+      \endgroup}
+  \else % DVI
+    \newcommand{\slantedromand}{d} % fallback
+  \fi
+\else % Also DVI
+  \newcommand{\slantedromand}{d} % fallback
+\fi
+#+end_src
+
+Now there's the matter of /placing/ the "d", or rather adjusting the space around
+it. After much fiddling, I've ended up with the following.
+
+#+begin_src LaTeX
+% Derivative d^n, nicely spaced
+\makeatletter
+\newcommand{\dd}[1][]{\mathop{}\!%
+  \expandafter\ifx\expandafter&\detokenize{#1}&% \ifstrempty from etoolbox
+    \slantedromand\@ifnextchar^{\hspace{0.2ex}}{\hspace{0.1ex}}
+  \else
+    \slantedromand\hspace{0.2ex}^{#1}
+  \fi}
+\makeatother
+#+end_src
+
+While =\dd= isn't much effort to type, it would be much cleaner to be able to do
+src_LaTeX{\int x^2 \d x}. The problem with defining =\d= is that it is already used
+for the under-dot accent. However, since this is a text-mode (only) accent, and
+defined with src_LaTeX{\@dec@text@cmd\newcommand} instead of
+src_LaTeX{\DeclareRobustCommand} we can redefine the command to mean =\dd= in
+math-mode.
+
+#+begin_src LaTeX
+\NewCommandCopy{\daccent}{\d}
+\renewcommand{\d}{\ifmmode\dd\else\daccent\fi}
 #+end_src
 
 **** Cover page
