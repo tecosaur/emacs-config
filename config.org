@@ -11026,29 +11026,43 @@ can embed whatever we want.
              (cdr file-desc)))
    (append
     (let (tangle-fspecs) ; All files being tangled to.
-      (org-babel-map-src-blocks nil
-        (when-let ((info (and (not (org-in-commented-heading-p))
-                              (not (org-in-archived-heading-p))
-                              (org-babel-get-src-block-info 'no-eval)))
-                   (tangle-value
-                    (pcase (alist-get :tangle (caddr info))
-                      ((and (pred (string-match-p "^(.*)$")) expr)
-                       (eval (read expr)))
-                      (val val)))
-                   (tangle-file
-                    (pcase tangle-value
-                      ((or "no" (guard (member (alist-get :export-embed (caddr info)) '("no" "nil"))))
-                       nil)
-                      ("yes"
-                       (file-name-with-extension
-                        (file-name-nondirectory (buffer-file-name))
-                        (or (alist-get (car info) org-babel-tangle-lang-exts nil nil #'equal)
-                            (car info))))
-
-                      (val val))))
-          (push
-           (cons tangle-file (format "Tangled %s file" (car info)))
-           tangle-fspecs)))
+      (org-element-cache-map
+       (lambda (src)
+         (when (and (not (org-in-commented-heading-p nil src))
+                    (not (org-in-archived-heading-p nil src)))
+           (when-let ((lang (org-element-property :language src))
+                      (params
+                       (apply
+                        #'org-babel-merge-params
+                        (append
+                         (org-with-point-at (org-element-property :begin src)
+                           (org-babel-params-from-properties lang t))
+                         (mapcar
+                          (lambda (h)
+                            (org-babel-parse-header-arguments h t))
+                          (cons (org-element-property :parameters src)
+                                (org-element-property :header src))))))
+                      (tangle-value
+                       (pcase (alist-get :tangle params)
+                         ((and (pred stringp) (pred (string-match-p "^(.*)$")) expr)
+                          (eval (read expr)))
+                         (val val)))
+                      (tangle-file
+                       (pcase tangle-value
+                         ((or "no" (guard (member (alist-get :export-embed params) '("no" "nil"))))
+                          nil)
+                         ("yes"
+                          (file-name-with-extension
+                           (file-name-nondirectory (buffer-file-name))
+                           (or (alist-get lang org-babel-tangle-lang-exts nil nil #'equal)
+                               lang)))
+                         (val val))))
+             (unless (assoc tangle-file tangle-fspecs)
+               (push
+                (cons tangle-file (format "Tangled %s file" lang))
+                tangle-fspecs)))))
+       :granularity 'element
+       :restrict-elements '(src-block))
       (nreverse tangle-fspecs))
     (let (extra-files)
       (save-excursion
