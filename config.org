@@ -3071,13 +3071,43 @@ doesn't work with string escaping.
 
 We can get around this by using noweb execution and write an name (unexported)
 babel block that will grab the content of another named source block as a
-string.
+string. Note that this does not currently expand nested noweb references.
 
 #+name: grab
-#+begin_src emacs-lisp :var block-name="" :noweb-ref none
-(when-let ((block-pos (org-babel-find-named-block block-name))
-           (block (org-element-at-point block-pos)))
-  (format "%S" (string-trim (org-element-property :value block))))
+#+begin_src emacs-lisp :var name="" :noweb-ref none
+(if-let ((block-pos (org-babel-find-named-block name))
+         (block (org-element-at-point block-pos)))
+    (format "%S" (string-trim (org-element-property :value block)))
+  ;; look for :noweb-ref matches
+  (let (block-contents)
+    (org-element-cache-map
+     (lambda (src)
+       (when (and (not (org-in-commented-heading-p nil src))
+                  (not (org-in-archived-heading-p nil src))
+                  (let* ((lang (org-element-property :language src))
+                         (params
+                          (apply
+                           #'org-babel-merge-params
+                           (append
+                            (org-with-point-at (org-element-property :begin src)
+                              (org-babel-params-from-properties lang t))
+                            (mapcar
+                             (lambda (h)
+                               (org-babel-parse-header-arguments h t))
+                             (cons (org-element-property :parameters src)
+                                   (org-element-property :header src))))))
+                         (ref (alist-get :noweb-ref params)))
+                    (equal ref name)))
+         (push (org-babel--normalize-body src)
+               block-contents)))
+     :granularity 'element
+     :restrict-elements '(src-block))
+    (and block-contents
+         (format "%S"
+                 (mapconcat
+                  #'identity
+                  (nreverse block-contents)
+                  "\n\n")))))
 #+end_src
 
 There we go, that's all it takes! This can be used via the form =<<grab("block-name")>>=.
