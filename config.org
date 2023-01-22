@@ -9615,20 +9615,16 @@ passed, and so we can override the background as discussed above.
 (add-to-list 'org-src-block-faces '("latex" (:inherit default :extend t)))
 #+end_src
 
-***** More eager rendering
+***** Automatic previewing
 
-#+call: confpkg("!Pkg org-fragtog")
+It would be nice if fragments could automatically be previewed after being
+typed, and the overlays automatically showed and hidden when moving the point in
+and out of the LaTeX fragments.
 
-What's better than syntax-highlighted LaTeX is /rendered/ LaTeX though, and we can
-have this be performed automatically with =org-fragtog=.
-
-#+begin_src emacs-lisp :tangle packages.el
-(package! org-fragtog :pin "c675563af3f9ab5558cfd5ea460e2a07477b0cfd")
-#+end_src
+Thankfully, all we need to do to make this happen is use ~org-latex-preview-auto-mode~.
 
 #+begin_src emacs-lisp
-(use-package! org-fragtog
-  :hook (org-mode . org-fragtog-mode))
+(add-hook 'org-mode-hook #'org-latex-preview-auto-mode)
 #+end_src
 
 ***** Prettier rendering
@@ -9645,20 +9641,6 @@ templates to be filled in by ~org-latex-default-packages-alist~ and
 \documentclass{article}
 [DEFAULT-PACKAGES]
 [PACKAGES]
-\pagestyle{empty} % do not remove
-% The settings below are copied from fullpage.sty
-\setlength{\textwidth}{\paperwidth}
-\addtolength{\textwidth}{-3cm}
-\setlength{\oddsidemargin}{1.5cm}
-\addtolength{\oddsidemargin}{-2.54cm}
-\setlength{\evensidemargin}{\oddsidemargin}
-\setlength{\textheight}{\paperheight}
-\addtolength{\textheight}{-\headheight}
-\addtolength{\textheight}{-\headsep}
-\addtolength{\textheight}{-\footskip}
-\addtolength{\textheight}{-3cm}
-\setlength{\topmargin}{1.5cm}
-\addtolength{\topmargin}{-2.54cm}
 #+end_src
 
 To this, we make two additions:
@@ -9675,25 +9657,25 @@ To this, we make two additions:
 
 Since we can, instead of making the background colour match the =default= face,
 let's make it transparent.
+
 #+begin_src emacs-lisp
-(setq org-format-latex-options
-      (plist-put org-format-latex-options :background "Transparent"))
+(plist-put org-format-latex-options :background "Transparent")
+(plist-put org-format-latex-options :zoom 0.93) ; Calibrated based on the TeX font and org-buffer font.
 #+end_src
 
 With the background taken care of, we just need to make sure we're using the
 theme-appropriate foreground.
 
-# TODO check that this is still needed.
-
 #+begin_src emacs-lisp
-(add-hook! 'doom-load-theme-hook
-  (setq org-preview-latex-image-directory
-        (concat doom-cache-dir "org-latex/" (symbol-name doom-theme) "/"))
+(defun +org-refresh-latex-images-previews-h ()
   (dolist (buffer (doom-buffers-in-mode 'org-mode (buffer-list)))
     (with-current-buffer buffer
       (+org--toggle-inline-images-in-subtree (point-min) (point-max) 'refresh)
-      (org-clear-latex-preview (point-min) (point-max))
-      (org--latex-preview-region (point-min) (point-max)))))
+      (unless (eq org-latex-preview-default-process 'dvisvgm)
+        (org-clear-latex-preview (point-min) (point-max))
+        (org--latex-preview-region (point-min) (point-max))))))
+
+(add-hook 'doom-load-theme-hook #'+org-refresh-latex-images-previews-h)
 #+end_src
 
 ***** Rendering speed tests
@@ -9705,9 +9687,7 @@ We can either render from a ~dvi~ or ~pdf~ file, so let's benchmark ~latex~ and
 | 135 \pm 2 ms | 215 \pm 3 ms    |
 
 On the rendering side, there are two ~.dvi~-to-image converters which I am
-interested in: ~dvipng~ and ~dvisvgm~. Then with the a ~.pdf~ we have ~pdf2svg~.
-For inline preview we care about speed, while for exporting we care about file
-size and prefer a vector graphic.
+interested in: ~dvipng~ and ~dvisvgm~.
 
 Using the above latex expression and benchmarking lead to the following results:
 | ~dvipng~ time | ~dvisvgm~ time | ~pdf2svg~ time |
@@ -9715,7 +9695,7 @@ Using the above latex expression and benchmarking lead to the following results:
 | 89 \pm 2 ms   | 178 \pm 2 ms   | 12 \pm 2 ms    |
 
 Now let's combine this to see what's best
-| Tool chain         | Total time | Resultant file size |
+| Tool chain         | Total time | Resulting file size |
 |--------------------+------------+---------------------|
 | ~latex~ + ~dvipng~     | 226 \pm 2 ms | 7 KiB               |
 | ~latex~ + ~dvisvgm~    | 392 \pm 4 ms | 8 KiB               |
@@ -9726,122 +9706,6 @@ So, let's use ~dvipng~ for previewing LaTeX fragments in-Emacs, but ~dvisvgm~ fo
 #+begin_warning
 Unfortunately, it seems that SVG sizing is annoying ATM, so let's actually not do this right now.
 #+end_warning
-
-**** Stolen from [[https://github.com/jkitchin/scimax][scimax]] (semi-working right now)
-
-I want fragment justification
-#+begin_src emacs-lisp
-(defun scimax-org-latex-fragment-justify (justification)
-  "Justify the latex fragment at point with JUSTIFICATION.
-JUSTIFICATION is a symbol for 'left, 'center or 'right."
-  (interactive
-   (list (intern-soft
-          (completing-read "Justification (left): " '(left center right)
-                           nil t nil nil 'left))))
-  (let* ((ov (ov-at))
-         (beg (ov-beg ov))
-         (end (ov-end ov))
-         (shift (- beg (line-beginning-position)))
-         (img (overlay-get ov 'display))
-         (img (and (and img (consp img) (eq (car img) 'image)
-                        (image-type-available-p (plist-get (cdr img) :type)))
-                   img))
-         space-left offset)
-    (when (and img
-               ;; This means the equation is at the start of the line
-               (= beg (line-beginning-position))
-               (or
-                (string= "" (s-trim (buffer-substring end (line-end-position))))
-                (eq 'latex-environment (car (org-element-context)))))
-      (setq space-left (- (window-max-chars-per-line) (car (image-size img)))
-            offset (floor (cond
-                           ((eq justification 'center)
-                            (- (/ space-left 2) shift))
-                           ((eq justification 'right)
-                            (- space-left shift))
-                           (t
-                            0))))
-      (when (>= offset 0)
-        (overlay-put ov 'before-string (make-string offset ?\ ))))))
-
-(defun scimax-org-latex-fragment-justify-advice (beg end image imagetype)
-  "After advice function to justify fragments."
-  (scimax-org-latex-fragment-justify (or (plist-get org-format-latex-options :justify) 'left)))
-
-
-(defun scimax-toggle-latex-fragment-justification ()
-  "Toggle if LaTeX fragment justification options can be used."
-  (interactive)
-  (if (not (get 'scimax-org-latex-fragment-justify-advice 'enabled))
-      (progn
-        (advice-add 'org--format-latex-make-overlay :after 'scimax-org-latex-fragment-justify-advice)
-        (put 'scimax-org-latex-fragment-justify-advice 'enabled t)
-        (message "Latex fragment justification enabled"))
-    (advice-remove 'org--format-latex-make-overlay 'scimax-org-latex-fragment-justify-advice)
-    (put 'scimax-org-latex-fragment-justify-advice 'enabled nil)
-    (message "Latex fragment justification disabled")))
-#+end_src
-There's also this lovely equation numbering stuff I'll nick
-#+begin_src emacs-lisp
-;; Numbered equations all have (1) as the number for fragments with vanilla
-;; org-mode. This code injects the correct numbers into the previews so they
-;; look good.
-(defun scimax-org-renumber-environment (orig-func &rest args)
-  "A function to inject numbers in LaTeX fragment previews."
-  (let ((results '())
-        (counter -1)
-        (numberp))
-    (setq results (cl-loop for (begin . env) in
-                           (org-element-map (org-element-parse-buffer) 'latex-environment
-                             (lambda (env)
-                               (cons
-                                (org-element-property :begin env)
-                                (org-element-property :value env))))
-                           collect
-                           (cond
-                            ((and (string-match "\\\\begin{equation}" env)
-                                  (not (string-match "\\\\tag{" env)))
-                             (cl-incf counter)
-                             (cons begin counter))
-                            ((string-match "\\\\begin{align}" env)
-                             (prog2
-                                 (cl-incf counter)
-                                 (cons begin counter)
-                               (with-temp-buffer
-                                 (insert env)
-                                 (goto-char (point-min))
-                                 ;; \\ is used for a new line. Each one leads to a number
-                                 (cl-incf counter (count-matches "\\\\$"))
-                                 ;; unless there are nonumbers.
-                                 (goto-char (point-min))
-                                 (cl-decf counter (count-matches "\\nonumber")))))
-                            (t
-                             (cons begin nil)))))
-
-    (when (setq numberp (cdr (assoc (point) results)))
-      (setf (car args)
-            (concat
-             (format "\\setcounter{equation}{%s}\n" numberp)
-             (car args)))))
-
-  (apply orig-func args))
-
-
-(defun scimax-toggle-latex-equation-numbering ()
-  "Toggle whether LaTeX fragments are numbered."
-  (interactive)
-  (if (not (get 'scimax-org-renumber-environment 'enabled))
-      (progn
-        (advice-add 'org-create-formula-image :around #'scimax-org-renumber-environment)
-        (put 'scimax-org-renumber-environment 'enabled t)
-        (message "Latex numbering enabled"))
-    (advice-remove 'org-create-formula-image #'scimax-org-renumber-environment)
-    (put 'scimax-org-renumber-environment 'enabled nil)
-    (message "Latex numbering disabled.")))
-
-(advice-add 'org-create-formula-image :around #'scimax-org-renumber-environment)
-(put 'scimax-org-renumber-environment 'enabled t)
-#+end_src
 
 **** Org Plot
 
@@ -11301,7 +11165,7 @@ There are also some obsolete entries in the default value, specifically
 (setq org-latex-default-packages-alist
       '(("AUTO" "inputenc" t ("pdflatex"))
         ("T1" "fontenc" t ("pdflatex"))
-        ("" "xcolor" nil) ; Generally useful
+        ("" "xcolor" t) ; Generally useful
         ("" "hyperref" nil)))
 #+end_src
 
