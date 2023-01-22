@@ -13,6 +13,8 @@
 
 (require 'vc) ; need this for modification-time macro
 (require 'org)
+(require 'org-persist)
+(remove-hook 'kill-emacs-hook #'org-persist-gc)
 (require 'ox-latex)
 
 (advice-add 'pdf-tools-install :around #'ignore)

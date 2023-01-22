@@ -30,6 +30,8 @@
     (setcdr (assoc 'org after-load-alist) nil))
   (setq org-load-hook nil)
   (require 'org)
+  (require 'org-persist)
+  (remove-hook 'kill-emacs-hook #'org-persist-gc)
   (setq org-mode-hook nil))
 
 (let ((default-directory config-root))
