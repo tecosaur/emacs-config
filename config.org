@@ -8113,7 +8113,7 @@ with =citar=, and make the symbols a bit prettier.
 
 #+begin_src emacs-lisp
 (after! citar
-  (setq citar-bibliography
+  (setq org-cite-global-bibliography
         (let ((libfile-search-names '("library.json" "Library.json" "library.bib" "Library.bib"))
               (libfile-dir "~/Zotero")
               paths)
@@ -8121,8 +8121,9 @@ with =citar=, and make the symbols a bit prettier.
             (when (and (not paths)
                        (file-exists-p (expand-file-name libfile libfile-dir)))
               (setq paths (list (expand-file-name libfile libfile-dir)))))
-          paths))
-  (setq citar-symbols
+          paths)
+        citar-bibliography org-cite-global-bibliography
+        citar-symbols
         `((file ,(all-the-icons-faicon "file-o" :face 'all-the-icons-green :v-adjust -0.1) . " ")
           (note ,(all-the-icons-material "speaker_notes" :face 'all-the-icons-blue :v-adjust -0.3) . " ")
           (link ,(all-the-icons-octicon "link" :face 'all-the-icons-orange :v-adjust 0.01) . " "))))
