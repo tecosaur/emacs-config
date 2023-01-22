@@ -7402,6 +7402,8 @@ numbers is stripped away.
 
 (defun +setup-text-mode-left-margin ()
   (when (and (derived-mode-p 'text-mode)
+             (not (and (bound-and-true-p visual-fill-column-mode)
+                       visual-fill-column-center-text))
              (eq (current-buffer) ; Check current buffer is active.
                  (window-buffer (frame-selected-window))))
     (setq left-margin-width (if display-line-numbers
@@ -7958,14 +7960,15 @@ It's nice to be able to link to music
 **** Tweaking defaults
 
 #+begin_src emacs-lisp
-(setq org-directory "~/.org"               ; Let's put files here.
-      org-use-property-inheritance t       ; It's convenient to have properties inherited.
-      org-log-done 'time                   ; Having the time a item is done sounds convenient.
-      org-list-allow-alphabetical t        ; Have a. A. a) A) list bullets.
-      org-catch-invisible-edits 'smart     ; Try not to accidently do weird stuff in invisible regions.
-      org-export-with-sub-superscripts '{} ; Don't treat lone _ / ^ as sub/superscripts, require _{} / ^{}.
-      org-export-allow-bind-keywords t     ; Bind keywords can be handy
-      org-image-actual-width '(0.9))       ; Make the in-buffer display closer to the exported result..
+(setq org-directory (expand-file-name "org" (xdg-data-home)) ; Let's put files here.
+      org-agenda-files (list org-directory)                  ; Seems like the obvious place.
+      org-use-property-inheritance t                         ; It's convenient to have properties inherited.
+      org-log-done 'time                                     ; Having the time a item is done sounds convenient.
+      org-list-allow-alphabetical t                          ; Have a. A. a) A) list bullets.
+      org-catch-invisible-edits 'smart                       ; Try not to accidently do weird stuff in invisible regions.
+      org-export-with-sub-superscripts '{}                   ; Don't treat lone _ / ^ as sub/superscripts, require _{} / ^{}.
+      org-export-allow-bind-keywords t                       ; Bind keywords can be handy
+      org-image-actual-width '(0.9))                         ; Make the in-buffer display closer to the exported result..
 #+end_src
 I also like the src_elisp{:comments} header-argument, so let's make that a
 default.
