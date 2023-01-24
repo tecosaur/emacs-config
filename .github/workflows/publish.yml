@@ -1,10 +1,22 @@
 name: "Publish"
 on:
-  pull_request:
   push:
     branches: master
-  # schedule:
-  #   - cron: "0 */2 * * *" # every 2h
+  delete:
+    ref: "refs/heads/publish"
+  workflow_dispatch:
+  schedule:
+    - cron: "0 */2 * * *" # every 2h
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+# Allow one concurrent deployment
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
 
 jobs:
   deploy:
@@ -59,14 +71,30 @@ jobs:
         if: github.event_name != 'schedule' || steps.doomcache.outputs.cache-hit != 'true'
         run: runner 'cd ~/.config/doom/misc/config-publishing && ./publish.sh'
 
-      - name: Deploy
-        if: github.event_name != 'pull_request' && (github.event_name != 'schedule' || steps.doomcache.outputs.cache-hit != 'true') && success()
+      - name: Push results
+        if: (github.event_name != 'schedule' || steps.doomcache.outputs.cache-hit != 'true') && success()
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: /home/runner/.config/doom/publish
+          publish_branch: publish
           force_orphan: true
 
-      - name: Debug over SSH (tmate)
-        if: ${{ failure() }}
-        uses: mxschmitt/action-tmate@v3.1
+      - name: Setup Pages
+        if: (github.event_name != 'schedule' || steps.doomcache.outputs.cache-hit != 'true') && success()
+        uses: actions/configure-pages@v2
+
+      - name: Upload artifact
+        if: (github.event_name != 'schedule' || steps.doomcache.outputs.cache-hit != 'true') && success()
+        uses: actions/upload-pages-artifact@v1
+        with:
+          path: '/home/runner/.config/doom/publish'
+
+      - name: Deploy to GitHub Pages
+        if: (github.event_name != 'schedule' || steps.doomcache.outputs.cache-hit != 'true') && success()
+        id: deployment
+        uses: actions/deploy-pages@v1
+
+      # - name: Debug over SSH (tmate)
+      #   if: ${{ failure() }}
+      #   uses: mxschmitt/action-tmate@v3.1
