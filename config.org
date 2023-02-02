@@ -13400,3 +13400,74 @@ Of course, there's an Emacs mode for this.
         :n "TAB" #'beancount-align-to-previous-number
         :i "RET" (cmd! (newline-and-indent) (beancount-align-to-previous-number))))
 #+end_src
+
+** GIMP Palette files
+#+call: confpkg("gimp-palette")
+
+I like using colour schemes with Inkscape, and it uses "GIMP Palette" colour
+scheme definition files. It's easy to edit them by hand, by often a bit annoying
+as you need to keep the RGB code and hex representation in sync. Let's make that
+a little easier by writing a little major mode for it.
+
+#+begin_src emacs-lisp
+(define-derived-mode gimp-palette-mode fundamental-mode "GIMP Palette"
+  "A major mode for GIMP Palette (.gpl) files that keeps RGB and Hex colors in sync."
+  (when (require 'rainbow-mode)
+    (rainbow-mode 1))
+  (when (bound-and-true-p hl-line-mode)
+    (hl-line-mode -1))
+  (add-hook 'after-change-functions #'gimp-palette--update-region nil t))
+
+(defun gimp-palette--update-region (beg end _)
+  "Update each line between BEG and END with `gimp-palette-update-line'."
+  (let ((marker (prepare-change-group)))
+    (unwind-protect
+        (save-excursion
+          (goto-char beg)
+          (while (< (point) end)
+            (gimp-palette-update-line)
+            (forward-line 1)))
+      (undo-amalgamate-change-group marker))))
+
+(defun gimp-palette-update-line ()
+  "Update the RGB and Hex colour codes on the current line.
+Whichever `point' is currently on is taken as the source of truth."
+  (interactive)
+  (let ((column (current-column))
+        (ipoint (point)))
+    (beginning-of-line)
+    (when (and (re-search-forward "\\=\\([0-9 ]*\\)\\(#[0-9A-Fa-f]\\{6\\}\\)" nil t)
+               (<= column (length (match-string 0))))
+      (cond
+       ((>= column (length (match-string 1))) ; Point in #HEX
+        (cl-destructuring-bind (r g b) (color-name-to-rgb (match-string 2))
+          (replace-match
+           (format "%3d %3d %3d "
+                   (round (* 255 r))
+                   (round (* 255 g))
+                   (round (* 255 b)))
+           nil t nil 1)))
+       ((string-match-p "\\`[0-9]+ +[0-9]+ +[0-9]+\\'" (match-string 1)) ; Valid R G B
+        (cl-destructuring-bind (r g b)
+            (mapcar #'string-to-number
+                    (save-match-data
+                      (split-string (match-string 1) " +" t)))
+          (replace-match
+           (format "%3d %3d %3d " r g b)
+           nil t nil 1)
+          (replace-match
+           (color-rgb-to-hex (/ r 255.0) (/ g 255.0) (/ b 255.0) 2)
+           nil t nil 2)))))
+    (goto-char ipoint)))
+
+(defun gimp-palette-update-buffer ()
+  "Apply `gimp-palette-update-line' to every line of the buffer."
+  (interactive)
+  (save-excursion
+    (goto-char (point-min))
+    (while (not (eobp))
+      (gimp-palette-update-line)
+      (forward-line 1))))
+
+(add-to-list 'magic-mode-alist (cons "\\`GIMP Palette\n" #'gimp-palette-mode))
+#+end_src
