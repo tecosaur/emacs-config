@@ -13402,12 +13402,23 @@ Of course, there's an Emacs mode for this.
 #+end_src
 
 ** GIMP Palette files
+
 #+call: confpkg("gimp-palette")
 
 I like using colour schemes with Inkscape, and it uses "GIMP Palette" colour
-scheme definition files. It's easy to edit them by hand, by often a bit annoying
+scheme definition files. It's easy to edit them by hand, but often a bit annoying
 as you need to keep the RGB code and hex representation in sync. Let's make that
 a little easier by writing a little major mode for it.
+
+The major mode doesn't need to do much, just try to turn ~rainbow-mode~ on for
+ pretty hex colours, turn off ~hl-line-mode~ (if required) so the =hl-line= face
+ doesn't overshadow them, and then the most crucial part: syncing the RGB/hex
+ colour specifications on every buffer modification.
+
+To catch all relevant modifications, but not trigger more frequently than needed
+(as would happen if using ~post-command-hook~, for example),
+~after-change-functions~ is the perfect option. We can make a buffer-local
+addition that will sync all colours in the modified region.
 
 #+begin_src emacs-lisp
 (define-derived-mode gimp-palette-mode fundamental-mode "GIMP Palette"
@@ -13416,10 +13427,23 @@ a little easier by writing a little major mode for it.
     (rainbow-mode 1))
   (when (bound-and-true-p hl-line-mode)
     (hl-line-mode -1))
-  (add-hook 'after-change-functions #'gimp-palette--update-region nil t))
+  (add-hook 'after-change-functions #'gimp-palette-update-region nil t))
+#+end_src
 
-(defun gimp-palette--update-region (beg end _)
-  "Update each line between BEG and END with `gimp-palette-update-line'."
+Now we need to implement the ~gimp-palette-update-region~ function. If we plan on
+implementing a per-line update function, this is simply a matter of calling it
+on each line with a few quality of life improvements:
++ Batching all the changes into a single undo step (via ~undo-amalgamate-change-group~)
++ Working interactively with a selected region, or the whole buffer.
+
+#+begin_src emacs-lisp
+(defun gimp-palette-update-region (beg end &optional _)
+  "Update each line between BEG and END with `gimp-palette-update-line'.
+If run interactively without a region set, the whole buffer is affected."
+  (interactive
+   (if (region-active-p)
+       (list (region-beginning) (region-end))
+     (list (point-min) (point-max))))
   (let ((marker (prepare-change-group)))
     (unwind-protect
         (save-excursion
@@ -13428,7 +13452,18 @@ a little easier by writing a little major mode for it.
             (gimp-palette-update-line)
             (forward-line 1)))
       (undo-amalgamate-change-group marker))))
+#+end_src
 
+Now we need to implement the per-line update function. This won't be a
+particularly short function, but it isn't complicated either. It should work as
+follows:
+1. Check to see whether the line starts with =R G B #HEX= 
+2. Check that ~point~ is within the RGB/hex part of the linen
+3. If on the hex part, parse the hex string and update the RGB to match
+   (inserting the RGB component if it does not already exist)
+4. If on the RGB part, update the hex part to match
+
+#+begin_src emacs-lisp
 (defun gimp-palette-update-line ()
   "Update the RGB and Hex colour codes on the current line.
 Whichever `point' is currently on is taken as the source of truth."
@@ -13459,15 +13494,14 @@ Whichever `point' is currently on is taken as the source of truth."
            (color-rgb-to-hex (/ r 255.0) (/ g 255.0) (/ b 255.0) 2)
            nil t nil 2)))))
     (goto-char ipoint)))
+#+end_src
+   
+The last thing that's needed to make this functionality convenient is to have it
+automatically activate when appropriate. GIMP palette files re-use the =.gpl=
+extension, so ~auto-mode-alist~ isn't a good choice, but we can use the
+~magic-mode-alist~ to use this mode in any file that begins with =GIMP Palette=,
+which is perfect for our needs.
 
-(defun gimp-palette-update-buffer ()
-  "Apply `gimp-palette-update-line' to every line of the buffer."
-  (interactive)
-  (save-excursion
-    (goto-char (point-min))
-    (while (not (eobp))
-      (gimp-palette-update-line)
-      (forward-line 1))))
-
+#+begin_src emacs-lisp
 (add-to-list 'magic-mode-alist (cons "\\`GIMP Palette\n" #'gimp-palette-mode))
 #+end_src
