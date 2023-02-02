@@ -797,7 +797,9 @@ tempbuffer. We can call this with the finalising step.
                (cadr (assoc "AUTHOR" keywords))
                (cadr (assoc "EMAIL" keywords))
                (format-time-string "%FT%T%z")
-               (expand-file-name "subconf/")))
+               (replace-regexp-in-string
+                (regexp-quote (getenv "HOME")) "~"
+                (expand-file-name "subconf/"))))
       (mapc
        (lambda (confpkg)
          (insert
