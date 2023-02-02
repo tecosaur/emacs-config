@@ -564,7 +564,8 @@ created earlier.
                 :file confpkg-file
                 :after after
                 :pre pre
-                :via (intern via))
+                :via (intern via)
+                :package-statements nil)
           confpkg--list)
     (format-spec
      "#+begin_src emacs-lisp :tangle %f :mkdirp yes :noweb no-export :noweb-ref none :comments no
@@ -730,7 +731,8 @@ It's easy enough to set ~package!~ statements to tangle to =packages.el=, howeve
 with our noweb ref approach they will /also/ go to the config files. This could be
 viewed as a problem, but I actually think it's rather nice to have the package
 information with the config. So, we can look for an immediate ~package!~ statement
-and simply comment it out.
+and simply comment it out. As a bonus, we can also then record which packages
+are needed for each block of config.
 
 #+name: confpkg-strip-package-statements
 #+begin_src emacs-lisp
@@ -740,7 +742,10 @@ and simply comment it out.
       (setq buffer-file-name (plist-get confpkg :file))
       (insert-file-contents buffer-file-name)
       (goto-char (point-min))
-      (while (re-search-forward "^;;; Code:\n[[:space:]\n]*(\\(package!\\|unpin!\\) " nil t)
+      (while (re-search-forward "^;;; Code:\n[[:space:]\n]*(\\(package!\\|unpin!\\)[[:space:]\n]+\\([^[:space:]]+\\)\\b" nil t)
+        (plist-put confpkg :package-statements
+                   (nconc (plist-get confpkg :package-statements)
+                          (list (match-string 2))))
         (let* ((start (progn (beginning-of-line) (point)))
                (end (progn (forward-sexp 1)
                            (if (looking-at "[\t ]*;.*")
