@@ -9648,6 +9648,7 @@ templates to be filled in by ~org-latex-default-packages-alist~ and
 \documentclass{article}
 [DEFAULT-PACKAGES]
 [PACKAGES]
+\usepackage{xcolor}
 #+end_src
 
 To this, we make two additions:
@@ -11076,37 +11077,18 @@ tests should be very versatile.
 (defvar org-latex-par-sep t
   "Vertically seperate paragraphs, and remove indentation.")
 
-(pushnew!
- org-export-conditional-features
- '("\\\\(\\|\\\\\\[\\|\\\\begin{\\(?:math\\|displaymath\\|equation\\|align\\|flalign\\|multiline\\|gather\\)[a-z]*\\*?}" . maths)
- '("cref:\\|\\cref{\\|\\[\\[[^\\]+\n?[^\\]\\]\\]" . cleveref)
- '("[;\\\\]?\\b[A-Z][A-Z]+s?[^A-Za-z]" . acronym)
- '("[\u2500-\u259F]" . box-drawing)
- '("\\+[^ ].*[^ ]\\+\\|_[^ ].*[^ ]_\\|\\\\uu?line\\|\\\\uwave\\|\\\\sout\\|\\\\xout\\|\\\\dashuline\\|\\dotuline\\|\\markoverwith" . underline)
- '(":float wrap" . float-wrap)
- '(":float sideways" . rotate)
- '("^[ \t]*#\\+caption:\\|\\\\caption" . caption)
- '("\\[\\[xkcd:" . (image caption))
- '(org-latex-use-microtype . microtype)
- (cons (lambda (_info) (and org-latex-italic-quotes "^[ \t]*#\\+begin_quote\\|\\\\begin{quote}")) 'italic-quotes)
- '(org-latex-par-sep . par-sep)
- '(org-latex-embed-files . embed-files)
- (cons (lambda (_info) (and org-latex-embed-files "^[ \t]*#\\+embed\\|^[ \t]*#\\+begin_src\\|^[ \t]*#\\+BEGIN_SRC")) 'embed-tangled)
- '("^[ \t]*\\(?:[-+*]\\|[0-9]+[.)]\\|[A-Za-z]+[.)]\\) \\[[ -X]\\]" . checkbox)
- '("^[ \t]*#\\+begin_warning\\|\\\\begin{warning}" . box-warning)
- '("^[ \t]*#\\+begin_info\\|\\\\begin{info}"       . box-info)
- '("^[ \t]*#\\+begin_notes\\|\\\\begin{notes}"     . box-notes)
- '("^[ \t]*#\\+begin_success\\|\\\\begin{success}" . box-success)
- '("^[ \t]*#\\+begin_error\\|\\\\begin{error}"     . box-error))
+(org-export-update-features 'latex
+  ((image caption)
+   :condition "\\[\\[xkcd:"))
 #+end_src
 
-Then we provide a way to generate the preamble that provides those features.
-In addition to the features named in ~org-latex-conditional-features~ we'll also
-create /meta-features/, which can be required by other features (with =:requires=),
-or be active by default (=:eager t=). For further control I some features may only
-be used when certain other features are active (with =:when=), and masked by other
-features (with =:prevents=). I will use the convention of starting meta-features
-with =.=, and =:eager= features with =!= to make their nature more readily apparent.
+Then we provide a way to generate the preamble that provides those features. In
+addition to the features named in ~org-latex-conditional-features~ we'll also
+create /meta-features/, which can be required by other features (with =:requires=).
+For further control I some features may only be used when certain other features
+are active (with =:when=), and masked by other features (with =:prevents=). I will
+use the convention of starting meta-features with =.=, to make their nature more
+readily apparent.
 
 Another consideration in LaTeX is load order, which matters in some cases.
 Beyond that, it's nice to have some sort of sensible ordering. For this I'll
@@ -11127,53 +11109,96 @@ introduce an =:order= keyword. Using this I'll arrange snippets as follows.
 + =4= Fancy boxes
 
 #+begin_src emacs-lisp
-(pushnew!
- org-latex-feature-implementations
- '(image         :snippet "\\usepackage{graphicx}" :order 2)
- '(svg           :snippet "\\usepackage[inkscapelatex=false]{svg}" :order 2)
- '(table         :snippet "\\usepackage{longtable}\n\\usepackage{booktabs}" :order 2)
- '(maths         :snippet org-latex-maths-preamble :order 0.2)
- '(cleveref      :snippet "\\usepackage[capitalize]{cleveref}" :order 1) ; after bmc-maths
- '(float-wrap    :snippet "\\usepackage{wrapfig}" :order 2)
- '(rotate        :snippet "\\usepackage{rotating}" :order 2)
- '(caption       :snippet org-latex-caption-preamble :order 2.1)
- '(microtype     :snippet "\\usepackage[activate={true,nocompatibility},final,tracking=true,kerning=true,spacing=true,factor=2000]{microtype}\n" :order 0.1)
- '(embed-files   :snippet org-latex-embed-files-preamble :order -2)
- `(embed-tangled :requires embed-files :snippet ,(lambda (_info) (concat (org-latex-embed-extra-files) "\n")) :order -1)
- '(acronym       :snippet "\\newcommand{\\acr}[1]{\\protect\\textls*[110]{\\scshape #1}}\n\\newcommand{\\acrs}{\\protect\\scalebox{.91}[.84]{\\hspace{0.15ex}s}}" :order 0.4)
- '(box-drawing   :snippet "\\usepackage{pmboxdraw}" :order 0.05)
- '(italic-quotes :snippet "\\renewcommand{\\quote}{\\list{}{\\rightmargin\\leftmargin}\\item\\relax\\em}\n" :order 0.5)
- '(par-sep       :snippet "\\setlength{\\parskip}{\\baselineskip}\n\\setlength{\\parindent}{0pt}\n" :order 0.5)
- '(.pifont       :snippet "\\usepackage{pifont}")
- '(.xcoffins     :snippet "\\usepackage{xcoffins}")
- `(checkbox      :requires .pifont :order 3
-   :snippet ,(lambda (_info)
-               (concat (unless (memq 'maths features)
-                         "\\usepackage{amssymb} % provides \\square")
-                       org-latex-checkbox-preamble)))
- '(.fancy-box    :requires (.pifont .xcoffins) :snippet org-latex-box-preamble :order 3.9)
- '(box-warning   :requires .fancy-box :snippet "\\defsimplebox{warning}{e66100}{Warning}" :order 4)
- '(box-info      :requires .fancy-box :snippet "\\defsimplebox{info}{3584e4}{Information}" :order 4)
- '(box-notes     :requires .fancy-box :snippet "\\defsimplebox{notes}{26a269}{Notes}" :order 4)
- '(box-success   :requires .fancy-box :snippet "\\defsimplebox{success}{26a269}{\\vspace{-\\baselineskip}}" :order 4)
- '(box-error     :requires .fancy-box :snippet "\\defsimplebox{error}{c01c28}{Important}" :order 4))
+(org-export-update-features 'latex
+  (maths
+   :snippet org-latex-maths-preamble
+   :order 0.2)
+  (cleveref
+   :condition "cref:\\|\\cref{\\|\\[\\[[^\\]+\n?[^\\]\\]\\]"
+   :snippet "\\usepackage[capitalize]{cleveref}"
+   :order 1)
+  (caption
+   :snippet org-latex-caption-preamble
+   :order 2.1)
+  (microtype
+   :condition org-latex-use-microtype
+   :snippet "\\usepackage[activate={true,nocompatibility},final,tracking=true,kerning=true,spacing=true,factor=2000]{microtype}\n"
+   :order 0.1)
+  (embed-files
+   :condition org-latex-embed-files
+   :snippet org-latex-embed-files-preamble
+   :order -2)
+  (embed-tangled
+   :condition (and org-latex-embed-files
+                   "^[ \t]*#\\+embed\\|^[ \t]*#\\+begin_src\\|^[ \t]*#\\+BEGIN_SRC")
+   :requires embed-files
+   :snippet org-latex-embed-extra-files
+   :order -1)
+  (acronym
+   :condition "[;\\\\]?\\b[A-Z][A-Z]+s?[^A-Za-z]"
+   :snippet "\\newcommand{\\acr}[1]{\\protect\\textls*[110]{\\scshape #1}}\n\\newcommand{\\acrs}{\\protect\\scalebox{.91}[.84]{\\hspace{0.15ex}s}}"
+   :order 0.4)
+  (box-drawing
+   :condition "[\u2500-\u259F]"
+   :snippet "\\usepackage{pmboxdraw}"
+   :order 0.05)
+  (italic-quotes
+   :condition (and org-latex-italic-quotes "^[ \t]*#\\+begin_quote\\|\\\\begin{quote}")
+   :snippet "\\renewcommand{\\quote}{\\list{}{\\rightmargin\\leftmargin}\\item\\relax\\em}\n"
+   :order 0.5)
+  (par-sep
+   :condition org-latex-par-sep
+   :snippet "\\setlength{\\parskip}{\\baselineskip}\n\\setlength{\\parindent}{0pt}\n"
+   :order 0.5)
+  (.pifont
+   :snippet "\\usepackage{pifont}")
+  (.xcoffins
+   :snippet "\\usepackage{xcoffins}")
+  (checkbox
+   :condition "^[ \t]*\\(?:[-+*]\\|[0-9]+[.)]\\|[A-Za-z]+[.)]\\) \\[[ -X]\\]"
+   :requires .pifont
+   :snippet (concat (unless (memq 'maths features)
+                      "\\usepackage{amssymb} % provides \\square")
+                    org-latex-checkbox-preamble)
+   :order 3)
+  (.fancy-box
+   :requires (.pifont .xcoffins)
+   :snippet org-latex-box-preamble
+   :order 3.9)
+  (box-warning
+   :condition "^[ \t]*#\\+begin_warning\\|\\\\begin{warning}"
+   :requires .fancy-box
+   :snippet "\\defsimplebox{warning}{e66100}{Warning}"
+   :order 4)
+  (box-info
+   :condition "^[ \t]*#\\+begin_info\\|\\\\begin{info}"
+   :requires .fancy-box
+   :snippet "\\defsimplebox{info}{3584e4}{Information}"
+   :order 4)
+  (box-notes
+   :condition "^[ \t]*#\\+begin_notes\\|\\\\begin{notes}"
+   :requires .fancy-box
+   :snippet "\\defsimplebox{notes}{26a269}{Notes}"
+   :order 4)
+  (box-success
+   :condition "^[ \t]*#\\+begin_success\\|\\\\begin{success}"
+   :requires .fancy-box
+   :snippet "\\defsimplebox{success}{26a269}{\\vspace{-\\baselineskip}}"
+   :order 4)
+  (box-error
+   :condition "^[ \t]*#\\+begin_error\\|\\\\begin{error}"
+   :requires .fancy-box
+   :snippet "\\defsimplebox{error}{c01c28}{Important}"
+   :order 4))
 #+end_src
 
-***** Reduce default packages
+***** Adding xcolor as an unconditional package
 
-Thanks to our additions, we can remove a few packages from
-~org-latex-default-packages-alist~.
-
-There are also some obsolete entries in the default value, specifically
-+ =grffile='s capabilities are built into the current version of =graphicx=
-+ =textcomp='s functionality has been included in LaTeX's core for a while now
+=xcolor= is just convenient to have.
 
 #+begin_src emacs-lisp
-(setq org-latex-default-packages-alist
-      '(("AUTO" "inputenc" t ("pdflatex"))
-        ("T1" "fontenc" t ("pdflatex"))
-        ("" "xcolor" t) ; Generally useful
-        ("" "hyperref" nil)))
+(setq org-latex-packages-alist
+      '(("" "xcolor" t)))
 #+end_src
 
 **** Font collections
@@ -11248,9 +11273,16 @@ Now that all the functionality has been implemented, we should hook it into our
 preamble generation.
 
 #+begin_src emacs-lisp
-(add-to-list 'org-export-conditional-features '(org-latex-default-fontset . custom-font) t)
-(add-to-list 'org-latex-feature-implementations (list 'custom-font :snippet (lambda (_info) (org-latex-fontset :serif :sans :mono)) :order 0) t)
-(add-to-list 'org-latex-feature-implementations (list '.custom-maths-font :eager t :when '(custom-font maths) :snippet (lambda (_info) (org-latex-fontset :maths)) :order 0.3) t)
+(org-export-update-features 'latex
+  (custom-font
+   :condition org-latex-default-fontset
+   :snippet (org-latex-fontset :serif :sans :mono)
+   :order 0)
+  (custom-maths-font
+   :condition t
+   :when (custom-font maths)
+   :snippet (org-latex-fontset :maths)
+   :order 0.3))
 #+end_src
 
 Finally, we just need to add some fonts.
@@ -11309,21 +11341,30 @@ When we're using Alegreya we can apply a lovely little tweak to =tabular= which
 (locally) changes the figures used to lining fixed-width.
 
 #+begin_src emacs-lisp
-(add-to-list 'org-export-conditional-features (list (lambda (_info) (string= (car (org-latex-fontset-entry)) "alegreya")) 'alegreya-typeface))
-(add-to-list 'org-latex-feature-implementations '(alegreya-typeface) t)
-(add-to-list 'org-latex-feature-implementations'(.alegreya-tabular-figures :eager t :when (alegreya-typeface table) :order 0.5 :snippet "
+(org-export-update-features 'latex
+  (alegreya-typeface
+   :condition (string= (car (org-latex-fontset-entry)) "alegreya")
+   :snippet nil)
+  (alegreya-tabular-figures
+   :condition t
+   :when (alegreya-typeface table)
+   :snippet "\
 \\makeatletter
 % tabular lining figures in tables
 \\renewcommand{\\tabular}{\\AlegreyaTLF\\let\\@halignto\\@empty\\@tabular}
-\\makeatother\n") t)
+\\makeatother"
+   :order 0.5))
 #+end_src
 
 Due to Alegreya's metrics, the =\LaTeX= symbol doesn't quite look right. We
 can correct for this by redefining it with subtlety shifted kerning.
 
 #+begin_src emacs-lisp
-(add-to-list 'org-export-conditional-features '("LaTeX" . latex-symbol))
-(add-to-list 'org-latex-feature-implementations '(latex-symbol :when alegreya-typeface :order 0.5 :snippet "
+(org-export-update-features 'latex
+  (alegreya-latex-symbol
+    :condition "LaTeX"
+    :when alegreya-typeface
+    :snippet "\
 \\makeatletter
 % Kerning around the A needs adjusting
 \\DeclareRobustCommand{\\LaTeX}{L\\kern-.24em%
@@ -11336,7 +11377,8 @@ can correct for this by redefining it with subtlety shifted kerning.
         }%
         \\kern-.10em%
         \\TeX}
-\\makeatother\n") t)
+\\makeatother"
+    :order 0.5))
 #+end_src
 
 **** Maths notation conveniences
@@ -11648,8 +11690,11 @@ This condition is applied when cover page option is set to auto.")
   (when (org-latex-cover-page-p)
     (setf info (plist-put info :latex-subtitle-format org-latex-subtitle-coverpage-format))))
 
-(add-to-list 'org-latex-feature-implementations '(cover-page :snippet org-latex-cover-page-maketitle :order 9) t)
-(add-to-list 'org-export-conditional-features (cons (lambda (_info) (org-latex-cover-page-p)) 'cover-page) t)
+(org-export-update-features 'latex
+  (cover-page
+   :condition (org-latex-cover-page-p)
+   :snippet org-latex-cover-page-maketitle
+   :order 9))
 #+end_src
 
 **** Condensed lists
@@ -11675,8 +11720,11 @@ Then we can just hook this in with our clever preamble.
   <<grab("latex-condense-lists")>>
   "LaTeX preamble snippet that reduces the space between list items.")
 
-(add-to-list 'org-export-conditional-features (cons (lambda (_info) (and org-latex-condense-lists "^[ \t]*[-+]\\|^[ \t]*[1Aa][.)] ")) 'condensed-lists) t)
-(add-to-list 'org-latex-feature-implementations '(condensed-lists :snippet org-latex-condensed-lists :order 0.7) t)
+(org-export-update-features 'latex
+  (condensed-lists
+   :condition (and org-latex-condense-lists "^[ \t]*[-+]\\|^[ \t]*[1Aa][.)] ")
+   :snippet org-latex-condensed-lists
+   :order 0.7))
 #+end_src
 
 **** Pretty code blocks
@@ -11705,13 +11753,12 @@ environments. Protrusion is not desirable here. Thankfully, we can patch the
 =Verbatim= environment to turn off protrusion locally.
 
 #+begin_src emacs-lisp
-(add-to-list
- 'org-latex-feature-implementations
- '(.no-protrusion-in-code
-   :snippet "\\ifcsname Code\\endcsname\n  \\let\\oldcode\\Code\\renewcommand{\\Code}{\\microtypesetup{protrusion=false}\\oldcode}\n\\fi"
+(org-export-update-features 'latex
+  (no-protrusion-in-code
+   :condition t
    :when microtype
-   :eager t
-   :order 98.5) t)
+   :snippet "\\ifcsname Code\\endcsname\n  \\let\\oldcode\\Code\\renewcommand{\\Code}{\\microtypesetup{protrusion=false}\\oldcode}\n\\fi"
+   :order 98.5))
 #+end_src
 
 At some point it would be nice to make the box colours easily customisable. At
@@ -11798,11 +11845,23 @@ Now all that remains is to hook this into the preamble generation.
   <<grab("julia-mono-fontspec")>>
   "LaTeX preamble snippet that sets LuaLaTeX's fontspec to use Julia Mono.")
 
-(add-to-list 'org-latex-feature-implementations '(julia-code :when code :snippet org-latex-julia-mono-fontspec :order 0) t)
-(add-to-list 'org-export-conditional-features '("^[ \t]*#\\+begin_src julia\\|^[ \t]*#\\+BEGIN_SRC julia\\|src_julia" . julia-code) t)
-
-(add-to-list 'org-latex-feature-implementations '(.microtype-lualatex :eager t :when (microtype julia-code) :prevents microtype :order 0.1 :snippet "\\usepackage[activate={true,nocompatibility},final,tracking=true,factor=2000]{microtype}\n"))
-(add-to-list 'org-latex-feature-implementations (list '.custom-font-no-mono :eager t :prevents 'custom-font :order 0 :snippet (lambda (_info) (org-latex-fontset :serif :sans))) t)
+(org-export-update-features 'latex
+  (julia-code
+   :condition "^[ \t]*#\\+begin_src julia\\|^[ \t]*#\\+BEGIN_SRC julia\\|src_julia"
+   :when code
+   :snippet org-latex-julia-mono-fontspec
+   :order 0)
+  (microtype-lualatex
+   :condition t
+   :when (microtype julia-code)
+   :prevents microtype
+   :snippet "\\usepackage[activate={true,nocompatibility},final,tracking=true,factor=2000]{microtype}\n"
+   :order 0.1)
+  (custom-font-no-mono
+   :condition t
+   :prevents custom-font
+   :snippet (org-latex-fontset :serif :sans)
+   :order 0))
 #+end_src
 
 **** Emojis
@@ -11997,16 +12056,14 @@ If SVG-P is set \"includegraphics\" will be replaced with \"includesvg\"."
       "\n")
      "\n")))
 
-(add-to-list 'org-export-conditional-features
-             (cons (lambda (_info)
-                     (save-excursion
-                       (goto-char (point-min))
-                       (re-search-forward org-latex-emoji--rx nil t)))
-                   'emoji)
-             t)
-
-(add-to-list 'org-latex-feature-implementations
-             (list 'emoji :requires 'image :snippet #'org-latex-emoji-setup :order 3))
+(org-export-update-features 'latex
+  (emoji
+   :condition (save-excursion
+                (goto-char (point-min))
+                (re-search-forward org-latex-emoji--rx nil t))
+   :requires image
+   :snippet org-latex-emoji-setup
+   :order 3))
 #+end_src
 
 Unfortunately this isn't a global solution, as LuaLaTeX doesn't have
@@ -12014,17 +12071,16 @@ Unfortunately this isn't a global solution, as LuaLaTeX doesn't have
 when we know it will be used.
 
 #+begin_src emacs-lisp
-(add-to-list 'org-latex-feature-implementations
-             '(.emoji-lualatex-hack
-               :when (emoji julia-code) ; LuaLaTeX is used with julia-code.
-               :eager t
-               :snippet
-               "\
-\\usepackage{newunicodechar}
+(org-export-update-features 'latex
+  (emoji-lualatex-hack
+   :condition t
+   :when (emoji julia-code) ; LuaLaTeX is used with julia-code.
+   :snippet
+   "\\usepackage{newunicodechar}
 \\newcommand{\\DeclareUnicodeCharacter}[2]{%
     \\begingroup\\lccode`|=\\string\"#1\\relax
     \\lowercase{\\endgroup\\newunicodechar{|}}{#2}}"
-               :order 2.9))
+   :order 2.9))
 #+end_src
 
 This works fairly nicely, there's just one little QOL upgrade that we can
@@ -12506,25 +12562,26 @@ Now let's just apply this along with some extra beamer tweaks.
   (eq 'beamer (and (plist-get info :back-end)
                    (org-export-backend-name (plist-get info :back-end)))))
 
-(add-to-list 'org-export-conditional-features
-             '(org-beamer-p . beamer) t)
-(add-to-list 'org-latex-feature-implementations
-             '(beamer :requires .missing-koma :prevents (italic-quotes condensed-lists)) t)
-(add-to-list 'org-latex-feature-implementations
-             '(.missing-koma :snippet "\\usepackage{scrextend}" :order 2) t)
+(org-export-update-features 'beamer
+  (beamer-setup
+   :condition t
+   :requires .missing-koma
+   :prevents (italic-quotes condensed-lists cover-page)))
+
+(org-export-update-features 'latex
+  (.missing-koma
+   :snippet "\\usepackage{scrextend}"
+   :order 2))
 
 (defvar org-beamer-metropolis-tweaks
   <<grab("beamer-metropolis-tweaks")>>
   "LaTeX preamble snippet that tweaks the Beamer metropolis theme styling.")
 
-(add-to-list 'org-export-conditional-features
-             (cons (lambda (info)
-                     (and (org-beamer-p info)
-                          (string-match-p "metropolis$" org-beamer-theme)))
-                   'beamer-metropolis)
-             t)
-(add-to-list 'org-latex-feature-implementations
-             '(beamer-metropolis :requires beamer :snippet org-beamer-metropolis-tweaks :order 3) t)
+(org-export-update-features 'beamer
+  (beamer-metropolis
+   :condition (string-match-p "metropolis$" (plist-get info :beamer-theme))
+   :snippet org-beamer-metropolis-tweaks
+   :order 3))
 #+end_src
 
 And I think that it's natural to divide a presentation into sections, e.g.
