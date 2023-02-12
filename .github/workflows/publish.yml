@@ -59,8 +59,11 @@ jobs:
         if: github.event_name != 'schedule' || steps.doomcache.outputs.cache-hit != 'true'
         run: runner '~/.config/emacs/bin/doom sync'
 
+      - name: Pull latest (dev) org-mode
+        if: steps.doomcache.outputs.cache-hit == 'true'
+        run: runner 'rm -r ~/.config/emacs/.local/straight/build-*/org/ && pushd ~/.config/emacs/.local/straight/repos/org/ && git fetch tecosaur dev && git reset --hard tecosaur/dev && popd'
+
       - name: Rebuild changed packages
-        if: github.event_name != 'schedule' || steps.doomcache.outputs.cache-hit != 'true'
         run: runner '~/.config/emacs/bin/doom build -r'
 
       - name: Ensure emoji vector graphics exist
