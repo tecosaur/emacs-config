@@ -43,3 +43,6 @@
 [submodule "simple-comment-markup"]
 	path = lisp/simple-comment-markup
 	url = https://git.tecosaur.net/tec/simple-comment-markup.git
+[submodule "conf-data-toml"]
+	path = lisp/conf-data-toml
+	url = https://github.com/tecosaur/conf-data-toml.git

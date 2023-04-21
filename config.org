@@ -13370,6 +13370,24 @@ Julia is also missing a mime type, but that's not too hard to fix.
 update-mime-database ~/.local/share/mime
 #+end_src
 
+** Data.toml files
+
+#+call: confpkg("conf-data-toml")
+
+For =DataToolkit.jl=-formatted TOML files, I've made a major mode.
+
+#+begin_src emacs-lisp :tangle packages.el
+(package! conf-data-toml :recipe (:local-repo "lisp/conf-data-toml"))
+#+end_src
+
+Since the major mode is autoloaded, all we need to do is register an appropriate
+magic command for it to be used in =Data.toml= files.
+
+#+begin_src emacs-lisp
+(use-package! conf-data-toml
+  :magic ("\\`data_config_version = [0-9]" . conf-data-toml-mode))
+#+end_src
+
 ** Graphviz
 
 #+call: confpkg("!Pkg graphviz-dot-mode")
