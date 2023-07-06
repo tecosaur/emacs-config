@@ -1,48 +1,48 @@
 [submodule "LaTeX-auto-activiating-snippets"]
 	path = lisp/LaTeX-auto-activating-snippets
-	url = https://github.com/tecosaur/LaTeX-auto-activating-snippets.git
+	url = https://git.tecosaur.net/tec/LaTeX-auto-activating-snippets.git
 [submodule "Lexic"]
 	path = lisp/lexic
-	url = https://github.com/tecosaur/sdcv.git
+	url = https://git.tecosaur.net/tec/sdcv.git
 [submodule "org-pandoc-import"]
 	path = lisp/org-pandoc-import
-	url = https://github.com/tecosaur/org-pandoc-import.git
+	url = https://git.tecosaur.net/tec/org-pandoc-import.git
 [submodule "authinfo-color-mode"]
 	path = lisp/authinfo-color-mode
-	url = https://github.com/tecosaur/authinfo-color-mode.git
+	url = https://git.tecosaur.net/tec/authinfo-color-mode.git
 [submodule "screenshot"]
 	path = lisp/screenshot
-	url = https://github.com/tecosaur/screenshot.git
+	url = https://git.tecosaur.net/tec/screenshot.el.git
 [submodule "engrave-faces"]
 	path = lisp/engrave-faces
-	url = https://github.com/tecosaur/engrave-faces.git
+	url = https://git.tecosaur.net/tec/engrave-faces.git
 [submodule "emacs-everywhere"]
 	path = lisp/emacs-everywhere
-	url = https://github.com/tecosaur/emacs-everywhere.git
+	url = https://git.tecosaur.net/tec/emacs-everywhere.git
 [submodule "ox-chameleon"]
 	path = lisp/ox-chameleon
-	url = https://github.com/tecosaur/ox-chameleon.git
+	url = https://git.tecosaur.net/tec/ox-chameleon.git
 [submodule "pdftotext"]
 	path = lisp/pdftotext
-	url = https://github.com/tecosaur/pdftotext.el.git
+	url = https://git.tecosaur.net/tec/pdftotext.el.git
 [submodule "orgdiff"]
 	path = lisp/orgdiff
-	url = https://github.com/tecosaur/orgdiff.git
+	url = https://git.tecosaur.net/tec/orgdiff.git
 [submodule "org-music"]
 	path = lisp/org-music
-	url = https://github.com/tecosaur/org-music.git
+	url = https://git.tecosaur.net/tec/org-music.git
 [submodule "ob-julia"]
 	path = lisp/ob-julia
 	url = https://github.com/nico202/ob-julia.git
 [submodule "org-glossary"]
 	path = lisp/org-glossary
-	url = https://github.com/tecosaur/org-glossary.git
+	url = https://git.tecosaur.net/tec/org-glossary.git
 [submodule "ox-pluto"]
 	path = lisp/ox-pluto
-	url = https://github.com/tecosaur/ox-pluto.git
+	url = https://git.tecosaur.net/tec/ox-pluto.git
 [submodule "simple-comment-markup"]
 	path = lisp/simple-comment-markup
 	url = https://git.tecosaur.net/tec/simple-comment-markup.git
 [submodule "conf-data-toml"]
 	path = lisp/conf-data-toml
-	url = https://github.com/tecosaur/conf-data-toml.git
+	url = https://git.tecosaur.net/tec/conf-data-toml.git
