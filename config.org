@@ -1844,7 +1844,7 @@ Because we care about how things look let's add a check to make sure we're told
 if the system doesn't have any of those fonts.
 
 #+name: detect-missing-fonts
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp :tangle no :noweb-ref none
 (defvar required-fonts '("JetBrainsMono.*" "Overpass" "JuliaMono" "IBM Plex Mono" "Merriweather" "Alegreya"))
 
 (defvar available-fonts
