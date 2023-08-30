@@ -1368,11 +1368,28 @@ changes Doom makes:
 
 (display-time-mode 1)                             ; Enable time in the mode-line
 (global-subword-mode 1)                           ; Iterate through CamelCase words
+#+end_src
 
-(unless (string-match-p "^Power N/A" (battery))   ; On laptops...
-  (display-battery-mode 1))                       ; it's nice to know how much power you have
+When using a device with a battery, it would be nice to display battery
+ information. We can check for a battery during tangle via noweb, and only call
+ ~display-battery-mode~ when relevant. From a look at the various status functions
+ in =battery.el=, it seems like the ~?L~ key is consistently =N/A= when there is no
+ battery, so we'll test on that.
 
-(global-subword-mode 1)                           ; Iterate through CamelCase words
+#+name: battery-status-setup
+#+begin_src emacs-lisp :noweb-ref none
+(require 'battery)
+(if (and battery-status-function
+         (not (equal (alist-get ?L (funcall battery-status-function))
+                     "N/A")))
+    (prin1-to-string `(display-battery-mode 1))
+  "")
+#+end_src
+
+Now with noweb we' use the result.
+
+#+begin_src emacs-lisp :noweb no-export 
+<<battery-status-setup()>>
 #+end_src
 
 *** Frame sizing
