@@ -1886,10 +1886,39 @@ listing the missing fonts should appear for at least half a second.
 
 **** Theme
 
-~doom-one~ is nice and all, but I find the ~vibrant~ variant nicer.
+The ~doom-one~ theme is nice and all, but I find the ~vibrant~ variant nicer. With
+the light themes, I rather like ~doom-tomorrow-day~. I'd like to pick the default
+from them based on the system theme. We can detect this with a ~gdbus~ call, which
+is a Gnome CLI tool but often present on KDE systems for GTK support.
 
-#+begin_src emacs-lisp
-(setq doom-theme 'doom-vibrant)
+#+name: default-theme
+#+begin_src emacs-lisp :noweb-ref none
+(let ((light-theme 'doom-tomorrow-day)
+      (dark-theme 'doom-vibrant)
+      (system-light-p
+       (and
+        (executable-find "gdbus")
+        (string= "<<uint32 2>>"
+                 (with-temp-buffer
+                   (call-process "gdbus" nil t nil
+                                 "call" "--session"
+                                 "--timeout=1000"
+                                 "--dest=org.freedesktop.portal.Desktop"
+                                 "--object-path" "/org/freedesktop/portal/desktop"
+                                 "--method" "org.freedesktop.portal.Settings.Read"
+                                 "org.freedesktop.appearance" "color-scheme")
+                   (string-trim (buffer-string) "(" ",)\n"))))))
+  (if system-light-p light-theme dark-theme))
+#+end_src
+
+We'll use the appropriate theme as the default, but let's also accept the theme
+as an envvar for fun.
+
+#+begin_src emacs-lisp :noweb yes
+(setq doom-theme
+      (if (getenv "DOOM_THEME")
+          (intern (getenv "DOOM_THEME"))
+        '<<default-theme()>>))
 #+end_src
 
 Oh, and with the nice selection doom provides there's no reason for me to want
