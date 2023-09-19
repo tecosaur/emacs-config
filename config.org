@@ -1568,7 +1568,7 @@ I reckon enabling half the modules Doom provides should do it.
 doom                         ; what makes DOOM look the way it does
 doom-dashboard               ; a nifty splash screen for Emacs
 doom-quit                    ; DOOM quit-message prompts when you quit Emacs
-(emoji +unicode)             ; 🙂
+;; (emoji +unicode)          ; 🙂
 ;;fill-column                ; a `fill-column' indicator
 hl-todo                      ; highlight TODO/FIXME/NOTE/DEPRECATED/HACK/REVIEW
 ;;hydra                      ; quick documentation for related commands
@@ -1819,6 +1819,7 @@ near-minimal new config:
 
 *** Visual Settings
 **** Font Face
+***** Setting fonts
 
 'Fira Code' is nice, and 'Overpass' makes for a nice sans companion. We just need to
 fiddle with the font sizes a tad so that they visually match. Just for fun I'm
@@ -1830,6 +1831,7 @@ aspects are nice, but on others I prefer Fira.
       doom-big-font (font-spec :family "JetBrains Mono" :size 36)
       doom-variable-pitch-font (font-spec :family "Overpass" :size 26)
       doom-unicode-font (font-spec :family "JuliaMono")
+      doom-emoji-font (font-spec :family "Twitter Color Emoji") ; Just used by me
       doom-serif-font (font-spec :family "IBM Plex Mono" :size 22 :weight 'light))
 #+end_src
 
@@ -1840,12 +1842,95 @@ In addition to these fonts, Merriweather is used with =nov.el=, and Alegreya as 
 serifed proportional font used by =mixed-pitch-mode= for =writeroom-mode= with Org
 files.
 
+***** Emojis
+
+Lastly, it would be good to sort out emojis. All that's really needed here is to
+apply =doom-emoji-font=, which needs to be done here because it's not /actually/ a
+Doom font variable, but rather my own addition.
+
+#+begin_src emacs-lisp
+(add-hook! 'after-setting-font-hook
+  (defun +emoji-set-font ()
+    (set-fontset-font t 'emoji doom-emoji-font nil 'prepend)))
+
+#+end_src
+
+We might as well also construct a regexp to make identifying emojis if buffers
+more convenient.
+
+#+begin_src emacs-lisp
+(defvar +emoji-rx
+  (let (emojis)
+    (map-char-table
+     (lambda (char set)
+       (when (eq set 'emoji)
+         (push (copy-tree char) emojis)))
+     char-script-table)
+    (rx-to-string `(any ,@emojis)))
+  "A regexp to find all emoji-script characters.")
+#+end_src
+
+For the sake of convenient insertion, we'll also register some emoji aliases
+based on common usage.
+
+#+begin_src emacs-lisp
+(setq emoji-alternate-names
+      '(("🙂" ":)")
+        ("😄" ":D")
+        ("😉" ";)")
+        ("🙁" ":(")
+        ("😆" "laughing face" "xD")
+        ("🤣" "ROFL face")
+        ("😢" ":'(")
+        ("🥲" ":')")
+        ("😮" ":o")
+        ("😑" ":|")
+        ("😎" "cool face")
+        ("🤪" "goofy face")
+        ("🤥" "pinnochio face" "liar face")
+        ("😠" ">:(")
+        ("😡" "angry+ face")
+        ("🤬" "swearing face")
+        ("🤢" "sick face")
+        ("😈" "smiling imp")
+        ("👿" "frowning imp")
+        ("❤️" "<3")
+        ("🫡" "o7")
+        ("👍" "+1")
+        ("👎" "-1")
+        ("👈" "left")
+        ("👉" "right")
+        ("👆" "up")
+        ("💯" "100")
+        ("💸" "flying money")))
+#+end_src
+
+Lastly, when using Emacs 28+ it would be nice to open the nice emoji dispatch
+with the leader key as well as =C-x 8 e=. Since =SPC e= is unclaimed, let's just use
+that until we have a better use for it (we could also split up the insertion and
+querying commands in other parts of the map).
+
+#+begin_src emacs-lisp
+(when (>= emacs-major-version 29)
+  (map! :leader
+        (:prefix ("e" . "Emoji")
+         :desc "Search" "s" #'emoji-search
+         :desc "Recent" "r" #'emoji-recent
+         :desc "List" "l" #'emoji-list
+         :desc "Describe" "d" #'emoji-describe
+         :desc "Insert" "i" #'emoji-insert
+         :desc "Insert" "e" #'emoji-insert)))
+#+end_src
+
+***** Checking the system
+
 Because we care about how things look let's add a check to make sure we're told
 if the system doesn't have any of those fonts.
 
 #+name: detect-missing-fonts
 #+begin_src emacs-lisp :tangle no :noweb-ref none
-(defvar required-fonts '("JetBrainsMono.*" "Overpass" "JuliaMono" "IBM Plex Mono" "Merriweather" "Alegreya"))
+(defvar required-fonts '("JetBrainsMono.*" "Overpass" "JuliaMono" "IBM Plex Mono"
+                         "Merriweather" "Alegreya" "Twitter Color Emoji"))
 
 (defvar available-fonts
   (delete-dups (or (font-family-list)
@@ -4162,78 +4247,6 @@ situations decently.
   :hook (prog-mode . simple-comment-markup-mode)
   :config
   (setq simple-comment-markup-set '(org markdown-code)))
-#+end_src
-
-*** Emojify
-
-#+call: confpkg("!Pkg emojify")
-
-#+begin_quote
-From the =:ui emoji= module.
-#+end_quote
-
-
-For starters, twitter's emojis look nicer than emoji-one.
-Other than that, this is pretty great OOTB 😀.
-
-#+begin_src emacs-lisp
-(setq emojify-emoji-set "twemoji-v2")
-#+end_src
-
-One minor annoyance is the use of emojis over the default character
-when the default is actually preferred. This occurs with overlay symbols I use
-in Org mode, such as checkbox state, and a few other miscellaneous cases.
-
-We can accommodate our preferences by deleting those entries from the emoji hash
-table
-
-#+begin_src emacs-lisp
-(defvar emojify-disabled-emojis
-  '(;; Org
-    "◼" "☑" "☸" "⚙" "⏩" "⏪" "⬆" "⬇" "❓" "↔"
-    ;; Terminal powerline
-    "✔"
-    ;; Box drawing
-    "▶" "◀"
-    ;; I just want to see this as text
-    "©" "™")
-  "Characters that should never be affected by `emojify-mode'.")
-
-(defadvice! emojify-delete-from-data ()
-  "Ensure `emojify-disabled-emojis' don't appear in `emojify-emojis'."
-  :after #'emojify-set-emoji-data
-  (dolist (emoji emojify-disabled-emojis)
-    (remhash emoji emojify-emojis)))
-#+end_src
-
-Now, it would be good to have a minor mode which allowed you to type ascii/gh
-emojis and get them converted to unicode. Let's make one.
-#+begin_src emacs-lisp
-(defun emojify--replace-text-with-emoji (orig-fn emoji text buffer start end &optional target)
-  "Modify `emojify--propertize-text-for-emoji' to replace ascii/github emoticons with unicode emojis, on the fly."
-  (if (or (not emoticon-to-emoji) (= 1 (length text)))
-      (funcall orig-fn emoji text buffer start end target)
-    (delete-region start end)
-    (insert (ht-get emoji "unicode"))))
-
-(define-minor-mode emoticon-to-emoji
-  "Write ascii/gh emojis, and have them converted to unicode live."
-  :global nil
-  :init-value nil
-  (if emoticon-to-emoji
-      (progn
-        (setq-local emojify-emoji-styles '(ascii github unicode))
-        (advice-add 'emojify--propertize-text-for-emoji :around #'emojify--replace-text-with-emoji)
-        (unless emojify-mode
-          (emojify-turn-on-emojify-mode)))
-    (setq-local emojify-emoji-styles (default-value 'emojify-emoji-styles))
-    (advice-remove 'emojify--propertize-text-for-emoji #'emojify--replace-text-with-emoji)))
-#+end_src
-
-This new minor mode of ours will be nice for messages, so let's hook it in for
-Email and IRC.
-#+begin_src emacs-lisp
-(add-hook! '(mu4e-compose-mode org-msg-edit-mode circe-channel-mode) (emoticon-to-emoji 1))
 #+end_src
 
 *** Doom modeline
