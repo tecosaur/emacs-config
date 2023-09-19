@@ -4408,12 +4408,12 @@ icon. Then we'll redefine two functions used to generate the modeline.
    (doom-modeline--buffer-name)))
 
 (doom-modeline-def-segment pdf-icon
-  "PDF icon from all-the-icons."
+  "PDF icon from nerd-icons."
   (concat
    doom-modeline-spc
-   (doom-modeline-icon 'octicon "file-pdf" nil nil
+   (doom-modeline-icon sucicon "nf-seti-pdf" nil nil
                        :face (if (doom-modeline--active)
-                                 'all-the-icons-red
+                                 'nerd-icons-red
                                'mode-line-inactive)
                        :v-adjust 0.02)))
 
@@ -4697,21 +4697,22 @@ well somehow, so let's switch to 'P22 Underground Book'; it looks much nicer.
 ;; (setq x-underline-at-descent-line t)
 #+end_src
 
-*** All the icons
+*** Nerd Icons
 
-#+call: confpkg("!Pkg All the Icons")
+#+call: confpkg("!Pkg Nerd Icons")
 
 #+begin_quote
 From the =:core packages= module.
 #+end_quote
 
-=all-the-icons= does a generally great job giving file names icons. One minor
+=nerd-icons= does a generally great job giving file names icons. One minor
 niggle I have is that when /I/ open a =.m= file, it's much more likely to be Matlab
 than Objective-C. As such, it'll be switching the icon associated with =.m=.
+
 #+begin_src emacs-lisp
-(after! all-the-icons
-  (setcdr (assoc "m" all-the-icons-extension-icon-alist)
-          (cdr (assoc "matlab" all-the-icons-extension-icon-alist))))
+(after! nerd-icons
+  (setcdr (assoc "m" nerd-icons-extension-icon-alist)
+          (cdr (assoc "matlab" nerd-icons-extension-icon-alist))))
 #+end_src
 
 *** Prettier page breaks
@@ -5667,9 +5668,9 @@ configuration tweaks.
              "")))
   (add-hook 'circe-chat-mode-hook #'named-circe-prompt)
 
-  (appendq! all-the-icons-mode-icon-alist
-            '((circe-channel-mode all-the-icons-material "message" :face all-the-icons-lblue)
-              (circe-server-mode all-the-icons-material "chat_bubble_outline" :face all-the-icons-purple))))
+  (appendq! nerd-icons-mode-icon-alist
+            '((circe-channel-mode nerd-icons-mdicon "nf-md-message" :face nerd-icons-lblue)
+              (circe-server-mode nerd-icons-mdicon "nf-md-chat_outline" :face nerd-icons-purple))))
 
 <<irc-authinfo-reader>>
 
@@ -6872,7 +6873,7 @@ There seem to be some advantages with using Gnus' article view (such as inline
 images), and judging from [[https://github.com/djcb/mu/pull/1442#issuecomment-591695814][djcb/mu!1442 (comment)]] this seems to be the 'way of
 the future' for mu4e.
 
-There are some all-the-icons font related issues, so we need to redefine the
+There are some nerd-icons font related issues, so we need to redefine the
 fancy chars, and make sure they get the correct width.
 
 To account for the increase width of each flag character, and make perform a
@@ -8178,9 +8179,9 @@ with =citar=, and make the symbols a bit prettier.
           paths)
         citar-bibliography org-cite-global-bibliography
         citar-symbols
-        `((file ,(all-the-icons-faicon "file-o" :face 'all-the-icons-green :v-adjust -0.1) . " ")
-          (note ,(all-the-icons-material "speaker_notes" :face 'all-the-icons-blue :v-adjust -0.3) . " ")
-          (link ,(all-the-icons-octicon "link" :face 'all-the-icons-orange :v-adjust 0.01) . " "))))
+        `((file ,(nerd-icons-faicon "nf-fa-file_o" :face 'nerd-icons-green :v-adjust -0.1) . " ")
+          (note ,(nerd-icons-octicon "nf-oct-note" :face 'nerd-icons-blue :v-adjust -0.3) . " ")
+          (link ,(nerd-icons-octicon "nf-oct-link" :face 'nerd-icons-orange :v-adjust 0.01) . " "))))
 #+end_src
 
 We can also make the Zotero CSL styles available to use.
@@ -8440,8 +8441,8 @@ set up org-capture.
   (defun +doct-icon-declaration-to-icon (declaration)
     "Convert :icon declaration to icon"
     (let ((name (pop declaration))
-          (set  (intern (concat "all-the-icons-" (plist-get declaration :set))))
-          (face (intern (concat "all-the-icons-" (plist-get declaration :color))))
+          (set  (intern (concat "nerd-icons-" (plist-get declaration :set))))
+          (face (intern (concat "nerd-icons-" (plist-get declaration :color))))
           (v-adjust (or (plist-get declaration :v-adjust) 0.01)))
       (apply set `(,name :face ,face :v-adjust ,v-adjust))))
 
@@ -8464,7 +8465,7 @@ set up org-capture.
   (defun set-org-capture-templates ()
     (setq org-capture-templates
           (doct `(("Personal todo" :keys "t"
-                   :icon ("checklist" :set "octicon" :color "green")
+                   :icon ("nf-oct-checklist" :set "octicon" :color "green")
                    :file +org-capture-todo-file
                    :prepend t
                    :headline "Inbox"
@@ -8472,7 +8473,7 @@ set up org-capture.
                    :template ("* TODO %?"
                               "%i %a"))
                   ("Personal note" :keys "n"
-                   :icon ("sticky-note-o" :set "faicon" :color "green")
+                   :icon ("nf-fa-sticky_note_o" :set "faicon" :color "green")
                    :file +org-capture-todo-file
                    :prepend t
                    :headline "Inbox"
@@ -8480,7 +8481,7 @@ set up org-capture.
                    :template ("* %?"
                               "%i %a"))
                   ("Email" :keys "e"
-                   :icon ("envelope" :set "faicon" :color "blue")
+                   :icon ("nf-fa-envelope" :set "faicon" :color "blue")
                    :file +org-capture-todo-file
                    :prepend t
                    :headline "Inbox"
@@ -8490,7 +8491,7 @@ set up org-capture.
                               "about %^{topic}"
                               "%U %i %a"))
                   ("Interesting" :keys "i"
-                   :icon ("eye" :set "faicon" :color "lcyan")
+                   :icon ("nf-fa-eye" :set "faicon" :color "lcyan")
                    :file +org-capture-todo-file
                    :prepend t
                    :headline "Interesting"
@@ -8498,28 +8499,28 @@ set up org-capture.
                    :template ("* [ ] %{desc}%? :%{i-type}:"
                               "%i %a")
                    :children (("Webpage" :keys "w"
-                               :icon ("globe" :set "faicon" :color "green")
+                               :icon ("nf-fa-globe" :set "faicon" :color "green")
                                :desc "%(org-cliplink-capture) "
                                :i-type "read:web")
                               ("Article" :keys "a"
-                               :icon ("file-text" :set "octicon" :color "yellow")
+                               :icon ("nf-fa-file_text_o" :set "faicon" :color "yellow")
                                :desc ""
                                :i-type "read:reaserch")
                               ("\tRecipie" :keys "r"
-                               :icon ("spoon" :set "faicon" :color "dorange")
+                               :icon ("nf-fa-spoon" :set "faicon" :color "dorange")
                                :file +org-capture-recipies
                                :headline "Unsorted"
                                :template "%(org-chef-get-recipe-from-url)")
                               ("Information" :keys "i"
-                               :icon ("info-circle" :set "faicon" :color "blue")
+                               :icon ("nf-fa-info_circle" :set "faicon" :color "blue")
                                :desc ""
                                :i-type "read:info")
                               ("Idea" :keys "I"
-                               :icon ("bubble_chart" :set "material" :color "silver")
+                               :icon ("nf-md-chart_bubble" :set "mdicon" :color "silver")
                                :desc ""
                                :i-type "idea")))
                   ("Tasks" :keys "k"
-                   :icon ("inbox" :set "octicon" :color "yellow")
+                   :icon ("nf-oct-inbox" :set "octicon" :color "yellow")
                    :file +org-capture-todo-file
                    :prepend t
                    :headline "Tasks"
@@ -8527,16 +8528,16 @@ set up org-capture.
                    :template ("* TODO %? %^G%{extra}"
                               "%i %a")
                    :children (("General Task" :keys "k"
-                               :icon ("inbox" :set "octicon" :color "yellow")
+                               :icon ("nf-oct-inbox" :set "octicon" :color "yellow")
                                :extra "")
                               ("Task with deadline" :keys "d"
-                               :icon ("timer" :set "material" :color "orange" :v-adjust -0.1)
+                               :icon ("nf-md-timer" :set "mdicon" :color "orange" :v-adjust -0.1)
                                :extra "\nDEADLINE: %^{Deadline:}t")
                               ("Scheduled Task" :keys "s"
-                               :icon ("calendar" :set "octicon" :color "orange")
+                               :icon ("nf-oct-calendar" :set "octicon" :color "orange")
                                :extra "\nSCHEDULED: %^{Start time:}t")))
                   ("Project" :keys "p"
-                   :icon ("repo" :set "octicon" :color "silver")
+                   :icon ("nf-oct-repo" :set "octicon" :color "silver")
                    :prepend t
                    :type entry
                    :headline "Inbox"
@@ -8546,15 +8547,15 @@ set up org-capture.
                    :file ""
                    :custom (:time-or-todo "")
                    :children (("Project-local todo" :keys "t"
-                               :icon ("checklist" :set "octicon" :color "green")
+                               :icon ("nf-oct-checklist" :set "octicon" :color "green")
                                :time-or-todo "TODO"
                                :file +org-capture-project-todo-file)
                               ("Project-local note" :keys "n"
-                               :icon ("sticky-note" :set "faicon" :color "yellow")
+                               :icon ("nf-fa-sticky_note" :set "faicon" :color "yellow")
                                :time-or-todo "%U"
                                :file +org-capture-project-notes-file)
                               ("Project-local changelog" :keys "c"
-                               :icon ("list" :set "faicon" :color "blue")
+                               :icon ("nf-fa-list" :set "faicon" :color "blue")
                                :time-or-todo "%U"
                                :heading "Unreleased"
                                :file +org-capture-project-changelog-file)))
@@ -8609,7 +8610,7 @@ Lisp programs can force the template by setting KEYS to a string."
       (org-mks org-capture-templates
                "Select a capture template\n━━━━━━━━━━━━━━━━━━━━━━━━━"
                "Template key: "
-               `(("q" ,(concat (all-the-icons-octicon "stop" :face 'all-the-icons-red :v-adjust 0.01) "\tAbort")))))))
+               `(("q" ,(concat (nerd-icons-octicon "nf-oct-stop" :face 'nerd-icons-red :v-adjust 0.01) "\tAbort")))))))
 (advice-add 'org-capture-select-template :override #'org-capture-select-template-prettier)
 
 (defun org-mks-pretty (table title &optional prompt specials)
@@ -8678,7 +8679,7 @@ is selected, only the bare key is returned."
                 (when specials
                   (insert "─────────────────────────\n")
                   (pcase-dolist (`(,key ,description) specials)
-                    (insert (format "%s   %s\n" (propertize key 'face '(bold all-the-icons-red)) description))
+                    (insert (format "%s   %s\n" (propertize key 'face '(bold nerd-icons-red)) description))
                     (push key allowed-keys)))
                 ;; Display UI and let user select an entry or
                 ;; a sub-level prefix.
@@ -9575,11 +9576,11 @@ and add an extra ~org-bullet~ to the default list of four.
       org-priority-highest ?A
       org-priority-lowest ?E
       org-priority-faces
-      '((?A . 'all-the-icons-red)
-        (?B . 'all-the-icons-orange)
-        (?C . 'all-the-icons-yellow)
-        (?D . 'all-the-icons-green)
-        (?E . 'all-the-icons-blue)))
+      '((?A . 'nerd-icons-red)
+        (?B . 'nerd-icons-orange)
+        (?C . 'nerd-icons-yellow)
+        (?D . 'nerd-icons-green)
+        (?E . 'nerd-icons-blue)))
 #+end_src
 
 It's also nice to make use of the =prettify-symbols-mode= for a few Org syntactic
@@ -9596,11 +9597,11 @@ other settings.
                 :arrow_lr      "↔"
                 :properties    "⚙"
                 :end           "∎"
-                :priority_a    #("⚑" 0 1 (face all-the-icons-red))
-                :priority_b    #("⬆" 0 1 (face all-the-icons-orange))
-                :priority_c    #("■" 0 1 (face all-the-icons-yellow))
-                :priority_d    #("⬇" 0 1 (face all-the-icons-green))
-                :priority_e    #("❓" 0 1 (face all-the-icons-blue))))
+                :priority_a    #("⚑" 0 1 (face nerd-icons-red))
+                :priority_b    #("⬆" 0 1 (face nerd-icons-orange))
+                :priority_c    #("■" 0 1 (face nerd-icons-yellow))
+                :priority_d    #("⬇" 0 1 (face nerd-icons-green))
+                :priority_e    #("❓" 0 1 (face nerd-icons-blue))))
 
 (defadvice! +org-init-appearance-h--no-ligatures-a ()
   :after #'+org-init-appearance-h
@@ -13505,11 +13506,11 @@ Of course, there's an Emacs mode for this.
 (use-package! beancount
   :mode ("\\.beancount\\'" . beancount-mode)
   :init
-  (after! all-the-icons
-    (add-to-list 'all-the-icons-icon-alist
-                 '("\\.beancount\\'" all-the-icons-material "attach_money" :face all-the-icons-lblue))
-    (add-to-list 'all-the-icons-mode-icon-alist
-                 '(beancount-mode all-the-icons-material "attach_money" :face all-the-icons-lblue)))
+  (after! nerd-icons
+    (add-to-list 'nerd-icons-extension-icon-alist
+                 '("beancount" nerd-icons-faicon "nf-fa-dollar" :face nerd-icons-lblue))
+    (add-to-list 'nerd-icons-mode-icon-alist
+                 '(beancount-mode nerd-icons-faicon "nf-fa-dollar" :face nerd-icons-lblue)))
   :config
   (setq beancount-electric-currency t)
   (defun beancount-bal ()
