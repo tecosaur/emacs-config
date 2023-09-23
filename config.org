@@ -1925,26 +1925,49 @@ querying commands in other parts of the map).
 ***** Checking the system
 
 Because we care about how things look let's add a check to make sure we're told
-if the system doesn't have any of those fonts.
+if the system doesn't have any of those fonts. We can obtain a list of installed
+fonts with either ~(font-family-list)~ or with the ~fc-list~ command.
 
 #+name: detect-missing-fonts
-#+begin_src emacs-lisp :tangle no :noweb-ref none
-(defvar required-fonts '("JetBrainsMono.*" "Overpass" "JuliaMono" "IBM Plex Mono"
-                         "Merriweather" "Alegreya" "Twitter Color Emoji"))
+#+begin_src emacs-lisp :noweb-ref none
+(setq required-fonts '("JetBrains ?Mono.*" "Overpass" "JuliaMono" "IBM Plex Mono"
+                       "Merriweather" "Alegreya" "Twitter Color Emoji"))
 
-(defvar available-fonts
-  (delete-dups (or (font-family-list)
-                   (split-string (shell-command-to-string "fc-list : family")
-                                 "[,\n]"))))
+(setq available-fonts
+      (delete-dups
+       (or (font-family-list)
+           (and (executable-find "fc-list")
+                (with-temp-buffer
+                  (call-process "fc-list" nil t nil ":" "family")
+                  (split-string (buffer-string) "[,\n]"))))))
 
-(defvar missing-fonts
-  (delq nil (mapcar
-             (lambda (font)
-               (unless (delq nil (mapcar (lambda (f)
-                                           (string-match-p (format "^%s$" font) f))
-                                         available-fonts))
-                 font))
-             required-fonts)))
+(setq missing-fonts
+      (delq nil (mapcar
+                 (lambda (font)
+                   (unless (delq nil (mapcar (lambda (f)
+                                               (string-match-p (format "^%s$" font) f))
+                                             available-fonts))
+                     font))
+                 required-fonts)))
+#+end_src
+
+We can then use this to create a =doctor= check.
+
+#+begin_src emacs-lisp :noweb yes :noweb-ref doctor
+(let (required-fonts available-fonts missing-fonts)
+  <<detect-missing-fonts>>
+  (if available-fonts
+      (dolist (font missing-fonts)
+        (warn! (format "Missing font: %s." font)))
+    (warn! "Unable to check for missing fonts, is fc-list installed?")))
+#+end_src
+
+Furthermore, when fonts /are/ missing, it could be good to check the state of
+affairs on statup.
+
+#+name: warn-missing-fonts
+#+begin_src emacs-lisp :tangle no :noweb yes :noweb-ref none
+<<detect-missing-fonts>>
 
 (if missing-fonts
     (pp-to-string
@@ -2943,6 +2966,18 @@ frame size or theme is changed.
 (add-hook 'doom-load-theme-hook #'fancy-splash-apply-appropriate-image)
 #+end_src
 
+*** Config doctor
+
+We can collect checks throughout this config and put them in a =doctor.el= file
+that will be run as part of =doom doctor=. This will complement the =setup.sh=
+approach.
+
+#+begin_src emacs-lisp :tangle doctor.el :noweb yes :noweb-ref none
+;;; doctor.el -*- lexical-binding: t; no-byte-compile: t; -*-
+
+<<doctor>>
+#+end_src
+
 ** Other things
 
 # This stub for the shell setup scrip needs to appear before any
@@ -3010,6 +3045,13 @@ WantedBy=default.target
 which is then enabled by
 #+begin_src shell :tangle (if (string= "enabled\n" (shell-command-to-string "systemctl --user is-enabled emacs.service")) "no" "setup.sh")
 systemctl --user enable emacs.service
+#+end_src
+
+We can also add a =doctor= warning should this not be enabled.
+
+#+begin_src emacs-lisp :noweb-ref doctor
+(unless (string= "enabled\n" (shell-command-to-string "systemctl --user is-enabled emacs.service"))
+  (warn! "Emacsclient service is not enabled."))
 #+end_src
 
 For some reason if a frame isn't opened early in the initialisation process, the
@@ -3931,6 +3973,15 @@ sudo chown root:root en-custom.*
 sudo mv en-custom.{aff,dic} /usr/share/myspell/
 #+end_src
 
+We will also add an acompanying =doctor= warning.
+
+#+begin_src emacs-lisp :noweb-ref doctor
+(unless (executable-find "hunspell")
+  (warn! "Couldn't find hunspell executable."))
+(unless (file-exists-p "/usr/share/myspell/en-custom.dic")
+  (warn! "Custom hunspell dictionary is not present."))
+#+end_src
+
 ***** Aspell
 
 #+begin_src shell :tangle (if (file-expand-wildcards "/usr/lib64/aspell*/en-custom.multi") "no" "setup.sh")
@@ -3940,6 +3991,15 @@ tar -xjf "aspell6-en-custom.tar.bz2"
 
 cd aspell6-en-custom
 ./configure && make && sudo make install
+#+end_src
+
+We will also add an acompanying =doctor= warning.
+
+#+begin_src emacs-lisp :noweb-ref doctor
+(unless (executable-find "ispell")
+  (warn! "Couldn't find ispell executable."))
+(unless (file-expand-wildcards "/usr/lib64/aspell*/en-custom.multi")
+  (warn! "Custom aspell dictionary is not present."))
 #+end_src
 
 **** Configuration
@@ -4190,8 +4250,16 @@ With all our fancy Emacs themes, my terminal is missing out!
 
 This operates using =pywal=, which is present in some repositories, but most
 reliably installed with =pip=.
+
 #+begin_src shell :eval no :tangle (if (executable-find "wal") "no" "setup.sh")
 sudo python3 -m pip install pywal
+#+end_src
+
+We can also add a =doctor= check.
+
+#+begin_src emacs-lisp :noweb-ref doctor
+(unless (executable-find "wal")
+  (warn! "Couldn't find the pywal executable (wal), theme-magic will not function."))
 #+end_src
 
 Theme magic takes a look at a number of faces, the saturation levels, and colour
@@ -6189,6 +6257,24 @@ if [ ! -d "$DIC_FOLDER" ]; then
 fi
 #+end_src
 
+We can also add a =doctor= dictionary check.
+
+#+begin_src emacs-lisp :noweb-ref doctor
+(if (executable-find "sdcv")
+    (let ((dict-root (concat (or (getenv "STARDICT_DATA_DIR")
+                                 (concat (or "~/.local/share"
+                                             (getenv "XDG_DATA_HOME"))
+                                         "/stardict"))
+                             "/dic"))
+          (dicts '("webster" "synonyms" "etymology" "en-to-latin" "hitchcock" "elements")))
+      (if (file-exists-p dict-root)
+          (dolist (dict dicts)
+            (unless (file-exists-p (file-name-concat dict-root dict))
+              (warn! (format "Absent sdcv dictionary: %s." dict))))
+        (warn! "Couldn't find any stcv dictionaries, lexic will not function")))
+  (warn! "Couldn't find sdcv executable, lexic will be disabled"))
+#+end_src
+
 ** Mail
 
 #+call: confpkg(after="mu4e", via="require", pre="org-msg-accent")
@@ -6239,6 +6325,20 @@ Here's the general plan:
 4. Separately, we set up Emacs to check for the existance of
    =/tmp/mu_reindex_now= once a second while mu4e is
    running, and (after deleting the file) call ~mu4e-update-index~.
+
+We can add a =doctor= check for these external dependencies.
+
+#+begin_src emacs-lisp :noweb-ref doctor
+(when (file-exists-p "~/.mail") ; We care about mail when the mail folder exists
+  (unless (executable-find "mu")
+    (error! "Couldn't find mail dependency mu."))
+  (unless (executable-find "mbsync")
+    (error! "Couldn't find mail dependency mbsync."))
+  (unless (executable-find "msmtp")
+    (error! "Couldn't find mail dependency msmtp."))
+  (unless (executable-find "goimapnotify")
+    (warn! "Couldn't find mail helper goimapnotify, mail syncs will be slower.")))
+#+end_src
 
 Let's start off by handling the elisp side of things
 
@@ -6300,8 +6400,17 @@ Prevents a series of redisplays from being called (when set to an appropriate va
 **** Config transcoding & service management
 
 As long as the =mbsyncrc= file exists, this is as easy as running
-#+begin_src shell :tangle (if (and (executable-find "mu") (not (file-exists-p "~/.config/imapnotify"))) "setup.sh" "no")
+
+#+begin_src shell :tangle (if (and (executable-find "goimapnotify") (not (file-exists-p "~/.config/imapnotify"))) "setup.sh" "no")
 ~/.config/doom/misc/mbsync-imapnotify.py
+#+end_src
+
+Let's also add a =doctor= check for this.
+
+#+begin_src emacs-lisp :noweb-ref doctor
+(when (and (executable-find "goimapnotify")
+           (not (file-exists-p "~/.config/imapnotify")))
+  (warn! "goimapnotify is installed but not configured."))
 #+end_src
 
 When run without flags this will perform the following actions
@@ -6705,7 +6814,7 @@ start, so for that I'll do the 'normal' thing and run ~mbsync -all~ every so oft
 --- let's say five minutes.
 
 We can accomplish this via a systemd timer, and service file.
-#+begin_src systemd :tangle (if (executable-find "mu") "~/.config/systemd/user/mbsync.timer" "no")
+#+begin_src systemd :tangle (if (executable-find "mbsync") "~/.config/systemd/user/mbsync.timer" "no")
 [Unit]
 Description=call mbsync on all accounts every 5 minutes
 ConditionPathExists=%h/.mbsyncrc
@@ -6718,7 +6827,7 @@ OnUnitInactiveSec=5m
 WantedBy=default.target
 #+end_src
 
-#+begin_src systemd :tangle (if (executable-find "mu") "~/.config/systemd/user/mbsync.service" "no")
+#+begin_src systemd :tangle (if (executable-find "mbsync") "~/.config/systemd/user/mbsync.service" "no")
 [Unit]
 Description=mbsync service, sync all mail
 Documentation=man:mbsync(1)
@@ -6733,8 +6842,17 @@ WantedBy=mail.target
 #+end_src
 
 Enabling (and starting) this is as simple as
-#+begin_src shell :tangle (if (or (not (executable-find "mu")) (string= "enabled\n" (shell-command-to-string "systemctl --user is-enabled mbsync.timer"))) "no" "setup.sh")
+
+#+begin_src shell :tangle (if (or (not (executable-find "mbsync")) (string= "enabled\n" (shell-command-to-string "systemctl --user is-enabled mbsync.timer"))) "no" "setup.sh")
 systemctl --user enable mbsync.timer --now
+#+end_src
+
+We can also add a =doctor= check for the timer state.
+
+#+begin_src emacs-lisp :noweb-ref doctor
+(when (executable-find "mbsync")
+  (unless (string= "enabled\n" (shell-command-to-string "systemctl --user is-enabled mbsync.timer"))
+    (warn! "The mbsync timer is not enabled.")))
 #+end_src
 
 *** Indexing/Searching
@@ -6969,11 +7087,22 @@ StartupWMClass=Emacs
 #+end_src
 
 To register this, just call
+
 #+begin_src shell :tangle (if (or (not (executable-find "mu")) (string= (shell-command-to-string "xdg-mime query default x-scheme-handler/mailto") "emacsmail.desktop\n")) "no" "setup.sh")
 update-desktop-database ~/.local/share/applications
 #+end_src
 
+We can see if this is necessary with a =doctor= check.
+
+#+begin_src emacs-lisp :noweb-ref doctor
+(when (and (executable-find "mu")
+           (not (string= (shell-command-to-string "xdg-mime query default x-scheme-handler/mailto")
+                         "emacsmail.desktop\n")))
+  (warn! "Emacs is not registered as a mailto handler."))
+#+end_src
+
 We also want to define ~mu4e-compose-from-mailto~.
+
 #+begin_src emacs-lisp
 (defun mu4e-compose-from-mailto (mailto-string &optional quit-frame-after)
   (require 'mu4e)
@@ -7596,6 +7725,15 @@ update-mime-database ~/.local/share/mime
 Then set Emacs as the default editor
 #+begin_src shell :tangle (if (string= (shell-command-to-string "xdg-mime query default text/org") "emacs-client.desktop\n") "no" "setup.sh")
 xdg-mime default emacs.desktop text/org
+#+end_src
+
+Once again, we will add =doctor= checks around this.
+
+#+begin_src emacs-lisp :noweb-ref doctor
+(if (string= (shell-command-to-string "xdg-mime query default text/org") "")
+  (warn! "text/org is not a registered mime type.")
+  (unless (string= (shell-command-to-string "xdg-mime query default text/org") "emacs-client.desktop\n")
+    (warn! "Emacs(client) is not set up as the text/org handler.")))
 #+end_src
 
 **** Git diffs
@@ -12684,6 +12822,13 @@ really packaged]]. So, we'll resort to installing it with =pip=.
 sudo python3 -m pip install pylatexenc
 #+end_src
 
+With an accompanying =doctor= check.
+
+#+begin_src emacs-lisp :noweb-ref doctor
+(unless (executable-find "latex2text")
+  (warn! "Couldn't find latex2text executable (from pylatexenc), will be unable to render LaTeX fragments in org→text exports."))
+#+end_src
+
 With that installed, we can override the src_elisp{(org-ascii-latex-fragment)} and
 src_elisp{(org-ascii-latex-environment)} functions, which are conveniently very
 slim --- just extracting the content, and indenting. We'll only do something
@@ -13429,6 +13574,13 @@ Julia is also missing a mime type, but that's not too hard to fix.
 
 #+begin_src shell :tangle (if (string= (shell-command-to-string "xdg-mime query default text/julia") "") "setup.sh" "no")
 update-mime-database ~/.local/share/mime
+#+end_src
+
+We'll also add a =doctor= check for this.
+
+#+begin_src emacs-lisp :noweb-ref doctor
+(when (string= (shell-command-to-string "xdg-mime query default text/julia") "")
+  (warn! "text/julia is not a registered mime type."))
 #+end_src
 
 ** Data.toml files
