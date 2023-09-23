@@ -4172,7 +4172,7 @@ For when you want to change the case pattern for a symbol.
         :desc "Upper_Score" "u" #'string-inflection-capital-underscore
         :desc "UP_CASE" "U" #'string-inflection-upcase)
   (after! evil
-    (evil-define-operator evil-operator-string-inflection (beg end _type)
+    (evil-define-operator evil-operator-string-inflection (beg end type)
       "Define a new evil operator that cycles symbol casing."
       :move-point nil
       (interactive "<R>")
@@ -5704,9 +5704,9 @@ omitting the =#= in channel names we can have a list of channels comma-separated
               (mapcar (lambda (entry)
                         (let* ((host (plist-get entry :host))
                                (label (or (plist-get entry :label) host))
-                               (_ports (mapcar #'string-to-number
+                               (ports (mapcar #'string-to-number
                                                (s-split "," (plist-get entry :port))))
-                               (port (if (= 1 (length _ports)) (car _ports) _ports))
+                               (port (if (= 1 (length ports)) (car ports) ports))
                                (user (plist-get entry :user))
                                (nick (or (plist-get entry :nick) user))
                                (channels (mapcar (lambda (c) (concat "#" c))
