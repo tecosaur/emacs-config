@@ -8269,7 +8269,7 @@ function.
 (defun +org-insert-file-link ()
   "Insert a file link.  At the prompt, enter the filename."
   (interactive)
-  (insert (format "[[%s]]" (org-link-complete-file))))
+  (org-insert-link nil (org-link-complete-file)))
 #+end_src
 
 Now we'll just add that under the Org mode link localleader for convenience.
