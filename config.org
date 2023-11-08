@@ -1983,18 +1983,20 @@ affairs on statup.
         (add-hook! 'doom-init-ui-hook
           (run-at-time nil nil
                        (lambda ()
-                         (message "%s missing the following fonts: %s"
-                                  (propertize "Warning!" 'face '(bold warning))
-                                  (mapconcat (lambda (font)
-                                               (propertize font 'face 'font-lock-variable-name-face))
-                                             ',missing-fonts
-                                             ", "))
+                         (let (required-fonts available-fonts missing-fonts)
+                           <<detect-missing-fonts>>
+                           (message "%s missing the following fonts: %s"
+                                    (propertize "Warning!" 'face '(bold warning))
+                                    (mapconcat (lambda (font)
+                                                 (propertize font 'face 'font-lock-variable-name-face))
+                                               ',missing-fonts
+                                               ", ")))
                          (sleep-for 0.5))))))
   ";; No missing fonts detected")
 #+end_src
 
 #+begin_src emacs-lisp :noweb no-export
-<<detect-missing-fonts()>>
+<<warn-missing-fonts()>>
 #+end_src
 
 This way whenever fonts are missing, after Doom's UI has initialised, a warning
