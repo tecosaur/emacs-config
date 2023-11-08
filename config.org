@@ -12706,7 +12706,8 @@ export to a PDF.
                         package))
                     packages)))
 
-(if-let ((missing-pkgs (check-for-latex-packages org-required-latex-packages)))
+(if-let (((executable-find "kpsewhich"))
+         (missing-pkgs (check-for-latex-packages org-required-latex-packages)))
     (concat
      (pp-to-string `(setq org-required-latex-packages ',org-required-latex-packages))
      (message ";; Detected missing LaTeX packages: %s\n" (mapconcat #'identity missing-pkgs ", "))
