@@ -3040,6 +3040,7 @@ used to ensure that =.zshenv= is loaded.
 [Unit]
 Description=Emacs server daemon
 Documentation=info:emacs man:emacs(1) https://gnu.org/software/emacs/
+Wants=gpg-agent.service
 
 [Service]
 Type=forking
@@ -6803,6 +6804,7 @@ We'll use a template service file so we can enable a unit per-account.
 Description=IMAP notifier using IDLE, golang version.
 ConditionPathExists=%h/.config/imapnotify/%I/notify.conf
 After=network.target
+Wants=gpg-agent.service
 
 [Service]
 ExecStart=%h/.local/bin/goimapnotify -conf %h/.config/imapnotify/%I/notify.conf
@@ -6842,6 +6844,7 @@ WantedBy=default.target
 Description=mbsync service, sync all mail
 Documentation=man:mbsync(1)
 ConditionPathExists=%h/.mbsyncrc
+Wants=gpg-agent.service
 
 [Service]
 Type=oneshot
