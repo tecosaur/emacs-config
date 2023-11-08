@@ -1844,15 +1844,23 @@ files.
 
 ***** Emojis
 
-Lastly, it would be good to sort out emojis. All that's really needed here is to
-apply =doom-emoji-font=, which needs to be done here because it's not /actually/ a
-Doom font variable, but rather my own addition.
+Emacs (28+) has an ~emoji~ script table. We're about to use it, but before doing
+so we're going to excise a few characteris that I actually want rendered as
+using the symbol font (not as emojis).
+
+#+begin_src emacs-lisp
+(dolist (char '(?⏩ ?⏪ ?❓))
+  (set-char-table-range char-script-table char 'symbol))
+#+end_src
+
+To actually sort out emojis, all that's really needed here is to apply
+=doom-emoji-font=, which needs to be done /here/ because it's not /actually/ a Doom
+font variable, but rather my own addition.
 
 #+begin_src emacs-lisp
 (add-hook! 'after-setting-font-hook
   (defun +emoji-set-font ()
     (set-fontset-font t 'emoji doom-emoji-font nil 'prepend)))
-
 #+end_src
 
 We might as well also construct a regexp to make identifying emojis if buffers
