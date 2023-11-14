@@ -1486,7 +1486,7 @@ div.link-preview {
   max-height: 5em;
   padding-left: 0.5em; }
   div.link-preview a {
-    color: initial;
+    color: inherit;
     text-decoration: none; }
   div.link-preview img {
     border-right: 1px solid var(--back-medium);
