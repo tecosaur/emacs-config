@@ -5,6 +5,12 @@ on:
   delete:
     ref: "refs/heads/publish"
   workflow_dispatch:
+    inputs:
+      tmate_enabled:
+        type: boolean
+        description: 'Run a tmate session'
+        required: false
+        default: true
   schedule:
     - cron: "0 */2 * * *" # every 2h
 
@@ -20,7 +26,7 @@ concurrency:
 
 jobs:
   deploy:
-    runs-on: ubuntu-20.04 # change to -latest when possible
+    runs-on: ubuntu-22.04 # change to -latest when possible
     container:
       image: ghcr.io/tecosaur/emacs-config:latest
       options: --user 0 # root
@@ -38,7 +44,7 @@ jobs:
 
       - name: Cache Doom's Install
         id: doomcache
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: /home/runner/.config/emacs
           key: ${{ runner.os }}-doom@${{ env.doom_hash }}
@@ -85,19 +91,19 @@ jobs:
 
       - name: Setup Pages
         if: (github.event_name != 'schedule' || steps.doomcache.outputs.cache-hit != 'true') && success()
-        uses: actions/configure-pages@v2
+        uses: actions/configure-pages@v4
 
       - name: Upload artifact
         if: (github.event_name != 'schedule' || steps.doomcache.outputs.cache-hit != 'true') && success()
-        uses: actions/upload-pages-artifact@v1
+        uses: actions/upload-pages-artifact@v3
         with:
           path: '/home/runner/.config/doom/publish'
 
       - name: Deploy to GitHub Pages
         if: (github.event_name != 'schedule' || steps.doomcache.outputs.cache-hit != 'true') && success()
         id: deployment
-        uses: actions/deploy-pages@v1
+        uses: actions/deploy-pages@v4
 
-      # - name: Debug over SSH (tmate)
-      #   if: ${{ failure() }}
-      #   uses: mxschmitt/action-tmate@v3.1
+      - name: Debug over SSH (tmate)
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.tmate_enabled }}
+        uses: mxschmitt/action-tmate@v3
