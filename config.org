@@ -11114,13 +11114,6 @@ The =hyperref= setup needs to be handled separately however.
 
 We often want particular snippets of LaTeX in our documents preambles.
 It's a pain to have to work out / remember them every time.
-For example, I almost always want to include the snippet below.
-
-#+name: org-latex-embed-files-preamble
-#+begin_src LaTeX
-\usepackage[main,include]{embedall}
-\IfFileExists{./\jobname.org}{\embedfile[desc=The original file]{\jobname.org}}{}
-#+end_src
 
 We could have every package we could possibly need in every one of
 ~org-latex-classes~, but that's /horribly/ inefficient and I don't want to think
@@ -11385,8 +11378,6 @@ Another consideration in LaTeX is load order, which matters in some cases.
 Beyond that, it's nice to have some sort of sensible ordering. For this I'll
 introduce an =:order= keyword. Using this I'll arrange snippets as follows.
 
-+ =-2= Embed files setup
-+ =-1= Extra file embedding
 + =0= Typography
   - =0= Fonts themselves
   - =0.1= Typographic tweaks (=microtype=)
@@ -11417,14 +11408,24 @@ introduce an =:order= keyword. Using this I'll arrange snippets as follows.
    :order 0.1)
   (embed-files
    :condition org-latex-embed-files
-   :snippet org-latex-embed-files-preamble
-   :order -2)
+   :snippet "\\usepackage[include]{embedall}"
+   :order 70)
+  (embed-source
+   :condition t
+   :when embed-files
+   :snippet "\\IfFileExists{./\\jobname.org}{\\embedfile[desc=Primary source file]{\\jobname.org}}{}
+\\IfFileExists{./\\jobname.tex}{\\embedfile[desc=The (generated) LaTeX source file]{\\jobname.tex}}{}"
+   :no-precompile t
+   :after embed-files
+   :order 80)
   (embed-tangled
    :condition (and org-latex-embed-files
                    "^[ \t]*#\\+embed\\|^[ \t]*#\\+begin_src\\|^[ \t]*#\\+BEGIN_SRC")
    :requires embed-files
-   :snippet org-latex-embed-extra-files
-   :order -1)
+   :snippet (org-latex-embed-extra-files)
+   :no-precompile t
+   :after (embed-source embed-files)
+   :order 80)
   (acronym
    :condition "[;\\\\]?\\b[A-Z][A-Z]+s?[^A-Za-z]"
    :snippet "\\newcommand{\\acr}[1]{\\protect\\textls*[110]{\\scshape #1}}\n\\newcommand{\\acrs}{\\protect\\scalebox{.91}[.84]{\\hspace{0.15ex}s}}"
