@@ -10823,20 +10823,26 @@ Now we just need to actually implement that metadata extraction function.
                  (cons
                   url
                   (let* ((head-data
-                          (-filter #'listp
-                                   (cdaddr
-                                    (with-current-buffer (progn (message "Fetching metadata from %s" url)
-                                                                (url-retrieve-synchronously url t t 5))
-                                      (goto-char (point-min))
-                                      (delete-region (point-min) (- (search-forward "<head") 6))
-                                      (delete-region (search-forward "</head>") (point-max))
-                                      (goto-char (point-min))
-                                      (while (re-search-forward "<script[^\u2800]+?</script>" nil t)
-                                        (replace-match ""))
-                                      (goto-char (point-min))
-                                      (while (re-search-forward "<style[^\u2800]+?</style>" nil t)
-                                        (replace-match ""))
-                                      (libxml-parse-html-region (point-min) (point-max))))))
+                          (cl-remove-if-not
+                           #'listp
+                           (cdaddr
+                            (with-current-buffer
+                                (progn (message "Fetching metadata from %s" url)
+                                       (if (executable-find "curl")
+                                           (with-current-buffer (generate-new-buffer " *curl*")
+                                             (call-process "curl" nil t nil "--max-time" "5" "-sSL" url)
+                                             (current-buffer))
+                                         (url-retrieve-synchronously url t t 5)))
+                              (goto-char (point-min))
+                              (delete-region (point-min) (- (search-forward "<head") 6))
+                              (delete-region (search-forward "</head>") (point-max))
+                              (goto-char (point-min))
+                              (while (re-search-forward "<script[^\u2800]+?</script>" nil t)
+                                (replace-match ""))
+                              (goto-char (point-min))
+                              (while (re-search-forward "<style[^\u2800]+?</style>" nil t)
+                                (replace-match ""))
+                              (libxml-parse-html-region (point-min) (point-max))))))
                          (meta (delq nil
                                      (mapcar
                                       (lambda (tag)
