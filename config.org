@@ -6,7 +6,7 @@
 #+email: contact@tecosaur.net
 #+date: @@html:<!--@@{{{git-rev}}}@@html:-->@@@@latex:\\\Large\bfseries@@ {{{modification-time(%Y-%m-%d, t)}}} @@latex:\\\normalsize\mdseries@@{{{modification-time(%H:%M, t)}}} @@latex:\acr{\lowercase{@@{{{timezone}}}@@latex:}}\iffalse@@, {{{git-rev}}}@@latex:\fi@@
 #+macro: timezone (eval (substring (shell-command-to-string "date +%Z") 0 -1))
-#+macro: git-rev (eval (format "@@html:<a href=\"https://git.tecosaur.net/tec/emacs-config/commit/%1$s\" style=\"text-decoration: none\"><code style=\"padding: 0; color: var(--text-light); font-size: inherit; opacity: 0.7\">%1$s</code></a>@@@@latex:\\href{https://git.tecosaur.net/tec/emacs-config/commit/%1$s}{\\normalsize\\texttt{%1$s}}@@" (substring (shell-command-to-string "git rev-parse --short HEAD") 0 -1)))
+#+macro: git-rev (eval (format "@@html:<a href=\"https://code.tecosaur.net/tec/emacs-config/commit/%1$s\" style=\"text-decoration: none\"><code style=\"padding: 0; color: var(--text-light); font-size: inherit; opacity: 0.7\">%1$s</code></a>@@@@latex:\\href{https://code.tecosaur.net/tec/emacs-config/commit/%1$s}{\\normalsize\\texttt{%1$s}}@@" (substring (shell-command-to-string "git rev-parse --short HEAD") 0 -1)))
 #+html_head: <link rel='shortcut icon' type='image/png' href='https://www.gnu.org/software/emacs/favicon.png'>
 #+property: header-args:emacs-lisp
 #+property: header-args:elisp :results replace :exports code
@@ -23,7 +23,7 @@
 #+latex_engraved_theme: doom-one-light
 
 #+begin_export html
-<a href="https://git.tecosaur.net/tec/emacs-config/"
+<a href="https://code.tecosaur.net/tec/emacs-config/"
    style="font-family: 'Open Sans'; background-image: none; color: inherit;
           text-decoration: none; position: relative; top: clamp(-26px, calc(1280px - 100vw), 0px); opacity: 0.7;">
   <img src="https://git-scm.com/images/logos/downloads/Git-Icon-Black.svg"
@@ -590,12 +590,12 @@ Now all that's needed is a template to be used.
 ;;
 ;; Copyright (C) %Y TEC
 ;;
-;; Author: TEC <https://git.tecosaur.net/tec>
+;; Author: TEC <https://code.tecosaur.net/tec>
 ;; Maintainer: TEC <contact@tecosaur.net>
 ;; Created: %B %d, %Y
 ;; Modified: %B %d, %Y
 ;; Version: %Y.%m.%d
-;; Homepage: https://git.tecosaur.net/tec/emacs-config
+;; Homepage: https://code.tecosaur.net/tec/emacs-config
 ;; Package-Requires: ((emacs \"27.1\"))
 ;;
 ;; This file is not part of GNU Emacs.
@@ -3700,7 +3700,7 @@ instance. Let's make that a bit more streamlined by introducing a quick-entry
 "default forge" option.
 
 #+begin_src emacs-lisp
-(defvar +magit-default-forge-remote "gitea@git.tecosaur.net:tec/%s.git"
+(defvar +magit-default-forge-remote "git@code.tecosaur.net:tec/%s.git"
   "Format string that fills out to a remote from the repo name.
 Set to nil to disable this functionality.")
 #+end_src
@@ -7816,9 +7816,9 @@ correct package statement needed.
      (pp `(package! org
             :recipe (,@(if dev-key-p
                            (list :host nil :repo "tec@git.savannah.gnu.org:/srv/git/emacs/org-mode.git" :local-repo "lisp/org"
-                                 :fork (list :host nil :repo "gitea@git.tecosaur.net:tec/org-mode.git" :branch "dev" :remote "tecosaur"))
-                         (list :host nil :repo "https://git.tecosaur.net/mirrors/org-mode.git" :remote "mirror"
-                               :fork (list :host nil :repo "https://git.tecosaur.net/tec/org-mode.git" :branch "dev" :remote "tecosaur")))
+                                 :fork (list :host nil :repo "git@code.tecosaur.net:tec/org-mode.git" :branch "dev" :remote "tecosaur"))
+                         (list :host nil :repo "https://code.tecosaur.net/mirrors/org-mode.git" :remote "mirror"
+                               :fork (list :host nil :repo "https://code.tecosaur.net/tec/org-mode.git" :branch "dev" :remote "tecosaur")))
                      ,@recipe-common)
             :pin nil)))
     (untabify (point-min) (point-max))
