@@ -20,6 +20,13 @@
 (advice-add 'pdf-tools-install :around #'ignore)
 (advice-add 'pdf-info-features :around #'ignore)
 
+;; When called from `org-latex-src--engrave-code' the function
+;; `TeX-run-style-hooks' ends up calling one of a few reftex functions tht
+;; themselves call `reftex-TeX-master-file' which then invokes
+;; `(expand-file-name nil)', causing an error.
+(require 'tex)
+(advice-add 'TeX-run-style-hooks :around #'ignore)
+
 (setq org-link-parameters
       (delq (assoc "pdf" org-link-parameters)
             org-link-parameters))
