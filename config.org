@@ -7549,15 +7549,17 @@ END can be the symbol top, bottom, or nil to toggle."
   (let ((initial-pos (point)))
     (org-msg-goto-body)
     (when (or (eq end 'top)
-              (and (or (eq initial-pos (point)) ; Already at bottom
+              (and (or (memq initial-pos ; Already at bottom
+                             (list (point) (1- (point))))
                        (<= initial-pos ; Above message body
                            (save-excursion
                              (message-goto-body)
                              (point))))
                    (not (eq end 'bottom))))
       (message-goto-body)
-      (search-forward (format org-msg-greeting-fmt
-                              (concat " " (org-msg-get-to-name)))))))
+      (re-search-forward
+       (format (regexp-quote org-msg-greeting-fmt) ; %s is unaffected.
+               (concat "\\(?: " (regexp-quote (org-msg-get-to-name)) "\\)?"))))))
 #+end_src
 
 We can replace the evil binding of =mu4e-compose-goto-bottom= with this function.
