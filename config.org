@@ -3820,8 +3820,8 @@ follow [[https://orgmode.org/worg/org-contribute.html#commit-messages][a certain
           (cond
            ((string-match-p "\\.el$" last-file)
             (when (re-search-backward "^\\(?:[+-]? *\\|@@[ +-\\d,]+@@ \\)(\\(?:cl-\\)?\\(?:defun\\|defvar\\|defmacro\\|defcustom\\)" temp-point t)
-              (re-search-forward "\\(?:cl-\\)?\\(?:defun\\|defvar\\|defmacro\\|defcustom\\) " nil t)
-              (add-to-list 'file-changes (buffer-substring-no-properties (point) (forward-symbol 1)))))
+              (re-search-forward "\\(?:cl-\\)?\\(?:defun\\|defvar\\|defmacro\\|defcustom\\) \\([^[:space:]\n]+\\)" nil t)
+              (add-to-list 'file-changes (match-string 1))))
            ((string-match-p "\\.org$" last-file)
             (when (re-search-backward "^[+-]\\*+ \\|^@@[ +-\\d,]+@@ \\*+ " temp-point t)
               (re-search-forward "@@ \\*+ " nil t)
