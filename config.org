@@ -7419,8 +7419,9 @@ current message on https://list.orgmode.org.
               ("emacs-orgmode.gnu.org"
                (format "https://list.orgmode.org/%s" (mu4e-message-field msg :message-id)))
               (_ (user-error "Mailing list %s not supported" list-addr)))))
+      (gui-select-text msg-url)
       (message "Link %s copied to clipboard"
-               (propertize (gui-select-text msg-url) 'face '((:weight normal :underline nil) link)))
+               (propertize msg-url 'face '((:weight normal :underline nil) link)))
       msg-url))
 
   (add-to-list 'mu4e-view-actions (cons "link to message ML" #'+mu4e-ml-message-link) t))
