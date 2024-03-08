@@ -3728,39 +3728,45 @@ the pre-filled remote url use ssh.
 (defadvice! +magit-remote-add--streamline-forge-a (args)
   :filter-args #'magit-remote-add
   (interactive
-   (or (and +magit-default-forge-remote
-            (not (magit-list-remotes))
-            (eq (read-char-choice
-                 (format "Setup %s remote? [y/n]: "
-                         (replace-regexp-in-string
-                          "\\`\\(?:[^@]+@\\|https://\\)\\([^:/]+\\)[:/].*\\'" "\\1"
-                          +magit-default-forge-remote))
-                 '(?y ?n))
-                ?y)
-            (let* ((default-name
-                     (subst-char-in-string ?\s ?-
-                                           (file-name-nondirectory
-                                            (directory-file-name (doom-project-root)))))
-                   (name (read-string "Name: " default-name)))
-              (list "origin" (format +magit-default-forge-remote name)
-                    (transient-args 'magit-remote))))
-       (let ((origin (magit-get "remote.origin.url"))
-             (remote (magit-read-string-ns "Remote name"))
-             (gh-user (magit-get "github.user")))
-         (when (and (equal remote gh-user)
-                    (string-match "\\`https://github\\.com/\\([^/]+\\)/\\([^/]+\\)\\.git\\'"
-                                  origin)
-                    (not (string= (match-string 1 origin) gh-user)))
-           (setq origin (replace-regexp-in-string
-                         "\\`https://github\\.com/" "git@github.com:"
-                         origin)))
-         (list remote
-               (magit-read-url
-                "Remote url"
-                (and origin
-                     (string-match "\\([^:/]+\\)/[^/]+\\(\\.git\\)?\\'" origin)
-                     (replace-match remote t t origin 1)))
-               (transient-args 'magit-remote)))))
+   (let ((default-name
+           (subst-char-in-string ?\s ?-
+                                 (file-name-nondirectory
+                                  (directory-file-name (doom-project-root))))))
+     (or (and +magit-default-forge-remote
+              (not (magit-list-remotes))
+              (eq (read-char-choice
+                   (format "Setup %s remote? [y/n]: "
+                           (replace-regexp-in-string
+                            "\\`\\(?:[^@]+@\\|https://\\)\\([^:/]+\\)[:/].*\\'" "\\1"
+                            +magit-default-forge-remote))
+                   '(?y ?n))
+                  ?y)
+              (let ((name (read-string "Name: " default-name)))
+                (list "origin" (format +magit-default-forge-remote name)
+                      (transient-args 'magit-remote))))
+         (let ((origin (magit-get "remote.origin.url"))
+               (remote (magit-read-string-ns "Remote name"))
+               (gh-user (magit-get "github.user")))
+           (and (equal remote gh-user)
+                (if origin
+                    (and
+                     (string-match "\\`https://github\\.com/\\([^/]+\\)/\\([^/]+\\)\\.git\\'"
+                                   origin)
+                     (not (string= (match-string 1 origin) gh-user)))
+                  t)
+                (setq origin
+                      (if origin
+                          (replace-regexp-in-string
+                           "\\`https://github\\.com/" "git@github.com:"
+                           origin)
+                        (format "git@github.com:%s/%s" gh-user (read-string "GitHub repo Name: " default-name)))))
+           (list remote
+                 (magit-read-url
+                  "Remote url"
+                  (and origin
+                       (string-match "\\([^:/]+\\)/[^/]+\\(\\.git\\)?\\'" origin)
+                       (replace-match remote t t origin 1)))
+                 (transient-args 'magit-remote))))))
   args)
 #+end_src
 
