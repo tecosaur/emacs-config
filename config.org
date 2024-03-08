@@ -8422,7 +8422,7 @@ It's also nice to be able to use ~cdlatex~.
 It's handy to be able to quickly insert environments with =C-c }=. I almost always
 want to edit them afterwards though, so let's make that happen by default.
 #+begin_src emacs-lisp
-(defadvice! org-edit-latex-emv-after-insert ()
+(defadvice! +org-edit-latex-env-after-insert-a (&rest _)
   :after #'org-cdlatex-environment-indent
   (org-edit-latex-environment))
 #+end_src
