@@ -4488,12 +4488,12 @@ modeline segment with our design.
              (bound-and-true-p display-time-mode)
              (not doom-modeline--limited-width-p))
     (concat
-     doom-modeline-spc
+     (doom-modeline-spc)
      (when doom-modeline-time-icon
        (concat
         (+doom-modeline-micro-clock)
         (and (or doom-modeline-icon doom-modeline-unicode-fallback)
-             doom-modeline-spc)))
+             (doom-modeline-spc))))
      (propertize display-time-string
                  'face (doom-modeline-face 'doom-modeline-time)))))
 #+end_src
@@ -4511,14 +4511,14 @@ icon. Then we'll redefine two functions used to generate the modeline.
 (doom-modeline-def-segment buffer-name
   "Display the current buffer's name, without any other information."
   (concat
-   doom-modeline-spc
+   (doom-modeline-spc)
    (doom-modeline--buffer-name)))
 
 (doom-modeline-def-segment pdf-icon
   "PDF icon from nerd-icons."
   (concat
-   doom-modeline-spc
    (doom-modeline-icon sucicon "nf-seti-pdf" nil nil
+   (doom-modeline-spc)
                        :face (if (doom-modeline--active)
                                  'nerd-icons-red
                                'mode-line-inactive)
