@@ -3520,6 +3520,7 @@ To make VLF available without delaying startup, we'll just load it in quiet mome
   vlf-search vlf-occur vlf-follow vlf-ediff vlf
   :commands vlf vlf-mode
   :init
+  (defvar vlf-application 'ask) ; Avoid load-order issues
   <<vlf-largefile-prompt>>
   :config
   (advice-remove 'abort-if-file-too-large #'ad-Advice-abort-if-file-too-large)
