@@ -3271,10 +3271,14 @@ babel block that will grab the content of another named source block as a
 string. Note that this does not currently expand nested noweb references.
 
 #+name: grab
-#+begin_src emacs-lisp :var name="" :noweb-ref none
+#+begin_src emacs-lisp :var name="" pre="" post="" :noweb-ref none
+;; Babel block: grab(name &optional pre post)
+;; NAME is the name of the source block to grab.
+;; PRE is a string to prepend to the content of the block.
+;; POST is a string to append to the content of the block.
 (if-let ((block-pos (org-babel-find-named-block name))
          (block (org-element-at-point block-pos)))
-    (format "%S" (string-trim (org-element-property :value block)))
+    (format "%S" (concat pre (string-trim (org-element-property :value block)) post))
   ;; look for :noweb-ref matches
   (let (block-contents)
     (org-element-cache-map
@@ -3301,10 +3305,13 @@ string. Note that this does not currently expand nested noweb references.
      :restrict-elements '(src-block))
     (and block-contents
          (format "%S"
-                 (mapconcat
-                  #'identity
-                  (nreverse block-contents)
-                  "\n\n")))))
+                 (concat
+                  pre
+                  (mapconcat
+                   #'identity
+                   (nreverse block-contents)
+                   "\n\n")
+                  post)))))
 #+end_src
 
 There we go, that's all it takes! This can be used via the form =<<grab("block-name")>>=.
