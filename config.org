@@ -5484,21 +5484,6 @@ Then, to actually read the ebooks we use =nov=.
   (map! :map nov-mode-map
         :n "RET" #'nov-scroll-up)
 
-  (defun doom-modeline-segment--nov-info ()
-    (concat
-     " "
-     (propertize
-      (cdr (assoc 'creator nov-metadata))
-      'face 'doom-modeline-project-parent-dir)
-     " "
-     (cdr (assoc 'title nov-metadata))
-     " "
-     (propertize
-      (format "%d/%d"
-              (1+ nov-documents-index)
-              (length nov-documents))
-      'face 'doom-modeline-info)))
-
   (advice-add 'nov-render-title :override #'ignore)
 
   (defun +nov-mode-setup ()
@@ -5513,40 +5498,51 @@ Then, to actually read the ebooks we use =nov=.
                 shr-use-colors nil)
     (require 'visual-fill-column nil t)
     (setq-local visual-fill-column-center-text t
-                visual-fill-column-width 81
+                visual-fill-column-width 82
                 nov-text-width 80)
     (visual-fill-column-mode 1)
     (hl-line-mode -1)
     ;; Re-render with new display settings
     (nov-render-document)
     ;; Look up words with the dictionary.
-    (add-to-list '+lookup-definition-functions #'+lookup/dictionary-definition)
-    ;; Customise the mode-line to make it more minimal and relevant.
-    (setq-local
-     mode-line-format
-     `((:eval
-        (doom-modeline-segment--workspace-name))
-       (:eval
-        (doom-modeline-segment--window-number))
-       (:eval
-        (doom-modeline-segment--nov-info))
-       ,(propertize
-         " %P "
-         'face 'doom-modeline-buffer-minor-mode)
-       ,(propertize
-         " "
-         'face (if (doom-modeline--active) 'mode-line 'mode-line-inactive)
-         'display `((space
-                     :align-to
-                     (- (+ right right-fringe right-margin)
-                        ,(* (let ((width (doom-modeline--font-width)))
-                              (or (and (= width 1) 1)
-                                  (/ width (frame-char-width) 1.0)))
-                            (string-width
-                             (format-mode-line (cons "" '(:eval (doom-modeline-segment--major-mode))))))))))
-       (:eval (doom-modeline-segment--major-mode)))))
+    (add-to-list '+lookup-definition-functions #'+lookup/dictionary-definition))
 
   (add-hook 'nov-mode-hook #'+nov-mode-setup))
+#+end_src
+
+To enhance the reading experience, we can create a nice minimal modeline, with
+just the basic bare minimum, information about the book/chapter, and possibly
+currently playing media.
+
+#+begin_src emacs-lisp
+(after! doom-modeline
+  (defvar doom-modeline-nov-title-max-length 40)
+  (doom-modeline-def-segment nov-author
+    (propertize
+     (cdr (assoc 'creator nov-metadata))
+     'face 'doom-modeline-project-parent-dir))
+  (doom-modeline-def-segment nov-title
+    (let ((title (or (cdr (assoc 'title nov-metadata)) "")))
+      (if (<= (length title) doom-modeline-nov-title-max-length)
+          (concat " " title)
+        (propertize
+         (concat " " (truncate-string-to-width title doom-modeline-nov-title-max-length nil nil t))
+         'help-echo title))))
+  (doom-modeline-def-segment nov-current-page
+    (let ((words (count-words (point-min) (point-max))))
+      (propertize
+       (format " %d/%d"
+               (1+ nov-documents-index)
+               (length nov-documents))
+       'face 'doom-modeline-info
+       'help-echo (if (= words 1) "1 word in this chapter"
+                    (format "%s words in this chapter" words)))))
+
+  (doom-modeline-def-modeline 'nov
+    '(workspace-name window-number nov-author nov-title nov-current-page)
+    '(misc-info major-mode time))
+
+  (add-to-list 'doom-modeline-mode-alist '(nov-mode . nov)))
 #+end_src
 
 ** Calculator
