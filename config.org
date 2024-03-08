@@ -7066,6 +7066,19 @@ few more visual tweaks, we'll tweak the headers a bit
                  '+mu4e-header--folder-colors))))))
 #+end_src
 
+Among the flags mu4e displays is the "personal address" flag, for messages sent
+/to/ me (as opposed to mailing-list-y emails where I am not an explicit
+recipient). Unfortunately, this doesn't play well with my wildcard email
+addresses, so let's fix this with advise.
+
+ #+begin_src emacs-lisp
+(defadvice! +mu4e-personal-address-p--*-a (orig-fn addr)
+  :around #'mu4e-personal-address-p
+  (or (and (stringp addr)
+           (string-match-p "@\\([a-z]+\\.\\)?tecosaur\\.net$" addr))
+      (funcall orig-fn addr)))
+ #+end_src
+
 We'll also use a nicer alert icon
 #+begin_src emacs-lisp
 (setq mu4e-alert-icon "/usr/share/icons/Papirus/64x64/apps/evolution.svg")
