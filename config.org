@@ -4623,13 +4623,12 @@ theme.
                                                       "xdotool getactivewindow")))
         gif-screencast-optimize-args '("--batch" "--optimize=3" "--usecolormap=/tmp/doom-color-theme"))
   (defun gif-screencast-write-colormap ()
-    (f-write-text
+    (write-region
      (replace-regexp-in-string
       "\n+" "\n"
       (mapconcat (lambda (c) (if (listp (cdr c))
-                                 (cadr c))) doom-themes--colors "\n"))
-     'utf-8
-     "/tmp/doom-color-theme" ))
+                            (cadr c))) doom-themes--colors "\n"))
+     nil "/tmp/doom-color-theme"))
   (gif-screencast-write-colormap)
   (add-hook 'doom-load-theme-hook #'gif-screencast-write-colormap))
 #+end_src
@@ -10419,12 +10418,17 @@ Suffice to say I've snatched it, with a few of my own tweaks applied.
 (defun org-html-reload-fancy-style ()
   (interactive)
   (setq org-html-style-fancy
-        (concat (f-read-text (expand-file-name "misc/org-export-header.html" doom-private-dir))
-                "<script>\n"
-                (f-read-text (expand-file-name "misc/org-css/main.js" doom-private-dir))
-                "</script>\n<style>\n"
-                (f-read-text (expand-file-name "misc/org-css/main.min.css" doom-private-dir))
-                "</style>"))
+        (with-temp-buffer
+          (insert-file-contents (expand-file-name "misc/org-export-header.html" doom-user-dir))
+          (goto-char (point-max))
+          (insert "<script>\n")
+          (insert-file-contents (expand-file-name "misc/org-css/main.js" doom-user-dir))
+          (goto-char (point-max))
+          (insert "</script>\n<style>\n")
+          (insert-file-contents (expand-file-name "misc/org-css/main.min.css" doom-user-dir))
+          (goto-char (point-max))
+          (insert "</style>")
+          (buffer-string)))
   (when org-fancy-html-export-mode
     (setq org-html-style-default org-html-style-fancy)))
 (org-html-reload-fancy-style)
