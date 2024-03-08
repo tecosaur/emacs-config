@@ -9341,7 +9341,7 @@ cause issues. Let's make their failure less eventful.
 
 **** Flycheck with org-lint
 
-#+call: confpkg("Flycheck org-lint", after="org")
+#+call: confpkg("Flycheck org-lint", after=["org" "flycheck"])
 
 Org may be simple, but that doesn't mean there's no such thing as malformed Org.
 Thankfully, malformed Org is a much less annoying affair than malformed zipped
