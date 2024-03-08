@@ -8083,6 +8083,15 @@ I like the idea of being able to make HTTP requests with Babel.
   :commands org-babel-execute:http)
 #+end_src
 
+***** RSS feeds
+
+I need this for blog publishing. It used to be bundled with Org, but now it's
+pretty much abandoned.
+
+#+begin_src emacs-lisp :tangle packages.el
+(package! ox-rss :pin "d2964eca3614f84db85b498d065862a1e341868d")
+#+end_src
+
 ***** Transclusion
 
 #+call: confpkg("!Pkg org-transclusion")
