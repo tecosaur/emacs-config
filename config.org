@@ -10916,40 +10916,71 @@ very well at the moment.
 
 ***** MathJax
 
-If MathJax is used, we want to use version 3 instead of the default version 2.
-Looking at a [[https://www.intmath.com/cg5/katex-mathjax-comparison.php][comparison]] we seem to find that it is ~5 times as fast, uses a
-single file instead of multiple, but seems to be a bit bigger unfortunately.
-Thankfully this can be mitigated my adding the ~async~ attribute to defer loading.
+I want to use svg MathJax by default, and with a few of the custom commands that
+are part of my LaTeX preamble.
 
 #+begin_src emacs-lisp
-(setq org-html-mathjax-options
-      '((path "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js" )
-        (scale "1")
-        (autonumber "ams")
-        (multlinewidth "85%")
-        (tagindent ".8em")
-        (tagside "right")))
+(setcdr (assoc 'path org-html-mathjax-options)
+        (list "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"))
 
 (setq org-html-mathjax-template
-      "<script>
-MathJax = {
-  chtml: {
-    scale: %SCALE
-  },
-  svg: {
-    scale: %SCALE,
-    fontCache: \"global\"
-  },
-  tex: {
-    tags: \"%AUTONUMBER\",
-    multlineWidth: \"%MULTLINEWIDTH\",
-    tagSide: \"%TAGSIDE\",
-    tagIndent: \"%TAGINDENT\"
-  }
-};
+  "<script>
+  window.MathJax = {
+    loader: {
+      load: ['[tex]/mathtools'],
+    },
+    tex: {
+      ams: {
+        multlineWidth: '%MULTLINEWIDTH'
+      },
+      tags: '%TAGS',
+      tagSide: '%TAGSIDE',
+      tagIndent: '%TAGINDENT',
+      packages: {'[+]': ['mathtools']},
+      macros: {
+        RR: ['\\\\ifstrempty{#1}{\\\\mathbb{R}}{\\\\mathbb{R}^{#1}}', 1, ''],
+        NN: ['\\\\ifstrempty{#1}{\\\\mathbb{N}}{\\\\mathbb{N}^{#1}}', 1, ''],
+        ZZ: ['\\\\ifstrempty{#1}{\\\\mathbb{Z}}{\\\\mathbb{Z}^{#1}}', 1, ''],
+        QQ: ['\\\\ifstrempty{#1}{\\\\mathbb{Q}}{\\\\mathbb{Q}^{#1}}', 1, ''],
+        CC: ['\\\\ifstrempty{#1}{\\\\mathbb{C}}{\\\\mathbb{C}^{#1}}', 1, ''],
+        EE: '\\\\mathbb{E}',
+        Lap: '\\\\operatorname{\\\\mathcal{L}}',
+        Var: '\\\\operatorname{Var}',
+        Cor: '\\\\operatorname{Cor}',
+        E: '\\\\operatorname{E}',
+      },
+      mathtools: {
+        pairedDelimiters: {
+          abs: ['\\\\lvert', '\\\\rvert'],
+          norm: ['\\\\lVert', '\\\\rVert'],
+          ceil: ['\\\\lceil', '\\\\rceil'],
+          floor: ['\\\\lfloor', '\\\\rfloor'],
+          round: ['\\\\lfloor', '\\\\rceil'],
+        }
+      }
+    },
+    chtml: {
+      scale: %SCALE,
+      displayAlign: '%ALIGN',
+      displayIndent: '%INDENT'
+    },
+    svg: {
+      scale: %SCALE,
+      displayAlign: '%ALIGN',
+      displayIndent: '%INDENT'
+    },
+    output: {
+      font: '%FONT',
+      displayOverflow: '%OVERFLOW'
+    }
+  };
 </script>
-<script id=\"MathJax-script\" async
-        src=\"%PATH\"></script>")
+
+<script
+  id=\"MathJax-script\"
+  async
+  src=\"%PATH\">
+</script>")
 #+end_src
 
 *** LaTeX Export
