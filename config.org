@@ -11391,7 +11391,7 @@ introduce an =:order= keyword. Using this I'll arrange snippets as follows.
    :order 2.1)
   (microtype
    :condition org-latex-use-microtype
-   :snippet "\\usepackage[activate={true,nocompatibility},final,tracking=true,kerning=true,spacing=true,factor=2000]{microtype}\n"
+   :snippet "\\usepackage[activate={true,nocompatibility},final,tracking=true,kerning=true,spacing=true,factor=2000]{microtype}"
    :order 0.1)
   (embed-files
    :condition org-latex-embed-files
@@ -11427,7 +11427,7 @@ introduce an =:order= keyword. Using this I'll arrange snippets as follows.
    :order 0.5)
   (par-sep
    :condition org-latex-par-sep
-   :snippet "\\setlength{\\parskip}{\\baselineskip}\n\\setlength{\\parindent}{0pt}\n"
+   :snippet "\\setlength{\\parskip}{\\baselineskip}\n\\setlength{\\parindent}{0pt}"
    :order 0.5)
   (.pifont
    :snippet "\\usepackage{pifont}")
