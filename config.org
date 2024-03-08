@@ -12197,7 +12197,7 @@ surrogate form required by =\BeginAccSupp=.
 #+name: latex-emoji-preamble
 #+begin_src LaTeX
 \usepackage{accsupp}
-\usepackage{transparent}
+% The transparent package is also needed, but will be loaded later.
 \newsavebox\emojibox
 
 \NewDocumentCommand\DeclareEmoji{m m}{% UTF-8 codepoint, UTF-16 codepoint
@@ -12332,30 +12332,35 @@ If SVG-P is set \"includegraphics\" will be replaced with \"includesvg\"."
            emoji-set
            (or (executable-find "cairosvg") (executable-find "inkscape")))
         (error "Emoji set `%s' is not installed" emoji-set))))
-    (concat
-     (org-latex-emoji-fill-preamble
-      emoji-folder (plist-get emoji-spec :height)
-      (plist-get emoji-spec :offset) emoji-svg-only)
-     "\n\n"
-     (mapconcat
-      #'org-latex-emoji-declaration
-      (let (unicode-cars)
-        (save-excursion
-          (goto-char (point-min))
-          (while (re-search-forward org-latex-emoji--rx nil t)
-            (push (aref (match-string 0) 0) unicode-cars)))
-        (cl-delete-duplicates unicode-cars))
-      "\n")
-     "\n")))
+    (org-latex-emoji-fill-preamble
+     emoji-folder (plist-get emoji-spec :height)
+     (plist-get emoji-spec :offset) emoji-svg-only)))
 
 (org-export-update-features 'latex
-  (emoji
+  (emoji-setup ; The precompilable bit
    :condition (save-excursion
                 (goto-char (point-min))
                 (re-search-forward org-latex-emoji--rx nil t))
-   :requires image
+   :requires (image pkg-transparent)
    :snippet org-latex-emoji-setup
-   :order 3))
+   :order 3)
+  (pkg-transparent ; Part of emoji setup, but non-precompilable.
+   :snippet "\\usepackage{transparent}"
+   :order 84)
+  (emoji-declarations
+   :condition t
+   :when emoji-setup
+   :snippet
+   (mapconcat
+    #'org-latex-emoji-declaration
+    (let (unicode-cars)
+      (save-excursion
+        (goto-char (point-min))
+        (while (re-search-forward org-latex-emoji--rx nil t)
+          (push (aref (match-string 0) 0) unicode-cars)))
+      (cl-delete-duplicates unicode-cars))
+    "\n")
+   :order 85))
 #+end_src
 
 Unfortunately this isn't a global solution, as LuaLaTeX doesn't have
@@ -12372,7 +12377,7 @@ when we know it will be used.
 \\newcommand{\\DeclareUnicodeCharacter}[2]{%
     \\begingroup\\lccode`|=\\string\"#1\\relax
     \\lowercase{\\endgroup\\newunicodechar{|}}{#2}}"
-   :order 2.9))
+   :before emoji))
 #+end_src
 
 This works fairly nicely, there's just one little QOL upgrade that we can
