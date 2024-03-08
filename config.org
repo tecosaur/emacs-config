@@ -9359,6 +9359,7 @@ regurgitate the code, cross our fingers, and hope it works.
 (defconst flycheck-org-lint-form
   (flycheck-prepare-emacs-lisp-form
     (require 'org)
+    (require 'org-lint)
     (require 'org-attach)
     (let ((source (car command-line-args-left))
           (process-default-directory default-directory))
