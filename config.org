@@ -520,7 +520,7 @@ created earlier.
 ;; Arguments:
 ;;  - name, the name of the config sub-package
 ;;  - needs, (when non-empty) required system executable(s)
-;;  - after, required features
+;;  - after, required features as a string or vector of strings
 ;;  - pre, a noweb reference to code that should be executed eagerly,
 ;;    and not deferred via after. The code is not included in the
 ;;    generated .el file and should only be used in dire situations.
@@ -543,10 +543,12 @@ created earlier.
                  name))
          (after
           (cond
-           ((string-empty-p after) nil)
-           ((string-match-p "\\`[^()]+\\'" after)
+           ((and (stringp after) (string-empty-p after)) nil)
+           ((and (stringp after) (string-match-p "\\`[^()]+\\'" after))
             (intern after)) ; Single feature.
-           (t after)))
+           ((and (vectorp after) (cl-every #'stringp after))
+            (nconc (list :and) (mapcar #'intern after)))
+           (t nil)))
          (pre (and (not (string-empty-p pre)) pre))
          (confpkg-name
           (concat prefix (replace-regexp-in-string
