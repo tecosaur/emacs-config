@@ -11182,15 +11182,13 @@ A LaTeX macro should make them trivial to create.
   % #1 ding, #2 ding offset, #3 name, #4 colour, #5 default label
   \definecolor{#3}{HTML}{#4}
   \NewDocumentEnvironment{#3}{ O{#5} }
-  {
-    \vcoffin_set:Nnw \Content { \linewidth }
+  {\vcoffin_set:Nnw \Content { \linewidth }
     \noindent \ignorespaces
     \par\vspace{-0.7\baselineskip}%
     \textcolor{#3}{#1}~\textcolor{#3}{\textbf{##1}}%
     \vspace{-0.8\baselineskip}
     \begin{addmargin}[1em]{1em}
-    }
-    {
+    }{%
     \end{addmargin}
     \vspace{-0.5\baselineskip}
     \vcoffin_set_end:
@@ -11198,9 +11196,7 @@ A LaTeX macro should make them trivial to create.
     \JoinCoffins*\Content[l,t]\SideRule[l,t](#2,-0.7em)
     \noindent\TypesetCoffin\Content
     \vspace*{\CoffinTotalHeight\Content}\bigskip
-    \vspace{-2\baselineskip}
-  }
-}
+    \vspace{-2\baselineskip}}}
 \ExplSyntaxOff
 #+end_src
 
