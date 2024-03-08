@@ -11374,6 +11374,8 @@ introduce an =:order= keyword. Using this I'll arrange snippets as follows.
 + =2= Tables and figures
 + =3= Miscellaneous short content
 + =4= Fancy boxes
++ =70= setup for non-precompilable content
++ =80= non-precompileable content
 
 #+begin_src emacs-lisp
 (org-export-update-features 'latex
@@ -11437,37 +11439,131 @@ introduce an =:order= keyword. Using this I'll arrange snippets as follows.
    :snippet (concat (unless (memq 'maths features)
                       "\\usepackage{amssymb} % provides \\square")
                     org-latex-checkbox-preamble)
-   :order 3)
+   :after .pifont)
   (.fancy-box
    :requires (.pifont .xcoffins)
    :snippet org-latex-box-preamble
-   :order 3.9)
+   :after (.pifont .xcoffins))
   (box-warning
    :condition "^[ \t]*#\\+begin_warning\\|\\\\begin{warning}"
    :requires .fancy-box
    :snippet "\\defsimplebox{warning}{e66100}{Warning}"
-   :order 4)
+   :after .fancy-box)
   (box-info
    :condition "^[ \t]*#\\+begin_info\\|\\\\begin{info}"
    :requires .fancy-box
    :snippet "\\defsimplebox{info}{3584e4}{Information}"
-   :order 4)
+   :after .fancy-box)
   (box-notes
    :condition "^[ \t]*#\\+begin_notes\\|\\\\begin{notes}"
    :requires .fancy-box
    :snippet "\\defsimplebox{notes}{26a269}{Notes}"
-   :order 4)
+   :after .fancy-box)
   (box-success
    :condition "^[ \t]*#\\+begin_success\\|\\\\begin{success}"
    :requires .fancy-box
    :snippet "\\defsimplebox{success}{26a269}{\\vspace{-\\baselineskip}}"
-   :order 4)
+   :after .fancy-box)
   (box-error
    :condition "^[ \t]*#\\+begin_error\\|\\\\begin{error}"
    :requires .fancy-box
    :snippet "\\defsimplebox{error}{c01c28}{Important}"
-   :order 4))
+   :after .fancy-box)
+  (hanging-section-numbers
+   :condition
+   (let ((latex-class
+          (assoc (plist-get info :latex-class) (plist-get info :latex-classes))))
+     (and (cadr latex-class)
+          (string-match-p "\\`\\\\documentclass\\(?:\\[.*\\]\\)?{scr" (cadr latex-class))
+          (not (string-match-p "[[,]twocolumn[],]" (or (plist-get info :latex-class-options) "")))))
+   :snippet
+   "\\renewcommand\\sectionformat{\\llap{\\thesection\\autodot\\enskip}}
+\\renewcommand\\subsectionformat{\\llap{\\thesubsection\\autodot\\enskip}}
+\\renewcommand\\subsubsectionformat{\\llap{\\thesubsubsection\\autodot\\enskip}}")
+  (toc-hidelinks
+   :condition
+   (or (plist-get info :with-toc)
+       (save-excursion
+         (goto-char (point-min))
+         (re-search-forward "\\tableofcontents" nil t)))
+   :snippet "%% hide links styles in toc
+\\NewCommandCopy{\\oldtoc}{\\tableofcontents}
+\\renewcommand{\\tableofcontents}{\\begingroup\\hypersetup{hidelinks}\\oldtoc\\endgroup}"))
 #+end_src
+
+***** Content-feature graph
+
+#+name: generate-cfg
+#+begin_src emacs-lisp :var backend="" :noweb-ref none
+(with-temp-buffer
+  (let ((lambda-count 0)
+        (regexp-count 0)
+        (string-count 0)
+        (nil-count 0)
+        cond-names feats impl-names)
+    (dolist (cond-feats (org-export-get-all-feature-conditions (intern backend)))
+      (dolist (feat (cdr cond-feats))
+        (let ((cond-name
+               (pcase (car cond-feats)
+                 ((and (pred symbolp) f)
+                  (symbol-name f))
+                 ((and (pred stringp) f)
+                  (format "Regexp #%d" (cl-incf regexp-count)))
+                 ((and (pred functionp) f)
+                  (format "λ #%d" (cl-incf lambda-count)))
+                 (_ "???"))))
+          (push cond-name cond-names)
+          (push feat feats)
+          (insert (format "\"%s\" -> \"%s\"\n" cond-name feat)))))
+    (dolist (feat-impl (org-export-get-all-feature-implementations (intern backend)))
+      (let ((impl-name
+             (pcase (plist-get (cdr feat-impl) :snippet)
+               ((pred not)
+                (format "nil #%d" (cl-incf nil-count)))
+               ((and (pred symbolp) imp)
+                (symbol-name imp))
+               ((pred stringp)
+                (format "String #%d" (cl-incf string-count)))
+               ((pred functionp)
+                (format "λ #%d" (cl-incf lambda-count))))))
+        (push impl-name impl-names)
+        (push (car feat-impl) feats)
+        (insert (format "\"%s\" -> \"%s\"\n" (car feat-impl) impl-name))
+        (dolist (req (ensure-list (plist-get (cdr feat-impl) :requires)))
+          (insert (format "\"%s\" -> \"%s\" [color=\"#a991f1\" labelfontcolor=\"#a991f1\"]" impl-name req)))
+        (dolist (prv (ensure-list (plist-get (cdr feat-impl) :prevents)))
+          (insert (format "\"%s\" -> \"%s\" [color=\"#ff665c\" penwidth=\"0.9\" arrowhead=empty]" impl-name prv)))
+        (dolist (whn (ensure-list (plist-get (cdr feat-impl) :when)))
+          (insert (format "\"%s\" -> \"%s\" [style=\"dashed\" color=\"#4db5bd\" penwidth=\"0.9\" arrowhead=empty labelfontcolor=\"#4db5bd\" taillabel=\"%s\"]" whn impl-name impl-name)))
+        (dolist (bfr (ensure-list (plist-get (cdr feat-impl) :before)))
+          (insert (format "\"%s\" -> \"%s\" [style=\"dotted\" color=\"#fcce7b\" penwidth=\"1.4\" arrowhead=halfopen]" impl-name bfr)))
+        (dolist (afr (ensure-list (plist-get (cdr feat-impl) :after)))
+          (insert (format "\"%s\" -> \"%s\" [style=\"dotted\" color=\"#7bc275\" penwidth=\"1.4\" arrowhead=halfopen]" afr impl-name)))))
+    (goto-char (point-min))
+    (insert (concat "subgraph cluster_0 {\n  peripheries=0\n  \""
+                    (string-join (nreverse cond-names) "\" [color=\"#e69055\"]\n  \"")
+                    "\" [color=\"#e69055\"]\n}\n")
+            (concat "subgraph cluster_1 {\n  peripheries=0\n  \""
+                    (string-join (mapcar #'symbol-name (nreverse (delete-dups feats))) "\"\n  \"")
+                    "\"\n}\n")
+            (concat "subgraph cluster_2 {\n  peripheries=0\n  \""
+                    (string-join (nreverse impl-names) "\" [color=\"#4db5bd\"]\n  \"")
+                    "\" [color=\"#4db5bd\"]\n}\n"))
+    )
+  (buffer-string))
+#+end_src
+
+#+begin_src dot :cmd twopi :file misc/ox-latex-cfg.svg :results file graphics :noweb no-export
+digraph {
+    graph [bgcolor="transparent", ranksep="2.5"];
+    node  [shape="underline" penwidth="2" style="rounded,filled" fillcolor="#efefef" color="#c9c9c9" fontcolor="#000000" fontname="Alegreya Sans"];
+    edge  [color="#9ca0a4" penwidth="1.2" fontname="Alegreya Sans"]
+    rankdir="LR"
+    <<generate-cfg("beamer")>>
+}
+#+end_src
+
+[[file:misc/ox-latex-cfg.svg]]
 
 ***** Adding xcolor as an unconditional package
 
@@ -11560,7 +11656,8 @@ preamble generation.
    :condition t
    :when (custom-font maths)
    :snippet (org-latex-fontset :maths)
-   :order 0.3))
+   :after (custom-font maths)
+   :order 0))
 #+end_src
 
 Finally, we just need to add some fonts.
@@ -11631,6 +11728,7 @@ When we're using Alegreya we can apply a lovely little tweak to =tabular= which
 % tabular lining figures in tables
 \\renewcommand{\\tabular}{\\AlegreyaTLF\\let\\@halignto\\@empty\\@tabular}
 \\makeatother"
+   :after custom-font
    :order 0.5))
 #+end_src
 
@@ -11656,6 +11754,7 @@ can correct for this by redefining it with subtlety shifted kerning.
         \\kern-.10em%
         \\TeX}
 \\makeatother"
+    :after alegreya-typeface
     :order 0.5))
 #+end_src
 
@@ -12034,9 +12133,9 @@ environments. Protrusion is not desirable here. Thankfully, we can patch the
 (org-export-update-features 'latex
   (no-protrusion-in-code
    :condition t
-   :when microtype
+   :when (microtype engraved-code)
    :snippet "\\ifcsname Code\\endcsname\n  \\let\\oldcode\\Code\\renewcommand{\\Code}{\\microtypesetup{protrusion=false}\\oldcode}\n\\fi"
-   :order 98.5))
+   :after (engraved-code microtype)))
 #+end_src
 
 At some point it would be nice to make the box colours easily customisable. At
@@ -12128,6 +12227,7 @@ Now all that remains is to hook this into the preamble generation.
    :condition "^[ \t]*#\\+begin_src julia\\|^[ \t]*#\\+BEGIN_SRC julia\\|src_julia"
    :when code
    :snippet org-latex-julia-mono-fontspec
+   :after custom-font
    :order 0)
   (microtype-lualatex
    :condition t
@@ -12137,6 +12237,7 @@ Now all that remains is to hook this into the preamble generation.
    :order 0.1)
   (custom-font-no-mono
    :condition t
+   :when julia-code
    :prevents custom-font
    :snippet (org-latex-fontset :serif :sans)
    :order 0))
