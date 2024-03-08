@@ -28,11 +28,12 @@ $body-font: 'Merriweather',serif;
 $title-font: 'et-book',serif;
 $code-font: SFMono-Regular,Consolas,Liberation Mono,Menlo,monospace;
 
-@mixin text-background($color-bg, $color-text) {
-  background-image: linear-gradient($color-text, $color-text);
-  background-size: 1px 1px;
-  background-repeat: repeat-x;
-  background-position: 0% 95%;
+@mixin text-underline($color-text) {
+  text-decoration-line: underline;
+  text-decoration-style: dotted;
+  text-decoration-color: $text-light;
+  text-decoration-thickness: .1em;
+  text-underline-offset: 1.5px;
 }
 
 @mixin text-selection($selection) {
@@ -42,13 +43,10 @@ $code-font: SFMono-Regular,Consolas,Liberation Mono,Menlo,monospace;
 }
 
 @mixin link-underline($background, $text) {
-  @include text-background($background, $text);
+  @include text-underline($text);
   @include text-selection($back-medium);
 
   border-radius: 1px;
-  // background-color: $background;
-  // color: $text;
-  text-decoration: none;
 
   *,
   *:after,

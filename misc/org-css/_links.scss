@@ -2,6 +2,7 @@
 
 a {
   color: inherit;
+  position: relative; // For the ::before element positioning
 }
 
 // #breadcrumbs a,
@@ -16,21 +17,29 @@ dl a {
   &:hover {
     opacity: 0.9;
     filter: drop-shadow(1px 1px 1px $back-white);
-    @include text-background($back-white, $text-dark);
-    @include text-selection($back-white);
-    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg id='squiggle-link' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:ev='http://www.w3.org/2001/xml-events' viewBox='0 0 20 4'%3E%3Cstyle type='text/css'%3E.squiggle{animation:shift .3s linear infinite;}@keyframes shift {from {transform:translateX(0);}to {transform:translateX(-20px);}}%3C/style%3E%3Cpath fill='none' stroke='%23000000' stroke-width='2' class='squiggle' d='M0,3.5 c 5,0,5,-3,10,-3 s 5,3,10,3 c 5,0,5,-3,10,-3 s 5,3,10,3'/%3E%3C/svg%3E") !important;
-    background-position: 0% 100%;
-    background-size: 0.8em auto;
     text-decoration: none;
+    &::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      mask-image: url("data:image/svg+xml;charset=utf8,%3Csvg id='squiggle-link' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:ev='http://www.w3.org/2001/xml-events' viewBox='0 0 20 4'%3E%3Cstyle type='text/css'%3E.squiggle{animation:shift .3s linear infinite;}@keyframes shift {from {transform:translateX(0);}to {transform:translateX(-20px);}}%3C/style%3E%3Cpath fill='none' stroke='%23000000' stroke-width='2' class='squiggle' d='M0,3.5 c 5,0,5,-3,10,-3 s 5,3,10,3 c 5,0,5,-3,10,-3 s 5,3,10,3'/%3E%3C/svg%3E") !important;
+      mask-position: 0% 100%;
+      mask-size: 0.8em auto;
+      mask-repeat: repeat-x;
+      background: $text-light;
+    }
   }
 
   &[href^="#"] {
-    @include text-background($back-white, $text-gray);
+    @include text-underline($text-gray);
     @include text-selection($back-white);
     &:hover {
       opacity: 0.9;
       filter: drop-shadow(1px 1px 1px $back-white);
-      @include text-background($back-white, $text-medium);
+      @include text-underline($text-medium);
       @include text-selection($back-white);
     }
   }
@@ -46,7 +55,20 @@ dl a {
   li a,
   dl a {
     &:hover {
-      background-image: url("data:image/svg+xml;charset=utf8,%3Csvg id='squiggle-link' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:ev='http://www.w3.org/2001/xml-events' viewBox='0 0 20 4'%3E%3Cstyle type='text/css'%3E.squiggle{animation:shift .3s linear infinite;}@keyframes shift {from {transform:translateX(0);}to {transform:translateX(-20px);}}%3C/style%3E%3Cpath fill='none' stroke='%23ffffff' stroke-width='2' class='squiggle' d='M0,3.5 c 5,0,5,-3,10,-3 s 5,3,10,3 c 5,0,5,-3,10,-3 s 5,3,10,3'/%3E%3C/svg%3E");
+      text-decoration: none;
+      &::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        mask-image: url("data:image/svg+xml;charset=utf8,%3Csvg id='squiggle-link' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:ev='http://www.w3.org/2001/xml-events' viewBox='0 0 20 4'%3E%3Cstyle type='text/css'%3E.squiggle{animation:shift .3s linear infinite;}@keyframes shift {from {transform:translateX(0);}to {transform:translateX(-20px);}}%3C/style%3E%3Cpath fill='none' stroke='%23000000' stroke-width='2' class='squiggle' d='M0,3.5 c 5,0,5,-3,10,-3 s 5,3,10,3 c 5,0,5,-3,10,-3 s 5,3,10,3'/%3E%3C/svg%3E") !important;
+        mask-position: 0% 100%;
+        mask-size: 0.8em auto;
+        mask-repeat: repeat-x;
+        background: $text-light;
+      }
     }
   }
 }
@@ -154,7 +176,7 @@ div.link-preview {
     margin-right: 0.5em;
   }
   p {
-    margin: 0;
+    margin: 0 0.6em 0 0;
     font-size: 10pt;
     b {
       font-size: 11pt;

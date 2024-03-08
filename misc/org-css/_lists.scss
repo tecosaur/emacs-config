@@ -30,15 +30,20 @@ ul {
 
 ol {
   counter-reset: li;
-  li::before {
-    content: counter(li);
-    margin-left: -1.5em;
-    margin-right: 0.5em;
-    text-align: right;
-    direction: rtl;
-  }
   li {
-    counter-increment: li;
+    &:not([value]) {
+      counter-increment: li;
+    }
+    &::before {
+      content: counter(li);
+      margin-left: -1.5em;
+      margin-right: 0.5em;
+      text-align: right;
+      direction: rtl;
+    }
+    &[value]::before {
+      content: attr(value);
+    }
   }
 }
 

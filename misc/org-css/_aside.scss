@@ -1,13 +1,12 @@
 aside {
   background-color: $code-background;
   border-radius: 5px;
-  @include light-para(15px);
+  @include light-para(14px);
   margin: 20px 0;
   padding: 5px 20px 10px;
   line-height: 1.6 !important;
 
   p {
-    @include light-para(15px);
     line-height: 1.6 !important;
   }
 
@@ -15,6 +14,13 @@ aside {
     font-size: 12px;
     border: none;
     padding-left: 0;
+  }
+
+  :first-child {
+    margin-top: 0.5em;
+  }
+  :last-child {
+    margin-bottom: 0.5em;
   }
 }
 

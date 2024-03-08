@@ -80,7 +80,7 @@ summary {
     --accent: #002642;
     --accent-dark: #00151c;
     --code-foreground: #2c3e50;
-    --code-background: #efefef;
+    --code-background: #f5f5f5;
     --code-func: #6c3163;
     --code-const: #4e3163;
     --code-regex: #655370;
@@ -112,15 +112,15 @@ summary {
     --switch-icon: "🌝";
     --switch-shadow-color: #fce477;
     --switch-text: "light mode?"; }
-    #theme-switch:checked ~ #page img.invertible, #theme-switch:checked ~ #page object[type="image/svg+xml"].invertible {
-      filter: invert(90%) hue-rotate(180deg) sepia(1%); } }
+    #theme-switch:checked ~ #page img.invertible, #theme-switch:checked ~ #page object[type="image/svg+xml"].invertible, #theme-switch:checked ~ #page img.org-latex {
+      filter: invert(90.5%) hue-rotate(180deg) sepia(1%); } }
 
 @media (prefers-color-scheme: dark) {
   #theme-switch:checked ~ #page {
     --accent: #002642;
     --accent-dark: #00151c;
     --code-foreground: #2c3e50;
-    --code-background: #efefef;
+    --code-background: #f5f5f5;
     --code-func: #6c3163;
     --code-const: #4e3163;
     --code-regex: #655370;
@@ -134,8 +134,8 @@ summary {
     --switch-icon: "🌚";
     --switch-shadow-color: #373d4e;
     --switch-text: "dark mode?"; }
-    #theme-switch:checked ~ #page img.invertible, #theme-switch:checked ~ #page object[type="image/svg+xml"].invertible {
-      filter: none; }
+    #theme-switch:checked ~ #page img.invertible, #theme-switch:checked ~ #page object[type="image/svg+xml"].invertible, #theme-switch:checked ~ #page img.org-latex {
+      filter: invert(7%) sepia(4%); }
   #page {
     --accent: #002642;
     --accent-dark: #daf1ff;
@@ -154,8 +154,8 @@ summary {
     --switch-icon: "🌝";
     --switch-shadow-color: #fce477;
     --switch-text: "light mode?"; }
-    #page img.invertible, #page object[type="image/svg+xml"].invertible {
-      filter: invert(90%) hue-rotate(180deg) sepia(1%); } }
+    #page img.invertible, #page object[type="image/svg+xml"].invertible, #page img.org-latex {
+      filter: invert(90.5%) hue-rotate(180deg) sepia(1%); } }
 
 #theme-switch {
   display: none; }
@@ -398,23 +398,22 @@ aside {
   border-radius: 5px;
   font-family: "Open Sans", sans;
   font-weight: normal;
-  font-size: 15px;
+  font-size: 14px;
   line-height: 1.6;
   color: var(--text-gray);
   margin: 20px 0;
   padding: 5px 20px 10px;
   line-height: 1.6 !important; }
   aside p {
-    font-family: "Open Sans", sans;
-    font-weight: normal;
-    font-size: 15px;
-    line-height: 1.6;
-    color: var(--text-gray);
     line-height: 1.6 !important; }
   aside pre {
     font-size: 12px;
     border: none;
     padding-left: 0; }
+  aside :first-child {
+    margin-top: 0.5em; }
+  aside :last-child {
+    margin-bottom: 0.5em; }
 
 @media (min-width: 1280px) {
   aside {
@@ -436,7 +435,9 @@ blockquote {
   padding-left: 15px; }
   blockquote p {
     display: inline;
-    font-size: 13px; }
+    font-size: 14px; }
+  blockquote ol, blockquote ul {
+    margin-left: 1em; }
   blockquote footer {
     font-family: "Open Sans", sans;
     font-weight: normal;
@@ -570,6 +571,37 @@ div.error::before {
   line-height: 1.1;
   text-align: center; }
 
+div.notes {
+  background: rgba(113, 90, 177, 0.15);
+  border-left: 4px solid rgba(113, 90, 177, 0.45);
+  margin: 1.8rem 0 1.25rem 15px;
+  padding: 0.8em;
+  line-height: 1.4;
+  text-align: center;
+  position: relative;
+  clear: both; }
+  div.notes p {
+    margin: 0; }
+
+div.notes::before {
+  content: "✎";
+  color: var(--back-white);
+  background: rgba(113, 90, 177, 0.8);
+  align-items: flex-end;
+  top: -1rem;
+  font-weight: 700;
+  font-size: 1.4rem;
+  -webkit-clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
+  clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%);
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  justify-content: center;
+  position: absolute;
+  left: -1.2rem;
+  line-height: 1.3;
+  text-align: center; }
+
 .org-ref-bib-h1 {
   margin-top: 70px;
   padding-top: 30px;
@@ -648,8 +680,8 @@ pre.src:empty {
 code {
   font-family: SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace;
   color: var(--code-foreground);
-  font-size: 15px;
-  padding: 0 5px; }
+  font-size: 0.9em;
+  padding: 0 2px; }
 
 kbd {
   display: inline-block;
@@ -1229,7 +1261,8 @@ hr {
   margin-top: 40px; }
 
 a {
-  color: inherit; }
+  color: inherit;
+  position: relative; }
 
 figcaption a,
 p a,
@@ -1237,12 +1270,12 @@ p a,
 table a,
 li a,
 dl a {
-  background-image: linear-gradient(var(--text-dark), var(--text-dark));
-  background-size: 1px 1px;
-  background-repeat: repeat-x;
-  background-position: 0% 95%;
-  border-radius: 1px;
-  text-decoration: none; }
+  text-decoration-line: underline;
+  text-decoration-style: dotted;
+  text-decoration-color: var(--text-light);
+  text-decoration-thickness: .1em;
+  text-underline-offset: 1.5px;
+  border-radius: 1px; }
   figcaption a::selection,
   p a::selection,
   .page-tags a::selection,
@@ -1294,31 +1327,35 @@ dl a {
   dl a:hover {
     opacity: 0.9;
     filter: drop-shadow(1px 1px 1px var(--back-white));
-    background-image: linear-gradient(var(--text-dark), var(--text-dark));
-    background-size: 1px 1px;
-    background-repeat: repeat-x;
-    background-position: 0% 95%;
-    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg id='squiggle-link' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:ev='http://www.w3.org/2001/xml-events' viewBox='0 0 20 4'%3E%3Cstyle type='text/css'%3E.squiggle{animation:shift .3s linear infinite;}@keyframes shift {from {transform:translateX(0);}to {transform:translateX(-20px);}}%3C/style%3E%3Cpath fill='none' stroke='%23000000' stroke-width='2' class='squiggle' d='M0,3.5 c 5,0,5,-3,10,-3 s 5,3,10,3 c 5,0,5,-3,10,-3 s 5,3,10,3'/%3E%3C/svg%3E") !important;
-    background-position: 0% 100%;
-    background-size: 0.8em auto;
     text-decoration: none; }
-    figcaption a:hover::selection,
-    p a:hover::selection,
-    .page-tags a:hover::selection,
-    table a:hover::selection,
-    li a:hover::selection,
-    dl a:hover::selection {
-      background: var(--back-white); }
+    figcaption a:hover::before,
+    p a:hover::before,
+    .page-tags a:hover::before,
+    table a:hover::before,
+    li a:hover::before,
+    dl a:hover::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      mask-image: url("data:image/svg+xml;charset=utf8,%3Csvg id='squiggle-link' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:ev='http://www.w3.org/2001/xml-events' viewBox='0 0 20 4'%3E%3Cstyle type='text/css'%3E.squiggle{animation:shift .3s linear infinite;}@keyframes shift {from {transform:translateX(0);}to {transform:translateX(-20px);}}%3C/style%3E%3Cpath fill='none' stroke='%23000000' stroke-width='2' class='squiggle' d='M0,3.5 c 5,0,5,-3,10,-3 s 5,3,10,3 c 5,0,5,-3,10,-3 s 5,3,10,3'/%3E%3C/svg%3E") !important;
+      mask-position: 0% 100%;
+      mask-size: 0.8em auto;
+      mask-repeat: repeat-x;
+      background: var(--text-light); }
   figcaption a[href^="#"],
   p a[href^="#"],
   .page-tags a[href^="#"],
   table a[href^="#"],
   li a[href^="#"],
   dl a[href^="#"] {
-    background-image: linear-gradient(var(--text-gray), var(--text-gray));
-    background-size: 1px 1px;
-    background-repeat: repeat-x;
-    background-position: 0% 95%; }
+    text-decoration-line: underline;
+    text-decoration-style: dotted;
+    text-decoration-color: var(--text-light);
+    text-decoration-thickness: .1em;
+    text-underline-offset: 1.5px; }
     figcaption a[href^="#"]::selection,
     p a[href^="#"]::selection,
     .page-tags a[href^="#"]::selection,
@@ -1334,10 +1371,11 @@ dl a {
     dl a[href^="#"]:hover {
       opacity: 0.9;
       filter: drop-shadow(1px 1px 1px var(--back-white));
-      background-image: linear-gradient(var(--text-medium), var(--text-medium));
-      background-size: 1px 1px;
-      background-repeat: repeat-x;
-      background-position: 0% 95%; }
+      text-decoration-line: underline;
+      text-decoration-style: dotted;
+      text-decoration-color: var(--text-light);
+      text-decoration-thickness: .1em;
+      text-underline-offset: 1.5px; }
       figcaption a[href^="#"]:hover::selection,
       p a[href^="#"]:hover::selection,
       .page-tags a[href^="#"]:hover::selection,
@@ -1354,7 +1392,26 @@ dl a {
 #theme-switch:checked ~ #page #crosslinks a:not(.highlight):hover,
 #theme-switch:checked ~ #page li a:hover,
 #theme-switch:checked ~ #page dl a:hover {
-  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg id='squiggle-link' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:ev='http://www.w3.org/2001/xml-events' viewBox='0 0 20 4'%3E%3Cstyle type='text/css'%3E.squiggle{animation:shift .3s linear infinite;}@keyframes shift {from {transform:translateX(0);}to {transform:translateX(-20px);}}%3C/style%3E%3Cpath fill='none' stroke='%23ffffff' stroke-width='2' class='squiggle' d='M0,3.5 c 5,0,5,-3,10,-3 s 5,3,10,3 c 5,0,5,-3,10,-3 s 5,3,10,3'/%3E%3C/svg%3E"); }
+  text-decoration: none; }
+  #theme-switch:checked ~ #page #breadcrumbs a:hover::before,
+  #theme-switch:checked ~ #page figcaption a:hover::before,
+  #theme-switch:checked ~ #page p a:hover::before,
+  #theme-switch:checked ~ #page .page-tags a:hover::before,
+  #theme-switch:checked ~ #page table a:hover::before,
+  #theme-switch:checked ~ #page #crosslinks a:not(.highlight):hover::before,
+  #theme-switch:checked ~ #page li a:hover::before,
+  #theme-switch:checked ~ #page dl a:hover::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    mask-image: url("data:image/svg+xml;charset=utf8,%3Csvg id='squiggle-link' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' xmlns:ev='http://www.w3.org/2001/xml-events' viewBox='0 0 20 4'%3E%3Cstyle type='text/css'%3E.squiggle{animation:shift .3s linear infinite;}@keyframes shift {from {transform:translateX(0);}to {transform:translateX(-20px);}}%3C/style%3E%3Cpath fill='none' stroke='%23000000' stroke-width='2' class='squiggle' d='M0,3.5 c 5,0,5,-3,10,-3 s 5,3,10,3 c 5,0,5,-3,10,-3 s 5,3,10,3'/%3E%3C/svg%3E") !important;
+    mask-position: 0% 100%;
+    mask-size: 0.8em auto;
+    mask-repeat: repeat-x;
+    background: var(--text-light); }
 
 *:target::before {
   content: "🠖";
@@ -1372,12 +1429,12 @@ dl a {
       right: 0; } }
 #content .page-intro p a,
 #footnotes a {
-  background-image: linear-gradient(var(--text-gray), var(--text-gray));
-  background-size: 1px 1px;
-  background-repeat: repeat-x;
-  background-position: 0% 95%;
-  border-radius: 1px;
-  text-decoration: none; }
+  text-decoration-line: underline;
+  text-decoration-style: dotted;
+  text-decoration-color: var(--text-light);
+  text-decoration-thickness: .1em;
+  text-underline-offset: 1.5px;
+  border-radius: 1px; }
   #content .page-intro p a::selection,
   #footnotes a::selection {
     background: var(--back-medium); }
@@ -1395,12 +1452,12 @@ dl a {
     color: var(--text-gray); }
   #content .page-intro p a:hover,
   #footnotes a:hover {
-    background-image: linear-gradient(var(--text-gray), var(--text-gray));
-    background-size: 1px 1px;
-    background-repeat: repeat-x;
-    background-position: 0% 95%;
-    border-radius: 1px;
-    text-decoration: none; }
+    text-decoration-line: underline;
+    text-decoration-style: dotted;
+    text-decoration-color: var(--text-light);
+    text-decoration-thickness: .1em;
+    text-underline-offset: 1.5px;
+    border-radius: 1px; }
     #content .page-intro p a:hover::selection,
     #footnotes a:hover::selection {
       background: var(--back-medium); }
@@ -1495,7 +1552,7 @@ div.link-preview {
     margin-left: -0.5em;
     margin-right: 0.5em; }
   div.link-preview p {
-    margin: 0;
+    margin: 0 0.6em 0 0;
     font-size: 10pt; }
     div.link-preview p b {
       font-size: 11pt; }
@@ -1529,14 +1586,16 @@ ul li::before {
 
 ol {
   counter-reset: li; }
+  ol li:not([value]) {
+    counter-increment: li; }
   ol li::before {
     content: counter(li);
     margin-left: -1.5em;
     margin-right: 0.5em;
     text-align: right;
     direction: rtl; }
-  ol li {
-    counter-increment: li; }
+  ol li[value]::before {
+    content: attr(value); }
 
 ul ul, ol ol {
   padding-left: 20px; }

@@ -3,7 +3,11 @@ blockquote {
 
   p {
     display: inline;
-    font-size: 13px;
+    font-size: 14px;
+  }
+
+  ol, ul {
+    margin-left: 1em;
   }
 
   footer {
@@ -51,3 +55,4 @@ blockquote {
 @include box(success, $green, "✔", polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%), 35px, 35px, 1.5)
 @include box(warning, $orange, "!", polygon(50% 0,0 100%,100% 100%))
 @include box(error, $red, "!", polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%), 30px)
+@include box(notes, $purple, "✎", polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%), 32px, 32px, 1.3)
