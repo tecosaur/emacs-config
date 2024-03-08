@@ -7221,6 +7221,37 @@ I've got a few extra addresses I'd like ~+mu4e-set-from-address-h~ to be aware o
   (+mu4e-update-personal-addresses))
 #+end_src
 
+We also want to use any =@tecosaur.net= address as an automatic from address.
+
+#+begin_src emacs-lisp
+(defadvice! +mu4e-set-from-adress-h-personal-a (orig-fn)
+  :around #'+mu4e-set-from-address-h
+  (let* ((msg-addrs
+          (and mu4e-compose-parent-message
+               (delq nil
+                     (mapcar
+                      (lambda (adr) (plist-get adr :email))
+                      (append (mu4e-message-field mu4e-compose-parent-message :to)
+                              (mu4e-message-field mu4e-compose-parent-message :cc)
+                              (mu4e-message-field mu4e-compose-parent-message :from))))))
+         (personal-addrs
+          (if (or mu4e-contexts +mu4e-personal-addresses)
+              (and (> (length +mu4e-personal-addresses) 1)
+                   +mu4e-personal-addresses)
+            (mu4e-personal-addresses)))
+         (personal-domain-addr
+          (cl-some
+           (lambda (email)
+             (and (string-match-p "@\\(?:tec\\.\\)?tecosaur\\.net>?$"
+                                  email)
+                  email))
+           msg-addrs)))
+    (if (and personal-domain-addr
+             (not (cl-intersection msg-addrs personal-addrs :test #'equal)))
+        (setq user-mail-address personal-domain-addr)
+      (funcall orig-fn))))
+#+end_src
+
 Speaking of, it would be good to put emails sent from =@tecosaur.net= in the
 account-specific sent directory, not the catch-all.
 
