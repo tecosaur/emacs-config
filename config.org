@@ -11531,18 +11531,19 @@ the cars in `org-latex-fontsets'."
   (let* ((fontset-spec (org-latex-fontset-entry))
          (fontset (alist-get (car fontset-spec) org-latex-fontsets)))
     (if fontset
-        (concat
-         (mapconcat
-          (lambda (style)
-            (when (plist-get fontset style)
-              (concat (plist-get fontset style) "\n")))
-          desired-styles
-          "")
-         (when (memq (cdr fontset-spec) desired-styles)
-           (pcase (cdr fontset-spec)
-             (:serif "\\renewcommand{\\familydefault}{\\rmdefault}\n")
-             (:sans "\\renewcommand{\\familydefault}{\\sfdefault}\n")
-             (:mono "\\renewcommand{\\familydefault}{\\ttdefault}\n"))))
+        (string-trim
+         (concat
+          (mapconcat
+           (lambda (style)
+             (when (plist-get fontset style)
+               (concat (plist-get fontset style) "\n")))
+           desired-styles
+           "")
+          (when (memq (cdr fontset-spec) desired-styles)
+            (pcase (cdr fontset-spec)
+              (:serif "\\renewcommand{\\familydefault}{\\rmdefault}\n")
+              (:sans "\\renewcommand{\\familydefault}{\\sfdefault}\n")
+              (:mono "\\renewcommand{\\familydefault}{\\ttdefault}\n")))))
       (error "Font-set %s is not provided in org-latex-fontsets" (car fontset-spec)))))
 #+end_src
 
