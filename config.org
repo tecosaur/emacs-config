@@ -11587,7 +11587,7 @@ Finally, we just need to add some fonts.
      :serif "\\usepackage[osf]{Alegreya}"
      :sans "\\usepackage{AlegreyaSans}"
      :mono "\\usepackage[scale=0.88]{sourcecodepro}"
-     :maths "\\usepackage[varbb]{newpxmath}")
+     :maths "\\let\\Bbbk\\relax\n\\usepackage[varbb]{newpxmath}")
     (biolinum
      :serif "\\usepackage[osf]{libertineRoman}"
      :sans "\\usepackage[sfdefault,osf]{biolinum}"
@@ -11603,7 +11603,7 @@ Finally, we just need to add some fonts.
      :serif "\\usepackage{newpxtext}"
      :sans "\\usepackage{gillius}"
      :mono "\\usepackage[scale=0.9]{sourcecodepro}"
-     :maths "\\usepackage[varbb]{newpxmath}")
+     :maths "\\let\\Bbbk\\relax\n\\usepackage[varbb]{newpxmath}")
     (noto
      :serif "\\usepackage[osf]{noto-serif}"
      :sans "\\usepackage[osf]{noto-sans}"
@@ -13207,9 +13207,10 @@ For use in the new-file template, let's set out a nice preamble we may want to u
 \\usepackage{gillius}
 \\usepackage[scale=0.9]{sourcecodepro}
 
-\\usepackage[varbb]{newpxmath}
 \\usepackage{mathtools}
 \\usepackage{amssymb}
+\\let\\Bbbk\\relax
+\\usepackage[varbb]{newpxmath}
 
 \\usepackage[activate={true,nocompatibility},final,tracking=true,kerning=true,spacing=true,factor=2000]{microtype}
 % microtype makes text look nicer
