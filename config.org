@@ -7481,10 +7481,7 @@ namely:
       (goto-char (point-max))
       (insert (car +mu4e-org-ml-signature)))
     (setq default-directory
-          (replace-regexp-in-string
-           (regexp-quote straight-build-dir)
-           "repos"
-           (file-name-directory (locate-library "org"))))))
+          (file-name-concat doom-user-dir "lisp/org/"))))
 
 (defun +mu4e-goto-subject-not-to-once ()
   (message-goto-subject)
