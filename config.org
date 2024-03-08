@@ -9712,7 +9712,7 @@ To this, we make two additions:
 + My collection [[*Maths notation conveniences][mathematical notation conveniences]].
 
 #+begin_src emacs-lisp :noweb no-export :noweb-prefix no
-(setq org-latex-preview-header
+(setq org-latex-preview-preamble
       (concat
        <<grab("latex-default-snippet-preamble")>>
        "\n% Custom font\n\\usepackage{arev}\n\n"
@@ -9723,23 +9723,8 @@ Since we can, instead of making the background colour match the =default= face,
 let's make it transparent.
 
 #+begin_src emacs-lisp
-(plist-put org-format-latex-options :background "Transparent")
-(plist-put org-format-latex-options :zoom 0.93) ; Calibrated based on the TeX font and org-buffer font.
-#+end_src
-
-With the background taken care of, we just need to make sure we're using the
-theme-appropriate foreground.
-
-#+begin_src emacs-lisp
-(defun +org-refresh-latex-images-previews-h ()
-  (dolist (buffer (doom-buffers-in-mode 'org-mode (buffer-list)))
-    (with-current-buffer buffer
-      (+org--toggle-inline-images-in-subtree (point-min) (point-max) 'refresh)
-      (unless (eq org-latex-preview-default-process 'dvisvgm)
-        (org-clear-latex-preview (point-min) (point-max))
-        (org--latex-preview-region (point-min) (point-max))))))
-
-(add-hook 'doom-load-theme-hook #'+org-refresh-latex-images-previews-h)
+;; Calibrated based on the TeX font and org-buffer font.
+(plist-put org-format-latex-options :zoom 0.93)
 #+end_src
 
 ***** Rendering speed tests
