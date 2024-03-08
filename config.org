@@ -12122,7 +12122,8 @@ exporting that as LaTeX commands.
 Using this as in LaTeX exports is now as easy as
 
 #+begin_src emacs-lisp
-(setq org-latex-listings 'engraved)
+(setq org-latex-listings 'engraved
+      org-latex-engraved-theme 'doom-one-light)
 #+end_src
 
 One little annoyance with this is the interaction between microtype and =Verbatim=
