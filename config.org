@@ -3230,7 +3230,7 @@ To help remind me to run it when needed, let's add a little prompt when there's
 anything to be run.
 
 #+name: run-setup
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp :noweb-ref none
 (if (file-exists-p "setup.sh")
     (if (string-empty-p (string-trim (with-temp-buffer (insert-file-contents "setup.sh") (buffer-string)) "#!/usr/bin/env bash"))
         (message ";; Setup script is empty")
@@ -3238,9 +3238,14 @@ anything to be run.
       (pp-to-string
        `(unless noninteractive
           (defun +config-run-setup ()
-            (when (yes-or-no-p (format "%s The setup script has content. Check and run the script?"
-                                       (propertize "Warning!" 'face '(bold warning))))
-              (find-file (expand-file-name "setup.sh" doom-private-dir))
+            (when-let ((setup-file (expand-file-name "setup.sh" doom-private-dir))
+                       ((file-exists-p setup-file))
+                       (setup-content (string-trim (with-temp-buffer (insert-file-contents setup-file) (buffer-string))
+                                                   "#!/usr/bin/env bash"))
+                       ((not (string-empty-p setup-content)))
+                       ((yes-or-no-p (format "%s The setup script has content. Check and run the script?"
+                                             (propertize "Warning!" 'face '(bold warning))))))
+              (find-file setup-file)
               (when (yes-or-no-p "Would you like to run this script?")
                 (async-shell-command "./setup.sh"))))
           (add-hook! 'doom-init-ui-hook
