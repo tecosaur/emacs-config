@@ -7795,7 +7795,7 @@ correct package statement needed.
       (recipe-common '(:files (:defaults "etc")
                        :build t
                        :pre-build
-                       (with-temp-file "org-version.el"
+                       (with-temp-file "lisp/org-version.el"
                          (require 'lisp-mnt)
                          (let ((version ;; (lm-version "lisp/org.el")
                                 (with-temp-buffer
