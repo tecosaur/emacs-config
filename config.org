@@ -11005,7 +11005,7 @@ Now let's just sprinkle some KOMA all over the Org LaTeX classes.
          (book-sections (append '(("\\chapter{%s}" . "\\chapter*{%s}"))
                                 article-sections))
          (hanging-secnum-preamble <<grab("latex-hanging-secnum")>>)
-         (big-chap-preamble <<grab("latex-big-chapter">>))
+         (big-chap-preamble <<grab("latex-big-chapter")>>))
     (setcdr (assoc "article" org-latex-classes)
             `(,(concat "\\documentclass{scrartcl}" hanging-secnum-preamble)
               ,@article-sections))
