@@ -3708,7 +3708,7 @@ There's still a room for a little tweaking though...
 :header-args:emacs-lisp: :noweb-ref magit-tweaks
 :END:
 
-When creating a new project, I often want the remote to be to my personal gitea
+When creating a new project, I often want the remote to be to my personal forgejo
 instance. Let's make that a bit more streamlined by introducing a quick-entry
 "default forge" option.
 
