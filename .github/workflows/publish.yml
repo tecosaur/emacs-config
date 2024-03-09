@@ -21,7 +21,7 @@ permissions:
 
 # Allow one concurrent deployment
 concurrency:
-  group: "pages"
+  group: ${{ github.event_name }}
   cancel-in-progress: true
 
 jobs:
