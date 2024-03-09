@@ -3511,7 +3511,7 @@ ridiculously large files.
 
 #+begin_src emacs-lisp :tangle packages.el
 (package! vlf :recipe (:host github :repo "emacs-straight/vlf" :files ("*.el"))
-  :pin "cacdb359f8c37c6e7e4c7937462b632d22462130")
+  :pin "9b7bc521e54af2c7a5c882e4758b66ee4af1a152")
 #+end_src
 
 To make VLF available without delaying startup, we'll just load it in quiet moments.
@@ -4111,7 +4111,7 @@ That's no problem though, we just need to help TRAMP find them.
 Sometimes pressing =TAB= is just too much.
 #+begin_src emacs-lisp :tangle packages.el
 (package! aas :recipe (:host github :repo "ymarco/auto-activating-snippets")
-  :pin "e92b5cffa4e87c221c24f3e72ae33959e1ec2b68")
+  :pin "ddc2b7a58a2234477006af348b30e970f73bc2c1")
 #+end_src
 
 #+begin_src emacs-lisp
@@ -4262,13 +4262,13 @@ welcomed into Emacs 28. However, he is also rather attentive with updates, and
 so I'd like to make sure we have a recent version.
 
 #+begin_src emacs-lisp :tangle packages.el
-(package! modus-themes :pin "18dd2457d233859ad4d102d797d6744525177ac4")
+(package! modus-themes :pin "accf6985ae8cb5d07cb9473263206d228f0512fa")
 #+end_src
 
 *** Spacemacs themes
 
 #+begin_src emacs-lisp :tangle packages.el
-(package! spacemacs-theme :pin "1ec73d68b0f120f92538d9a329a3a46e32f74510")
+(package! spacemacs-theme :pin "319ad1cd6aa05dcb43e4edca50eca339892e0865")
 #+end_src
 
 *** Theme magic
@@ -4564,7 +4564,7 @@ having something that doesn't cover up screen content is nice.
 [[https://tecosaur.com/lfs/emacs-config/screenshots/keycast.png]]
 
 #+begin_src emacs-lisp :tangle packages.el
-(package! keycast :pin "72d9add8ba16e0cae8cfcff7fc050fa75e493b4e")
+(package! keycast :pin "53514c3dc3dfb7d4c3a65898b0b3edb69b6536c2")
 #+end_src
 
 Let's just make sure this is lazy-loaded appropriately.
@@ -4836,7 +4836,7 @@ appealing, and Steve Purcell has been nice enough to make a package to display
 these as horizontal rules.
 #+begin_src emacs-lisp :tangle packages.el
 (package! page-break-lines :recipe (:host github :repo "purcell/page-break-lines")
-  :pin "79eca86e0634ac68af862e15c8a236c37f446dcd")
+  :pin "1b85352b0b16328d5c9e6a25baf93da3edaa6512")
 #+end_src
 
 #+begin_src emacs-lisp
@@ -5360,7 +5360,7 @@ we're at it.
 What's even the point of using Emacs unless you're constantly telling everyone
 about it?
 #+begin_src emacs-lisp :tangle packages.el
-(package! elcord :pin "d0c9ace493d088bc70f7422705ff27dfcf162cca")
+(package! elcord :pin "e2775f40ec55dfdceea83d535dff77d60534b6bc")
 #+end_src
 
 #+begin_src emacs-lisp
@@ -5377,7 +5377,7 @@ about it?
 
 For editing systemd unit files
 #+begin_src emacs-lisp :tangle packages.el
-(package! systemd :pin "b6ae63a236605b1c5e1069f7d3afe06ae32a7bae")
+(package! systemd :pin "8742607120fbc440821acbc351fda1e8e68a8806")
 #+end_src
 
 #+begin_src emacs-lisp
@@ -5396,12 +5396,12 @@ For managing my ebooks, I'll hook into the well-established ebook library
 manager [[https://calibre-ebook.com/][calibre]]. A number of Emacs clients for this exist, but this seems like a
 good option.
 #+begin_src emacs-lisp :tangle packages.el
-(package! calibredb :pin "2f2cfc38f2d1c705134b692127c3008ac1382482")
+(package! calibredb :pin "124c916f203511c64d03fac28d303dfb102a6ead")
 #+end_src
 
 Then for reading them, the only currently viable options seems to be [[https://depp.brause.cc/nov.el/][nov.el]].
 #+begin_src emacs-lisp :tangle packages.el
-(package! nov :pin "cb5f45cbcfbcf263cdeb2d263eb15edefc8b07cb")
+(package! nov :pin "cc31ce0356226c3a2128119b08de6107e38fdd17")
 #+end_src
 
 Together these should give me a rather good experience reading ebooks.
@@ -7891,7 +7891,7 @@ correct package statement needed.
 (package! org-contrib
   :recipe (:host nil :repo "https://git.sr.ht/~bzg/org-contrib"
            :files ("lisp/*.el"))
-  :pin "6422b265f1150204f024e33d54f2dcfd8323005c")
+  :pin "351c71397d893d896a47ad7e280607b4d59b84e4")
 #+end_src
 
 **** Visuals
@@ -7903,7 +7903,7 @@ Fontifying =org-mode= buffers to be as pretty as possible is of paramount import
 and Minad's lovely =org-modern= goes a long way in this regard.
 
 #+begin_src emacs-lisp :tangle packages.el
-(package! org-modern :pin "7d037569bc4a05f40262ea110c4cda05c69b5c52")
+(package! org-modern :pin "98532cd61795f3f41fffe7d4f0fa4021d8c73ffa")
 #+end_src
 
 ...with a touch of configuration...
@@ -7999,7 +7999,7 @@ occur at the border a bit more fiddley. We can improve this situation without
 sacrificing visual amenities with the =org-appear= package.
 #+begin_src emacs-lisp :tangle packages.el
 (package! org-appear :recipe (:host github :repo "awth13/org-appear")
-  :pin "eb9f9db40aa529fe4b977235d86494b115281d17")
+  :pin "81eba5d7a5b74cdb1bad091d85667e836f16b997")
 #+end_src
 
 #+begin_src emacs-lisp
@@ -8099,7 +8099,7 @@ pretty much abandoned.
 There's a really cool package in development to /transclude/ Org document content.
 #+begin_src emacs-lisp :tangle packages.el
 (package! org-transclusion :recipe (:host github :repo "nobiot/org-transclusion")
-  :pin "cf51df7b87e0d32ba13ac5380557e81d9845d81b")
+  :pin "baa1e1f1d90235e71a404f26a82bfaa74f3d290a")
 #+end_src
 
 #+begin_src emacs-lisp
@@ -8126,7 +8126,7 @@ Came across this and ... it's cool
 I *need* this in my life. It take a URL to a recipe from a common site, and
 inserts an org-ified version at point. Isn't that just great.
 #+begin_src emacs-lisp :tangle packages.el
-(package! org-chef :pin "6a786e77e67a715b3cd4f5128b59d501614928af")
+(package! org-chef :pin "1710b54441ed744dcdfb125d08fb88cfaf452f10")
 #+end_src
 
 Loading after org seems a bit premature. Let's just load it when we try to use
@@ -8355,7 +8355,7 @@ further. This mostly consists of tweaking settings, but there is one extra
 package I'll grab for prettier in-buffer citations.
 
 #+begin_src emacs-lisp :tangle packages.el
-(package! org-cite-csl-activate :recipe (:host github :repo "andras-simonyi/org-cite-csl-activate") :pin "9e68d9204469c674f49a20bdf7ea85da4f4bf720")
+(package! org-cite-csl-activate :recipe (:host github :repo "andras-simonyi/org-cite-csl-activate") :pin "94a424a0c644129c8ea8f9badc482ff937dcec23")
 #+end_src
 
 In particular, by setting ~org-cite-csl-activate-use-document-style~, we can have
@@ -8557,7 +8557,7 @@ functionality as in LaTeX. Let's try viewing possible output files with this.
 
 The agenda is nice, but a souped up version is nicer.
 #+begin_src emacs-lisp :tangle packages.el
-(package! org-super-agenda :pin "f4f528985397c833c870967884b013cf91a1da4a")
+(package! org-super-agenda :pin "51c9da5ce7b791150758984bab469d2222516844")
 #+end_src
 
 #+begin_src emacs-lisp
@@ -8650,7 +8650,7 @@ set up org-capture.
 #+begin_src emacs-lisp :noweb-ref none :tangle packages.el
 (package! doct
   :recipe (:host github :repo "progfolio/doct")
-  :pin "8464809754f3316d5a2fdcf3c01ce1e8736b323b")
+  :pin "5cab660dab653ad88c07b0493360252f6ed1d898")
 #+end_src
 
 #+begin_src emacs-lisp
@@ -8986,7 +8986,7 @@ with it.
 
 #+begin_src emacs-lisp :noweb-ref none :tangle packages.el
 (package! org-roam-ui :recipe (:host github :repo "org-roam/org-roam-ui" :files ("*.el" "out")) :pin "5ac74960231db0bf7783c2ba7a19a60f582e91ab")
-(package! websocket :pin "82b370602fa0158670b1c6c769f223159affce9b") ; dependency of `org-roam-ui'
+(package! websocket :pin "40c208eaab99999d7c1e4bea883648da24c03be3") ; dependency of `org-roam-ui'
 #+end_src
 
 #+begin_src emacs-lisp
@@ -13103,7 +13103,7 @@ elements (a lot of them). So ~ox-gfm~ is handy for exporting markdown with all t
 features that GitHub has.
 
 #+begin_src emacs-lisp :noweb-ref none :tangle packages.el
-(package! ox-gfm :pin "46faa67dbb3fb0cd7a76c3fe518f16e4195c22c7")
+(package! ox-gfm :pin "4f774f13d34b3db9ea4ddb0b1edc070b1526ccbb")
 #+end_src
 
 #+begin_src emacs-lisp
@@ -13827,7 +13827,7 @@ magic command for it to be used in =Data.toml= files.
 Graphviz is a nice method of visualising simple graphs, based on plaintext
 =.dot= / =.gv= files.
 #+begin_src emacs-lisp :tangle packages.el
-(package! graphviz-dot-mode :pin "46afe4825b4a3a5d1a1ac65ec7f585051f756b78")
+(package! graphviz-dot-mode :pin "8ff793b13707cb511875f56e167ff7f980a31136")
 #+end_src
 
 #+begin_src emacs-lisp
@@ -13883,7 +13883,7 @@ Of course, there's an Emacs mode for this.
 
 #+begin_src emacs-lisp :tangle packages.el
 (package! beancount :recipe (:host github :repo "beancount/beancount-mode")
-  :pin "687775da63784d153a3c1cfee9801090c6b51842")
+  :pin "3725c027026f45431d891a13810c218dc60e723e")
 #+end_src
 
 #+begin_src emacs-lisp
