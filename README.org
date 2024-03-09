@@ -1,10 +1,10 @@
 #+title: Doom Emacs Configuration --- [[https://tecosaur.github.io/emacs-config/config.html][HTML Version]], [[https://tecosaur.github.io/emacs-config/config.pdf][PDF]]
 #+author: tecosaur
 
-#+html: <a href="https://www.gnu.org/software/emacs/emacs.html#Releases"><img src="https://img.shields.io/badge/Emacs-28.1-blueviolet.svg?style=flat-square&logo=GNU%20Emacs&logoColor=white"></a>
+#+html: <a href="https://www.gnu.org/software/emacs/emacs.html#Releases"><img src="https://img.shields.io/badge/Emacs-29.2-blueviolet.svg?style=flat-square&logo=GNU%20Emacs&logoColor=white"></a>
 #+html: <a href="https://orgmode.org"><img src="https://img.shields.io/badge/Org-literate%20config-%2377aa99?style=flat-square&logo=org&logoColor=white"></a>
 #+html: <a href="https://github.com/tecosaur/emacs-config/actions"><img src="https://img.shields.io/github/actions/workflow/status/tecosaur/emacs-config/publish.yml?style=flat-square&label=publish&logo=buffer"></a>
-#+html: <a href="https://raw.githubusercontent.com/tecosaur/emacs-config/gh-pages/misc/upgradable-packages.txt"><img src="https://raw.githubusercontent.com/tecosaur/emacs-config/gh-pages/misc/pkg-status.svg"></a>
+#+html: <a href="https://tecosaur.github.io/emacs-config/misc/upgradable-packages.txt"><img src="https://tecosaur.github.io/emacs-config/misc/pkg-status.svg"></a>
 #+html: <a href="https://liberapay.com/tec"><img src="https://shields.io/badge/support%20my%20efforts-f6c915?logo=Liberapay&style=flat-square&logoColor=black"></a>
 
 Here you may find my config. There is only one significant file:
@@ -29,5 +29,5 @@ generate the =init.el= once.
 git clone --recurse-submodules git@github.com:tecosaur/emacs-config.git ~/.config/doom
 echo "(doom! :config literate)" > ~/.config/doom/init.el
 git clone --depth 1 https://github.com/hlissner/doom-emacs ~/.emacs.d
-~/.emacs.d/bin/doom install; ~/.config/doom/setup.sh
+~/.emacs.d/bin/doom install; ~/.emacs.d/bin/doom sync; ~/.config/doom/setup.sh
 #+end_src
