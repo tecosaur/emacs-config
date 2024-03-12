@@ -3729,9 +3729,11 @@ the pre-filled remote url use ssh.
   :filter-args #'magit-remote-add
   (interactive
    (let ((default-name
-           (subst-char-in-string ?\s ?-
-                                 (file-name-nondirectory
-                                  (directory-file-name (doom-project-root))))))
+          (subst-char-in-string
+           ?\s ?-
+           (file-name-nondirectory
+            (directory-file-name
+             (or (doom-project-root) default-directory))))))
      (or (and +magit-default-forge-remote
               (not (magit-list-remotes))
               (eq (read-char-choice
