@@ -3668,6 +3668,32 @@ the mode on startup, let's prevent installation of the package.
 (package! evil-escape :disable t)
 #+end_src
 
+*** GPTel
+
+#+call: confpkg("!Pkg gptel")
+
+#+begin_src emacs-lisp :tangle packages.el
+(package! gptel :pin "9eea4be5ed9c7a651619347f6b3191d083ec252e")
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package! gptel
+  :commands gptel gptel-menu gptel-mode gptel-send gptel-set-tpic
+  :config
+  (let (ollama-models)
+    (when (executable-find "ollama")
+      (with-temp-buffer
+        (call-process "ollama" nil t nil "list")
+        (goto-char (point-min))
+        (forward-line 1)
+        (while (and (not (eobp)) (looking-at "[^ \t]+"))
+          (push (match-string 0) ollama-models)
+          (forward-line 1))))
+    (setq-default gptel-model "nous-hermes2:latest"
+                  gptel-backend (gptel-make-ollama "Ollama" :models ollama-models :stream t)))
+  (setq gptel-default-mode #'org-mode))
+#+end_src
+
 *** Consult
 
 #+call: confpkg("!Pkg Consult")
