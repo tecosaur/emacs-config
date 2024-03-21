@@ -11247,9 +11247,6 @@ The =hyperref= setup needs to be handled separately however.
   citecolor=cite
 }
 \urlstyle{same}
-%% hide links styles in toc
-\NewCommandCopy{\oldtoc}{\tableofcontents}
-\renewcommand{\tableofcontents}{\begingroup\hypersetup{hidelinks}\oldtoc\endgroup}
 #+end_src
 
 **** A cleverer preamble
