@@ -13898,6 +13898,15 @@ Lastly, whenever Emacs is non-graphical (i.e. a TUI), we want to use this by def
 
 #+call: confpkg(after="julia-mode")
 
+It would be nice if =julia-mode= also highlighted the =julia>= prompt when writing
+REPL examples.
+
+#+begin_src emacs-lisp
+(add-to-list
+ 'julia-font-lock-keywords
+ '("^julia>" 0 '(font-lock-string-face bold) prepend))
+#+end_src
+
 As mentioned in [[https://github.com/non-Jedi/lsp-julia/issues/35][lsp-julia#35]], =lsp-mode= seems to serve an invalid response to the
 Julia server. The pseudo-fix is rather simple at least
 #+begin_src emacs-lisp
