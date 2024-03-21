@@ -5582,15 +5582,17 @@ Then, to actually read the ebooks we use =nov=.
                              :height 1.4
                              :width 'semi-expanded)
     (face-remap-add-relative 'default :height 1.3)
+    (variable-pitch-mode 1)
     (setq-local line-spacing 0.2
                 next-screen-context-lines 4
                 shr-use-colors nil)
-    (require 'visual-fill-column nil t)
-    (setq-local visual-fill-column-center-text t
-                visual-fill-column-width 82
-                nov-text-width 80)
-    (visual-fill-column-mode 1)
-    (hl-line-mode -1)
+    (when (require 'visual-fill-column nil t)
+      (setq-local visual-fill-column-center-text t
+                  visual-fill-column-width 64
+                  nov-text-width 106)
+      (visual-fill-column-mode 1))
+    (when (featurep 'hl-line-mode)
+      (hl-line-mode -1))
     ;; Re-render with new display settings
     (nov-render-document)
     ;; Look up words with the dictionary.
