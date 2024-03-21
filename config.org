@@ -3908,6 +3908,17 @@ All that's left is to hook it into magit
 Unfortunately this currently seems to mess things up, which is something I'll
 want to look into later.
 
+*** MPRIS
+
+It's nice to be able to interact with MPRIS players. This would just be a
+dependency of =org-music= or =doom-modeline-media-player=, but I haven't made it
+available on any an elisp archives. Thankfully most Emacs package managers make
+using Git repository urls pretty easy these days.
+
+#+begin_src emacs-lisp :tangle packages.el
+(package! mpris :recipe (:local-repo "lisp/mpris"))
+#+end_src
+
 *** Smerge
 
 #+call: confpkg("!Pkg Smerge")
@@ -4496,6 +4507,35 @@ modeline segment with our design.
                  'face (doom-modeline-face 'doom-modeline-time)))))
 #+end_src
 
+**** Media player
+
+Sometimes (particularly when reading a novel, with Emacs fullscreened) it would
+be nice to know what I'm listening to. We can put this information in the
+modeline with my media player package.
+
+#+begin_src emacs-lisp :tangle packages.el :noweb-ref none
+(package! doom-modeline-media-player
+  :recipe (:local-repo "lisp/doom-modeline-media-player"))
+#+end_src
+
+To enable the lazy loading, we make =doom-modeline= aware of the segment function
+in ~:init~, and the segment function itself is autoloaded.
+
+#+begin_src emacs-lisp
+(use-package! doom-modeline-media-player
+  :defer t
+  :init
+  (after! doom-modeline
+    (add-to-list 'doom-modeline-fn-alist
+                 (cons 'media-player #'doom-modeline-segment--media-player)))
+  :config
+  (defun +single-fullscreen-window-p ()
+    (and (memq (frame-parameter nil 'fullscreen) '(fullscreen fullboth))
+         (not (consp (car (window-tree))))))
+  (setq doom-modeline-media-player #'+single-fullscreen-window-p
+        doom-modeline-media-player-playback-indication 'dim))
+#+end_src
+
 **** PDF modeline
 
 I think the PDF modeline could do with tweaking. I raised [[https://github.com/seagle0128/doom-modeline/pull/425][an issue]] on this,
@@ -4541,7 +4581,7 @@ icon. Then we'll redefine two functions used to generate the modeline.
 
 (doom-modeline-def-modeline 'pdf
   '(bar window-number pdf-pages pdf-icon buffer-name)
-  '(misc-info matches major-mode process vcs))
+  '(media-player misc-info matches major-mode process vcs))
 #+end_src
 
 *** Keycast
@@ -5631,7 +5671,7 @@ currently playing media.
 
   (doom-modeline-def-modeline 'nov
     '(workspace-name window-number nov-author nov-title nov-current-page)
-    '(misc-info major-mode time))
+    '(media-player misc-info major-mode time))
 
   (add-to-list 'doom-modeline-mode-alist '(nov-mode . nov)))
 #+end_src

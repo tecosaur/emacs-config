@@ -43,3 +43,9 @@
 [submodule "conf-data-toml"]
 	path = lisp/conf-data-toml
 	url = https://code.tecosaur.net/tec/conf-data-toml.git
+[submodule "lisp/mpris"]
+	path = lisp/mpris
+	url = https://code.tecosaur.net/tec/mpris.el.git
+[submodule "lisp/doom-modeline-media-player"]
+	path = lisp/doom-modeline-media-player
+	url = https://code.tecosaur.net/tec/doom-modeline-media-player.git
