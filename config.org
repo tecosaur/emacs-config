@@ -1556,6 +1556,7 @@ I reckon enabling half the modules Doom provides should do it.
 #+begin_src emacs-lisp
 (company                     ; the ultimate code completion backend
  +childframe)                ; ... when your children are better than you
+;;(corfu +orderless)         ; complete with cap(f), cape and a flying feather!
 ;;helm                       ; the *other* search engine for love and life
 ;;ido                        ; the other *other* search engine...
 ;; (ivy                      ; a search engine for love and life
