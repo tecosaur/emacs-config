@@ -2939,6 +2939,7 @@ dashboard.
   (with-current-buffer (get-buffer +doom-dashboard-name)
     (setq-local line-spacing 0.2
                 mode-line-format nil
+                mode-name ""
                 evil-normal-state-cursor (list nil))))
 #+end_src
 
