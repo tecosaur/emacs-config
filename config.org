@@ -1554,9 +1554,8 @@ I reckon enabling half the modules Doom provides should do it.
 
 #+name: doom-completion
 #+begin_src emacs-lisp
-(company                     ; the ultimate code completion backend
- +childframe)                ; ... when your children are better than you
-;;(corfu +orderless)         ; complete with cap(f), cape and a flying feather!
+;; company                   ; the ultimate code completion backend
+(corfu +orderless +dabbrev)  ; complete with cap(f), cape and a flying feather!
 ;;helm                       ; the *other* search engine for love and life
 ;;ido                        ; the other *other* search engine...
 ;; (ivy                      ; a search engine for love and life
@@ -3917,54 +3916,18 @@ For repeated operations, a hydra would be helpful. But I prefer transient.
       ("k" "kill current" (lambda () (interactive) (ignore-errors (smerge-kill-current)) (smerge-repeatedly)))
       ("q" "quit" (lambda () (interactive) (smerge-auto-leave)))]]))
 #+end_src
+*** Corfu
 
-*** Company
-
-#+call: confpkg("!Pkg Company")
+#+call: confpkg("!Pkg Corfu", after="corfu")
 
 #+begin_quote
-From the =:completion company= module.
+From the =:completion corfu= module.
 #+end_quote
 
-It's nice to have completions almost all the time, in my opinion. Key strokes
-are just waiting to be saved!
+I like completion, but I don't like to feel spammed by it, so let's up the delay.
 
 #+begin_src emacs-lisp
-(after! company
-  (setq company-idle-delay 0.5
-        company-minimum-prefix-length 2)
-  (setq company-show-numbers t)
-  (add-hook 'evil-normal-state-entry-hook #'company-abort)) ;; make aborting less annoying.
-#+end_src
-
-Now, the improvements from ~precedent~ are mostly from remembering history, so
-let's improve that memory.
-
-#+begin_src emacs-lisp
-(setq-default history-length 1000)
-(setq-default prescient-history-length 1000)
-#+end_src
-
-**** Plain Text
-
-~Ispell~ is nice, let's have it in ~text~, ~markdown~, and ~GFM~.
-#+begin_src emacs-lisp
-(set-company-backend!
-  '(text-mode
-    markdown-mode
-    gfm-mode)
-  '(:seperate
-    company-ispell
-    company-files
-    company-yasnippet))
-#+end_src
-We then configure the dictionary we're using in [[*Ispell][Ispell]].
-
-**** ESS
-
-~company-dabbrev-code~ is nice. Let's have it.
-#+begin_src emacs-lisp
-(set-company-backend! 'ess-r-mode '(company-R-args company-R-objects company-dabbrev-code :separate))
+(setq corfu-auto-delay 0.5)
 #+end_src
 
 *** Projectile
