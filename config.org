@@ -4992,6 +4992,98 @@ Now, we just identify the files in question.
         "*/_region_.tex"))
 #+end_src
 
+*** Visual fill column
+
+#+call: confpkg("!Pkg visual-fill-column", after="visual-fill-column")
+
+This is already loaded by Doom, but it needs a patch applied for Emacs 29. I've
+emailed this to the maintainer, hopefully Joost will take a look at it.
+
+#+begin_example
+Account for remapping in window width calculation
+
+The window width calculation in
+`visual-fill-column--window-max-text-width' uses `window-width' with the
+active window as the sole argument. As of Emacs 29, this returns the
+width of the window using the default face, even if the default face has
+been remapped in the window: causing incorrect results when the window
+is remapped.
+
+Emacs 29 also introduces a special second argument value, `remap'
+which (as we want) uses the remapped face, if applicable. This corrects
+the width calculation. However, margin calculations are still done in
+terms of the non-remapped default face, and so a conversion factor needs
+to be applied when considering margins.
+#+end_example
+
+That's the problem/fix, I'll just overwrite the two functions in question with
+the fixed versions for now.
+
+#+begin_src emacs-lisp
+(defun +visual-fill-column--window-max-text-width--fixed (&optional window)
+  "Return the maximum possible text width of WINDOW.
+The maximum possible text width is the width of the current text
+area plus the margins, but excluding the fringes, scroll bar, and
+right divider.  WINDOW defaults to the selected window.  The
+return value is scaled to account for `text-scale-mode-amount'
+and `text-scale-mode-step'."
+  (or window (setq window (selected-window)))
+  (let* ((margins (window-margins window))
+         (buffer (window-buffer window))
+         (scale (if (and visual-fill-column-adjust-for-text-scale
+                         (boundp 'text-scale-mode-step)
+                         (boundp 'text-scale-mode-amount))
+                    (with-current-buffer buffer
+                      (expt text-scale-mode-step
+                            text-scale-mode-amount))
+                  1.0))
+         (remap-scale
+          (if (>= emacs-major-version 29)
+              (/ (window-width window 'remap) (float (window-width window)))
+            1.0)))
+    (truncate (/ (+ (window-width window (and (>= emacs-major-version 29) 'remap))
+                    (* (or (car margins) 0) remap-scale)
+                    (* (or (cdr margins) 0) remap-scale))
+                 (float scale)))))
+
+(advice-add 'visual-fill-column--window-max-text-width
+            :override #'+visual-fill-column--window-max-text-width--fixed)
+
+(defun +visual-fill-column--set-margins--fixed (window)
+  "Set window margins for WINDOW."
+  ;; Calculate left & right margins.
+  (let* ((total-width (visual-fill-column--window-max-text-width window))
+         (remap-scale
+          (if (>= emacs-major-version 29)
+              (/ (window-width window 'remap) (float (window-width window)))
+            1.0))
+         (width (or visual-fill-column-width
+                    fill-column))
+         (margins (if (< (- total-width width) 0) ; margins must be >= 0
+                      0
+                    (round (/ (- total-width width) remap-scale))))
+         (left (if visual-fill-column-center-text
+                   (/ margins 2)
+                 0))
+         (right (- margins left)))
+
+    (if visual-fill-column-extra-text-width
+        (let ((add-width (visual-fill-column--add-extra-width left right visual-fill-column-extra-text-width)))
+          (setq left (car add-width)
+                right (cdr add-width))))
+
+    ;; put an explicitly R2L buffer on the right side of the window
+    (when (and (eq bidi-paragraph-direction 'right-to-left)
+               (= left 0))
+      (setq left right)
+      (setq right 0))
+
+    (set-window-margins window left right)))
+
+(advice-add 'visual-fill-column--set-margins
+            :override #'+visual-fill-column--set-margins--fixed)
+#+end_src
+
 ** Frivolities
 *** xkcd
 
