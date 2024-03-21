@@ -12259,6 +12259,10 @@ Then we can just hook this in with our clever preamble.
    :order 0.7))
 #+end_src
 
+**** Upright parentheses in italic text
+
+TODO, see https://tex.stackexchange.com/a/13057/167605
+
 **** Pretty code blocks
 
 We could just use minted for syntax highlighting --- however, we can do better!
