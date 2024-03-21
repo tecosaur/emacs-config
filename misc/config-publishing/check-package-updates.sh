@@ -134,7 +134,9 @@
      "\033\\[0;90m" ""
      (replace-regexp-in-string
       "\\`.*\n" ""
-      package-upgrades)))
+      (replace-regexp-in-string
+       "\n- " "\n\n- "
+       package-upgrades))))
    nil
    (expand-file-name "misc/upgradable-packages.txt" config-root))
   (publish "misc/upgradable-packages.txt"))
