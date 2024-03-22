@@ -4401,111 +4401,13 @@ hide it?
 (add-hook 'after-change-major-mode-hook #'doom-modeline-conditional-buffer-encoding)
 #+end_src
 
-**** Time
+**** Analogue clock
 
-Moving onto the modeline segments, there's a calendar icon showed next to the
-current time, which I'm not a fan of. Let's replace that by redefining the
-segment. Instead of the calendar, it would be much nicer to have an updating
-analog clock, so let's use that idea as an excuse to try out the Emacs svg library.
-
-First, we'll need a way to produce svg clocks on-demand.
+Now that my code for an analogue clock icon has been upstreamed, all I do here
+is adjust the size slightly 🙂.
 
 #+begin_src emacs-lisp
-(defvar micro-clock-hour-hand-ratio 0.45
-  "Length of the hour hand as a proportion of the radius.")
-(defvar micro-clock-minute-hand-ratio 0.7
-  "Length of the minute hand as a proportion of the radius.")
-
-(defun micro-clock-svg (hour minute radius color)
-  "Construct an SVG clock showing the time HOUR:MINUTE.
-The clock will be of the specified RADIUS and COLOR."
-  (let ((hour-x (* radius (sin (* (- 6 hour (/ minute 60.0)) (/ float-pi 6)))
-                   micro-clock-hour-hand-ratio))
-        (hour-y (* radius (cos (* (- 6 hour (/ minute 60.0)) (/ float-pi 6)))
-                   micro-clock-hour-hand-ratio))
-        (minute-x (* radius (sin (* (- 30 minute) (/ float-pi 30)))
-                     micro-clock-minute-hand-ratio))
-        (minute-y (* radius (cos (* (- 30 minute) (/ float-pi 30)))
-                     micro-clock-minute-hand-ratio))
-        (svg (svg-create (* 2 radius) (* 2 radius) :stroke color)))
-    (svg-circle svg radius radius (1- radius) :fill "none" :stroke-width 2)
-    (svg-circle svg radius radius 1 :fill color :stroke "none")
-    (svg-line svg radius radius (+ radius hour-x) (+ radius hour-y)
-              :stroke-width 2)
-    (svg-line svg radius radius (+ radius minute-x) (+ radius minute-y)
-              :stroke-width 1.5)
-    svg))
-#+end_src
-
-With that out the way, we need to figure out how to integrate this into the
-modeline. For the most part this was fairly easy, the tricky part was getting
-the alignment right. I tried using the =(raise FACTOR)= display property, but that
-doesn't appear to combine with images. Looking at the documentation on [[https://www.gnu.org/software/emacs/manual/html_node/elisp/Image-Descriptors.html][image
-descriptors]] though, I came across the =:ascent= property, which looked rather
-promising. By setting =:ascent center= the image is centred relative to the text,
-which is exactly what we need. With that sorted, we just add some caching and
-the obvious customisations and we've got modeline-appropriate clock generation!
-
-#+begin_src emacs-lisp
-(require 'svg)
-
-(defvar +doom-modeline-micro-clock-minute-resolution 1
-  "The clock will be updated every this many minutes, truncating.")
-(defvar +doom-modeline-micro-clock-inverse-size 4.8
-  "The size of the clock, as an inverse proportion to the mode line height.")
-
-(defvar +doom-modeline-micro-clock--cache nil)
-
-(defvar +doom-modeline-clock-text-format "%c")
-
-(defun +doom-modeline--clock-text (&optional _window _object _pos)
-  (format-time-string +doom-modeline-clock-text-format))
-
-(defun +doom-modeline-micro-clock ()
-  "Return a string containing an current analogue clock."
-  (cdr
-   (if (equal (truncate (float-time)
-                        (* +doom-modeline-micro-clock-minute-resolution 60))
-              (car +doom-modeline-micro-clock--cache))
-       +doom-modeline-micro-clock--cache
-     (setq +doom-modeline-micro-clock--cache
-           (cons (truncate (float-time)
-                           (* +doom-modeline-micro-clock-minute-resolution 60))
-                 (with-temp-buffer
-                   (svg-insert-image
-                    (micro-clock-svg
-                     (string-to-number (format-time-string "%-I")) ; hour
-                     (* (truncate (string-to-number (format-time-string "%-M"))
-                                  +doom-modeline-micro-clock-minute-resolution)
-                        +doom-modeline-micro-clock-minute-resolution) ; minute
-                     (/ doom-modeline-height +doom-modeline-micro-clock-inverse-size) ; radius
-                     "currentColor"))
-                   (propertize
-                    " "
-                    'display
-                    (append (get-text-property 0 'display (buffer-string))
-                            '(:ascent center))
-                    'face 'doom-modeline-time
-                    'help-echo #'+doom-modeline--clock-text)))))))
-#+end_src
-
-With clock generation sorted out, all that's to be done is replacing the =time=
-modeline segment with our design.
-
-#+begin_src emacs-lisp
-(doom-modeline-def-segment time
-  (when (and doom-modeline-time
-             (bound-and-true-p display-time-mode)
-             (not doom-modeline--limited-width-p))
-    (concat
-     (doom-modeline-spc)
-     (when doom-modeline-time-icon
-       (concat
-        (+doom-modeline-micro-clock)
-        (and (or doom-modeline-icon doom-modeline-unicode-fallback)
-             (doom-modeline-spc))))
-     (propertize display-time-string
-                 'face (doom-modeline-face 'doom-modeline-time)))))
+(setq doom-modeline-time-clock-size 0.65)
 #+end_src
 
 **** Media player
