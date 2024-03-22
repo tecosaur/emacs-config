@@ -1908,7 +1908,7 @@ files.
 ***** Emojis
 
 Emacs (28+) has an ~emoji~ script table. We're about to use it, but before doing
-so we're going to excise a few characteris that I actually want rendered as
+so we're going to excise a few characters that I actually want rendered as
 using the symbol font (not as emojis).
 
 #+begin_src emacs-lisp
@@ -2034,7 +2034,7 @@ We can then use this to create a =doctor= check.
 #+end_src
 
 Furthermore, when fonts /are/ missing, it could be good to check the state of
-affairs on statup.
+affairs on startup.
 
 #+name: warn-missing-fonts
 #+begin_src emacs-lisp :tangle no :noweb yes :noweb-ref none
@@ -2340,11 +2340,11 @@ Let's make creating an Org buffer just that little bit easier.
 Emacs can render an image as the splash screen, but I think we can do better
 than just a completely static image. Since, SVG images in particular are
 supported, we can use them as the basis for a fancier splash screen image setup
---- with themable, resizing images.
+--- with themeable, resizing images.
 
 With the effort I'm putting into this, it would be nice to have a good image,
 and [[https://github.com/MarioRicalde][@MarioRicalde]] came up with a cracker! He's also provided me with a nice
-Emacs-style /E/. I was using the blackhole image, but when I stripped down the
+Emacs-style /E/. I was using the black-hole image, but when I stripped down the
 splash screen to something more minimal I switched to just using the /E/.
 
 #+attr_latex: :width 0.2\linewidth
@@ -2496,7 +2496,7 @@ transparent overlay).
       (message "Done"))))
 #+end_src
 
-To make it easier to produce themable images, we can also provide an Inkscape
+To make it easier to produce themeable images, we can also provide an Inkscape
 colour palette.
 
 #+begin_src text :tangle ~/.config/inkscape/palettes/Emacs Fancy Splash.gpl :mkdirp yes
@@ -2727,7 +2727,7 @@ in hooks that call functions with arguments."
 
 **** ASCII banner
 
-If we're operating in a terminal (or =emacclient=) we see an ascii banner instead
+If we're operating in a terminal (or =emacclient=) we see an ASCII banner instead
 of the graphical one. I'd also like to use something simple for this.
 
 #+begin_src emacs-lisp
@@ -3196,8 +3196,8 @@ to add a few bells and whistles --- namely:
 + Accepting stdin by putting it in a temporary file and immediately opening it.
 + Guessing that the =tty= is a good idea when ~$DISPLAY~ is unset (relevant with SSH
   sessions, among other things).
-+ With a whiff of 24-bit color support, sets ~TERM~ variable to a =terminfo= that
-  (probably) announces 24-bit color support.
++ With a whiff of 24-bit colour support, sets ~TERM~ variable to a =terminfo= that
+  (probably) announces 24-bit colour support.
 + Changes GUI =emacsclient= instances to be non-blocking by default (~--no-wait~),
   and instead take a flag to suppress this behaviour (~-w~).
 
@@ -3276,7 +3276,7 @@ else
 fi
 #+end_src
 
-Now, to set an alias to use =e= with magit, and then for maximum laziness we can
+Now, to set an alias to use =e= with Magit, and then for maximum laziness we can
 set aliases for the terminal-forced variants.
 #+begin_src shell :tangle no
 alias m='e --eval "(progn (magit-status) (delete-other-windows))"'
@@ -3810,7 +3810,7 @@ There's still a room for a little tweaking though...
 :header-args:emacs-lisp: :noweb-ref magit-tweaks
 :END:
 
-When creating a new project, I often want the remote to be to my personal forgejo
+When creating a new project, I often want the remote to be to my personal Forgejo
 instance. Let's make that a bit more streamlined by introducing a quick-entry
 "default forge" option.
 
@@ -3820,9 +3820,9 @@ instance. Let's make that a bit more streamlined by introducing a quick-entry
 Set to nil to disable this functionality.")
 #+end_src
 
-While we're at it, when creating a remote with the same name as my github
-username in a project where an https github remote already exists, let's make
-the pre-filled remote url use ssh.
+While we're at it, when creating a remote with the same name as my Github
+username in a project where an HTTPS GitHub remote already exists, let's make
+the pre-filled remote URL use ssh.
 
 #+begin_src emacs-lisp
 (defadvice! +magit-remote-add--streamline-forge-a (args)
@@ -3962,7 +3962,7 @@ heading line selection for elisp and Org files.
 **** Magit delta
 
 [[https://github.com/dandavison/delta/][Delta]] is a git diff syntax highlighter written in rust. The author also wrote a
-package to hook this into the magit diff view (which don't get any syntax
+package to hook this into the Magit diff view (which don't get any syntax
 highlighting by default). This requires the ~delta~ binary. It's packaged on some
 distributions, but most reliably installed through Rust's package manager cargo.
 
@@ -3987,7 +3987,7 @@ want to look into later.
 It's nice to be able to interact with MPRIS players. This would just be a
 dependency of =org-music= or =doom-modeline-media-player=, but I haven't made it
 available on any an elisp archives. Thankfully most Emacs package managers make
-using Git repository urls pretty easy these days.
+using Git repository URLs pretty easy these days.
 
 #+begin_src emacs-lisp :tangle packages.el
 (package! mpris :recipe (:local-repo "lisp/mpris"))
@@ -4875,7 +4875,7 @@ is adjust the size slightly 🙂.
 
 **** Media player
 
-Sometimes (particularly when reading a novel, with Emacs fullscreened) it would
+Sometimes (particularly when reading a novel, with Emacs full-screened) it would
 be nice to know what I'm listening to. We can put this information in the
 modeline with my media player package.
 
@@ -5001,13 +5001,14 @@ We can lazy load this using the start/stop commands.
 I initially installed ~scrot~ for this, since it was the default capture program.
 However it raised ~glib error: Saving to file ... failed~ each time it was run.
 Google didn't reveal any easy fixed, so I switched to [[https://github.com/naelstrof/maim][maim]]. We now need to pass
-it the window ID. This doesn't change throughout the lifetime of an emacs
+it the window ID. This doesn't change throughout the lifetime of an Emacs
 instance, so as long as a single window is used ~xdotool getactivewindow~ will
 give a satisfactory result.
 
 It seems that when new colours appear, that tends to make ~gifsicle~ introduce
 artefacts. To avoid this we pre-populate the colour map using the current doom
 theme.
+
 #+begin_src emacs-lisp
 (use-package! gif-screencast
   :commands gif-screencast-mode
@@ -14196,3 +14197,7 @@ which is perfect for our needs.
 #+begin_src emacs-lisp
 (add-to-list 'magic-mode-alist (cons "\\`GIMP Palette\n" #'gimp-palette-mode))
 #+end_src
+
+# Local Variables:
+# jinx-local-words: "confpkg confpkgs smartparens tempbuffer"
+# End:
