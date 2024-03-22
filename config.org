@@ -1631,7 +1631,7 @@ vterm                        ; the best terminal emulation in Emacs
 #+name: doom-checkers
 #+begin_src emacs-lisp
 syntax                       ; tasing you for every semicolon you forget
-(:if (executable-find "aspell") spell) ; tasing you for misspelling mispelling
+;; spell                     ; tasing you for misspelling mispelling
 grammar                      ; tasing grammar mistake every you make
 #+end_src
 
@@ -3987,7 +3987,47 @@ add package src directories to projectile. This isn't desirable in my opinion.
   (or (mapcar (lambda (p) (s-starts-with-p p filepath)) projectile-ignored-projects)))
 #+end_src
 
-*** Ispell
+*** Jinx
+
+#+call: confpkg()
+
+Minad's Jinx spell-checker looks pretty nifty. When Henrik and I (or someone
+else) have some more bandwidth, I think it would be good to incorporate with
+Doom.
+
+In the meantime, let's use it here.
+
+#+begin_src emacs-lisp :tangle packages.el :noweb-ref none
+(package! jinx)
+#+end_src
+
+**** Configuration
+
+Jinx has some pretty lovely defaults out of the box, we'll just be making a few
+tweaks.
+
+#+begin_src emacs-lisp
+(use-package! jinx
+  :defer t
+  :init
+  (add-hook 'doom-init-ui-hook #'global-jinx-mode)
+  :config
+  ;; Use my custom dictionary
+  (setq jinx-languages "en-custom")
+  ;; Extra face(s) to ignore
+  (push 'org-inline-src-block
+        (alist-get 'org-mode jinx-exclude-faces))
+  ;; Take over the relevant bindings.
+  (after! ispell
+    (global-set-key [remap ispell-word] #'jinx-correct))
+  (after! evil-commands
+    (global-set-key [remap evil-next-flyspell-error] #'jinx-next)
+    (global-set-key [remap evil-prev-flyspell-error] #'jinx-previous))
+  ;; I prefer for `point' to end up at the start of the word,
+  ;; not just after the end.
+  (advice-add 'jinx-next :after (lambda (_) (left-word))))
+#+end_src
+
 **** Downloading dictionaries
 
 Let's get a nice big dictionary from [[http://app.aspell.net/create][SCOWL Custom List/Dictionary Creator]] with
@@ -4006,15 +4046,20 @@ curl -o "hunspell-en-custom.zip" 'http://app.aspell.net/create?max_size=80&spell
 unzip "hunspell-en-custom.zip"
 
 sudo chown root:root en-custom.*
-sudo mv en-custom.{aff,dic} /usr/share/myspell/
+DESTDIR1="$HOME/.local/share/hunspell"
+DESTDIR2="$HOME/.config/enchant/hunspell"
+mkdir -p "$DESTDIR1"
+mkdir -p "$DESTDIR2"
+sudo mv en-custom.{aff,dic} "$DESTDIR1"
+sudo mv en-custom.{aff,dic} "$DESTDIR2"
 #+end_src
 
-We will also add an acompanying =doctor= warning.
+We will also add an accompanying =doctor= warning.
 
 #+begin_src emacs-lisp :noweb-ref doctor
 (unless (executable-find "hunspell")
   (warn! "Couldn't find hunspell executable."))
-(unless (file-exists-p "/usr/share/myspell/en-custom.dic")
+(unless (file-exists-p "~/.local/share/hunspell/en-custom.dic")
   (warn! "Custom hunspell dictionary is not present."))
 #+end_src
 
@@ -4026,37 +4071,19 @@ curl -o "aspell6-en-custom.tar.bz2" 'http://app.aspell.net/create?max_size=80&sp
 tar -xjf "aspell6-en-custom.tar.bz2"
 
 cd aspell6-en-custom
-./configure && make && sudo make install
+DESTDIR="$HOME/.config/enchant/" ./configure
+sed -i 's/dictdir = .*/dictdir = "aspell"/' Makefile
+sed -i 's/datadir = .*/datadir = "aspell"/' Makefile
+make && make install
 #+end_src
 
-We will also add an acompanying =doctor= warning.
+We will also add an accompanying =doctor= warning.
 
 #+begin_src emacs-lisp :noweb-ref doctor
-(unless (executable-find "ispell")
-  (warn! "Couldn't find ispell executable."))
-(unless (file-expand-wildcards "/usr/lib64/aspell*/en-custom.multi")
+(unless (executable-find "aspell")
+  (warn! "Couldn't find aspell executable."))
+(unless (file-exists-p "~/.config/enchant/aspell/en-custom.multi")
   (warn! "Custom aspell dictionary is not present."))
-#+end_src
-
-**** Configuration
-
-#+call: confpkg("!Pkg Ispell")
-
-#+begin_src emacs-lisp
-(setq ispell-dictionary "en-custom")
-#+end_src
-
-Oh, and by the way, if ~company-ispell-dictionary~ is ~nil~, then
-~ispell-complete-word-dict~ is used instead, which once again when ~nil~ is
-~ispell-alternate-dictionary~, which at the moment maps to a plaintext version of
-the above.
-
-It seems reasonable to want to keep an eye on my personal dict, let's have it
-nearby (also means that if I change the 'main' dictionary I keep my addition).
-
-#+begin_src emacs-lisp
-(setq ispell-personal-dictionary
-      (expand-file-name "misc/ispell_personal" doom-private-dir))
 #+end_src
 
 *** TRAMP
