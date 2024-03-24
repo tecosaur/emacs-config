@@ -1461,6 +1461,50 @@ navigation/swapping commands.
       "C-<right>"      #'+evil/window-move-right)
 #+end_src
 
+*** Hippie expand
+
+Completing text based on other availible content is a great idea, and so ~dabbrev~
+(dynamic abbreviations) is throughly useful. There's another similar tool that
+Emacs comes with though, called [[https://www.masteringemacs.org/article/text-expansion-hippie-expand][hippie expand]], which is just a bit nicer yet,
+and can be used as a swap-in upgrade to ~dabbrev~.
+
+#+begin_src emacs-lisp
+(global-set-key [remap dabbrev-expand] #'hippie-expand)
+#+end_src
+
+Hippie expand works by cycling through a series of expansion-generating
+functions, listed in the variable ~hippie-expand-try-functions-list~.
+
+By default, it completes (in order):
++ File names
++ Known abbreviations
++ Lists (i.e. bracketed regions)
++ Previous lines
++ Dabbrev (this buffer)
++ Dabbrev (all buffers)
++ Dabbrev (kill ring)
++ Known elisp symbols
+
+I find that "previous lines" completions often appear when I actually want a
+dabbrev completion, so let's deprioritise it somewhat. If I actually want to try
+for a line expansion, it's fairly easy to deliberately trigger it --- just
+invoke ~hippie-expand~ after typing a space and there will be no dabbrev
+candidates.
+
+#+begin_src emacs-lisp
+(setq hippie-expand-try-functions-list
+      '(try-complete-file-name-partially
+        try-complete-file-name
+        try-expand-all-abbrevs
+        try-expand-list
+        try-expand-dabbrev
+        try-expand-dabbrev-all-buffers
+        try-expand-dabbrev-from-kill
+        try-expand-line
+        try-complete-lisp-symbol-partially
+        try-complete-lisp-symbol))
+#+end_src
+
 *** Buffer defaults
 
 I'd much rather have my new buffers in ~org-mode~ than ~fundamental-mode~, hence
