@@ -13550,29 +13550,6 @@ Julia server. The pseudo-fix is rather simple at least
               lsp-folding-range-limit 100))
 #+end_src
 
-Julia is also missing a mime type, but that's not too hard to fix.
-
-#+begin_src xml :tangle ~/.local/share/mime/packages/julia.xml :mkdirp yes :comments no
-<mime-info xmlns='http://www.freedesktop.org/standards/shared-mime-info'>
-  <mime-type type="text/julia">
-    <comment>Julia source sode</comment>
-    <glob pattern="*.jl"/>
-    <alias type="text/julia"/>
-  </mime-type>
-</mime-info>
-#+end_src
-
-#+begin_src shell :tangle (if (string= (shell-command-to-string "xdg-mime query default text/julia") "") "setup.sh" "no")
-update-mime-database ~/.local/share/mime
-#+end_src
-
-We'll also add a =doctor= check for this.
-
-#+begin_src emacs-lisp :noweb-ref doctor
-(when (string= (shell-command-to-string "xdg-mime query default text/julia") "")
-  (warn! "text/julia is not a registered mime type."))
-#+end_src
-
 ** Data.toml files
 
 #+call: confpkg("conf-data-toml")
