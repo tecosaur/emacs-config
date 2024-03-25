@@ -13,7 +13,8 @@
 
 (load (expand-file-name "async-proc-management.el") nil t)
 
-(apm-exec '("subconf.sh" "engrave.sh" "check-package-updates.sh"))
+(apm-exec "check-package-updates.sh")
+(apm-exec "subconf.sh" :then '("engrave.sh" :then "files.sh"))
 
 (if (not (file-exists-p (concat user-emacs-directory "xkcd/")))
     (apm-exec "org-html.sh" :then "org-pdf.sh")
