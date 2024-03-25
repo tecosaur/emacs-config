@@ -4112,7 +4112,7 @@ Beyond just misspellings, it can also help with typos, and lazy capitalisation
 "lualatex" and "SciFi" over "scifi"?). However, primarily thanks to smartphones,
 I more often hear people cursing autocorrect than praising it. With that in
 mind, I think it's worth giving some thought to how smartphone autocorrect gets
-it's bad reputation (despite largely doing a decent job):
+its bad reputation (despite largely doing a decent job):
 1. Typing is harder on smartphones, and so autocorrect makes bigger (more speculative) guesses
 2. People type (and mistype) differently, but autocorrect tries to have a "one
    size fits all" profile that is refined over time
@@ -4139,13 +4139,24 @@ corrections made:
   misspellings" training list to run through at your leasure. Just set the
   "minimum replacement count" to a stupidly high number.
 
+I think it would be nice to write this as a package, so let's create a
+customisation group for this functionality.
+
+#+begin_src emacs-lisp
+(defgroup autocorrect nil
+  "Automatically fix typos and frequent spelling mistakes."
+  :group 'text
+  :prefix "autocorrect-")
+#+end_src
+
 For starters, let's write a record of all corrections made.
 
 #+begin_src emacs-lisp
-(defvar autocorrect-history-file
+(defcustom autocorrect-history-file
   (file-name-concat (or (getenv "XDG_STATE_HOME") "~/.local/state")
                     "emacs" "spelling-corrections.txt")
-  "File where a spell check record will be saved.")
+  "File where a spell check record will be saved."
+  :type 'file)
 #+end_src
 
 For simplicity of operation, I think we can just append each correction the file
@@ -4159,7 +4170,10 @@ then have each value be an alist of src_elisp{(correction . count)} pairs. This
 table can be lazily built and processed after startup.
 
 #+begin_src emacs-lisp
-(defvar autocorrect-record-table (make-hash-table :test #'equal))
+(defvar autocorrect-record-table (make-hash-table :test #'equal)
+  "A record of all corrections made.
+Misspelled words are the keys, and a alist of corrections and their count are
+the values.")
 #+end_src
 
 We probably want to also specify a threshold number of misspellings that trigger
@@ -4172,12 +4186,15 @@ would be annoying enough to run into that I think it's worth requiring a second
 misspelling.
 
 #+begin_src emacs-lisp
-(defvar autocorrect-count-threshold-history 3
+(defcustom autocorrect-count-threshold-history 3
   "The number of recorded identical misspellings to create an abbrev.
-This applies to misspellings read from the history file")
-(defvar autocorrect-count-threshold-session 2
+This applies to misspellings read from the history file"
+  :type 'natnum)
+
+(defcustom autocorrect-count-threshold-session 2
   "The number of identical misspellings to create an abbrev.
-This applies to misspellings made in the current Emacs session.")
+This applies to misspellings made in the current Emacs session."
+  :type 'natnum)
 #+end_src
 
 At this point we need to actually implement this functionality, starting with
@@ -4186,7 +4203,7 @@ occurs live.
 
 #+begin_src emacs-lisp
 (defun autocorrect-update-table (misspelling corrected)
-  "Update the MISPELLING to CORRECTED entry in the table.
+  "Update the MISSPELLING to CORRECTED entry in the table.
 Returns the number of times this correction has occurred."
   (if-let ((correction-counts
             (gethash misspelling autocorrect-record-table)))
@@ -4207,14 +4224,38 @@ places, I think it's nice to have a single place where the abbrev table so any
 changes to the abbrev table (or similar) only need to be made in one place.
 
 We could use the global abbrev table, but I'd rather have one dedicated to
-spelling corrections. Let's manage this entirely separately to the global abbrev
-file too.
+spelling corrections. Since an abbrev table can take a enabling predicate
+function, we can create an abbrev minor mode and link that up.
 
 #+begin_src emacs-lisp
-(defvar autocorrect-abbrev-file
+;;;###autoload
+(define-minor-mode autocorrect-mode
+  "Automatically correct misspellings with abbrev."
+  :init-value t)
+
+;;;###autoload
+(define-globalized-minor-mode global-autocorrect-mode
+  autocorrect-mode autocorrect--enable)
+
+(defun autocorrect--enable ()
+  "Turn on `autocorrect-mode' in the current buffer."
+  (autocorrect-mode 1))
+
+(defun autocorrect--enabled-p ()
+  "Return non-nil if autocorrect-mode is enabled in the current buffer."
+  autocorrect-mode)
+#+end_src
+
+Given that our autocorrect abbrev table is operating rather distinctly from the
+"standard" user abbrev tables, it seems prudent to save it in a separate file
+too. We could just not save it, but it seems nice to get the count information.
+
+#+begin_src emacs-lisp
+(defcustom autocorrect-abbrev-file
   (file-name-concat (or (getenv "XDG_STATE_HOME") "~/.local/state")
                     "emacs" "spelling-abbrevs.el")
-  "File to save spell check records in.")
+  "File to save spell check records in."
+  :type 'file)
 
 (defvar autocorrect-abbrev-table nil
   "The spelling abbrev table.")
@@ -4226,7 +4267,8 @@ file too.
   "Setup `autocorrect-abbrev-table'.
 Also set it as a parent of `global-abbrev-table'."
   (unless autocorrect-abbrev-table
-    (setq autocorrect-abbrev-table (make-abbrev-table))
+    (setq autocorrect-abbrev-table
+          (make-abbrev-table (list :enable-function #'autocorrect--enabled-p)))
     (abbrev-table-put
      global-abbrev-table :parents
      (cons autocorrect-abbrev-table
@@ -4262,7 +4304,7 @@ Now we can write the update function that's run on a live spelling correction.
 
 #+begin_src emacs-lisp
 (defun autocorrect-record-correction (misspelling corrected)
-  "Record the correction of MISPELLING to CORRECTED."
+  "Record the correction of MISSPELLING to CORRECTED."
   (let ((write-region-inhibit-fsync t) ; Quicker writes
         (coding-system-for-write 'utf-8)
         (inhibit-message t))
@@ -4316,7 +4358,7 @@ split the actual reading and the abbrev generation into two parts though.
                       (>= (cdar corrections)
                           autocorrect-count-threshold-history))
            (define-abbrev autocorrect-abbrev-table misspelling nil)))))
-     autocorrect-abbrev-table))
+   autocorrect-abbrev-table))
 
 (defun autocorrect--create-history-abbrevs ()
   "Apply the history threshold to the current correction table."
@@ -4353,14 +4395,14 @@ snippet]] in the Jinx wiki for immediately saving all corrected misspellings int
 the global abbrev list.
 
 #+begin_src emacs-lisp
-(defun autocorrect-record-jinx-correction (overlay corrected)
+(defun autocorrect-jinx-record-correction (overlay corrected)
+  "Record that Jinx corrected the text in OVERLAY to CORRECTED."
   (let ((text
          (buffer-substring-no-properties
           (overlay-start overlay)
           (overlay-end overlay))))
     (autocorrect-record-correction text corrected)))
 
-(advice-add 'jinx--correct-replace :before #'autocorrect-record-jinx-correction)
 #+end_src
 
 **** Downloading dictionaries
