@@ -9784,7 +9784,7 @@ version of ~reftex-label~.
 (defvar org-reference-contraction-max-length 35
   "Maximum length of resulting reference reference, including joining characters.")
 (defvar org-reference-contraction-stripped-words
-  '("the" "on" "in" "off" "a" "for" "by" "of" "and" "is" "to")
+  '("the" "on" "in" "off" "a" "for" "by" "of" "and" "is" "to" "as")
   "Superfluous words to be removed from a reference.")
 (defvar org-reference-contraction-joining-char "-"
   "Character used to join words in the reference reference.")
