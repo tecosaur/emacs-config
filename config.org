@@ -5419,7 +5419,8 @@ roll our [[file:lisp/wttrin/wttrin.el][own version]].
 
 Why not flash words on the screen. Why not --- hey, it could be fun.
 #+begin_src emacs-lisp :tangle packages.el
-(package! spray :pin "74d9dcfa2e8b38f96a43de9ab0eb13364300cb46")
+(package! spray :pin "74d9dcfa2e8b38f96a43de9ab0eb13364300cb46"
+  :recipe (:host github :repo "emacsmirror/spray")) ; sr.ht can be flaky
 #+end_src
 
 It would be nice if Spray's default speed suited me better, and the keybindings
@@ -7694,7 +7695,8 @@ correct package statement needed.
 <<org-pkg-statement()>>
 (unpin! org) ; there be bugs
 (package! org-contrib
-  :recipe (:host nil :repo "https://git.sr.ht/~bzg/org-contrib"
+  ;; The `sr.ht' repo has been a bit flaky as of late.
+  :recipe (:host github :repo "emacsmirror/org-contrib"
            :files ("lisp/*.el"))
   :pin "351c71397d893d896a47ad7e280607b4d59b84e4")
 #+end_src
