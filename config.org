@@ -560,7 +560,7 @@ created earlier.
     (cl-incf confpkg--num)
     (org-set-property
      "header-args:emacs-lisp"
-     (format ":tangle no :noweb-ref %s" confpkg-name))
+     (format ":tangle no :noweb-ref %s :noweb-sep \"\\n\\n\"" confpkg-name))
     (push (list :name name
                 :package confpkg-name
                 :file confpkg-file
