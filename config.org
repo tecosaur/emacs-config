@@ -3535,16 +3535,28 @@ let's change that, and do a few other similar tweaks while we're at it.
 ** Tools
 *** Abbrev
 
-#+call: confpkg("Multi-mode abbrev")
+#+call: confpkg()
 
-Thanks to [[https://emacs.stackexchange.com/questions/45462/use-a-single-abbrev-table-for-multiple-modes/45476#45476][use a single abbrev-table for multiple modes? - Emacs Stack Exchange]] I
-have the following.
+Abbrev mode is great, and something I make use of in multiple ways. As such, I
+want it on by default.
 
-#+begin_src emacs-lisp :tangle no
-(add-hook 'doom-first-buffer-hook
-          (defun +abbrev-file-name ()
-            (setq-default abbrev-mode t)
-            (setq abbrev-file-name (expand-file-name "abbrev.el" doom-private-dir))))
+#+begin_src emacs-lisp
+(setq-default abbrev-mode t)
+#+end_src
+
+Abbrev-mode can save and load abbreviations from an "abbrev file", which I'd
+like to locate in my Doom config folder.
+
+#+begin_src emacs-lisp
+(setq abbrev-file-name (expand-file-name "abbrev.el" doom-private-dir))
+#+end_src
+
+I need to think more on how I want to manage abbrev changes in the current
+session, but for now I'm going to be overly cautious and avoid any modifications
+to the global abbrev file that I don't make myself.
+
+#+begin_src emacs-lisp
+(setq save-abbrevs nil)
 #+end_src
 
 *** Very large files
