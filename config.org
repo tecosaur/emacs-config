@@ -1485,25 +1485,42 @@ By default, it completes (in order):
 + Dabbrev (kill ring)
 + Known elisp symbols
 
-I find that "previous lines" completions often appear when I actually want a
+I find that ~try-expand-line~ completions often appear when I actually want a
 dabbrev completion, so let's deprioritise it somewhat. If I actually want to try
 for a line expansion, it's fairly easy to deliberately trigger it --- just
 invoke ~hippie-expand~ after typing a space and there will be no dabbrev
 candidates.
 
+Speaking of dabbrev, I do think of hippie-expand mostly as "a stangely named
+dabbrev+", so let's prioritise the dabbrev-related expanders a bit. I'll also
+toss in a nice non-default expansion generator as the first dabbrev candidate
+function: ~try-expand-dabbrev-visible~.
+
+There's another cool source of multi-word expansion (actually multi-line) that
+isn't used by default, ~try-expand-dabbrev-from-kill~. I personally think this one
+is quite neat, but don't want it to interfere with more common single-word
+completions, and so will place it just above ~try-expand-line~.
+
 #+begin_src emacs-lisp
 (setq hippie-expand-try-functions-list
-      '(try-complete-file-name-partially
-        try-complete-file-name
-        try-expand-all-abbrevs
-        try-expand-list
+      '(try-expand-list
+        try-expand-dabbrev-visible
         try-expand-dabbrev
+        try-expand-all-abbrevs
         try-expand-dabbrev-all-buffers
+        try-complete-file-name-partially
+        try-complete-file-name
         try-expand-dabbrev-from-kill
+        try-expand-whole-kill
         try-expand-line
         try-complete-lisp-symbol-partially
         try-complete-lisp-symbol))
 #+end_src
+
+Unfortunately there's one aspect of ~try-expand-dabbrev-from-kill~ that I find
+lets me down a bit, which is that it fails to complete when the killed text
+starts with a newline and the current line does not. I'll see if I can do
+something about this in the future.
 
 *** Buffer defaults
 
