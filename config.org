@@ -5115,6 +5115,7 @@ For ease of use, let's also set up an easy way of setting the ~:font~ attribute.
 (defcustom variable-pitch-serif-font (font-spec :family "serif")
   "The font face used for `variable-pitch-serif'."
   :group 'basic-faces
+  :type '(restricted-sexp :tag "font-spec" :match-alternatives (fontp))
   :set (lambda (symbol value)
          (set-face-attribute 'variable-pitch-serif nil :font value)
          (set-default-toplevel-value symbol value)))
