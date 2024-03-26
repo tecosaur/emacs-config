@@ -4310,7 +4310,7 @@ Also set it as a parent of `global-abbrev-table'."
           (setq coding-system-for-write 'utf-8-emacs))
         (goto-char (point-min))
         (insert (format ";;-*-coding: %s;-*-\n\n" coding-system-for-write))
-        (write-region nil nil autocorrect-abbrev-file 0)))
+        (write-region nil nil autocorrect-abbrev-file)))
     (setq autocorrect-abbrev-table--saved-version
           (abbrev-table-get autocorrect-abbrev-table
                             :abbrev-table-modiff))))
