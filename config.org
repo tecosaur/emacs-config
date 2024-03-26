@@ -4408,13 +4408,15 @@ split the actual reading and the abbrev generation into two parts though.
 (defun autocorrect--remove-invalid-abbrevs ()
   "Ensure that all entries of the abbrev table are valid."
   (obarray-map
-   (lambda (misspelling)
-     (when (stringp misspelling) ; Abbrev's obarrays start with a symbol
-       (let ((corrections (gethash misspelling autocorrect-record-table)))
-         (unless (and (= (length corrections) 1)
-                      (>= (cdar corrections)
-                          autocorrect-count-threshold-history))
-           (define-abbrev autocorrect-abbrev-table misspelling nil)))))
+   (lambda (misspelling-symb)
+     (let ((misspelling (symbol-name misspelling-symb)))
+       (unless (string-empty-p misspelling) ; Abbrev uses an empty symbol for metadata.
+         (let ((corrections (gethash misspelling autocorrect-record-table)))
+           (unless (and (= (length corrections) 1)
+                        (>= (cdar corrections)
+                            autocorrect-count-threshold-history))
+             (define-abbrev autocorrect-abbrev-table misspelling nil)
+             (unintern misspelling-symb autocorrect-abbrev-table))))))
    autocorrect-abbrev-table))
 
 (defun autocorrect--create-history-abbrevs ()
