@@ -4243,9 +4243,23 @@ function, we can create an abbrev minor mode and link that up.
   "Turn on `autocorrect-mode' in the current buffer."
   (autocorrect-mode 1))
 
-(defun autocorrect--enabled-p ()
-  "Return non-nil if autocorrect-mode is enabled in the current buffer."
-  autocorrect-mode)
+#+end_src
+
+While we're at it, it would probably be nice to write an abbrev predicate
+function that can also take into account a user function that determines if
+expansion is appropriate.
+
+#+begin_src emacs-lisp
+(defcustom autocorrect-predicates nil
+  "Predicate functions called at point with argument START.
+These functions should return t if autocorrection is valid at START."
+  :type '(repeat function))
+
+(defun autocorrect--appropriate-p ()
+  "Return non-nil it is currently appropriate to make an autocorrection.
+See `autocorrect-predicates'."
+  (and autocorrect-mode
+       (run-hook-with-args-until-failure 'autocorrect-predicates (point))))
 #+end_src
 
 Given that our autocorrect abbrev table is operating rather distinctly from the
@@ -4270,7 +4284,7 @@ too. We could just not save it, but it seems nice to get the count information.
 Also set it as a parent of `global-abbrev-table'."
   (unless autocorrect-abbrev-table
     (setq autocorrect-abbrev-table
-          (make-abbrev-table (list :enable-function #'autocorrect--enabled-p)))
+          (make-abbrev-table (list :enable-function #'autocorrect--appropriate-p)))
     (abbrev-table-put
      global-abbrev-table :parents
      (cons autocorrect-abbrev-table
@@ -4461,8 +4475,13 @@ the global abbrev list.
       (cl-loop for dict in jinx--dicts
                thereis (jinx--mod-check dict word))))
 
-(setq autocorrect-check-spelling-function #'autocorrect-jinx-check-spelling)
+(defun autocorrect-jinx-appropriate (pos)
+  "Return non-nil if it is appropriate to spellcheck at POS according to jinx."
+  (and (not (jinx--face-ignored-p pos))
+       (not (jinx--regexp-ignored-p pos))))
 
+(setq autocorrect-check-spelling-function #'autocorrect-jinx-check-spelling)
+(add-to-list 'autocorrect-predicates #'autocorrect-jinx-appropriate)
 (advice-add 'jinx--correct-replace :before #'autocorrect-jinx-record-correction)
 #+end_src
 
