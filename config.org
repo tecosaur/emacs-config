@@ -3826,6 +3826,7 @@ the pre-filled remote URL use ssh.
 
 #+begin_src emacs-lisp
 (defadvice! +magit-remote-add--streamline-forge-a (args)
+  "Prompt to setup a remote using `+magit-default-forge-remote'."
   :filter-args #'magit-remote-add
   (interactive
    (let ((default-name
