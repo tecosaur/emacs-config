@@ -2311,7 +2311,7 @@ htmlize package doesn't.
 Let's make creating an Org buffer just that little bit easier.
 
 #+begin_src emacs-lisp
-(evil-define-command +evil-buffer-org-new (count file)
+(evil-define-command +evil-buffer-org-new (_count file)
   "Creates a new ORG buffer replacing the current window, optionally
    editing a certain FILE"
   :repeat nil
@@ -4671,7 +4671,7 @@ For when you want to change the case pattern for a symbol.
         :desc "Upper_Score" "u" #'string-inflection-capital-underscore
         :desc "UP_CASE" "U" #'string-inflection-upcase)
   (after! evil
-    (evil-define-operator evil-operator-string-inflection (beg end type)
+    (evil-define-operator evil-operator-string-inflection (beg end _type)
       "Define a new evil operator that cycles symbol casing."
       :move-point nil
       (interactive "<R>")
