@@ -2,8 +2,6 @@ name: "Publish"
 on:
   push:
     branches: master
-  delete:
-    ref: "refs/heads/publish"
   workflow_dispatch:
     inputs:
       tmate_enabled:
