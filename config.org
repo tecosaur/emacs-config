@@ -1417,7 +1417,7 @@ By default changes made via a customisation interface are added to =init.el=.
 I prefer the idea of using a separate file for this. We just need to change a
 setting, and load it if it exists.
 #+begin_src emacs-lisp
-(setq-default custom-file (expand-file-name ".custom.el" doom-private-dir))
+(setq-default custom-file (expand-file-name ".custom.el" doom-user-dir))
 (when (file-exists-p custom-file)
   (load custom-file))
 #+end_src
@@ -1893,7 +1893,7 @@ aspects are nice, but on others I prefer Fira.
 (setq doom-font (font-spec :family "JetBrains Mono" :size 24)
       doom-big-font (font-spec :family "JetBrains Mono" :size 36)
       doom-variable-pitch-font (font-spec :family "Overpass" :size 26)
-      doom-unicode-font (font-spec :family "JuliaMono")
+      doom-symbol-font (font-spec :family "JuliaMono")
       doom-emoji-font (font-spec :family "Twitter Color Emoji") ; Just used by me
       doom-serif-font (font-spec :family "IBM Plex Mono" :size 22 :weight 'light))
 #+end_src
@@ -2353,7 +2353,7 @@ splash screen to something more minimal I switched to just using the /E/.
 
 #+begin_src emacs-lisp
 (defvar fancy-splash-image-directory
-  (expand-file-name "misc/splash-images/" doom-private-dir)
+  (expand-file-name "misc/splash-images/" doom-user-dir)
   "Directory in which to look for splash image templates.")
 
 (defvar fancy-splash-image-template
@@ -2779,7 +2779,7 @@ Let's start off by setting the local folder to put the phrase source files in.
 
 #+begin_src emacs-lisp
 (defvar splash-phrase-source-folder
-  (expand-file-name "misc/splash-phrases" doom-private-dir)
+  (expand-file-name "misc/splash-phrases" doom-user-dir)
   "A folder of text files with a fun phrase on each line.")
 #+end_src
 
@@ -3302,7 +3302,7 @@ anything to be run.
       (pp-to-string
        `(unless noninteractive
           (defun +config-run-setup ()
-            (when-let ((setup-file (expand-file-name "setup.sh" doom-private-dir))
+            (when-let ((setup-file (expand-file-name "setup.sh" doom-user-dir))
                        ((file-exists-p setup-file))
                        (setup-content (string-trim (with-temp-buffer (insert-file-contents setup-file) (buffer-string))
                                                    "#!/usr/bin/env bash"))
@@ -3565,7 +3565,7 @@ Abbrev-mode can save and load abbreviations from an "abbrev file", which I'd
 like to locate in my Doom config folder.
 
 #+begin_src emacs-lisp
-(setq abbrev-file-name (expand-file-name "abbrev.el" doom-private-dir))
+(setq abbrev-file-name (expand-file-name "abbrev.el" doom-user-dir))
 #+end_src
 
 I need to think more on how I want to manage abbrev changes in the current
@@ -5169,7 +5169,7 @@ shadow)=, but I don't like that.
       (propertize (marginalia--time time) 'face (list :foreground color))))
 
   (defun +marginalia-file-size-colorful (size)
-    (let* ((size-index (/ (log10 (+ 1 size)) 7.0))
+    (let* ((size-index (/ (log (+ 1 size)) 7.0))
            (color (if (< size-index 10000000) ; 10m
                       (doom-blend 'orange 'green size-index)
                     (doom-blend 'red 'orange (- size-index 1)))))
@@ -13857,9 +13857,10 @@ This makes use of =aas= (/Auto Activating Snippets/) for CDLaTeX-like symbol inp
 
 *** Fixes
 
-In case of Emacs28,
+In case of Emacs28:
+
 #+begin_src emacs-lisp
-(when EMACS28+
+(when (>= emacs-major-version 28)
   (add-hook 'latex-mode-hook #'TeX-latex-mode))
 #+end_src
 
