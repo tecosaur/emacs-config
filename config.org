@@ -4300,11 +4300,52 @@ Also set it as a parent of `global-abbrev-table'."
                             :abbrev-table-modiff))))
 #+end_src
 
-Now we can write the update function that's run on a live spelling correction.
+When we handle just-performed spelling corrections, if the word is capitalised
+it could either be because:
++ It is appearing at the start of the sentence
++ It is a proper noun, and should always be capitalised
+
+We want to differentiate these two cases, which we can do by converting the
+corrected word to lowercase and testing whether that form is spellchecked as
+correct.
+
+#+begin_src emacs-lisp
+(defcustom autocorrect-check-spelling-function nil
+  "Predicate function that indicates whether a word is correctly spelt.
+This is used to check whether a correction can be safely lowercased."
+  :type '(choice function (const nil)))
+#+end_src
+
+To check whether a function is indeed lowercase we'll try using ~char-uppercase-p~
+instead of Regexp for speed (I think but haven't tested that this will be
+faster).
+
+#+begin_src emacs-lisp
+(defun autocorrect--should-downcase-p (word)
+  "Check whether it is a good idea to downcase WORD.
+This is conditional on all of the following being true:
+- WORD starts with a capital letter
+- The rest of WORD is either entirely lower or upper case
+  (i.e. WORD is like \"Capitalised\" or \"UPPERCASE\")
+- The lowercase form of WORD satisfies `autocorrect-check-spelling-function'"
+  (and autocorrect-check-spelling-function
+       (char-uppercase-p (aref word 0))
+       (let ((letter-cases (mapcar #'char-uppercase-p word)))
+         (or (not (memq t (cdr letter-cases)))
+             (not (memq nil (cdr letter-cases)))))
+       (funcall autocorrect-check-spelling-function
+                (downcase word))))
+#+end_src
+
+Now we can write the update function that's run on a live spelling correction,
+using the various facilities we've defined so far.
 
 #+begin_src emacs-lisp
 (defun autocorrect-record-correction (misspelling corrected)
   "Record the correction of MISSPELLING to CORRECTED."
+  (when (autocorrect--should-downcase-p corrected)
+    (setq misspelling (downcase misspelling)
+          corrected (downcase corrected)))
   (let ((write-region-inhibit-fsync t) ; Quicker writes
         (coding-system-for-write 'utf-8)
         (inhibit-message t))
@@ -4403,6 +4444,24 @@ the global abbrev list.
           (overlay-end overlay))))
     (autocorrect-record-correction text corrected)))
 
+(defun autocorrect-jinx-check-spelling (word)
+  "Check if WORD is valid."
+  ;; Mostly a copy of `jinx--word-valid-p', just without the buffer substring.
+  ;; It would have been nice if `jinx--word-valid-p' implemented like this
+  ;; with `jinx--this-word-valid-p' (or similar) as the at-point variant.
+  (or (member word jinx--session-words)
+      ;; Allow capitalized words
+      (and (string-match-p "\\`[[:upper:]][[:lower:]]+\\'" word)
+           (cl-loop
+            for w in jinx--session-words
+            thereis (and (string-equal-ignore-case word w)
+                         (string-match-p "\\`[[:lower:]]+\\'" w))))
+      (cl-loop for dict in jinx--dicts
+               thereis (jinx--mod-check dict word))))
+
+(setq autocorrect-check-spelling-function #'autocorrect-jinx-check-spelling)
+
+(advice-add 'jinx--correct-replace :before #'autocorrect-jinx-record-correction)
 #+end_src
 
 **** Downloading dictionaries
