@@ -8664,15 +8664,12 @@ be nice to have a function to convert =org-ref= citations to =org-cite= forms.
                                  (match-string 2))))))))
 #+end_src
 
-***** cdlatex
+***** cdlatex environments
 
-It's also nice to be able to use ~cdlatex~.
-#+begin_src emacs-lisp
-(add-hook 'org-mode-hook 'turn-on-org-cdlatex)
-#+end_src
+I prefer =auto-activating-snippets= to =cdlatex=, but do like
+~org-cdlatex-environment-indent~ (bound to =C-c }=). I almost always want to edit
+them afterwards though, so let's make that happen by default.
 
-It's handy to be able to quickly insert environments with =C-c }=. I almost always
-want to edit them afterwards though, so let's make that happen by default.
 #+begin_src emacs-lisp
 (defadvice! +org-edit-latex-env-after-insert-a (&rest _)
   :after #'org-cdlatex-environment-indent
