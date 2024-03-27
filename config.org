@@ -608,15 +608,13 @@ Now all that's needed is a template to be used.
 ;;
 ;;  Generated package (no.%n) from my config.
 ;;
-;;  This is liable to have unstated dependencies, and reply on other bits of
-;;  state from other configuration blocks. Only use this if you know /exactly/
-;;  what you are doing.
+;;  During generation, dependency on other aspects of my configuration and
+;;  packages is inferred via (regexp-based) static analysis.  While this seems
+;;  to do a good job, this method is imperfect.  This code likely depends on
+;;  utilities provided by Doom, and if you try to run it in isolation you may
+;;  discover the code makes more assumptions.
 ;;
-;;  This may function nicely as a bit of self-contained functionality, or it
-;;  might be a horrid mix of functionalities and state.
-;;
-;;  Hopefully, in future static analysis will allow this to become more
-;;  properly package-like.
+;;  That said, I've found pretty good results so far.
 ;;
 ;;; Code:
 
