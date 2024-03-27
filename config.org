@@ -515,7 +515,7 @@ modify the parent heading, and register the config group with the variables we
 created earlier.
 
 #+name: confpkg
-#+begin_src elisp :var name="" needs="" after="" pre="" prefix="config-" via="copy" :results silent raw :noweb no-export
+#+begin_src elisp :var name="" needs="" after="" pre="" prefix="config-" via="copy" emacs-minimum="29.1" :results silent raw :noweb no-export
 ;; Babel block for use with #+call
 ;; Arguments:
 ;;  - name, the name of the config sub-package
@@ -532,6 +532,7 @@ created earlier.
 ;;    + "none", do not do anything to load this configuration.
 ;;      This only makes sense when configuration is either being
 ;;      temporarily disabled or loaded indirectly/elsewhere.
+;;  - emacs-minimum, the minimum emacs version ("29.1" by default)
 (when (or (string-empty-p needs)
           (cl-every #'executable-find (delq nil (split-string needs ","))))
   (let* ((name (if (string-empty-p name)
@@ -576,6 +577,7 @@ created earlier.
      `((?n . ,confpkg--num)
        (?p . ,confpkg-name)
        (?f . ,confpkg-file)
+       (?e . ,emacs-minimum)
        (?Y . ,(format-time-string "%Y"))
        (?B . ,(format-time-string "%B"))
        (?m . ,(format-time-string "%m"))
@@ -598,7 +600,7 @@ Now all that's needed is a template to be used.
 ;; Modified: %B %d, %Y
 ;; Version: %Y.%m.%d
 ;; Homepage: https://code.tecosaur.net/tec/emacs-config
-;; Package-Requires: ((emacs \"27.1\"))
+;; Package-Requires: ((emacs \"%e\"))
 ;;
 ;; This file is not part of GNU Emacs.
 ;;
