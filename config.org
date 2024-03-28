@@ -4105,386 +4105,66 @@ tweaks.
 
 **** Autocorrect
 
-#+call: confpkg("autocorrect", prefix="", after="jinx")
+#+call: confpkg()
 
-If you want to write without looking like you skipped a chunk of
-primary/secondary school (as I do), then autocorrect is a handy thing to have.
-Beyond just misspellings, it can also help with typos, and lazy capitalisation
-(can you really be bothered to consistently type "LuaLaTeX" instead of
-"lualatex" and "SciFi" over "scifi"?). However, primarily thanks to smartphones,
-I more often hear people cursing autocorrect than praising it. With that in
-mind, I think it's worth giving some thought to how smartphone autocorrect gets
-its bad reputation (despite largely doing a decent job):
-1. Typing is harder on smartphones, and so autocorrect makes bigger (more speculative) guesses
-2. People type (and mistype) differently, but autocorrect tries to have a "one
-   size fits all" profile that is refined over time
-3. As soon as you accept a particular correction, autocorrect can start applying
-   that even when the original typo is ambiguous and has multiple "corrected" forms
-4. It's hard to tell the phone to stop doing a particular autocorrect (see
-   "Emacs" recapitalised as "eMacs" on Apple devices)
+I used to have a small collection of configuration here, but then it grew
+larger, and now it's a package.
 
-I think we can largely alleviate these problems by
-1. Being mainly used on devices with actual keyboards
-2. Starting with an empty autocorrect "profile", built up by the user over time
-3. Having a customisable threshold before a repeated correction is made into an
-   autocorrection, and blacklisting misspellings with multiple distinct corrections.
-4. Making it easy to blacklist certain words from becoming autocorrections
-
-Another complaint about autocorrect is that it lets you develop bad habits, and
-if anything a tool that got you to retype the correct spelling several times
-would be more valuable in the long run. I think this is a pretty reasonable
-complaint, and have two different trains of thought that both justify tracking
-corrections made:
-+ I almost never leave Emacs for writing more than a text message, so what if I
-  type worse outside of it?
-+ By tracking corrections made, you can also make a personal "most common
-  misspellings" training list to run through at your leasure. Just set the
-  "minimum replacement count" to a stupidly high number.
-
-I think it would be nice to write this as a package, so let's create a
-customisation group for this functionality.
-
-#+begin_src emacs-lisp
-(defgroup autocorrect nil
-  "Automatically fix typos and frequent spelling mistakes."
-  :group 'text
-  :prefix "autocorrect-")
+#+begin_src emacs-lisp :tangle packages.el
+(package! autocorrect :recipe (:local-repo "lisp/autocorrect"))
 #+end_src
 
-For starters, let's write a record of all corrections made.
+To integrate Jinx with the =autocorrect= package, we need to tell it:
++ About corrections made with Jinx
++ How to tell if a word is spelled correctly with Jinx
++ When it's appropriate to make an autocorrection
 
 #+begin_src emacs-lisp
-(defcustom autocorrect-history-file
-  (file-name-concat (or (getenv "XDG_STATE_HOME") "~/.local/state")
-                    "emacs" "spelling-corrections.txt")
-  "File where a spell check record will be saved."
-  :type 'file)
-#+end_src
+(use-package! autocorrect
+  :after jinx
+  :config
+  ;; Integrate with Jinx
+  (defun autocorrect-jinx-record-correction (overlay corrected)
+    "Record that Jinx corrected the text in OVERLAY to CORRECTED."
+    (let ((text
+           (buffer-substring-no-properties
+            (overlay-start overlay)
+            (overlay-end overlay))))
+      (autocorrect-record-correction text corrected)))
 
-For simplicity of operation, I think we can just append each correction the file
-as =<misspelled> <corrected>= lines. This has a number of advantages, such as
-avoiding recalculations while typing, avoiding race conditions with multiple
-Emacs sessions, and making merging data on different machines trivial.
+  (defun autocorrect-jinx-check-spelling (word)
+    "Check if WORD is valid."
+    ;; Mostly a copy of `jinx--word-valid-p', just without the buffer substring.
+    ;; It would have been nice if `jinx--word-valid-p' implemented like this
+    ;; with `jinx--this-word-valid-p' (or similar) as the at-point variant.
+    (or (member word jinx--session-words)
+        ;; Allow capitalized words
+        (and (string-match-p "\\`[[:upper:]][[:lower:]]+\\'" word)
+             (cl-loop
+              for w in jinx--session-words
+              thereis (and (string-equal-ignore-case word w)
+                           (string-match-p "\\`[[:lower:]]+\\'" w))))
+        (cl-loop for dict in jinx--dicts
+                 thereis (jinx--mod-check dict word))))
 
-In the Emacs session though, I think we'll want to have a hash table of the
-counts of each correction. We can have the misspelled words as the keys, and
-then have each value be an alist of src_elisp{(correction . count)} pairs. This
-table can be lazily built and processed after startup.
+  (defun autocorrect-jinx-appropriate (pos)
+    "Return non-nil if it is appropriate to spellcheck at POS according to jinx."
+    (and (not (jinx--face-ignored-p pos))
+         (not (jinx--regexp-ignored-p pos))))
 
-#+begin_src emacs-lisp
-(defvar autocorrect-record-table (make-hash-table :test #'equal)
-  "A record of all corrections made.
-Misspelled words are the keys, and a alist of corrections and their count are
-the values.")
-#+end_src
+  (setq autocorrect-check-spelling-function #'autocorrect-jinx-check-spelling)
+  (add-to-list 'autocorrect-predicates #'autocorrect-jinx-appropriate)
+  (advice-add 'jinx--correct-replace :before #'autocorrect-jinx-record-correction)
 
-We probably want to also specify a threshold number of misspellings that trigger
-entry to the abbrev table, both on load and when made during the current Emacs
-session. For now, I'll try a value of three for on-load and two for misspellings
-made in the current Emacs session. I think I want to avoid a value of one since
-that makes it easy for a misspelling with multiple valid corrections to become
-associated with a single correction too soon. This is a rare concern, but it
-would be annoying enough to run into that I think it's worth requiring a second
-misspelling.
+  ;; Run setup
+  (run-with-idle-timer 0.5 nil #'autocorrect-setup)
 
-#+begin_src emacs-lisp
-(defcustom autocorrect-count-threshold-history 3
-  "The number of recorded identical misspellings to create an abbrev.
-This applies to misspellings read from the history file"
-  :type 'natnum)
-
-(defcustom autocorrect-count-threshold-session 2
-  "The number of identical misspellings to create an abbrev.
-This applies to misspellings made in the current Emacs session."
-  :type 'natnum)
-#+end_src
-
-At this point we need to actually implement this functionality, starting with
-updating the table when a correction is either read from the history file or
-occurs live.
-
-#+begin_src emacs-lisp
-(defun autocorrect-update-table (misspelling corrected)
-  "Update the MISSPELLING to CORRECTED entry in the table.
-Returns the number of times this correction has occurred."
-  (if-let ((correction-counts
-            (gethash misspelling autocorrect-record-table)))
-      (if-let ((record-cons (assoc corrected correction-counts)))
-          (setcdr record-cons (1+ (cdr record-cons)))
-        (puthash misspelling
-                 (push (cons corrected 1) correction-counts)
-                 autocorrect-record-table)
-        1)
-    (puthash misspelling
-             (list (cons corrected 1))
-             autocorrect-record-table)
-    1))
-#+end_src
-
-We could call ~define-abbrev~ directly, but since we'll be doing so in multiple
-places, I think it's nice to have a single place where the abbrev table so any
-changes to the abbrev table (or similar) only need to be made in one place.
-
-We could use the global abbrev table, but I'd rather have one dedicated to
-spelling corrections. Since an abbrev table can take a enabling predicate
-function, we can create an abbrev minor mode and link that up.
-
-#+begin_src emacs-lisp
-;;;###autoload
-(define-minor-mode autocorrect-mode
-  "Automatically correct misspellings with abbrev."
-  :init-value t)
-
-;;;###autoload
-(define-globalized-minor-mode global-autocorrect-mode
-  autocorrect-mode autocorrect--enable)
-
-(defun autocorrect--enable ()
-  "Turn on `autocorrect-mode' in the current buffer."
-  (autocorrect-mode 1))
-
-#+end_src
-
-While we're at it, it would probably be nice to write an abbrev predicate
-function that can also take into account a user function that determines if
-expansion is appropriate.
-
-#+begin_src emacs-lisp
-(defcustom autocorrect-predicates nil
-  "Predicate functions called at point with argument START.
-These functions should return t if autocorrection is valid at START."
-  :type '(repeat function))
-
-(defun autocorrect--appropriate-p ()
-  "Return non-nil it is currently appropriate to make an autocorrection.
-See `autocorrect-predicates'."
-  (and autocorrect-mode
-       (run-hook-with-args-until-failure 'autocorrect-predicates (point))))
-#+end_src
-
-Given that our autocorrect abbrev table is operating rather distinctly from the
-"standard" user abbrev tables, it seems prudent to save it in a separate file
-too. We could just not save it, but it seems nice to get the count information.
-
-#+begin_src emacs-lisp
-(defcustom autocorrect-abbrev-file
-  (file-name-concat (or (getenv "XDG_STATE_HOME") "~/.local/state")
-                    "emacs" "spelling-abbrevs.el")
-  "File to save spell check records in."
-  :type 'file)
-
-(defvar autocorrect-abbrev-table nil
-  "The spelling abbrev table.")
-
-(defvar autocorrect-abbrev-table--saved-version 0
-  "The version of `autocorrect-abbrev-table' saved to disk.")
-
-(defun autocorrect--setup-abbrevs ()
-  "Setup `autocorrect-abbrev-table'.
-Also set it as a parent of `global-abbrev-table'."
-  (unless autocorrect-abbrev-table
-    (setq autocorrect-abbrev-table
-          (make-abbrev-table (list :enable-function #'autocorrect--appropriate-p)))
-    (abbrev-table-put
-     global-abbrev-table :parents
-     (cons autocorrect-abbrev-table
-           (abbrev-table-get global-abbrev-table :parents)))
-    (add-hook 'kill-emacs-hook #'autocorrect-save-abbrevs))
-  (when (file-exists-p autocorrect-abbrev-file)
-    (read-abbrev-file autocorrect-abbrev-file t)
-    (setq autocorrect-abbrev-table--saved-version
-          (abbrev-table-get autocorrect-abbrev-table
-                            :abbrev-table-modiff))))
-
-(defun autocorrect-save-abbrevs ()
-  "Write `autocorrect-abbrev-table'."
-  (when (> (abbrev-table-get autocorrect-abbrev-table
-                             :abbrev-table-modiff)
-           autocorrect-abbrev-table--saved-version)
-    (unless (file-exists-p autocorrect-abbrev-file)
-      (make-directory (file-name-directory autocorrect-abbrev-file) t))
-    (let ((coding-system-for-write 'utf-8))
-      (with-temp-buffer
-        (insert-abbrev-table-description 'autocorrect-abbrev-table nil)
-        (when (unencodable-char-position (point-min) (point-max) 'utf-8)
-          (setq coding-system-for-write 'utf-8-emacs))
-        (goto-char (point-min))
-        (insert (format ";;-*-coding: %s;-*-\n\n" coding-system-for-write))
-        (write-region nil nil autocorrect-abbrev-file)))
-    (setq autocorrect-abbrev-table--saved-version
-          (abbrev-table-get autocorrect-abbrev-table
-                            :abbrev-table-modiff))))
-#+end_src
-
-When we handle just-performed spelling corrections, if the word is capitalised
-it could either be because:
-+ It is appearing at the start of the sentence
-+ It is a proper noun, and should always be capitalised
-
-We want to differentiate these two cases, which we can do by converting the
-corrected word to lowercase and testing whether that form is spellchecked as
-correct.
-
-#+begin_src emacs-lisp
-(defcustom autocorrect-check-spelling-function nil
-  "Predicate function that indicates whether a word is correctly spelt.
-This is used to check whether a correction can be safely lowercased."
-  :type '(choice function (const nil)))
-#+end_src
-
-To check whether a function is indeed lowercase we'll try using ~char-uppercase-p~
-instead of Regexp for speed (I think but haven't tested that this will be
-faster).
-
-#+begin_src emacs-lisp
-(defun autocorrect--should-downcase-p (word)
-  "Check whether it is a good idea to downcase WORD.
-This is conditional on all of the following being true:
-- WORD starts with a capital letter
-- The rest of WORD is either entirely lower or upper case
-  (i.e. WORD is like \"Capitalised\" or \"UPPERCASE\")
-- The lowercase form of WORD satisfies `autocorrect-check-spelling-function'"
-  (and autocorrect-check-spelling-function
-       (char-uppercase-p (aref word 0))
-       (let ((letter-cases (mapcar #'char-uppercase-p word)))
-         (or (not (memq t (cdr letter-cases)))
-             (not (memq nil (cdr letter-cases)))))
-       (funcall autocorrect-check-spelling-function
-                (downcase word))))
-#+end_src
-
-Now we can write the update function that's run on a live spelling correction,
-using the various facilities we've defined so far.
-
-#+begin_src emacs-lisp
-(defun autocorrect-record-correction (misspelling corrected)
-  "Record the correction of MISSPELLING to CORRECTED."
-  (when (autocorrect--should-downcase-p corrected)
-    (setq misspelling (downcase misspelling)
-          corrected (downcase corrected)))
-  (let ((write-region-inhibit-fsync t) ; Quicker writes
-        (coding-system-for-write 'utf-8)
-        (inhibit-message t))
-    (write-region
-     (concat misspelling " " corrected "\n") nil
-     autocorrect-history-file t))
-  (when (and (>= (autocorrect-update-table misspelling corrected)
-                 autocorrect-count-threshold-session)
-             (= (length (gethash misspelling autocorrect-record-table))
-                1))
-    (define-abbrev autocorrect-abbrev-table misspelling corrected)
-    (message "Created new autocorrection: %s ⟶ %s"
-             (propertize misspelling 'face 'warning)
-             (propertize corrected 'face 'success))))
-#+end_src
-
-The only thing left to be done now is load the history file. I think I'd like to
-split the actual reading and the abbrev generation into two parts though.
-
-#+begin_src emacs-lisp
-(defun autocorrect--read-history ()
-  "Read the history file into the correction table."
-  (if (file-exists-p autocorrect-history-file)
-      (with-temp-buffer
-        (insert-file-contents autocorrect-history-file)
-        (goto-char (point-min))
-        (while (< (point) (point-max))
-          (let ((pt (point))
-                misspelling corrected)
-            (setq misspelling
-                  (and (forward-word)
-                       (buffer-substring pt (point)))
-                  pt (1+ (point)))
-            (setq corrected
-                  (and (forward-word)
-                       (buffer-substring pt (point)))
-                  pt (point))
-            (when (and misspelling corrected)
-              (autocorrect-update-table misspelling corrected))
-            (forward-line 1))))
-    (make-directory (file-name-directory autocorrect-history-file))
-    (write-region "" nil autocorrect-history-file)))
-
-(defun autocorrect--remove-invalid-abbrevs ()
-  "Ensure that all entries of the abbrev table are valid."
-  (obarray-map
-   (lambda (misspelling-symb)
-     (let ((misspelling (symbol-name misspelling-symb)))
-       (unless (string-empty-p misspelling) ; Abbrev uses an empty symbol for metadata.
-         (let ((corrections (gethash misspelling autocorrect-record-table)))
-           (unless (and (= (length corrections) 1)
-                        (>= (cdar corrections)
-                            autocorrect-count-threshold-history))
-             (define-abbrev autocorrect-abbrev-table misspelling nil)
-             (unintern misspelling-symb autocorrect-abbrev-table))))))
-   autocorrect-abbrev-table))
-
-(defun autocorrect--create-history-abbrevs ()
-  "Apply the history threshold to the current correction table."
-  (maphash
-   (lambda (misspelling corrections)
-     (when (and (= (length corrections) 1)
-                (>= (cdar corrections)
-                    autocorrect-count-threshold-history))
-       (unless (obarray-get autocorrect-abbrev-table misspelling)
-         (define-abbrev autocorrect-abbrev-table
-           misspelling (caar corrections)))))
-   autocorrect-record-table))
-
-(defun autocorrect-setup ()
-  "Read and process the history file into abbrevs."
-  (autocorrect--read-history)
-  (autocorrect--setup-abbrevs)
-  (autocorrect--remove-invalid-abbrevs)
-  (autocorrect--create-history-abbrevs))
-#+end_src
-
-We don't want to load the history eagerly, but we do want it available soon
-after startup. I think an idle timer would be a good way to do this.
-
-#+begin_src emacs-lisp
-(run-with-idle-timer 0.5 nil #'autocorrect-setup)
-#+end_src
-
------
-
-There we go, that's a complete self-managing abbrev-run frequent-misspelling
-correction system. We can hook this up to Jinx by taking note of a helpful [[https://github.com/minad/jinx/wiki#save-misspelling-and-correction-as-abbreviation][code
-snippet]] in the Jinx wiki for immediately saving all corrected misspellings into
-the global abbrev list.
-
-#+begin_src emacs-lisp
-(defun autocorrect-jinx-record-correction (overlay corrected)
-  "Record that Jinx corrected the text in OVERLAY to CORRECTED."
-  (let ((text
-         (buffer-substring-no-properties
-          (overlay-start overlay)
-          (overlay-end overlay))))
-    (autocorrect-record-correction text corrected)))
-
-(defun autocorrect-jinx-check-spelling (word)
-  "Check if WORD is valid."
-  ;; Mostly a copy of `jinx--word-valid-p', just without the buffer substring.
-  ;; It would have been nice if `jinx--word-valid-p' implemented like this
-  ;; with `jinx--this-word-valid-p' (or similar) as the at-point variant.
-  (or (member word jinx--session-words)
-      ;; Allow capitalized words
-      (and (string-match-p "\\`[[:upper:]][[:lower:]]+\\'" word)
-           (cl-loop
-            for w in jinx--session-words
-            thereis (and (string-equal-ignore-case word w)
-                         (string-match-p "\\`[[:lower:]]+\\'" w))))
-      (cl-loop for dict in jinx--dicts
-               thereis (jinx--mod-check dict word))))
-
-(defun autocorrect-jinx-appropriate (pos)
-  "Return non-nil if it is appropriate to spellcheck at POS according to jinx."
-  (and (not (jinx--face-ignored-p pos))
-       (not (jinx--regexp-ignored-p pos))))
-
-(setq autocorrect-check-spelling-function #'autocorrect-jinx-check-spelling)
-(add-to-list 'autocorrect-predicates #'autocorrect-jinx-appropriate)
-(advice-add 'jinx--correct-replace :before #'autocorrect-jinx-record-correction)
+  ;; Make work with evil-mode
+  (evil-collection-set-readonly-bindings 'autocorrect-list-mode-map)
+  (evil-collection-define-key 'normal 'autocorrect-list-mode-map
+    (kbd "a") #'autocorrect-create-correction
+    (kbd "x") #'autocorrect-remove-correction
+    (kbd "i") #'autocorrect-ignore-word))
 #+end_src
 
 **** Downloading dictionaries

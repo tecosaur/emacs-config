@@ -49,3 +49,6 @@
 [submodule "lisp/doom-modeline-media-player"]
 	path = lisp/doom-modeline-media-player
 	url = https://code.tecosaur.net/tec/doom-modeline-media-player.git
+[submodule "lisp/autocorrect"]
+	path = lisp/autocorrect
+	url = https://code.tecosaur.net/tec/autocorrect.git
