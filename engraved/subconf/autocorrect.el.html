@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>autocorrect.el.html</title>
+    <style>
+      body { background: #fafafa; color: #383a42; }
+      pre {
+        font-size: 1rem;
+        max-width: min(100rem, 100%);
+        width: max-content;
+        white-space: pre-wrap;
+        margin: auto; }
+      .ef-D {
+        color: #383a42; background-color: #fafafa; font-weight: 400; }
+      .ef-vp {
+         }
+      .ef-h {
+        color: #84888b; }
+      .ef-sc {
+        color: #50a14f; }
+      .ef-w {
+        color: #986801; }
+      .ef-e {
+        color: #e45649; }
+      .ef-l {
+        color: #4078f2; font-weight: 700; }
+      .ef-lv {
+        color: #8b008b; font-weight: 700; }
+      .ef-hi {
+        color: #f0f0f0; background-color: #4078f2; }
+      .ef-c {
+        color: #84888b; }
+      .ef-cd {
+        color: #84888b; }
+      .ef-s {
+        color: #50a14f; }
+      .ef-d {
+        color: #727578; text-decoration: italic; }
+      .ef-m {
+        color: #b751b6; }
+      .ef-k {
+        color: #e45649; }
+      .ef-b {
+        color: #a626a4; }
+      .ef-f {
+        color: #a626a4; }
+      .ef-v {
+        color: #6a1868; }
+      .ef-t {
+        color: #986801; }
+      .ef-o {
+        color: #b751b6; }
+      .ef-wr {
+        color: #986801; }
+      .ef-nc {
+        color: #4078f2; font-weight: 700; }
+      .ef-pp {
+        color: #4078f2; font-weight: 700; }
+      .ef-rc {
+        color: #4078f2; font-weight: 700; }
+      .ef-rb {
+        color: #4078f2; font-weight: 700; }
+      .ef-ob {
+        background-color: #e7e7e7; }
+      .ef-obb {
+        background-color: #e7e7e7; text-decoration: italic; }
+      .ef-obe {
+        background-color: #e7e7e7; text-decoration: italic; }
+      .ef-Oa {
+        color: #e45649; font-weight: nil; font-size: 1.25em }
+      .ef-Ob {
+        color: #da8548; font-weight: 700; font-size: 1.15em }
+      .ef-Oc {
+        color: #b751b6; font-weight: 700; font-size: 1.12em }
+      .ef-Od {
+        color: #6f99f5; font-weight: 600; font-size: 1.09em }
+      .ef-Oe {
+        color: #bc5cba; font-weight: 600; font-size: 1.06em }
+      .ef-Of {
+        color: #9fbbf8; font-weight: 600; font-size: 1.03em }
+      .ef-Og {
+        color: #d292d1; font-weight: 700; }
+      .ef-Oh {
+        color: #d8e4fc; font-weight: 600; }
+      .ef-hn {
+        color: #da8548; font-weight: 700; }
+      .ef-hq {
+        color: #4078f2; }
+      .ef-hs {
+        color: #986801; }
+      .ef-rda {
+        color: #4078f2; }
+      .ef-rdb {
+        color: #a626a4; }
+      .ef-rdc {
+        color: #50a14f; }
+      .ef-rdd {
+        color: #b751b6; }
+      .ef-rde {
+        color: #4db5bd; }
+      .ef-rdf {
+        color: #4078f2; }
+      .ef-rdg {
+        color: #a626a4; }
+      .ef-rdh {
+        color: #50a14f; }
+      .ef-rdi {
+        color: #b751b6; }
+    </style>
+  </head>
+  <body>
+<pre>
+<span class="ef-cd">;;; </span><span class="ef-c">autocorrect.el --- Generated package (no.26) from my config -*- lexical-binding: t; -*-
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;; </span><span class="ef-c">Copyright (C) 2024 TEC
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;; </span><span class="ef-c">Author: TEC &lt;https://code.tecosaur.net/tec&gt;
+</span><span class="ef-cd">;; </span><span class="ef-c">Maintainer: TEC &lt;contact@tecosaur.net&gt;
+</span><span class="ef-cd">;; </span><span class="ef-c">Created: March 28, 2024
+</span><span class="ef-cd">;; </span><span class="ef-c">Modified: March 28, 2024
+</span><span class="ef-cd">;; </span><span class="ef-c">Version: 2024.03.28
+</span><span class="ef-cd">;; </span><span class="ef-c">Homepage: https://code.tecosaur.net/tec/emacs-config
+</span><span class="ef-cd">;; </span><span class="ef-c">Package-Requires: ((emacs "29.1"))
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;; </span><span class="ef-c">This file is not part of GNU Emacs.
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;; </span><span class="ef-c">Commentary:
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;  </span><span class="ef-c">Generated package (no.26) from my config.
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;  </span><span class="ef-c">During generation, dependency on other aspects of my configuration and
+</span><span class="ef-cd">;;  </span><span class="ef-c">packages is inferred via (regexp-based) static analysis.  While this seems
+</span><span class="ef-cd">;;  </span><span class="ef-c">to do a good job, this method is imperfect.  This code likely depends on
+</span><span class="ef-cd">;;  </span><span class="ef-c">utilities provided by Doom, and if you try to run it in isolation you may
+</span><span class="ef-cd">;;  </span><span class="ef-c">discover the code makes more assumptions.
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;  </span><span class="ef-c">That said, I've found pretty good results so far.
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;; </span><span class="ef-c">Code:
+</span>
+(<span class="ef-k">require</span> '<span class="ef-o">jinx</span>)
+
+(<span class="ef-k">defgroup</span> <span class="ef-t">autocorrect</span> nil
+  <span class="ef-d">"Automatically fix typos and frequent spelling mistakes."</span>
+  <span class="ef-b">:group</span> 'text
+  <span class="ef-b">:prefix</span> <span class="ef-s">"autocorrect-"</span>)
+
+(<span class="ef-k">defcustom</span> <span class="ef-v">autocorrect-history-file</span>
+  (file-name-concat (<span class="ef-k">or</span> (getenv <span class="ef-s">"XDG_STATE_HOME"</span>) <span class="ef-s">"~/.local/state"</span>)
+                    <span class="ef-s">"emacs"</span> <span class="ef-s">"spelling-corrections.txt"</span>)
+  <span class="ef-d">"File where a spell check record will be saved."</span>
+  <span class="ef-b">:type</span> 'file)
+
+(<span class="ef-k">defvar</span> <span class="ef-v">autocorrect-record-table</span> (make-hash-table <span class="ef-b">:test</span> #'equal)
+  <span class="ef-d">"A record of all corrections made.
+Misspelled words are the keys, and a alist of corrections and their count are
+the values."</span>)
+
+(<span class="ef-k">defcustom</span> <span class="ef-v">autocorrect-count-threshold-history</span> 3
+  <span class="ef-d">"The number of recorded identical misspellings to create an abbrev.
+This applies to misspellings read from the history file"</span>
+  <span class="ef-b">:type</span> 'natnum)
+
+(<span class="ef-k">defcustom</span> <span class="ef-v">autocorrect-count-threshold-session</span> 2
+  <span class="ef-d">"The number of identical misspellings to create an abbrev.
+This applies to misspellings made in the current Emacs session."</span>
+  <span class="ef-b">:type</span> 'natnum)
+
+(<span class="ef-k">defun</span> <span class="ef-f">autocorrect-update-table</span> (misspelling corrected)
+  <span class="ef-d">"Update the MISSPELLING to CORRECTED entry in the table.
+Returns the number of times this correction has occurred."</span>
+  (<span class="ef-k">if-let</span> ((correction-counts
+            (gethash misspelling autocorrect-record-table)))
+      (<span class="ef-k">if-let</span> ((record-cons (assoc corrected correction-counts)))
+          (setcdr record-cons (1+ (cdr record-cons)))
+        (puthash misspelling
+                 (<span class="ef-k">push</span> (cons corrected 1) correction-counts)
+                 autocorrect-record-table)
+        1)
+    (puthash misspelling
+             (list (cons corrected 1))
+             autocorrect-record-table)
+    1))
+
+<span class="ef-cd">;;;</span><span class="ef-c">###</span><span style="color: #986801;">autoload</span>
+(<span class="ef-k">define-minor-mode</span> <span class="ef-f">autocorrect-mode</span>
+  <span class="ef-d">"Automatically correct misspellings with abbrev."</span>
+  <span class="ef-b">:init-value</span> t)
+
+<span class="ef-cd">;;;</span><span class="ef-c">###</span><span style="color: #986801;">autoload</span>
+(<span class="ef-k">define-globalized-minor-mode</span> <span class="ef-f">global-autocorrect-mode</span>
+  autocorrect-mode autocorrect--enable)
+
+(<span class="ef-k">defun</span> <span class="ef-f">autocorrect--enable</span> ()
+  <span class="ef-d">"Turn on `</span><span style="color: #b751b6; text-decoration: italic;">autocorrect-mode</span><span class="ef-d">' in the current buffer."</span>
+  (autocorrect-mode 1))
+
+
+(<span class="ef-k">defcustom</span> <span class="ef-v">autocorrect-predicates</span> nil
+  <span class="ef-d">"Predicate functions called at point with argument START.
+These functions should return t if autocorrection is valid at START."</span>
+  <span class="ef-b">:type</span> '(repeat function))
+
+(<span class="ef-k">defun</span> <span class="ef-f">autocorrect--appropriate-p</span> ()
+  <span class="ef-d">"Return non-nil it is currently appropriate to make an autocorrection.
+See `</span><span style="color: #b751b6; text-decoration: italic;">autocorrect-predicates</span><span class="ef-d">'."</span>
+  (<span class="ef-k">and</span> autocorrect-mode
+       (run-hook-with-args-until-failure 'autocorrect-predicates (point))))
+
+(<span class="ef-k">defcustom</span> <span class="ef-v">autocorrect-abbrev-file</span>
+  (file-name-concat (<span class="ef-k">or</span> (getenv <span class="ef-s">"XDG_STATE_HOME"</span>) <span class="ef-s">"~/.local/state"</span>)
+                    <span class="ef-s">"emacs"</span> <span class="ef-s">"spelling-abbrevs.el"</span>)
+  <span class="ef-d">"File to save spell check records in."</span>
+  <span class="ef-b">:type</span> 'file)
+
+(<span class="ef-k">defvar</span> <span class="ef-v">autocorrect-abbrev-table</span> nil
+  <span class="ef-d">"The spelling abbrev table."</span>)
+
+(<span class="ef-k">defvar</span> <span class="ef-v">autocorrect-abbrev-table--saved-version</span> 0
+  <span class="ef-d">"The version of `</span><span style="color: #b751b6; text-decoration: italic;">autocorrect-abbrev-table</span><span class="ef-d">' saved to disk."</span>)
+
+(<span class="ef-k">defun</span> <span class="ef-f">autocorrect--setup-abbrevs</span> ()
+  <span class="ef-d">"Setup `</span><span style="color: #b751b6; text-decoration: italic;">autocorrect-abbrev-table</span><span class="ef-d">'.
+Also set it as a parent of `</span><span style="color: #b751b6; text-decoration: italic;">global-abbrev-table</span><span class="ef-d">'."</span>
+  (<span class="ef-k">unless</span> autocorrect-abbrev-table
+    (<span class="ef-k">setq</span> autocorrect-abbrev-table
+          (make-abbrev-table (list <span class="ef-b">:enable-function</span> #'autocorrect--appropriate-p)))
+    (abbrev-table-put
+     global-abbrev-table <span class="ef-b">:parents</span>
+     (cons autocorrect-abbrev-table
+           (abbrev-table-get global-abbrev-table <span class="ef-b">:parents</span>)))
+    (add-hook 'kill-emacs-hook #'autocorrect-save-abbrevs))
+  (<span class="ef-k">when</span> (file-exists-p autocorrect-abbrev-file)
+    (read-abbrev-file autocorrect-abbrev-file t)
+    (<span class="ef-k">setq</span> autocorrect-abbrev-table--saved-version
+          (abbrev-table-get autocorrect-abbrev-table
+                            <span class="ef-b">:abbrev-table-modiff</span>))))
+
+(<span class="ef-k">defun</span> <span class="ef-f">autocorrect-save-abbrevs</span> ()
+  <span class="ef-d">"Write `</span><span style="color: #b751b6; text-decoration: italic;">autocorrect-abbrev-table</span><span class="ef-d">'."</span>
+  (<span class="ef-k">when</span> (&gt; (abbrev-table-get autocorrect-abbrev-table
+                             <span class="ef-b">:abbrev-table-modiff</span>)
+           autocorrect-abbrev-table--saved-version)
+    (<span class="ef-k">unless</span> (file-exists-p autocorrect-abbrev-file)
+      (make-directory (file-name-directory autocorrect-abbrev-file) t))
+    (<span class="ef-k">let</span> ((coding-system-for-write 'utf-8))
+      (<span class="ef-k">with-temp-buffer</span>
+        (insert-abbrev-table-description 'autocorrect-abbrev-table nil)
+        (<span class="ef-k">when</span> (unencodable-char-position (point-min) (point-max) 'utf-8)
+          (<span class="ef-k">setq</span> coding-system-for-write 'utf-8-emacs))
+        (goto-char (point-min))
+        (insert (format <span class="ef-s">";;-*-coding: %s;-*-\n\n"</span> coding-system-for-write))
+        (write-region nil nil autocorrect-abbrev-file)))
+    (<span class="ef-k">setq</span> autocorrect-abbrev-table--saved-version
+          (abbrev-table-get autocorrect-abbrev-table
+                            <span class="ef-b">:abbrev-table-modiff</span>))))
+
+(<span class="ef-k">defcustom</span> <span class="ef-v">autocorrect-check-spelling-function</span> nil
+  <span class="ef-d">"Predicate function that indicates whether a word is correctly spelt.
+This is used to check whether a correction can be safely lowercased."</span>
+  <span class="ef-b">:type</span> '(choice function (const nil)))
+
+(<span class="ef-k">defun</span> <span class="ef-f">autocorrect--should-downcase-p</span> (word)
+  <span class="ef-d">"Check whether it is a good idea to downcase WORD.
+This is conditional on all of the following being true:
+- WORD starts with a capital letter
+- The rest of WORD is either entirely lower or upper case
+  (i.e. WORD is like \"Capitalised\" or \"UPPERCASE\")
+- The lowercase form of WORD satisfies `</span><span style="color: #b751b6; text-decoration: italic;">autocorrect-check-spelling-function</span><span class="ef-d">'"</span>
+  (<span class="ef-k">and</span> autocorrect-check-spelling-function
+       (char-uppercase-p (aref word 0))
+       (<span class="ef-k">let</span> ((letter-cases (mapcar #'char-uppercase-p word)))
+         (<span class="ef-k">or</span> (not (memq t (cdr letter-cases)))
+             (not (memq nil (cdr letter-cases)))))
+       (funcall autocorrect-check-spelling-function
+                (downcase word))))
+
+(<span class="ef-k">defun</span> <span class="ef-f">autocorrect-record-correction</span> (misspelling corrected)
+  <span class="ef-d">"Record the correction of MISSPELLING to CORRECTED."</span>
+  (<span class="ef-k">when</span> (autocorrect--should-downcase-p corrected)
+    (<span class="ef-k">setq</span> misspelling (downcase misspelling)
+          corrected (downcase corrected)))
+  (<span class="ef-k">let</span> ((write-region-inhibit-fsync t) <span class="ef-cd">; </span><span class="ef-c">Quicker writes
+</span>        (coding-system-for-write 'utf-8)
+        (inhibit-message t))
+    (write-region
+     (concat misspelling <span class="ef-s">" "</span> corrected <span class="ef-s">"\n"</span>) nil
+     autocorrect-history-file t))
+  (<span class="ef-k">when</span> (<span class="ef-k">and</span> (&gt;= (autocorrect-update-table misspelling corrected)
+                 autocorrect-count-threshold-session)
+             (= (length (gethash misspelling autocorrect-record-table))
+                1))
+    (define-abbrev autocorrect-abbrev-table misspelling corrected)
+    (message <span class="ef-s">"Created new autocorrection: %s ⟶ %s"</span>
+             (propertize misspelling 'face 'warning)
+             (propertize corrected 'face 'success))))
+
+(<span class="ef-k">defun</span> <span class="ef-f">autocorrect--read-history</span> ()
+  <span class="ef-d">"Read the history file into the correction table."</span>
+  (<span class="ef-k">if</span> (file-exists-p autocorrect-history-file)
+      (<span class="ef-k">with-temp-buffer</span>
+        (insert-file-contents autocorrect-history-file)
+        (goto-char (point-min))
+        (<span class="ef-k">while</span> (&lt; (point) (point-max))
+          (<span class="ef-k">let</span> ((pt (point))
+                misspelling corrected)
+            (<span class="ef-k">setq</span> misspelling
+                  (<span class="ef-k">and</span> (forward-word)
+                       (buffer-substring pt (point)))
+                  pt (1+ (point)))
+            (<span class="ef-k">setq</span> corrected
+                  (<span class="ef-k">and</span> (forward-word)
+                       (buffer-substring pt (point)))
+                  pt (point))
+            (<span class="ef-k">when</span> (<span class="ef-k">and</span> misspelling corrected)
+              (autocorrect-update-table misspelling corrected))
+            (forward-line 1))))
+    (make-directory (file-name-directory autocorrect-history-file))
+    (write-region <span class="ef-s">""</span> nil autocorrect-history-file)))
+
+(<span class="ef-k">defun</span> <span class="ef-f">autocorrect--remove-invalid-abbrevs</span> ()
+  <span class="ef-d">"Ensure that all entries of the abbrev table are valid."</span>
+  (obarray-map
+   (<span class="ef-k">lambda</span> (misspelling-symb)
+     (<span class="ef-k">let</span> ((misspelling (symbol-name misspelling-symb)))
+       (<span class="ef-k">unless</span> (string-empty-p misspelling) <span class="ef-cd">; </span><span class="ef-c">Abbrev uses an empty symbol for metadata.
+</span>         (<span class="ef-k">let</span> ((corrections (gethash misspelling autocorrect-record-table)))
+           (<span class="ef-k">unless</span> (<span class="ef-k">and</span> (= (length corrections) 1)
+                        (&gt;= (cdar corrections)
+                            autocorrect-count-threshold-history))
+             (define-abbrev autocorrect-abbrev-table misspelling nil)
+             (unintern misspelling-symb autocorrect-abbrev-table))))))
+   autocorrect-abbrev-table))
+
+(<span class="ef-k">defun</span> <span class="ef-f">autocorrect--create-history-abbrevs</span> ()
+  <span class="ef-d">"Apply the history threshold to the current correction table."</span>
+  (maphash
+   (<span class="ef-k">lambda</span> (misspelling corrections)
+     (<span class="ef-k">when</span> (<span class="ef-k">and</span> (= (length corrections) 1)
+                (&gt;= (cdar corrections)
+                    autocorrect-count-threshold-history))
+       (<span class="ef-k">unless</span> (obarray-get autocorrect-abbrev-table misspelling)
+         (define-abbrev autocorrect-abbrev-table
+           misspelling (caar corrections)))))
+   autocorrect-record-table))
+
+(<span class="ef-k">defun</span> <span class="ef-f">autocorrect-setup</span> ()
+  <span class="ef-d">"Read and process the history file into abbrevs."</span>
+  (autocorrect--read-history)
+  (autocorrect--setup-abbrevs)
+  (autocorrect--remove-invalid-abbrevs)
+  (autocorrect--create-history-abbrevs))
+
+(run-with-idle-timer 0.5 nil #'autocorrect-setup)
+
+(<span class="ef-k">defun</span> <span class="ef-f">autocorrect-jinx-record-correction</span> (overlay corrected)
+  <span class="ef-d">"Record that Jinx corrected the text in OVERLAY to CORRECTED."</span>
+  (<span class="ef-k">let</span> ((text
+         (buffer-substring-no-properties
+          (overlay-start overlay)
+          (overlay-end overlay))))
+    (autocorrect-record-correction text corrected)))
+
+(<span class="ef-k">defun</span> <span class="ef-f">autocorrect-jinx-check-spelling</span> (word)
+  <span class="ef-d">"Check if WORD is valid."</span>
+  <span class="ef-cd">;; </span><span class="ef-c">Mostly a copy of `</span><span style="color: #b751b6;">jinx--word-valid-p</span><span class="ef-c">', just without the buffer substring.
+</span>  <span class="ef-cd">;; </span><span class="ef-c">It would have been nice if `</span><span style="color: #b751b6;">jinx--word-valid-p</span><span class="ef-c">' implemented like this
+</span>  <span class="ef-cd">;; </span><span class="ef-c">with `</span><span style="color: #b751b6;">jinx--this-word-valid-p</span><span class="ef-c">' (or similar) as the at-point variant.
+</span>  (<span class="ef-k">or</span> (member word jinx--session-words)
+      <span class="ef-cd">;; </span><span class="ef-c">Allow capitalized words
+</span>      (<span class="ef-k">and</span> (string-match-p <span class="ef-s">"\\`[[:upper:]][[:lower:]]+\\'"</span> word)
+           (<span class="ef-k">cl-loop</span>
+            for w in jinx--session-words
+            thereis (<span class="ef-k">and</span> (string-equal-ignore-case word w)
+                         (string-match-p <span class="ef-s">"\\`[[:lower:]]+\\'"</span> w))))
+      (<span class="ef-k">cl-loop</span> for dict in jinx--dicts
+               thereis (jinx--mod-check dict word))))
+
+(<span class="ef-k">defun</span> <span class="ef-f">autocorrect-jinx-appropriate</span> (pos)
+  <span class="ef-d">"Return non-nil if it is appropriate to spellcheck at POS according to jinx."</span>
+  (<span class="ef-k">and</span> (not (jinx--face-ignored-p pos))
+       (not (jinx--regexp-ignored-p pos))))
+
+(<span class="ef-k">setq</span> autocorrect-check-spelling-function #'autocorrect-jinx-check-spelling)
+(add-to-list 'autocorrect-predicates #'autocorrect-jinx-appropriate)
+(advice-add 'jinx--correct-replace <span class="ef-b">:before</span> #'autocorrect-jinx-record-correction)
+
+(<span class="ef-k">provide</span> '<span class="ef-o">autocorrect</span>)
+<span class="ef-cd">;;; </span><span class="ef-c">autocorrect.el ends here
+</span>
+</pre>
+  <body>
+</html>

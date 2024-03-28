@@ -1,0 +1,78 @@
+
+- org-graph-view: 233c6708c1 → 172157aee1
+  172157a Merge pull request #12 from josephmturner/refactor-org-graph-view--graph-map
+  42e0e7b Change: (org-graph-view--graph-map) Refactor to use built-ins
+  1f93db7 Fix: (org-graph-view--graph-map) 'help-echo is not a keyword symbol
+
+- org-modern: 98532cd617 → c97096b3f8
+  c97096b Highlight TODO keywords at the end of the line
+  a2ff4c8 Version 1.2
+
+- page-break-lines: 1b85352b0b → e33426ae7f
+  e33426a Merge pull request #43 from timhillgit/reenable-max-width
+  2dd4af3 Re-enable page-break-lines-max-width
+
+- gif-screencast: adec408e6a → 6798656d3d
+  6798656 make output format optional
+
+- keycast: 53514c3dc3 → ec90b16baa
+  ec90b16 keycast-mode-line-mode: More carefully unwind buffer-local formats
+  72f649c keycast-mode-line-mode: Fix handling of single element special-case
+  7fe65f1 Fix removing our format entry if it comes last in a list
+  34f6125 keycast--maybe-edit-local-format: Do not edit if eq to default
+  f235bd8 keycast--maybe-edit-local-format: Use keycast--tree-member
+  5ed2e12 keycast--update: Use length>
+  c4a995a keycast--update: Handle prefix command peculiarity
+  b094915 Remove keycast-mode alias
+  8530b75 keycast--unpdate: Handle undefined keys
+  13e18d8 keycast-show-minibuffer-exit-command: Add note about M-x
+  12dbeb0 By default only show minibuffer exiting command in log
+  f350948 keycast--update: Fix special-handling of execute-extended-command
+  988b051 keycast--update: Fix a comment
+  b5e7a45 Avoid adding duplicated keycast elements
+  0c5687a Fix custom type mismatches
+  bfc1f93 Bump copyright years
+  74a10c3 make: Add redo target
+  c47fa15 Release version 1.3.3
+  044efbc Correct type of format options
+  6a6f910 keycast-header-line: Use correct predicate function
+  75d3862 keycast-log-mode: Also toggle focus-avoidance of log frame
+  404ff78 Add missing section heading
+  0a1cd94 Remove obsolete aliases
+  43b1f3b Update name or original mode in docstrings
+  481a162 Place comma after "i.e."
+  0b16d6a Release version 1.3.2
+  2da7852 keycast--tree-member: Fix pasto
+  a0549f4 Release version 1.3.1
+  d021658 keycast--tree-member: Handle non-list root element
+  cbdedd8 Release version 1.3.0
+  e915674 Bump compat dependency
+  cabb3fa Bump compat dependency
+  9715be3 readme: Add nongnu badge
+  dd3d855 Make elpa happy
+  1af05c6 readme: Add badges
+  8104b97 readme: Add badges
+  e277337 ci: Add compile workflow
+  bd7ed50 Bump copyright years
+
+- modus-themes: accf6985ae → bea2f68833
+  bea2f68 Make refinements to some graph colours in all light themes
+  1963b6b Update the repository url in the CHANGELOG
+  a082d77 Update to modus-themes version 4.4.0
+  d28a6af Fix the value of fg-prose-code which I changed by accident
+  51466b1 Cover the org-dispatcher-highlight face
+  74119b8 Add missing modus-vivendi-tritanopia mappings from commit d33c545
+  0cde97e Document some sections in the manual as part of the current dev target
+  d33c545 Add semantic mappings for inline code backgrounds in addition to foregrounds; plus docs
+  7384dbf Tweak the modus-operandi-tinted cursor colour
+  6179c6b Tweak the modus-vivendi-tinted cursor colour
+  fe281a7 Use an explicit foreground for the fg-paren-match mapping
+  9617574 Merge branch 'main' of github.com:protesilaos/modus-themes
+  af05234 Refine the mail mappings of modus-themes-preset-overrides-intense
+  114ffb4 Replace colour names with their hex values
+  435916a Use a more appropriate semantic mapping for which-key-group-description-face
+
+- gptel: 9eea4be5ed → 9a5a4a60d5
+  9a5a4a6 README: Mention wiki entry on saving transient flags
+  12e00cb gptel-transient: No pre-fill when reading from minibuffer
+  34a52aa gptel-anthropic: Remove debug code
