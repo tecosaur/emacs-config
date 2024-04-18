@@ -9332,8 +9332,7 @@ added to Org as errors. So we need to tell ~org-lint~ about them without having 
 load my whole config. Code duplication isn't great, but at least this isn't
 much.
 
-#+name: org-syntax-modifications
-#+begin_src emacs-lisp :tangle no
+#+begin_src emacs-lisp
 (defun flycheck-org-lint-customisations-form ()
   `(progn
      (require 'ox)
