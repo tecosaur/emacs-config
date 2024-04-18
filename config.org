@@ -9257,7 +9257,7 @@ Flycheck doesn't currently support Org, and there's aren't any packages to do so
 Surely this is what the clipboard was invented for? With that said, let's
 regurgitate the code, cross our fingers, and hope it works.
 
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :noweb no-export :noweb-prefix no
 (defconst flycheck-org-lint-form
   (flycheck-prepare-emacs-lisp-form
     (require 'org)
@@ -9288,11 +9288,23 @@ regurgitate the code, cross our fingers, and hope it works.
     org-link-parameters)
   "Variables inherited by the org-lint subprocess.")
 
+(defconst flycheck-org-lint-babel-langs
+  '<<org-babel-list-langs()>>
+  "Languages that org-babel should know of.")
+
 (defun flycheck-org-lint-variables-form ()
   (require 'org-attach)  ; Needed to make variables available
   `(progn
      ,@(seq-map (lambda (opt) `(setq-default ,opt ',(symbol-value opt)))
                 (seq-filter #'boundp flycheck-org-lint-variables))))
+
+(defun flycheck-org-lint-babel-langs-form ()
+  `(progn
+     ,@(mapcar
+        (lambda (lang)
+          `(defun ,(intern (format "org-babel-execute:%s" lang)) (_body _params)
+             "Stub for org-lint."))
+        flycheck-org-lint-babel-langs)))
 
 (eval ; To preveant eager macro expansion form loading flycheck early.
  '(flycheck-define-checker org-lint
@@ -9305,6 +9317,8 @@ regurgitate the code, cross our fingers, and hope it works.
                              (flycheck-org-lint-variables-form)))
              "--eval" (eval (flycheck-sexp-to-string
                              (flycheck-org-lint-customisations-form)))
+             "--eval" (eval (flycheck-sexp-to-string
+                             (flycheck-org-lint-babel-langs-form)))
              "--eval" (eval flycheck-org-lint-form)
              "--" source)
    :error-patterns
@@ -9342,6 +9356,53 @@ much.
      (cl-pushnew '(:latex-font-set nil "fontset" nil)
                  (org-export-backend-options (org-export-get-backend 'latex)))))
 #+end_src
+
+A larger annoyance is that org-lint doesn't actually know what languages
+org-babel should recognise, with Doom's lazy loading system. Since the list of
+languages should really only change when packages are added/removed, we might as
+well statically determine a list of all org-babel languages at configuration
+generation time.
+
+#+name: org-babel-list-langs
+#+begin_src emacs-lisp :noweb-ref none
+(let (langs)
+  (dolist (dir load-path)
+    (when (file-directory-p dir)
+      (dolist (file (directory-files dir t "\\.elc?$"))
+        (let ((basename (file-name-base file)))
+          (when (string-prefix-p "ob-" basename)
+            (ignore-errors
+              (require (intern basename) file t)))))))
+  (mapatoms
+   (lambda (symb)
+     (when (functionp symb)
+       (let ((name (symbol-name symb)))
+         (let ((fn (symbol-function symb)))
+           (when (symbolp fn)
+             (setq symb (symbol-function symb)
+                   fn (symbol-function symb)))
+           (when (and (string-suffix-p "-mode" name)
+                      (autoloadp fn))
+             (ignore-errors (autoload-do-load fn))))
+         (cond
+          ((string-prefix-p "org-babel-execute:" name)
+           (push (replace-regexp-in-string "^org-babel-execute:" "" name)
+                 langs))
+          ((and (string-suffix-p "-mode" name)
+                (provided-mode-derived-p
+                 symb 'prog-mode 'text-mode 'conf-mode))
+           (push (replace-regexp-in-string "-mode$" "" name)
+                 langs))))))
+   obarray)
+  (dolist (mode-mapping org-src-lang-modes)
+    (push (car mode-mapping) langs))
+  (mapcar #'intern
+          (sort (delete-dups langs) #'string<)))
+#+end_src
+
+This increases the tangle time by about 10--20%, but I think it's worth it to be
+extra thorough. If this really becomes a pain, we can always think about doing
+some sort of cache file based on the load-path/packages installed.
 
 *** Visuals
 
