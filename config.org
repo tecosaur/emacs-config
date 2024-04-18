@@ -4179,7 +4179,7 @@ the following configuration
 
 ***** Hunspell
 
-#+begin_src shell :tangle (if (file-exists-p "/usr/share/myspell/en-custom.dic") "no" "setup.sh")
+#+begin_src shell :tangle (if (file-exists-p "~/.config/enchant/hunspell") "no" "setup.sh")
 cd /tmp
 curl -o "hunspell-en-custom.zip" 'http://app.aspell.net/create?max_size=80&spelling=GBs&spelling=AU&max_variant=0&diacritic=keep&special=hacker&special=roman-numerals&encoding=utf-8&format=inline&download=hunspell'
 unzip "hunspell-en-custom.zip"
@@ -4204,7 +4204,7 @@ We will also add an accompanying =doctor= warning.
 
 ***** Aspell
 
-#+begin_src shell :tangle (if (file-expand-wildcards "/usr/lib64/aspell*/en-custom.multi") "no" "setup.sh")
+#+begin_src shell :tangle (if (file-expand-wildcards "~/.config/enchant/aspell/en-custom.multi") "no" "setup.sh")
 cd /tmp
 curl -o "aspell6-en-custom.tar.bz2" 'http://app.aspell.net/create?max_size=80&spelling=GBs&spelling=AU&max_variant=0&diacritic=keep&special=hacker&special=roman-numerals&encoding=utf-8&format=inline&download=aspell'
 tar -xjf "aspell6-en-custom.tar.bz2"
