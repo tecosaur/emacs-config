@@ -330,7 +330,8 @@ few extras.
 *** Magit push in daemon
 
 Quite often trying to push to a remote in the Emacs daemon produces as error like this:
-#+begin_src fundamental
+
+#+begin_example
 128 git … push -v origin refs/heads/master\:refs/heads/master
 Pushing to git@github.com:tecosaur/emacs-config.git
 
@@ -338,7 +339,7 @@ fatal: Could not read from remote repository.
 
 Please make sure you have the correct access rights
 and the repository exists.
-#+end_src
+#+end_example
 
 *** Unread emails doesn't work across Emacs instances
 
@@ -7719,7 +7720,7 @@ git diff chunk heading to something more useful than just the immediate line
 above the hunk --- like the parent heading.
 
 This can be achieved by first adding a new diff mode to git in =~/.config/git/attributes=
-#+begin_src fundamental
+#+begin_src gitattributes
 ,*.org   diff=org
 #+end_src
 
