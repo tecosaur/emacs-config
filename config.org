@@ -4182,16 +4182,18 @@ the following configuration
 
 #+begin_src shell :tangle (if (file-exists-p "~/.config/enchant/hunspell") "no" "setup.sh")
 cd /tmp
-curl -o "hunspell-en-custom.zip" 'http://app.aspell.net/create?max_size=80&spelling=GBs&spelling=AU&max_variant=0&diacritic=keep&special=hacker&special=roman-numerals&encoding=utf-8&format=inline&download=hunspell'
-unzip "hunspell-en-custom.zip"
+if [ ! -d hunspell-en-custom ]; then
+    curl -o "hunspell-en-custom.zip" 'http://app.aspell.net/create?max_size=80&spelling=GBs&spelling=AU&max_variant=0&diacritic=keep&special=hacker&special=roman-numerals&encoding=utf-8&format=inline&download=hunspell'
+    unzip "hunspell-en-custom.zip" -d hunspell-en-custom
+fi
 
-sudo chown root:root en-custom.*
+cd hunspell-en-custom
 DESTDIR1="$HOME/.local/share/hunspell"
 DESTDIR2="$HOME/.config/enchant/hunspell"
 mkdir -p "$DESTDIR1"
 mkdir -p "$DESTDIR2"
-sudo mv en-custom.{aff,dic} "$DESTDIR1"
-sudo mv en-custom.{aff,dic} "$DESTDIR2"
+cp en-custom.{aff,dic} "$DESTDIR1"
+cp en-custom.{aff,dic} "$DESTDIR2"
 #+end_src
 
 We will also add an accompanying =doctor= warning.
@@ -4207,8 +4209,10 @@ We will also add an accompanying =doctor= warning.
 
 #+begin_src shell :tangle (if (file-expand-wildcards "~/.config/enchant/aspell/en-custom.multi") "no" "setup.sh")
 cd /tmp
-curl -o "aspell6-en-custom.tar.bz2" 'http://app.aspell.net/create?max_size=80&spelling=GBs&spelling=AU&max_variant=0&diacritic=keep&special=hacker&special=roman-numerals&encoding=utf-8&format=inline&download=aspell'
-tar -xjf "aspell6-en-custom.tar.bz2"
+if [ ! -d aspell6-en-custom ]; then
+    curl -o "aspell6-en-custom.tar.bz2" 'http://app.aspell.net/create?max_size=80&spelling=GBs&spelling=AU&max_variant=0&diacritic=keep&special=hacker&special=roman-numerals&encoding=utf-8&format=inline&download=aspell'
+    tar -xjf "aspell6-en-custom.tar.bz2"
+fi
 
 cd aspell6-en-custom
 DESTDIR="$HOME/.config/enchant/" ./configure
