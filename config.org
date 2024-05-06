@@ -5728,7 +5728,7 @@ currently playing media.
   (doom-modeline-def-segment nov-author
     (propertize
      (cdr (assoc 'creator nov-metadata))
-     'face 'doom-modeline-project-parent-dir))
+     'face (doom-modeline-face 'doom-modeline-project-parent-dir)))
   (doom-modeline-def-segment nov-title
     (let ((title (or (cdr (assoc 'title nov-metadata)) "")))
       (if (<= (length title) doom-modeline-nov-title-max-length)
@@ -5742,12 +5742,18 @@ currently playing media.
        (format " %d/%d"
                (1+ nov-documents-index)
                (length nov-documents))
-       'face 'doom-modeline-info
+       'face (doom-modeline-face 'doom-modeline-info)
        'help-echo (if (= words 1) "1 word in this chapter"
                     (format "%s words in this chapter" words)))))
+  (doom-modeline-def-segment scroll-percentage-subtle
+    (concat
+     (doom-modeline-spc)
+     (propertize (format-mode-line '("" doom-modeline-percent-position "%%"))
+                 'face (doom-modeline-face 'shadow)
+                 'help-echo "Buffer percentage")))
 
   (doom-modeline-def-modeline 'nov
-    '(workspace-name window-number nov-author nov-title nov-current-page)
+    '(workspace-name window-number nov-author nov-title nov-current-page scroll-percentage-subtle)
     '(media-player misc-info major-mode time))
 
   (add-to-list 'doom-modeline-mode-alist '(nov-mode . nov)))
