@@ -3748,7 +3748,7 @@ the mode on startup, let's prevent installation of the package.
 #+call: confpkg("!Pkg gptel")
 
 #+begin_src emacs-lisp :tangle packages.el
-(package! gptel :pin "9eea4be5ed9c7a651619347f6b3191d083ec252e")
+(package! gptel :pin "8ccdc31b12a1f5b050c6b70393014710f8dbc5c8")
 #+end_src
 
 #+begin_src emacs-lisp
@@ -4437,7 +4437,7 @@ welcomed into Emacs 28. However, he is also rather attentive with updates, and
 so I'd like to make sure we have a recent version.
 
 #+begin_src emacs-lisp :tangle packages.el
-(package! modus-themes :pin "accf6985ae8cb5d07cb9473263206d228f0512fa")
+(package! modus-themes :pin "d2762db19ed48bd0cbba61c41940be479760a35e")
 #+end_src
 
 *** Spacemacs themes
@@ -4701,7 +4701,7 @@ Let's just make sure this is lazy-loaded appropriately.
 
 In a similar manner to [[Keycast]], [[https://gitlab.com/ambrevar/emacs-gif-screencast][gif-screencast]] may come in handy.
 #+begin_src emacs-lisp :tangle packages.el
-(package! gif-screencast :pin "adec408e6adab2e8e057fe0ad828749f473bfb83")
+(package! gif-screencast :pin "6798656d3d3107d16e30cc26bc3928b00e50c1ca")
 #+end_src
 
 We can lazy load this using the start/stop commands.
@@ -4944,7 +4944,7 @@ appealing, and Steve Purcell has been nice enough to make a package to display
 these as horizontal rules.
 #+begin_src emacs-lisp :tangle packages.el
 (package! page-break-lines :recipe (:host github :repo "purcell/page-break-lines")
-  :pin "1b85352b0b16328d5c9e6a25baf93da3edaa6512")
+  :pin "e33426ae7f10c60253afe4850450902919fc87fd")
 #+end_src
 
 #+begin_src emacs-lisp
@@ -5597,12 +5597,12 @@ For managing my ebooks, I'll hook into the well-established ebook library
 manager [[https://calibre-ebook.com/][calibre]]. A number of Emacs clients for this exist, but this seems like a
 good option.
 #+begin_src emacs-lisp :tangle packages.el
-(package! calibredb :pin "124c916f203511c64d03fac28d303dfb102a6ead")
+(package! calibredb :pin "8ca1b5262f0f0e4a0e295efc2c14db00333e9a85")
 #+end_src
 
 Then for reading them, the only currently viable options seems to be [[https://depp.brause.cc/nov.el/][nov.el]].
 #+begin_src emacs-lisp :tangle packages.el
-(package! nov :pin "cc31ce0356226c3a2128119b08de6107e38fdd17")
+(package! nov :pin "9b7bef950d68c2518710c480729d6bb6026e9489")
 #+end_src
 
 Together these should give me a rather good experience reading ebooks.
@@ -7806,7 +7806,7 @@ correct package statement needed.
   ;; The `sr.ht' repo has been a bit flaky as of late.
   :recipe (:host github :repo "emacsmirror/org-contrib"
            :files ("lisp/*.el"))
-  :pin "351c71397d893d896a47ad7e280607b4d59b84e4")
+  :pin "d4056ce5d5611e1c971c151f182a2d407226fdb1")
 #+end_src
 
 **** Visuals
@@ -7818,7 +7818,7 @@ Fontifying =org-mode= buffers to be as pretty as possible is of paramount import
 and Minad's lovely =org-modern= goes a long way in this regard.
 
 #+begin_src emacs-lisp :tangle packages.el
-(package! org-modern :pin "98532cd61795f3f41fffe7d4f0fa4021d8c73ffa")
+(package! org-modern :pin "33f694c57113418c7e739a824ff57dc9e7eb413c")
 #+end_src
 
 ...with a touch of configuration...
@@ -8014,7 +8014,7 @@ pretty much abandoned.
 There's a really cool package in development to /transclude/ Org document content.
 #+begin_src emacs-lisp :tangle packages.el
 (package! org-transclusion :recipe (:host github :repo "nobiot/org-transclusion")
-  :pin "baa1e1f1d90235e71a404f26a82bfaa74f3d290a")
+  :pin "b23ead229c651772c1406e052b9eff41fec71738")
 #+end_src
 
 #+begin_src emacs-lisp
@@ -8031,7 +8031,8 @@ There's a really cool package in development to /transclude/ Org document conten
 
 Came across this and ... it's cool
 #+begin_src emacs-lisp :tangle packages.el
-(package! org-graph-view :recipe (:host github :repo "alphapapa/org-graph-view") :pin "233c6708c1f37fc60604de49ca192497aef39757")
+(package! org-graph-view :recipe (:host github :repo "alphapapa/org-graph-view")
+  :pin "172157aee1131ea59f0bd724a10abfdbccbd860e")
 #+end_src
 
 ***** Cooking recipes
