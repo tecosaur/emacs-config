@@ -1,0 +1,272 @@
+
+- beancount: 3725c02702 → 71c1622246
+  71c1622 Releasing version 0.9.
+  152020d Applied changes from code review from monnier.
+  4f0bb09 (Merge branch 'vkazanov-more-xref')
+  b01c8c5 Merge branch 'main' into more-xref
+  142c5a4 Using actions/checkout@v4
+  696565a Made beancount-linked able to pull out tag at point.
+  146b84d tags and links support for xref definitions/references/apropos
+  0a242af interactive spec fixes
+  e5b50a6 correct function used
+  649388f better version checking
+  bdd71c5 Implement xref backend
+  aa0582a Refactor collection of completion candidates
+  0c68d19 Fix indentation
+  bb3aef8 Add .gitignore
+  fe682ff Remove some weird advice from etc/emacsrc
+  60cf331 Move adding to auto-mode-alist into an autoload
+  8cafe1c Provide functions for shifting date on the current line
+  bc753ce ci: Run tests on Emacs 29 releases too
+  fbfdf2b Make beancount-amount face inherit from default face
+
+- org-graph-view: 233c6708c1 → 172157aee1
+  172157a Merge pull request #12 from josephmturner/refactor-org-graph-view--graph-map
+  42e0e7b Change: (org-graph-view--graph-map) Refactor to use built-ins
+  1f93db7 Fix: (org-graph-view--graph-map) 'help-echo is not a keyword symbol
+
+- org-transclusion: baa1e1f1d9 → e6e638710e
+  e6e6387 bump v1.4.0
+  441a67a Merge pull request #242 from josephmturner/document-network-extensions
+  e44ef3a docs: Update NEWS with network transclusion extension repositories
+  66cec7a docs: Update README with network transclusion extension repositories
+  118f58e docs: Suggest loading extensions after org-transclusion
+  1e319fd docs: Improve installation instructions for hyper and http
+  dc54d46 tidy: Spacing and indentation
+  b23ead2 docs: Clean up misspelling (checkdoc-ispell)
+  97c5a35 refactor: (#177) workaround org-transclusion-fix-common-misspelling
+  0e35273 style: Fix error in .dir-local. Update docstring (checkdoc)
+  e872dab refactor: org-transclusion-check-add
+  2ef5f94 Merge pull request #236 from josephmturner/callback->payload
+  60d1d4d Merge pull request #234 from josephmturner/require-org-element
+  9313f25 Merge pull request #233 from josephmturner/extension-typo
+  dc9fac8 Merge pull request #232 from josephmturner/rename-hook
+  a9a3988 Merge pull request #231 from josephmturner/html-tc-type
+  e9f9986 Merge pull request #230 from josephmturner/ushin-repo
+  5f4968b docs: Add example usage for http:// and hyper:// transclusion
+  56dadce chg: Rename -add-callback to -add-payload
+  e1612cb fix: (org-transclusion-html) Require org-element to appease compiler
+  8fe46b3 fix: extension name typo
+  068e7ae chg: (org-transclusion-add-functions) Rename hook
+  2637619 Fix: (org-transclusion-add-html-file) Use "org-html-file" tc-type
+  19f6da9 docs: Note missing asynchronous functionality
+  614ea13 Merge pull request #229 from josephmturner/org-transclusion-html
+  f30a8dc docs: Document org-transclusion-html
+  cd84129 docs: Update manual to point to org-transclusion-http
+  51623cb Add option to transclude local HTML content rendered as Org
+  db2dd80 tidy: Avoid spurious compilation warning
+  dbdd33c docs: (org-transclusion-add-functions) Fix docstring
+  8369264 chg: Split org-transclusion-html into its own file
+  85623b8 Add org-transclusion-http.el: Transclude content over HTTP
+  fca0216 fix: Check link :type is "file" before attempting file transclusion
+
+- org-modern: 98532cd617 → c3c97156ec
+  c3c9715 Revert "Handle org-agenda-align-tags-to-column (Fix #207)"
+  148f6c4 Revert "Better fix for tag alignment"
+  973c285 Better fix for tag alignment
+  36188cf Handle org-agenda-align-tags-to-column (Fix #207)
+  0b7af08 Version 1.3
+  a01cbbd Update changelog
+  2c47e4c org-modern--cycle: Install hook only if org-modern-star=fold
+  ea829ce Fix progress bar, add more examples
+  750fd57 Simplify faces
+  94aef25 Remove unused face
+  2d3660d Introduce separate org-modern-progress-complete/incomplete faces
+  ecb590e Add progress bars (Fix #196)
+  7e6ace8 Use match-string-no-properties
+  33f694c README: Document ellipsis configuration (See #196)
+  5393edb Update org-modern-fold-stars
+  e644ea0 Better example ;)
+  12cd8a6 Fix typo
+  e9cfb3e Add org-modern-tag-faces
+  92262af Use org-invisible-p
+  58f10f7 Fix last commit
+  cd57f36 org-modern-fold-stars: Use glyphs supported by Iosekva (Fix #192)
+  5621060 Minor simplification
+  a06443c Rework customization options, update changelog
+  bcb5f81 Add: (org-modern-heading-folding-indicators) (#191)
+  c97096b Highlight TODO keywords at the end of the line
+  a2ff4c8 Version 1.2
+
+- org-contrib: 351c71397d → ccd4212866
+  ccd4212 Announce ox-taskjuggler.el will be removed from the next release
+  8e32471 ox-taskjuggler.el: Update
+  3062acd Remove ob-coq.el now maintained at https://github.com/sp1ff/ob-coq
+  d4056ce lisp/org-collector.el: Read `org-link-bracket-re' without evaluating
+  e44255b lisp/org-collector.el: Add error handling in props
+
+- nov: cc31ce0356 → 9b7bef950d
+  9b7bef9 Fix custom type for nov-unzip-args
+  a364333 Enable lexical bindings
+  4e61316 Preserve `truncate-lines` to fix `visual-line-mode`
+  6508a10 Use custom line filling when `nov-text-width` is t
+  08118ee Add numeric prefix arg to commands for viewing next/prev document
+
+- calibredb: 124c916f20 → 8ca1b5262f
+  8ca1b52 Add calibredb-consult-ripgrep-all (POC)
+  3749f23 Fix switch library fail issue (db connection)
+  b526095 Fix incorrect export dispatch transient
+
+- page-break-lines: 1b85352b0b → e33426ae7f
+  e33426a Merge pull request #43 from timhillgit/reenable-max-width
+  2dd4af3 Re-enable page-break-lines-max-width
+
+- gif-screencast: adec408e6a → 6798656d3d
+  6798656 make output format optional
+
+- keycast: 53514c3dc3 → f04466cd8f
+  f04466c Release version 1.4.0
+  4f163c2 Bump compat dependency
+  c156fd1 Use define-advice instead of advice-add
+  04fa2c6 Update contact information
+  ec90b16 keycast-mode-line-mode: More carefully unwind buffer-local formats
+  72f649c keycast-mode-line-mode: Fix handling of single element special-case
+  7fe65f1 Fix removing our format entry if it comes last in a list
+  34f6125 keycast--maybe-edit-local-format: Do not edit if eq to default
+  f235bd8 keycast--maybe-edit-local-format: Use keycast--tree-member
+  5ed2e12 keycast--update: Use length>
+  c4a995a keycast--update: Handle prefix command peculiarity
+  b094915 Remove keycast-mode alias
+  8530b75 keycast--unpdate: Handle undefined keys
+  13e18d8 keycast-show-minibuffer-exit-command: Add note about M-x
+  12dbeb0 By default only show minibuffer exiting command in log
+  f350948 keycast--update: Fix special-handling of execute-extended-command
+  988b051 keycast--update: Fix a comment
+  b5e7a45 Avoid adding duplicated keycast elements
+  0c5687a Fix custom type mismatches
+  bfc1f93 Bump copyright years
+  74a10c3 make: Add redo target
+  c47fa15 Release version 1.3.3
+  044efbc Correct type of format options
+  6a6f910 keycast-header-line: Use correct predicate function
+  75d3862 keycast-log-mode: Also toggle focus-avoidance of log frame
+  404ff78 Add missing section heading
+  0a1cd94 Remove obsolete aliases
+  43b1f3b Update name or original mode in docstrings
+  481a162 Place comma after "i.e."
+  0b16d6a Release version 1.3.2
+  2da7852 keycast--tree-member: Fix pasto
+  a0549f4 Release version 1.3.1
+  d021658 keycast--tree-member: Handle non-list root element
+  cbdedd8 Release version 1.3.0
+  e915674 Bump compat dependency
+  cabb3fa Bump compat dependency
+  9715be3 readme: Add nongnu badge
+  dd3d855 Make elpa happy
+  1af05c6 readme: Add badges
+  8104b97 readme: Add badges
+  e277337 ci: Add compile workflow
+  bd7ed50 Bump copyright years
+
+- spacemacs-theme: 319ad1cd6a → 7b06ef8fb2
+  7b06ef8 Merge pull request #202 from chaosemer/master
+  1a8570a Add support for window-tool-bar
+
+- modus-themes: accf6985ae → c4ebbfd210
+  c4ebbfd Make theme-specific "user" palette take precedence over common "user" palette
+  db5b771 Add more sample code in the manual for "user" palette definitions
+  573db12 Implement "user" palette extension (common or per-theme)
+  4c73580 Add explicit support for vtable
+  4f7fa19 Remove references to non-existent Modus face
+  b694570 Document support for window-tool-bar
+  b941fc1 Merge pull request #107 from chaosemer/main
+  deec313 Add support for window-tool-bar
+  1090a80 Define more special colour pairs
+  d2762db Document support for jabber and update the acknowledgements
+  44d9d41 Add support for jabber
+  56bd9c8 Fix typo in the manual
+  e7db39b Remove the bold-italic from doom-modeline because it breaks some icons
+  bea2f68 Make refinements to some graph colours in all light themes
+  1963b6b Update the repository url in the CHANGELOG
+  a082d77 Update to modus-themes version 4.4.0
+  d28a6af Fix the value of fg-prose-code which I changed by accident
+  51466b1 Cover the org-dispatcher-highlight face
+  74119b8 Add missing modus-vivendi-tritanopia mappings from commit d33c545
+  0cde97e Document some sections in the manual as part of the current dev target
+  d33c545 Add semantic mappings for inline code backgrounds in addition to foregrounds; plus docs
+  7384dbf Tweak the modus-operandi-tinted cursor colour
+  6179c6b Tweak the modus-vivendi-tinted cursor colour
+  fe281a7 Use an explicit foreground for the fg-paren-match mapping
+  9617574 Merge branch 'main' of github.com:protesilaos/modus-themes
+  af05234 Refine the mail mappings of modus-themes-preset-overrides-intense
+  114ffb4 Replace colour names with their hex values
+  435916a Use a more appropriate semantic mapping for which-key-group-description-face
+
+- gptel: 9eea4be5ed → 95a5716aa2
+  95a5716 gptel: Check derived modes instead of major-mode
+  a834adb README: Formatting tweaks and fix broken link
+  4c0583b gptel: Bump version
+  3b6f200 gptel: Add context info to header
+  eef9b64 README: Further tweaks
+  3386241 README: Formatting changes
+  05c4da2 gptel-ollama: Revert "Add num_ctx option"
+  df0b424 gptel-ollama: Add num_ctx option
+  ef44164 README: Update for context features
+  c812844 gptel-transient: Move context items around
+  883b5e6 gptel-context: Extra newlines before separator-line
+  aa5f073 gptel-context: whitespace at end of context string
+  121d73b gptel-context: wrap-function instead of string-function
+  70e3053 gptel-context: Clean up context buffer setup
+  0abaefe gptel-context: Fix narrowing bug when inserting context
+  0787592 gptel-context: Fix context deletion overlay bug
+  3e7a4eb gptel-context: Better context buffer navigation
+  5d093f2 gptel-context: Support for files as context
+  2b1dbf7 gptel-context: Make overlays front/rear-advance
+  f6306b5 gptel-transient: Update menu for context actions
+  31aa385 gptel-context: Invert dependency, rename contexter and lint
+  8838f88 gptel: Add gptel--strip-mode-suffix
+  cbb49f9 gptel-context: Add gptel-context--wrap
+  56f9fc5 gptel-transient: Make gptel-lisp-variable more flexible
+  382b409 gptel-transient: Simplify context buffer
+  b10cd98 gptel-context: Implement DWIM features
+  ef96842 gptel-context: Add contexter
+  44780a4 gptel-anthropic: Add `claude-3-5-sonnet-20240620` (#331)
+  57a0814 README: Fix formatting
+  525ab4b gptel-privategpt: Add usage instructions to README
+  975a537 gptel-privategpt: Add support for PrivateGPT
+  6e7b6a2 gptel: Include backend in process info plist
+  a191850 gptel-transient: Allow switches to be set buffer-locally
+  c0603cb gptel-transient: Add menu option for response tracking
+  56c9fb1 gptel: Add option to disable response tracking
+  3bce2ca gptel: ask user to choose gptel buffer (#311)
+  6dbc26d README: Update install instructions
+  2bf3a44 gptel-org: Fix oneshot markdown to org converter (#81)
+  8b04be2 gptel-org: Check Org version for branching context
+  d7f51b3 gptel: Move var definition (#307)
+  1455854 gptel-openai: GPT-4o (#313)
+  8ccdc31 README: Mention llm and Ellama
+  69fb2f0 Merge branch 'elpa/gptel' of https://git.sv.gnu.org/git/emacs/nongnu
+  5337240 README: Mention Org features
+  f663f3a README: Mention Org features
+  cdb07d0 gptel: Update description and bump version
+  97ab6cb gptel: Add .elpaignore
+  c319966 gptel-org: Further improve stream converter
+  4273f06 gptel-org: Improve stream converter
+  b298539 gptel: Linting for NonGNU ELPA
+  306fe3b gptel-ollama: Fix parsing error (#179)
+  a2b16c4 gptel-org: Include org-element-lineage-map with gptel (#294)
+  44feb16 gptel-transient: Update header-line in gptel--suffix-send
+  66a63e6 gptel-ollama: switch to chat API
+  9b094b8 gptel: Fix url-retrieve response parser bug
+  2b93811 gptel: Add GPT 4 Turbo (#286)
+  70889ad gptel-gemini: Add Gemini 1.5 (#284)
+  e994a44 README: add OpenRouter instructions (#282)
+  b4088e3 README: New pacakge based on gptel, magit-gptcommit (#281)
+  7b6e3c5 gptel: Release v0.8.5
+  4d4b61a gptel-transient: More robust dry-run commands
+  567af4d gptel-org: Read config from Org properties (#141)
+  f2fd2b1 gptel-org: Move response transform code for Org
+  8dbcbbb gptel-org: Move session save/restore code for Org
+  2982ede gptel-org: Add gptel-org
+  5d74ec4 gptel: Set system message correctly in gptel-request
+  53a905d gptel: Show chosen system message in header-line
+  53ee346 gptel-openai: Typo in gptel--json-read
+  f24ec16 gptel: Adjust doc-string
+  81bb467 gptel: Set window when running post-response hook
+  26326c3 gptel-anthropic: Parsing fix
+  9a5a4a6 README: Mention wiki entry on saving transient flags
+  12e00cb gptel-transient: No pre-fill when reading from minibuffer
+  34a52aa gptel-anthropic: Remove debug code
+
+- vlf: 9b7bc521e5 → 8a4883ed58
+  8a4883e Update vlf
