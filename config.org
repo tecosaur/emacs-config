@@ -11385,7 +11385,17 @@ introduce an =:order= keyword. Using this I'll arrange snippets as follows.
    :order 0.2)
   (cleveref
    :condition "cref:\\|\\cref{\\|\\[\\[[^\\]+\n?[^\\]\\]\\]"
-   :snippet "\\usepackage[capitalize]{cleveref}"
+   :snippet "\\usepackage[capitalize]{cleveref}
+% Fix for cleveref in order to work with long range of pages
+% See https://tex.stackexchange.com/a/620066
+\\makeatletter
+\\newcommand*{\\@setcpagerefrange}[3]{%
+  \\@@setcpagerefrange{#1}{#2}{cref}{#3}}
+\\newcommand*{\\@setCpagerefrange}[3]{%
+  \\@@setcpagerefrange{#1}{#2}{Cref}{#3}}
+\\newcommand*{\\@setlabelcpagerefrange}[3]{%
+  \\@@setcpagerefrange{#1}{#2}{labelcref}{#3}}
+\\makeatother"
    :order 1)
   (caption
    :snippet org-latex-caption-preamble
