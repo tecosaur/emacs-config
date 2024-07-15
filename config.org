@@ -13809,9 +13809,6 @@ Graphviz is a nice method of visualising simple graphs, based on plaintext
   (after! org
     (setcdr (assoc "dot" org-src-lang-modes)
             'graphviz-dot)))
-
-(use-package! company-graphviz-dot
-  :after graphviz-dot-mode)
 #+end_src
 
 ** Markdown
