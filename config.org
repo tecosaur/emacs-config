@@ -1701,6 +1701,7 @@ grammar                      ; tasing grammar mistake every you make
 #+begin_src emacs-lisp
 ansible                      ; a crucible for infrastructure as code
 biblio                       ; Writes a PhD for you (citation needed)
+;;collab                     ; buffers with friends
 ;;debugger                   ; FIXME stepping through code, to help you add bugs
 ;;direnv                     ; be direct about your environment
 docker                       ; port everything to containers
@@ -1712,15 +1713,12 @@ docker                       ; port everything to containers
  +dictionary                 ; dictionary/thesaurus is nice
  +docsets)                   ; ...or in Dash docsets locally
 lsp                          ; Language Server Protocol
-;;macos                      ; MacOS-specific commands
 (magit                       ; a git porcelain for Emacs
  +forge)                     ; interface with git forges
 make                         ; run make tasks from Emacs
 ;;pass                       ; password manager for nerds
 pdf                          ; pdf enhancements
 ;;prodigy                    ; FIXME managing external services & code builders
-rgb                          ; creating color strings
-;;taskrunner                 ; taskrunner for all your projects
 ;;terraform                  ; infrastructure as code
 ;;tmux                       ; an API for interacting with tmux
 ;;tree-sitter                ; syntax and parsing, sitting in a tree...
@@ -1729,6 +1727,7 @@ upload                       ; map local to remote projects via ssh/ftp
 
 #+name: doom-os
 #+begin_src emacs-lisp
+(:if (featurep :system 'macos) macos) ; improve compatibility with macOS
 tty                          ; improve the terminal Emacs experience
 #+end_src
 
