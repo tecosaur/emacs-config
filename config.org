@@ -9633,7 +9633,7 @@ While we're at it we may as well make tags prettier as well 🙂
 
 First off, we want those fragments to look good.
 #+begin_src emacs-lisp
-(setq org-highlight-latex-and-related '(native script entities))
+(setq org-highlight-latex-and-related '(latex script entities))
 #+end_src
 
 However, by using =native= highlighting the =org-block= face is added, and that
