@@ -4941,22 +4941,55 @@ than Objective-C. As such, it'll be switching the icon associated with =.m=.
 In some files, =^L= appears as a page break character. This isn't that visually
 appealing, and Steve Purcell has been nice enough to make a package to display
 these as horizontal rules.
+
 #+begin_src emacs-lisp :tangle packages.el
 (package! page-break-lines :recipe (:host github :repo "purcell/page-break-lines")
-  :pin "e33426ae7f10c60253afe4850450902919fc87fd")
+  :pin "982571749c8fe2b5e2997dd043003a1b9fe87b38")
 #+end_src
+
+We can go from "better" to "where has this been all my life?" by now making page
+navigation easy with some simple keybindings lifted from [[http://xahlee.info/emacs/emacs/modernization_formfeed.html][Xah Lee]]'s post on the
+form feed. Making ~forward-page~ and ~backward-page~ work with Evil mode also takes
+a little tweaking, so we might as well do that too while we're at it.
+
+We can also make the displayed horizontal rule communicate more useful
+information by making it the same as the fill column. While this could be
+accomplished by just =setq=​ing the rule width to the default ~fill-column~ value,
+it would be better for it to always match the local buffer value. This may be
+accomplished with advise, but it's a bit cleaner (and even simpler) to just turn
+the width variable into an alias for ~fill-column~.
 
 #+begin_src emacs-lisp
 (use-package! page-break-lines
-  :commands page-break-lines-mode
+  :hook (prog-mode . page-break-lines-mode)
   :init
   (autoload 'turn-on-page-break-lines-mode "page-break-lines")
   :config
-  (setq page-break-lines-max-width fill-column)
+  (defvaralias 'page-break-lines-max-width 'fill-column)
+  (defun +evil-forward-page ()
+    "Call `forward-page', such that it works as intended with evil-mode."
+    (interactive)
+    (when (eq (char-after (point)) ?\^L)
+      (forward-char 1))
+    (forward-page))
+  (defun +evil-backward-page ()
+    "Call `backward-page', such that it works as intended with evil-mode."
+    (interactive)
+    (when (eq (char-after (point)) ?\^L)
+      (backward-char 1))
+    (backward-page))
   (map! :prefix "g"
-        :desc "Prev page break" :nv "[" #'backward-page
-        :desc "Next page break" :nv "]" #'forward-page))
+        :desc "Prev page break" :nv "[" #'+evil-backward-page
+        :desc "Next page break" :nv "]" #'+evil-forward-page)
+  (map! "<C-M-prior>" #'+evil-backward-page
+        "<C-M-next>" #'+evil-forward-page))
 #+end_src
+
+With this setup, I find form-feeds to be a really convenient addition to my
+coding workflow. Despite generally poor adoption, they are the only
+language-independent form that "just works". While you could also use specially
+crafted comment forms and a more complex setup, it's not as though the form-feed
+is being used for anything else --- it's free real estate! 😉
 
 *** Writeroom
 
