@@ -8211,6 +8211,7 @@ post-processing the =latexdiff= result.
         (replace-match (format "definecolor{red}{HTML}{%s}" red)))
       (when (re-search-forward "definecolor{blue}{rgb}{0,0,1}" (cdr (bounds-of-thing-at-point 'line)) t)
         (replace-match (format "definecolor{blue}{HTML}{%s}" blue)))))
+  (setq orgdiff-latexdiff-args '("--append-safecmd=acr,acrs"))
   (add-to-list 'orgdiff-latexdiff-postprocess-hooks #'+orgdiff-nicer-change-colours))
 #+end_src
 
