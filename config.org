@@ -4104,7 +4104,7 @@ add package src directories to projectile. This isn't desirable in my opinion.
       (list "~/" "/tmp" (expand-file-name "straight/repos" doom-local-dir)))
 (defun projectile-ignored-project-function (filepath)
   "Return t if FILEPATH is within any of `projectile-ignored-projects'"
-  (or (mapcar (lambda (p) (s-starts-with-p p filepath)) projectile-ignored-projects)))
+  (or (mapcar (lambda (p) (string-prefix-p p filepath)) projectile-ignored-projects)))
 #+end_src
 
 *** Jinx
@@ -8959,7 +8959,7 @@ the [[*Window title][Window title]].
 #+begin_src emacs-lisp
 (defadvice! doom-modeline--buffer-file-name-roam-aware-a (orig-fun)
   :around #'doom-modeline-buffer-file-name ; takes no args
-  (if (s-contains-p org-roam-directory (or buffer-file-name ""))
+  (if (string-match-p (regexp-quote org-roam-directory) (or buffer-file-name ""))
       (replace-regexp-in-string
        "\\(?:^\\|.*/\\)\\([0-9]\\{4\\}\\)\\([0-9]\\{2\\}\\)\\([0-9]\\{2\\}\\)[0-9]*-"
        "🢔(\\1-\\2-\\3) "
@@ -9242,7 +9242,7 @@ It likely misses some edge cases, but should mostly work.
     (let ((count 0)
           (case-fold-search nil))
       (while (re-search-forward "^[ \t]*#\\+[A-Z_]+" nil t)
-        (unless (s-matches-p "RESULTS" (match-string 0))
+        (unless (string-match-p "RESULTS" (match-string 0))
           (replace-match (downcase (match-string 0)) t)
           (setq count (1+ count))))
       (message "Replaced %d occurances" count))))
@@ -9967,7 +9967,7 @@ TODO abstract backend implementations."
                                   (substring all-caps-str 0 (if trailing-s -2 -1))
                                 (substring all-caps-str 0 (+ (if trailing-s -1 (length all-caps-str)))))))
                     (pcase base-backend
-                      ('latex (concat "\\acr{" (s-downcase acr) "}" (when trailing-s "\\acrs{}") final-char))
+                      ('latex (concat "\\acr{" (downcase acr) "}" (when trailing-s "\\acrs{}") final-char))
                       ('html (concat "<span class='acr'>" acr "</span>" (when trailing-s "<small>s</small>") final-char)))))))
        text t t))))
 
@@ -10428,13 +10428,20 @@ Lastly, let's pile on some metadata. This gives my pages nice embeds.
 
 (defun org-html-meta-tags-fancy (info)
   "Use the INFO plist to construct the meta tags, as described in `org-html-meta-tags'."
-  (let ((title (org-html-plain-text
-                (org-element-interpret-data (plist-get info :title)) info))
-        (author (and (plist-get info :with-author)
-                     (let ((auth (plist-get info :author)))
-                       ;; Return raw Org syntax.
-                       (and auth (org-html-plain-text
-                                  (org-element-interpret-data auth) info))))))
+  (let* ((title (org-html-plain-text
+                 (org-element-interpret-data (plist-get info :title)) info))
+         (author (and (plist-get info :with-author)
+                      (let ((auth (plist-get info :author)))
+                        ;; Return raw Org syntax.
+                        (and auth (org-html-plain-text
+                                   (org-element-interpret-data auth) info)))))
+         (author-first-last
+          (and (not (org-string-nw-p author))
+               (save-match-data
+                 (if (string-match "\\`\\(.+?\\) +\\(.+?\\)\\'" author)
+                     (cons (match-string 1 author)
+                           (match-string 2 author))
+                   (cons author nil))))))
     (append
      (list
       (when (org-string-nw-p author)
@@ -10456,10 +10463,10 @@ Lastly, let's pile on some metadata. This gives my pages nice embeds.
              (list "property" "og:image:height" (plist-get org-html-meta-tags-opengraph-image :height))
              (list "property" "og:image:alt" (plist-get org-html-meta-tags-opengraph-image :alt))))
      (list
-      (when (org-string-nw-p author)
-        (list "property" "og:article:author:first_name" (car (s-split-up-to " " author 2))))
-      (when (and (org-string-nw-p author) (s-contains-p " " author))
-        (list "property" "og:article:author:last_name" (cadr (s-split-up-to " " author 2))))
+      (when (car author-first-last)
+        (list "property" "og:article:author:first_name" (car author-first-last)))
+      (when (cdr author-first-last)
+        (list "property" "og:article:author:last_name" (cdr author-first-last)))
       (list "property" "og:article:published_time"
             (format-time-string
              "%FT%T%z"
