@@ -3792,24 +3792,59 @@ the mode on startup, let's prevent installation of the package.
 #+call: confpkg("!Pkg gptel")
 
 #+begin_src emacs-lisp :tangle packages.el
-(package! gptel :pin "8ccdc31b12a1f5b050c6b70393014710f8dbc5c8")
+(package! gptel :pin "af4ddb1dffe96461501c08d061d51ac2dbe99c77")
 #+end_src
 
 #+begin_src emacs-lisp
 (use-package! gptel
-  :commands gptel gptel-menu gptel-mode gptel-send gptel-set-tpic
+  :commands gptel gptel-menu gptel-mode gptel-send
   :config
-  (let (ollama-models)
-    (when (executable-find "ollama")
-      (with-temp-buffer
-        (call-process "ollama" nil t nil "list")
-        (goto-char (point-min))
-        (forward-line 1)
-        (while (and (not (eobp)) (looking-at "[^ \t]+"))
-          (push (match-string 0) ollama-models)
-          (forward-line 1))))
-    (setq-default gptel-model "nous-hermes2:latest"
-                  gptel-backend (gptel-make-ollama "Ollama" :models ollama-models :stream t)))
+  (let ((groq-backend
+         (gptel-make-openai "Groq"
+           :host "api.groq.com"
+           :endpoint "/openai/v1/chat/completions"
+           :stream t
+           :key (lambda () (or (secrets-get-secret "Login" "groq")
+                          (secrets-get-secret "kdewallet" "groq")))
+           :models '("llama3-70b-8192"
+                     "llama3-8b-8192"
+                     "llama-3.1-70b-versatile"
+                     "llama-3.1-8b-instant"
+                     "llama-3.2-1b-preview"
+                     "deepseek-r1-distill-llama-70b"
+                     "mixtral-8x7b-32768"
+                     "gemma-7b-it"
+                     "gemma2-9b-it")))
+        (openai-backend
+         (gptel-make-openai "ChatGPT"
+           :host "api.openai.com"
+           :stream t
+           :key (lambda () (or (secrets-get-secret "Login" "openai")
+                          (secrets-get-secret "kdewallet" "openai")))
+           :models '("gpt-4o" "gpt-4o-mini" "chatgpt-4o-latest"
+                     "o1" "o1-mini")))
+        (anthropic-backend
+         (gptel-make-anthropic "Claude"
+           :stream t
+           :key (lambda () (or (secrets-get-secret "Login" "anthropic")
+                          (secrets-get-secret "kdewallet" "anthropic")))
+           :models '("claude-3-5-sonnet-20240620"
+                     "claude-3-sonnet-20240229"
+                     "claude-3-haiku-20240307")))
+        (ollama-backend
+         (let (ollama-models)
+           (when (executable-find "ollama")
+             (with-temp-buffer
+               (call-process "ollama" nil t nil "list")
+               (goto-char (point-min))
+               (forward-line 1)
+               (while (and (not (eobp)) (looking-at "[^ \t]+"))
+                 (push (match-string 0) ollama-models)
+                 (forward-line 1)))
+             (gptel-make-ollama "Ollama" :models ollama-models :stream t)))))
+    (setq-default gptel-model "llama-3.1-70b-versatile"
+                  gptel-backend groq-backend))
+  (delete (assoc "ChatGPT" gptel--known-backends) gptel--known-backends)
   (setq gptel-default-mode #'org-mode))
 #+end_src
 
