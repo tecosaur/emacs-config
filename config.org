@@ -2110,14 +2110,58 @@ the defaults.
 (delq! t custom-theme-load-path)
 #+end_src
 
+While the theme environment variable is nice for flexibility, when starting
+Emacs in a terminal it doesn't help us set the right sort of theme
+automatically. However, we can check if we're in a terminal and pick a default
+theme colour accordingly.
+
+#+begin_src emacs-lisp
+(declare-function 'xterm-query "xterm")
+
+(defvar term-background-rgb nil
+  "A RGB triple corresponding to the current terminal background, if known.")
+
+(defun +interpret-term-bg ()
+  "Examine an OSC color query response, and set `term-background-rgb' accordingly."
+  (let ((str "")
+        chr)
+    ;; The reply should be: \e ] 11 ; rgb: NUMBER1 / NUMBER2 / NUMBER3 \e \\
+    (while (and (setq chr (xterm--read-event-for-query)) (not (equal chr ?\\)))
+      (setq str (concat str (string chr))))
+    (when (string-match
+           "rgb:\\([a-f0-9]+\\)/\\([a-f0-9]+\\)/\\([a-f0-9]+\\)" str)
+      (let ((r (string-to-number (match-string 1 str) 16))
+            (g (string-to-number (match-string 2 str) 16))
+            (b (string-to-number (match-string 3 str) 16)))
+        (setq term-background-rgb (list r g b))))))
+
+(defun +doom-init-theme-termaware ()
+  "Update `doom-theme' if in a terminal, unless DOOM_THEME has been set."
+  (let (term-shade)
+    (when (and (not (display-graphic-p (selected-frame)))
+               (not (getenv "DOOM_THEME"))
+               (require 'xterm nil t))
+      (message "Querying terminal background color")
+      (xterm--query "\e]11;?\e\\" '(("\e]11;" . +interpret-term-bg)))
+      (when term-background-rgb
+        (setq term-shade (if (< (apply #'+ term-background-rgb) (* 0.6 3 65535))
+                             'dark 'light))
+        (pcase term-shade
+          ('dark (setq doom-theme 'doom-vibrant))
+          ('light (setq doom-theme 'doom-tomorrow-day)))))
+    (doom-init-theme-h)))
+#+end_src
+
 Lastly, I had some issues with theme race conditions, which seem to be resolved
 by moving =doom-init-theme-h= around. Henrik attempted to help with this in May
 2021 but we didn't manage to pin down the issue. It may be worth periodically
-checking back and seeing if this is still needed.
+checking back and seeing if this is still needed. We might as well inject
+~+doom-init-theme-termaware~ while we're at it.
 
 #+begin_src emacs-lisp
 (remove-hook 'window-setup-hook #'doom-init-theme-h)
-(add-hook 'after-init-hook #'doom-init-theme-h 'append)
+(remove-hook 'after-init-hook   #'doom-init-theme-h)
+(add-hook    'after-init-hook   #'+doom-init-theme-termaware 'append)
 #+end_src
 
 **** Line numbers
