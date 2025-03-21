@@ -82,6 +82,10 @@
            gcmh-high-cons-threshold 16777216)
      (load "~/.config/emacs/lisp/doom.el")
      (require 'doom-cli)
+     (doom-require 'doom-lib 'print)
+     (doom-require 'doom-lib 'files)
+     (doom-require 'doom-lib 'packages)
+     (doom-modules-initialize)
      (doom-initialize-packages)))
 
   (setq doom-cli-log-error-file log-file)

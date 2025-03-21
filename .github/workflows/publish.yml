@@ -72,7 +72,7 @@ jobs:
 
       - name: Ensure emoji vector graphics exist
         if: github.event_name != 'schedule' || steps.doomcache.outputs.cache-hit != 'true'
-        run: runner "emacs --batch --eval \"(progn (load \\\"~/.config/emacs/lisp/doom.el\\\") (require 'doom-cli) (doom-initialize-packages) (load \\\"~/.config/doom/subconf/ox-latex-emoji.el\\\") (unless (file-exists-p (expand-file-name \\\"twemoji\\\" org-latex-emoji-base-dir)) (org-latex-emoji-install \\\"twemoji\\\" t)))\""
+        run: runner "emacs --batch --eval \"(progn (load \\\"~/.config/emacs/lisp/doom.el\\\") (require 'doom-cli) (doom-require 'doom-lib 'print) (doom-require 'doom-lib 'files) (doom-require 'doom-lib 'packages) (doom-modules-initialize) (doom-initialize-packages) (load \\\"~/.config/doom/subconf/ox-latex-emoji.el\\\") (unless (file-exists-p (expand-file-name \\\"twemoji\\\" org-latex-emoji-base-dir)) (org-latex-emoji-install \\\"twemoji\\\" t)))\""
 
       - name: Export config
         if: github.event_name != 'schedule' || steps.doomcache.outputs.cache-hit != 'true'
