@@ -1,4 +1,4 @@
-FROM ubuntu:22.04
+FROM ubuntu:24.10
 MAINTAINER TEC <tec@tecosaur.com>
 
 ENV LANG=C.UTF-8
@@ -24,7 +24,7 @@ RUN echo "\033[1;34mTeX install.\033[0m" &&\
   mkdir -p /usr/share/doc &&\
   mkdir -p /usr/share/info &&\
 # install TeX Live and ghostscript as well as other tools (inkscape for svg)
-  apt-get install -y texlive-base texlive-latex-recommended texlive-fonts-extra latexmk inkscape &&\
+  apt-get install -y --no-install-recommends texlive-base texlive-latex-recommended texlive-plain-generic texlive-latex-extra texlive-fonts-recommended texlive-fonts-extra latexmk inkscape &&\
 # delete Tex Live sources and other potentially useless stuff
   echo "\033[1;34mDelete TeX Live sources and other useless stuff.\033[0m" &&\
   (rm -rf /usr/share/texmf/source || true) &&\
@@ -39,14 +39,14 @@ RUN echo "\033[1;34mTeX install.\033[0m" &&\
   find /usr/share/doc -type f -name "*.gz" -delete &&\
   find /usr/share/doc -type f -name "*.tex" -delete
 
-RUN echo "\033[1;34mInstalling Emacs 29.\033[0m" &&\
+RUN echo "\033[1;34mInstalling Emacs 30.\033[0m" &&\
   apt-get install -y apt-utils software-properties-common &&\
   add-apt-repository -y ppa:ubuntuhandbook1/emacs &&\
   apt-get update &&\
   apt-get install -y emacs emacs-common
 
 RUN echo "\033[1;34mInstalling utilities.\033[0m" &&\
-  apt-get install -y sudo git gcc sqlite sqlite3 wget ncurses-term ripgrep xclip curl cairosvg
+  apt-get install -y sudo git gcc sqlite3 wget unzip ncurses-term ripgrep xclip curl cairosvg
 
 RUN echo "\033[1;36mRemoving extranious files.\033[0m" &&\
   apt-get clean -y &&\
@@ -73,7 +73,7 @@ RUN echo "\033[1;36mDon't check github's SSH key\033[0m" &&\
 
 RUN echo "\033[1;36mAdd non-root user.\033[0m" &&\
   groupadd runner &&\
-  useradd -m -g runner -G sudo -u 1000 -c "Docker image runner" runner &&\
+  useradd -m -g runner -G sudo -u 1001 -c "Docker image runner" runner &&\
   echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers &&\
   echo "Add command to run command with user 'runner'" &&\
   printf '#!/usr/bin/env sh\nsudo -i -u runner bash <<EOF\n$@\nEOF\n' > /bin/runner &&\
