@@ -2080,11 +2080,12 @@ from them based on the system theme. Thanks to the continued expansion of the
        (or (and (memq system-type '(gnu gnu/linux gnu/kfreebsd))
                 (require 'dbus nil t)
                 (caar
-                 (dbus-call-method
-                  :session
-                  "org.freedesktop.portal.Desktop" "/org/freedesktop/portal/desktop"
-                  "org.freedesktop.portal.Settings" "Read"
-                  "org.freedesktop.appearance" "color-scheme")))
+                 (ignore-errors
+                   (dbus-call-method
+                    :session
+                    "org.freedesktop.portal.Desktop" "/org/freedesktop/portal/desktop"
+                    "org.freedesktop.portal.Settings" "Read"
+                    "org.freedesktop.appearance" "color-scheme"))))
            0)))
   (pcase system-theme
     (1 dark-theme)
