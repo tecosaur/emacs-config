@@ -12652,7 +12652,7 @@ Now we just need to fetch and convert the emoji images.
     (when (or (not (file-exists-p emoji-folder))
               (and (not noninteractive)
                    (yes-or-no-p "Emoji folder already present, would you like to re-download?")
-                   (progn (delete-directory emoji-folder) t)))
+                   (progn (delete-directory emoji-folder t) t)))
       (let* ((spec (cdr (assoc set org-latex-emoji-sets)))
              (dir (org-latex-emoji-install--download set (plist-get spec :url)))
              (svg-dir (expand-file-name (or (plist-get spec :folder) "") dir)))
