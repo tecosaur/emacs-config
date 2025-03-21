@@ -12452,8 +12452,8 @@ buffer to make insertion easier.
   "Directory where emojis should be saved and look for.")
 
 (defvar org-latex-emoji-sets
-  '(("twemoji" :url "https://github.com/twitter/twemoji/archive/refs/tags/v14.0.2.zip"
-     :folder "twemoji-14.0.2/assets/svg" :height "1.8ex" :offset "-0.3ex")
+  '(("twemoji" :url "https://github.com/jdecked/twemoji/archive/refs/tags/v15.1.0.zip"
+     :folder "twemoji-15.1.0/assets/svg" :height "1.8ex" :offset "-0.3ex")
     ("twemoji-bw" :url "https://github.com/youdly/twemoji-color-font/archive/refs/heads/v11-release.zip"
      :folder "twemoji-color-font-11-release/assets/builds/svg-bw" :height "1.8ex" :offset "-0.3ex")
     ("openmoji" :url "https://github.com/hfg-gmuend/openmoji/releases/latest/download/openmoji-svg-color.zip"
