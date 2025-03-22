@@ -7140,6 +7140,13 @@ We'll also use a nicer alert icon
 (setq mu4e-alert-icon "/usr/share/icons/Papirus/64x64/apps/evolution.svg")
 #+end_src
 
+And save ourselves from the awful =mu4e-thread-fold-face=.
+
+#+begin_src emacs-lisp
+(custom-set-faces!
+  '(mu4e-thread-fold-face :inherit default))
+#+end_src
+
 **** Sending Mail
 :PROPERTIES:
 :header-args:emacs-lisp: :noweb-ref mu4e-conf
