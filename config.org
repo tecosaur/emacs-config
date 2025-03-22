@@ -13009,46 +13009,52 @@ This gives the same advantages as mentioned in the [[*Make verbatim different to
 
 For how I've setup Org's LaTeX export, the following packages are needed:
 #+name: org-latex-required-packages-list
-| Package    | Description                                           |
-|------------+-------------------------------------------------------|
-| adjustbox  | Adjust general LaTeX material in like includegraphics |
-| amsmath    | A near-essential maths package                        |
-| booktabs   | Nice horizontal lines in tables                       |
-| cancel     | Cancel terms in equations                             |
-| capt-of    | Captions outside floats                               |
-| caption    | Finer control over captions                           |
-| cleveref   | Easy cross-referencing                                |
-| embedall   | Embed files in the document                           |
-| float      | Floating environments                                 |
-| fontenc    | Font encodings                                        |
-| fvextra    | Enhanced verbatim environments                        |
-| graphicx   | An extended graphics package                          |
-| hanging    | Used by oc-csl                                        |
-| hyperref   | Links                                                 |
-| inputenc   | Input file encodings                                  |
-| longtable  | Multi-page tables                                     |
-| mathalpha  | Set extended math alphabet fonts                      |
-| mathtools  | Typesetting tools for maths                           |
-| microtype  | Microtypography                                       |
-| pdfx       | Create pdf/a- and pdf/x- compatible documents         |
-| pifont     | A collection of symbols                               |
-| preview    | Needed for AUCTeX and ob-latex                        |
-| scrbase    | KOMA classes and more                                 |
-| siunitx    | Proper unit support                                   |
-| soul       | Strikethrough and underline, flexibly                 |
-| subcaption | Form subfigures and subcaptions                       |
-| svg        | Insert SVG images                                     |
-| tikz       | Generally handy, as a dependancy and for graphics     |
-| tcolorbox  | Nice boxes for code                                   |
-| textcomp   | Font encodings                                        |
-| xcolor     | Colours                                               |
-| xparse     | Extended command/env definition forms                 |
-| xcoffins   | Manipulate coffins (boxes) for typesetting            |
+| Package     | Description                                           |
+|-------------+-------------------------------------------------------|
+| adjustbox   | Adjust general LaTeX material in like includegraphics |
+| accsupp     | Copy-paste text overlay for emoji images              |
+| amsmath     | A near-essential maths package                        |
+| booktabs    | Nice horizontal lines in tables                       |
+| cancel      | Cancel terms in equations                             |
+| capt-of     | Captions outside floats                               |
+| caption     | Finer control over captions                           |
+| cleveref    | Easy cross-referencing                                |
+| embedall    | Embed files in the document                           |
+| etoolbox    | Document hooks                                        |
+| float       | Floating environments                                 |
+| fontenc     | Font encodings                                        |
+| fvextra     | Enhanced verbatim environments                        |
+| graphicx    | An extended graphics package                          |
+| hanging     | Used by oc-csl                                        |
+| hyperref    | Links                                                 |
+| inputenc    | Input file encodings                                  |
+| longtable   | Multi-page tables                                     |
+| mathalpha   | Set extended math alphabet fonts                      |
+| mathtools   | Typesetting tools for maths                           |
+| microtype   | Microtypography                                       |
+| pdfx        | Create pdf/a- and pdf/x- compatible documents         |
+| pifont      | A collection of symbols                               |
+| pmboxdraw   | Good-looking box drawing characters                   |
+| preview     | Needed for AUCTeX and ob-latex                        |
+| scrbase     | KOMA classes and more                                 |
+| scrextend   | KOMA utilities                                        |
+| siunitx     | Proper unit support                                   |
+| soul        | Strikethrough and underline, flexibly                 |
+| subcaption  | Form subfigures and subcaptions                       |
+| svg         | Insert SVG images                                     |
+| tcolorbox   | Nice boxes for code                                   |
+| textcomp    | Font encodings                                        |
+| tikz        | Generally handy, as a dependancy and for graphics     |
+| transparent | Invisible text for emoji copying                      |
+| xcoffins    | Manipulate coffins (boxes) for typesetting            |
+| xcolor      | Colours                                               |
+| xparse      | Extended command/env definition forms                 |
 
 Then for the various fontsets:
 #+name: org-latex-font-packages-list
 + Alegreya
 + arev
++ arevmath
 + biolinum
 + FiraMono
 + FiraSans
@@ -13062,6 +13068,7 @@ Then for the various fontsets:
 + newtxtext
 + newtxsf
 + noto
++ notomath
 + plex-mono
 + plex-sans
 + plex-serif
