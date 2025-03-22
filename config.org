@@ -3849,6 +3849,34 @@ the mode on startup, let's prevent installation of the package.
   (setq gptel-default-mode #'org-mode))
 #+end_src
 
+*** Headlice
+
+#+call: confpkg("!Pkg Headlice")
+
+Dealing with licenses and in particular license headers is frankly a bit of a
+pain, and so I've written a package so that this just takes care of itself and I
+don't have to think about it.
+
+#+begin_src emacs-lisp :tangle packages.el
+(package! headlice :recipe (:local-repo "lisp/headlice"
+                            :files (:defaults "licenses" "headers")))
+#+end_src
+
+The author of this package has set some pretty good defaults, but as usual there
+are some specific personal preferences I'd like to apply, and then there's the
+minor matter of hooking it into Emacs/Doom.
+
+#+begin_src emacs-lisp
+(use-package! headlice
+  :hook (prog-mode . headlice-auto-insert)
+  :config
+  (setq headlice-preferred-license 'mpl
+        headlice-use-spdx-headers t
+        headlice-ignored-licenses '(gpl-3)
+        headlice-user-email "contact@tecosaur.net")
+  (defalias '+file-templates/insert-license #'headlice-create-license))
+#+end_src
+
 *** Consult
 
 #+call: confpkg("!Pkg Consult")

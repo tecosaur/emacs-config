@@ -1,3 +1,9 @@
+[submodule "autocorrect"]
+	path = lisp/autocorrect
+	url = https://code.tecosaur.net/tec/autocorrect.git
+[submodule "headlice"]
+	path = lisp/headlice
+	url = https://code.tecosaur.net/tec/headlice.git
 [submodule "LaTeX-auto-activiating-snippets"]
 	path = lisp/LaTeX-auto-activating-snippets
 	url = https://code.tecosaur.net/tec/LaTeX-auto-activating-snippets.git
@@ -43,12 +49,12 @@
 [submodule "conf-data-toml"]
 	path = lisp/conf-data-toml
 	url = https://code.tecosaur.net/tec/conf-data-toml.git
-[submodule "lisp/mpris"]
+[submodule "mpris"]
 	path = lisp/mpris
 	url = https://code.tecosaur.net/tec/mpris.el.git
-[submodule "lisp/doom-modeline-media-player"]
+[submodule "doom-modeline-media-player"]
 	path = lisp/doom-modeline-media-player
 	url = https://code.tecosaur.net/tec/doom-modeline-media-player.git
-[submodule "lisp/autocorrect"]
-	path = lisp/autocorrect
-	url = https://code.tecosaur.net/tec/autocorrect.git
+[submodule "lisp/headlice"]
+	path = lisp/headlice
+	url = https://code.tecosaur.net/tec/headlice.git
