@@ -5039,8 +5039,9 @@ than Objective-C. As such, it'll be switching the icon associated with =.m=.
 
 #+begin_src emacs-lisp
 (after! nerd-icons
-  (setcdr (assoc "m" nerd-icons-extension-icon-alist)
-          (cdr (assoc "matlab" nerd-icons-extension-icon-alist))))
+  (when-let ((matlab-icon (assoc "matlab" nerd-icons-extension-icon-alist)))
+    (setcdr (assoc "m" nerd-icons-extension-icon-alist)
+            (cdr matlab-icon))))
 #+end_src
 
 *** Prettier page breaks
