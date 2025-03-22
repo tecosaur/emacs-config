@@ -3631,7 +3631,7 @@ ridiculously large files.
 
 #+begin_src emacs-lisp :tangle packages.el
 (package! vlf :recipe (:host github :repo "emacs-straight/vlf" :files ("*.el"))
-  :pin "9b7bc521e54af2c7a5c882e4758b66ee4af1a152")
+  :pin "d500f39672b35bf8551fdfafa892c551626c8d54")
 #+end_src
 
 To make VLF available without delaying startup, we'll just load it in quiet moments.
@@ -3793,7 +3793,7 @@ the mode on startup, let's prevent installation of the package.
 #+call: confpkg("!Pkg gptel")
 
 #+begin_src emacs-lisp :tangle packages.el
-(package! gptel :pin "af4ddb1dffe96461501c08d061d51ac2dbe99c77")
+(package! gptel :pin "5cafffd19afcb4f6708af2d781446e8dc592af42")
 #+end_src
 
 #+begin_src emacs-lisp
@@ -4435,7 +4435,7 @@ Nested snippets are good, so let's enable that.
 
 For when you want to change the case pattern for a symbol.
 #+begin_src emacs-lisp :tangle packages.el
-(package! string-inflection :pin "50ad54970b3cc79b6b83979bde9889ad9a9e1a9c")
+(package! string-inflection :pin "617df25e91351feffe6aff4d9e4724733449d608")
 #+end_src
 
 #+begin_src emacs-lisp
@@ -4517,13 +4517,13 @@ welcomed into Emacs 28. However, he is also rather attentive with updates, and
 so I'd like to make sure we have a recent version.
 
 #+begin_src emacs-lisp :tangle packages.el
-(package! modus-themes :pin "d2762db19ed48bd0cbba61c41940be479760a35e")
+(package! modus-themes :pin "f3cd4d6983566dab0ef3bcddf812cfd565d00d08")
 #+end_src
 
 *** Spacemacs themes
 
 #+begin_src emacs-lisp :tangle packages.el
-(package! spacemacs-theme :pin "319ad1cd6aa05dcb43e4edca50eca339892e0865")
+(package! spacemacs-theme :pin "6c74684c4d55713c8359bedf1936e429918a8c33")
 #+end_src
 
 *** Theme magic
@@ -5710,12 +5710,12 @@ For managing my ebooks, I'll hook into the well-established ebook library
 manager [[https://calibre-ebook.com/][calibre]]. A number of Emacs clients for this exist, but this seems like a
 good option.
 #+begin_src emacs-lisp :tangle packages.el
-(package! calibredb :pin "8ca1b5262f0f0e4a0e295efc2c14db00333e9a85")
+(package! calibredb :pin "77b9c491511c7f6f3a37d688097a035b7dc6d794")
 #+end_src
 
 Then for reading them, the only currently viable options seems to be [[https://depp.brause.cc/nov.el/][nov.el]].
 #+begin_src emacs-lisp :tangle packages.el
-(package! nov :pin "9b7bef950d68c2518710c480729d6bb6026e9489")
+(package! nov :pin "b37d9380752e541db3f4b947c219ca54d50ca273")
 #+end_src
 
 Together these should give me a rather good experience reading ebooks.
@@ -7919,7 +7919,7 @@ correct package statement needed.
   ;; The `sr.ht' repo has been a bit flaky as of late.
   :recipe (:host github :repo "emacsmirror/org-contrib"
            :files ("lisp/*.el"))
-  :pin "d4056ce5d5611e1c971c151f182a2d407226fdb1")
+  :pin "8d14a600a2069ffc494edfc9a12b8e5fc8840bf1")
 #+end_src
 
 **** Visuals
@@ -7931,7 +7931,7 @@ Fontifying =org-mode= buffers to be as pretty as possible is of paramount import
 and Minad's lovely =org-modern= goes a long way in this regard.
 
 #+begin_src emacs-lisp :tangle packages.el
-(package! org-modern :pin "33f694c57113418c7e739a824ff57dc9e7eb413c")
+(package! org-modern :pin "e7a4c5e4a1d309895c60b3a3b3e62ab1f6a926b4")
 #+end_src
 
 ...with a touch of configuration...
@@ -8027,7 +8027,7 @@ occur at the border a bit more fiddley. We can improve this situation without
 sacrificing visual amenities with the =org-appear= package.
 #+begin_src emacs-lisp :tangle packages.el
 (package! org-appear :recipe (:host github :repo "awth13/org-appear")
-  :pin "81eba5d7a5b74cdb1bad091d85667e836f16b997")
+  :pin "32ee50f8fdfa449bbc235617549c1bccb503cb09")
 #+end_src
 
 #+begin_src emacs-lisp
@@ -8127,7 +8127,7 @@ pretty much abandoned.
 There's a really cool package in development to /transclude/ Org document content.
 #+begin_src emacs-lisp :tangle packages.el
 (package! org-transclusion :recipe (:host github :repo "nobiot/org-transclusion")
-  :pin "b23ead229c651772c1406e052b9eff41fec71738")
+  :pin "e9728b0b14b5c2e5d3b68af98f772ed99e136b48")
 #+end_src
 
 #+begin_src emacs-lisp
@@ -8385,7 +8385,7 @@ further. This mostly consists of tweaking settings, but there is one extra
 package I'll grab for prettier in-buffer citations.
 
 #+begin_src emacs-lisp :tangle packages.el
-(package! org-cite-csl-activate :recipe (:host github :repo "andras-simonyi/org-cite-csl-activate") :pin "94a424a0c644129c8ea8f9badc482ff937dcec23")
+(package! org-cite-csl-activate :recipe (:host github :repo "andras-simonyi/org-cite-csl-activate") :pin "ccadbdcdfd1b4cb0cea132324cc1912e0f1900b6")
 #+end_src
 
 In particular, by setting ~org-cite-csl-activate-use-document-style~, we can have
@@ -14024,7 +14024,7 @@ Of course, there's an Emacs mode for this.
 
 #+begin_src emacs-lisp :tangle packages.el
 (package! beancount :recipe (:host github :repo "beancount/beancount-mode")
-  :pin "3725c027026f45431d891a13810c218dc60e723e")
+  :pin "ddd4b8725703cf17a665b56cc26a3f9f95642424")
 #+end_src
 
 #+begin_src emacs-lisp
