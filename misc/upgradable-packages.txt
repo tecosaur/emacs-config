@@ -1,0 +1,76 @@
+
+org-super-agenda: 51c9da5ce7 → c07e35416c
+  c07e354 Tests: Update/fix results
+  d0954b8 Fix: (:ancestor-with-todo) Not an auto-group
+  05a7100 Fix: (:time-grid) Only look at time-of-day text property
+  05c0f19 Tests: Tidy indentation and unused variable
+  eb4366b Tests: Add :data-file and :skip-lines args to macro
+  17954dc Change: (:auto-outline-path) Put top-level headings in a group
+  283881b Meta: Add issue templates
+  0d87729 Tests: Fix symbol name
+
+org-graph-view: 172157aee1 → 15d49a3a3d
+  15d49a3 Tests: Add data file
+
+elcord: e2775f40ec → deeb22f843
+  deeb22f Fix ‘make-network-process’ warning
+  fbcce82 Add icon for nasm mode (#100)
+  97f57d6 elcord--send-packet: only send when elcord--sock exists
+  35f4ac4 make janet-mode icon square
+  b47767e add icon for janet-mode
+  252019e Properly search for other ipc pipes (flatpaks, other instances)
+
+keycast: 53514c3dc3 → df329db48c
+  df329db Release version 1.4.2
+  011cf53 Bump compat dependency
+  e4ccf3c Require Emacs 28.1
+  e996bc9 Bump copyright years
+  c44618d Release version 1.4.1
+  76df5fd Depend on Emacs 26.1
+  82affc7 keycast-mode-line-mode: Handle being enabled twice
+  cce63c1 Bump compat dependency
+  f04466c Release version 1.4.0
+  4f163c2 Bump compat dependency
+  c156fd1 Use define-advice instead of advice-add
+  04fa2c6 Update contact information
+  ec90b16 keycast-mode-line-mode: More carefully unwind buffer-local formats
+  72f649c keycast-mode-line-mode: Fix handling of single element special-case
+  7fe65f1 Fix removing our format entry if it comes last in a list
+  34f6125 keycast--maybe-edit-local-format: Do not edit if eq to default
+  f235bd8 keycast--maybe-edit-local-format: Use keycast--tree-member
+  5ed2e12 keycast--update: Use length>
+  c4a995a keycast--update: Handle prefix command peculiarity
+  b094915 Remove keycast-mode alias
+  8530b75 keycast--unpdate: Handle undefined keys
+  13e18d8 keycast-show-minibuffer-exit-command: Add note about M-x
+  12dbeb0 By default only show minibuffer exiting command in log
+  f350948 keycast--update: Fix special-handling of execute-extended-command
+  988b051 keycast--update: Fix a comment
+  b5e7a45 Avoid adding duplicated keycast elements
+  0c5687a Fix custom type mismatches
+  bfc1f93 Bump copyright years
+  74a10c3 make: Add redo target
+  c47fa15 Release version 1.3.3
+  044efbc Correct type of format options
+  6a6f910 keycast-header-line: Use correct predicate function
+  75d3862 keycast-log-mode: Also toggle focus-avoidance of log frame
+  404ff78 Add missing section heading
+  0a1cd94 Remove obsolete aliases
+  43b1f3b Update name or original mode in docstrings
+  481a162 Place comma after "i.e."
+  0b16d6a Release version 1.3.2
+  2da7852 keycast--tree-member: Fix pasto
+  a0549f4 Release version 1.3.1
+  d021658 keycast--tree-member: Handle non-list root element
+  cbdedd8 Release version 1.3.0
+  e915674 Bump compat dependency
+  cabb3fa Bump compat dependency
+  9715be3 readme: Add nongnu badge
+  dd3d855 Make elpa happy
+  1af05c6 readme: Add badges
+  8104b97 readme: Add badges
+  e277337 ci: Add compile workflow
+  bd7ed50 Bump copyright years
+
+gptel: 5cafffd19a → 0ce917a7f0
+  0ce917a gptel-rewrite: Diff buffers, not files (#731)
