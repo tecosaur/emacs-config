@@ -3924,7 +3924,7 @@ instance. Let's make that a bit more streamlined by introducing a quick-entry
 "default forge" option.
 
 #+begin_src emacs-lisp
-(defvar +magit-default-forge-remote "git@code.tecosaur.net:tec/%s.git"
+(defvar +magit-default-forge-remote "git@ssh.tecosaur.net:tec/%s.git"
   "Format string that fills out to a remote from the repo name.
 Set to nil to disable this functionality.")
 #+end_src
@@ -7931,7 +7931,7 @@ correct package statement needed.
      (pp `(package! org
             :recipe (,@(if dev-key-p
                            (list :host nil :repo "tec@git.savannah.gnu.org:/srv/git/emacs/org-mode.git" :local-repo "lisp/org"
-                                 :fork (list :host nil :repo "git@code.tecosaur.net:tec/org-mode.git" :branch "dev" :remote "tecosaur"))
+                                 :fork (list :host nil :repo "git@ssh.tecosaur.net:tec/org-mode.git" :branch "dev" :remote "tecosaur"))
                          (list :host nil :repo "https://code.tecosaur.net/mirrors/org-mode.git" :remote "mirror"
                                :fork (list :host nil :repo "https://code.tecosaur.net/tec/org-mode.git" :branch "dev" :remote "tecosaur")))
                      ,@recipe-common)
