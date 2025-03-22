@@ -6298,7 +6298,7 @@ Now let's use this instead of wordnet.
 Lastly, I want to make sure I have some dictionaries set up. I've put a tarball
 of dictionaries online which we can download if none seem to be present on the
 system.
-#+begin_src shell :tangle (if (and (executable-find "sdsv") (not (file-exists-p (concat (or (getenv "STARDICT_DATA_DIR") (concat (or "~/.local/share" (getenv "XDG_DATA_HOME")) "/stardict")) "/dic")))) "setup.sh" "no")
+#+begin_src shell :tangle (if (and (executable-find "sdcv") (not (file-exists-p (concat (or (getenv "STARDICT_DATA_DIR") (concat (or "~/.local/share" (getenv "XDG_DATA_HOME")) "/stardict")) "/dic")))) "setup.sh" "no")
 DIC_FOLDER=${STARDICT_DATA_DIR:-${XDG_DATA_HOME:-$HOME/.local/share}/stardict}/dic
 if [ ! -d "$DIC_FOLDER" ]; then
     TMP="$(mktemp -d /tmp/dict-XXX)"
