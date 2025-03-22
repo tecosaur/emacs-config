@@ -1899,7 +1899,7 @@ aspects are nice, but on others I prefer Fira.
 #+end_src
 
 #+attr_html: :class invertible :alt Screenshot of the fonts within Emacs.
-[[https://tecosaur.com/lfs/emacs-config/screenshots/font-face.png]]
+https://code.tecosaur.net/tec/emacs-config/media/branch/master/misc/screenshots/font-face.png
 
 In addition to these fonts, Merriweather is used with =nov.el=, and Alegreya as a
 serifed proportional font used by =mixed-pitch-mode= for =writeroom-mode= with Org
@@ -3076,7 +3076,7 @@ configuration]], we might as well display something a bit prettier than =*doom*=
 The end result is a minimal but rather nice splash screen.
 
 #+attr_html: :class invertible :alt The splash screen, just loaded.
-[[https://tecosaur.com/lfs/emacs-config/screenshots/splash-screen.png]]
+[[https://code.tecosaur.net/tec/emacs-config/media/branch/master/misc/screenshots/splash-screen.png]]
 
 To keep the splash image up to date, we just need to check it every time the
 frame size or theme is changed.
@@ -3593,7 +3593,7 @@ let's change that, and do a few other similar tweaks while we're at it.
 #+end_src
 
 #+attr_html: :class invertible :alt Whichkey triggered on an evil motion
-[[https://tecosaur.com/lfs/emacs-config/screenshots/whichkey-evil.png]]
+[[https://code.tecosaur.net/tec/emacs-config/media/branch/master/misc/screenshots/whichkey-evil.png]]
 
 ** Tools
 *** Abbrev
@@ -4385,7 +4385,7 @@ This makes it a breeze to take lovely screenshots.
 #+end_src
 
 #+attr_html: :class invertible :alt Example screenshot.el screenshot
-[[https://tecosaur.com/lfs/emacs-config/screenshots/screenshot.png]]
+[[https://code.tecosaur.net/tec/emacs-config/media/branch/master/misc/screenshots/screenshot.png]]
 
 Some light configuring is all we need, so we can make use of the [[https://github.com/Calinou/0x0][0x0]] wrapper
 file uploading script (which I've renamed to ~upload~).
@@ -4492,7 +4492,7 @@ This makes manual pages nicer to look at by adding variable pitch fontification
 and colouring 🙂.
 
 #+attr_html: :class invertible :style width:80% :alt Example info-colours page.
-[[https://tecosaur.com/lfs/emacs-config/screenshots/info-colours.png]]
+[[https://code.tecosaur.net/tec/emacs-config/media/branch/master/misc/screenshots/info-colours.png]]
 
 #+begin_src emacs-lisp :tangle packages.el
 (package! info-colors :pin "2e237c301ba62f0e0286a27c1abe48c4c8441143")
@@ -4508,7 +4508,7 @@ To use this we'll just hook it into =Info=.
 #+end_src
 
 #+attr_html: :class invertible :alt Example colourised info page
-[[https://tecosaur.com/lfs/emacs-config/screenshots/info-coloured.png]]
+[[https://code.tecosaur.net/tec/emacs-config/media/branch/master/misc/screenshots/info-coloured.png]]
 
 *** Modus themes
 
@@ -4747,7 +4747,7 @@ keyboard stuff I'm doing on-screen seems helpful. While [[https://gitlab.com/scr
 having something that doesn't cover up screen content is nice.
 
 #+attr_html: :class invertible :alt Screenshot of Keycast-mode in action
-[[https://tecosaur.com/lfs/emacs-config/screenshots/keycast.png]]
+[[https://code.tecosaur.net/tec/emacs-config/media/branch/master/misc/screenshots/keycast.png]]
 
 #+begin_src emacs-lisp :tangle packages.el
 (package! keycast :pin "53514c3dc3dfb7d4c3a65898b0b3edb69b6536c2")
@@ -5145,7 +5145,7 @@ tweaks. Namely:
 #+end_src
 
 #+attr_html: :class invertible :alt Writeroom applied to an Org file
-[[https://tecosaur.com/lfs/emacs-config/screenshots/writeroom-and-org.png]]
+[[https://code.tecosaur.net/tec/emacs-config/media/branch/master/misc/screenshots/writeroom-and-org.png]]
 
 *** Treemacs
 
@@ -5794,7 +5794,7 @@ something through Emacs?
 Then, to actually read the ebooks we use =nov=.
 
 #+attr_html: :class invertible :alt Excerpt of the GNU Emacs manual viewed through nov.el
-[[https://tecosaur.com/lfs/emacs-config/screenshots/nov.png]]
+[[https://code.tecosaur.net/tec/emacs-config/media/branch/master/misc/screenshots/nov.png]]
 
 #+begin_src emacs-lisp
 (use-package! nov
@@ -5892,7 +5892,7 @@ opportunity which is taken advantage of in the CalcTeX package.
 #+end_src
 
 #+attr_html: :class invertible :alt Demonstration of calc, prettified by calctex.
-[[https://tecosaur.com/lfs/emacs-config/screenshots/calc-with-calctex.png]]
+[[https://code.tecosaur.net/tec/emacs-config/media/branch/master/misc/screenshots/calc-with-calctex.png]]
 
 We'd like to use CalcTeX too, so let's set that up, and fix some glaring
 inadequacies --- why on earth would you commit a hard-coded path to an executable
@@ -6013,7 +6013,7 @@ I really like what [[https://github.com/fuxialexander/doom-emacs-private-xfu/tre
 module. Let's just try to patch on the main things I like the look of.
 
 #+attr_html: :class invertible :alt Example elfeed entry
-[[https://tecosaur.com/lfs/emacs-config/screenshots/elfeed.png]]
+[[https://code.tecosaur.net/tec/emacs-config/media/branch/master/misc/screenshots/elfeed.png]]
 
 *** Keybindings
 
@@ -6246,7 +6246,7 @@ Hence, we'll fall back to [[https://dushistov.github.io/sdcv/][sdcv]] (a CLI ver
 To interface with this, we'll use a my =lexic= package.
 
 #+attr_html: :class invertible :alt Screenshot of the lexic-mode view of "literate"
-[[https://tecosaur.com/lfs/emacs-config/screenshots/lexic.png]]
+[[https://code.tecosaur.net/tec/emacs-config/media/branch/master/misc/screenshots/lexic.png]]
 
 #+begin_src emacs-lisp :tangle (if (executable-find "sdcv") "packages.el" "no")
 (package! lexic :recipe (:local-repo "lisp/lexic"))
@@ -8670,7 +8670,7 @@ The agenda is nice, but a souped up version is nicer.
 Let's setup some org-capture templates, and make them visually nice to access.
 
 #+attr_html: :class invertible :alt My org-capture dialouge.
-[[https://tecosaur.com/lfs/emacs-config/screenshots/org-capture.png]]
+[[https://code.tecosaur.net/tec/emacs-config/media/branch/master/misc/screenshots/org-capture.png]]
 
 ~doct~ (Declarative Org Capture Templates) seems to be a nicer way to
 set up org-capture.
