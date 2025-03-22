@@ -17,6 +17,8 @@
 (remove-hook 'kill-emacs-hook #'org-persist-gc)
 (require 'ox-html)
 
+(require 'config-ox-html)
+
 ;; For some faces
 (require 'highlight-numbers)
 (require 'highlight-quoted)

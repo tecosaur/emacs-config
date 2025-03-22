@@ -6,6 +6,8 @@
 
 (doom-require 'doom-lib 'packages)
 (doom-require 'doom-lib 'text)
+(doom-require 'doom-lib 'plist)
+(doom-require 'doom-lib 'process)
 
   ;;; Generation of status badge
 

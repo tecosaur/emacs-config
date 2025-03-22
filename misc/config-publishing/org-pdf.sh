@@ -17,6 +17,10 @@
 (remove-hook 'kill-emacs-hook #'org-persist-gc)
 (require 'ox-latex)
 
+(defmacro use-package! (&rest body)
+  `(use-package ,@body))
+(require 'config-ox-latex)
+
 (advice-add 'pdf-tools-install :around #'ignore)
 (advice-add 'pdf-info-features :around #'ignore)
 
@@ -57,7 +61,13 @@
     (setq org-export-conditional-features
           (delq (rassq 'julia-code org-export-conditional-features)
                 org-export-conditional-features))
-    (org-latex-export-to-pdf)))
+    (condition-case err
+        (org-latex-export-to-pdf)
+      (error
+       (with-current-buffer "*Org PDF LaTeX Output*"
+         (message "LaTeX Output:\n==================\n%s\n==================\n"
+                  (buffer-string)))
+       (signal (car err) (cdr err))))))
 
 (publish "config.pdf")
 

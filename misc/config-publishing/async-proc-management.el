@@ -117,7 +117,7 @@
       (when (not (eq (process-status (plist-get dep :proc)) 'exit))
         (setq apm-all-proc-finished nil)))
     (when (< apm-timeout (- (float-time) start-time))
-      (message "[0;31] Timout exceeded. Killing slow processes%s" (apm-space-fill-line 37))
+      (message "[0;31] Timeout exceeded. Killing slow processes%s" (apm-space-fill-line 37))
       (dolist (dep apm-dependent-processes)
         (let ((proc (plist-get dep :proc)))
           (when (not (eq (process-status proc) 'exit))

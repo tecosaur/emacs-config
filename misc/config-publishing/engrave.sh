@@ -10,10 +10,6 @@
 
 (message "[34] Engraving files")
 
-;; For some reason, these seem to behave a bit strangely.
-(add-load-path! "~/.config/emacs/.local/straight/repos/parent-mode/"
-                "~/.config/emacs/.local/straight/repos/highlight-quoted/")
-
 (require 'highlight-numbers)
 (require 'highlight-quoted)
 (require 'rainbow-delimiters)

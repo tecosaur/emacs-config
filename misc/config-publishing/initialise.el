@@ -37,6 +37,7 @@
 (defvar message-colour t)
 
 (defun red-error (orig-fn &rest args)
+  (message "Error!")
   (message "\033[0;31m" 'unmodified)
   (apply orig-fn args)
   (message "\033[0m" 'unmodified)
@@ -61,8 +62,8 @@
                    args)))))
 
 (when message-colour
-  (advice-add 'debug :around #'red-error))
-;; (advice-add 'message :around #'timed-coloured-message))
+  (advice-add 'debug :around #'red-error)
+  (advice-add 'message :around #'timed-coloured-message))
 ;; (advice-add 'doom--print :around #'timed-coloured-message))
 
 ;;; Initialisation
@@ -74,9 +75,7 @@
   (pcase mode
     ('full
      (load "~/.config/emacs/early-init.el")
-     (require 'doom-start)
-     (require 'flycheck) ; To avoid issues that crop up with org-flycheck.
-     (defmacro flycheck-prepare-emacs-lisp-form (&rest _)))
+     (require 'doom-start))
     ('light
      (setq gc-cons-threshold 16777216
            gcmh-high-cons-threshold 16777216)
@@ -85,8 +84,19 @@
      (doom-require 'doom-lib 'print)
      (doom-require 'doom-lib 'files)
      (doom-require 'doom-lib 'packages)
-     (doom-modules-initialize)
-     (doom-initialize-packages)))
+     (doom-require 'doom-lib 'debug)))
+
+  (doom-modules-initialize)
+  (doom-initialize-packages)
+
+  ;; For some reason, these seem to behave a bit strangely.
+  (dolist (pkg '("parent-mode" "highlight-quoted" "dash" "f" "s" "pkg-info" "epl"))
+    (cl-pushnew (file-name-concat straight-base-dir "straight" straight-build-dir pkg)
+                load-path :test #'string=))
+
+  (when (eq mode 'full)
+    (require 'flycheck) ; To avoid issues that crop up with org-flycheck.
+    (defmacro flycheck-prepare-emacs-lisp-form (&rest _)))
 
   (setq doom-cli-log-error-file log-file)
   (write-region "" nil log-file nil :silent)
@@ -97,8 +107,6 @@
 
   (setq debug-on-error t
         doom-debug-p t)
-  (add-hook! 'doom-debug-mode-hook
-    (explain-pause-mode -1))
 
   (setq emojify-download-emojis-p nil)
   (unless (boundp 'image-types) ; why on earth is this needed?
