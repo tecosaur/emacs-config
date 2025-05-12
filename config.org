@@ -1473,6 +1473,8 @@ and can be used as a swap-in upgrade to ~dabbrev~.
 (global-set-key [remap dabbrev-expand] #'hippie-expand)
 #+end_src
 
+**** Expansion prioritisation
+
 Hippie expand works by cycling through a series of expansion-generating
 functions, listed in the variable ~hippie-expand-try-functions-list~.
 
@@ -1522,6 +1524,69 @@ Unfortunately there's one aspect of ~try-expand-dabbrev-from-kill~ that I find
 lets me down a bit, which is that it fails to complete when the killed text
 starts with a newline and the current line does not. I'll see if I can do
 something about this in the future.
+
+**** Suffix stripping
+
+I am occasionally annoyed by expansions that I make mid-line and cause a common
+suffix in the completion to be repeated. For instance, say in an earlier line of
+a file I have:
+
+#+begin_example
+func foo(int x, int y, int z)
+#+end_example
+
+where the =int y= argument has just been added. I move to another function that
+should have the same adjustment and invoke hippie-expand (at ~|~) to save me keystrokes:
+
+#+begin_example
+func bar(int x,| int z)
+#+end_example
+
+This invokes ~try-expand-list~ and completes to
+
+#+begin_example
+func bar(int x, int y, int z) int z)
+#+end_example
+
+Clearly, that's not what I want! I suspect that we can make it "just work" the
+vast majority of the time by looking to see if there's a suffix in the
+completion that's also a prefix of the remainder of the line, and stripping it.
+In our example, this would be =int z)= which would turn the completed line into:
+
+#+begin_example
+func bar(int x, int y, int z)
+#+end_example
+
+Hippie-expand doesn't provide a good point to modify expansion behaviour like
+this, however the insertion of the expansion is handled by the helper function
+~he-substitute-strings~, which we can advise to behave as we wish.
+
+#+begin_src emacs-lisp
+(defun +he-subst-suffix-overlap (ins rem)
+  "The longest suffix of the string INS that is a prefix of REM.
+This is intended to be used when INS is a newly inserted string and REM is the
+remainder of the line, to allow for handling potentially duplicated content."
+  (let ((len (min (length ins) (length rem))))
+    (while (and (> len 0)
+                (not (eq 't (compare-strings ins (- len) nil rem 0 len))))
+      (setq len (1- len)))
+    len))
+
+(defun +he-suffix-strip-a (args)
+  "Filter ARG list for `he-substitute-string', truncating duplicated suffix.
+ARGS is the raw argument list (STRING &optional TRANS-CASE)."
+  (pcase-let* ((`(,ins &optional ,trans-case) args)
+               (rem (save-excursion
+                      (goto-char (marker-position he-string-end))
+                      (buffer-substring-no-properties
+                       (point) (line-end-position))))
+               (ov (+he-subst-suffix-overlap ins rem)))
+    (when (>= ov 0)
+      (setq ins (substring ins 0 (- (length ins) ov))))
+    (list ins trans-case)))
+
+(advice-add #'he-substitute-string :filter-args #'+he-suffix-strip-a)
+#+end_src
 
 *** Buffer defaults
 
