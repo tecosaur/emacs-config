@@ -1,0 +1,374 @@
+
+org-super-agenda: 51c9da5ce7 → fb20ad9c8a
+  fb20ad9 Fix: (defgroup habit) Use --when-with-marker-buffer
+  67013cd Change: (org-super-agenda--when-with-marker-buffer) Indent 1
+  70940f0 Docs: (:ancestor-with-todo) Move to auto-group section
+  30d0eb8 Revert "Fix: (:ancestor-with-todo) Not an auto-group"
+  c07e354 Tests: Update/fix results
+  d0954b8 Fix: (:ancestor-with-todo) Not an auto-group
+  05a7100 Fix: (:time-grid) Only look at time-of-day text property
+  05c0f19 Tests: Tidy indentation and unused variable
+  eb4366b Tests: Add :data-file and :skip-lines args to macro
+  17954dc Change: (:auto-outline-path) Put top-level headings in a group
+  283881b Meta: Add issue templates
+  0d87729 Tests: Fix symbol name
+
+org-graph-view: 172157aee1 → 15d49a3a3d
+  15d49a3 Tests: Add data file
+
+org-modern: e7a4c5e4a1 → 6d375b9dfb
+  6d375b9 Update bug report template
+  d46cbb8 Update bug report template
+  6158d3d Update issue template
+  032201b org-modern-hide-stars: Do not hide stars when org-indent-mode is enabled
+  1c05dcc elpaignore .elpaignore
+  39e2840 Update issue template
+  8408bde Add issue template
+  2df3b8b README: Link to org-modern-indent
+  48b44a3 Revert back to 3cc432dc99f262579d1cc464e7d6d5b9fe77083a
+  f0cf9aa org-modern-indent: extend org block faces to cover brackets
+  68c8193 Update screenshot
+  20b80b9 org-modern-indent: Update commentary
+  b771e11 README: Update incompatibilities
+  03501bf README: Fix formatting
+  7ac63f5 Fix variable usage
+  40f32b5 README.org: mention org-modern-block-indent setting in config
+  1d6b8d8 Update package headers
+  526ba66 Reorganize and reformat README
+  fab253a Update commentary
+  a4fe741 Reformat changelog
+  30e08a4 Disable org-modern-block-indent by default
+  72ff0b6 Rename variable to org-modern-block-indent to be more in line with the others
+  8cad2c3 Merge pull request #281 from minad/org-modern-indent
+  fe226e8 Move README indent section, do not yet bump version
+  881cfaf Remove vestigial README-indent
+  38d2cef Improve README.org
+  a462be5 Merge org-modern-indent README and ChangeLog into org-modern's
+  fa57160 README.org: correct link
+  630d529 Update README-indent.md
+  649f5d3 org-modern: incorporate and auto-enable org-modern-indent
+  bf318d5 Updated README's to mention org-modern-indent
+  a3ac3e2 org-modern-indent: update header information as new extension
+  aa342c4 Rename org-modern-indent's README
+  fdeede3 Merge 'org-modern-indent/main' into org-modern-indent
+  9973bd3 Bump version
+  3cc432d Update changelog
+  0e0756f org-habit progress graph prettification
+  8710dad beg-end: simplify skipping post-blank lines
+  8fcf7b2 init when mode called interactively
+  dd5ebe1 Remove field since it interferes with org-element
+  42fcc6a -init -> init, make command
+  1a1c978 draw-block: simplify property modification + add indent field
+  6ec22d3 walk-blocks: avoid visiting first block twice
+  44efad0 Do not advise org-indent-region to strip properties
+  fcd4368 after-change: ensure beg/end fully span lines
+  ca440cd major rewrite using org-element + before/after-change-functions
+  ce4df70 Factor out end-re
+  0cf27c5 Package-Requires: Specify Org mode version
+  2b3ee1f README: Update screenshot
+  b8f3b2e Update README.md
+  52b46c6 Merge pull request #19 from btobolaski/patch-1
+  664cff0 Fix name of bracket face
+  3793964 Update README.md
+  7045539 Update README.md
+  24ce7f3 Make `org-indent` requirement more prominent
+  b5c8705 Expand variables
+  f2b859b Update copyright+version
+  b826d84 Merge branch 'org-buffer-init-hook'
+  a4d2429 Guard against deleted buffers (org-roam may do this)
+  0def038 block indent: only add org-indent face to prefix length in wrap
+  4b38382 Small README improvements
+  6457c3d Add org-indent face to wrap-prefix for indented blocks
+  400e1d0 Update README.md
+  c8671f2 Update README.md
+  b5066e0 README: Use [!NOTE]
+  8afea0f disable org-modern-indent if 5 init tries exceeded in a buffer
+  8702acf use org-indent-post-buffer-init-functions to init, if available
+  ad60fa2 block-bracket-flush: tweak prefix layout, only one end bracket
+  5573817 block-bracket-flush: docstring improvements
+  30cdd1b README: recommend static org-modern-block-name
+  1e4a4d0 Use = not eq
+  d78edc6 remove vestigial vars
+  3cba802 give up after 5 init attempts, and reuse timer
+  25594c4 return nil properly from block-bracket font-lock function
+  fbdc221 correct bracket-line face name
+  7c07c47 Update README.md
+  85f95d0 Update README.md
+  c5a50f3 guard against deleted buffer when org-indent-agent finalizes
+  f1033a3 Bump version
+  e3ed500 timer function: ensure correct directory
+  7d2422d Bump version
+  e4ba473 README: improve re-indent description
+  cc12cf8 README: better discussion of org-src-preserve-indentation
+  17068a5 refresh timer: run-at-time instead of idle
+  747fa7e Update README.md
+  b722c64 Update README.md
+  20a99f6 README: improve block alignment suggestions
+  fc0c3fc Update README.md
+  5f6d391 Update README.md
+  952abf3 Update README.md
+  15ea3db Update README.md
+  947ac69 Update README.md
+  d597328 Update README.md
+  d65e773 Update README.md
+  fa960e2 README: describe new v0.1 functionality
+  b14f01e org-indent refresh watching added
+  cc87107 block-bracket-prefix: guard against empty prefix
+  eace968 Minor doc
+  d237c19 improve flush and indented block marking and logic
+  6445696 Separate begin-for use with headline watch
+  022400a Initial implementation of font-lock-only in-text and prefix brackets
+  f2b6d6d Mention manual indent update after toggling off
+  172957a Bump minor version
+  308027f Do not re-indent entire buffer on mode start/stop
+  ff10d3d Update README.md
+  7792c82 Merge pull request #4 from mclearc/main
+  a7b22ac Define face for org-modern-indent
+  550041f README tweaks
+  e0f0b01 Docstring
+  d36dc62 Handle markup for block insertion correctly
+  baad0b6 Docs: hook to org-indent-mode instead of org-mode
+  e118f7e Update README.md
+  edbab4a Update README.md
+  a3e8b44 Update README.md
+  e02b7d1 Add package description and omit org-modern from requires
+  a5ed40c Update README.md
+  a2deeae Update README.md
+  9874203 Add autoload
+  1786029 Mention :straight/:load-path and related packages
+  1e34e97 Does not require org-modern (use with or without)
+  ed9157d Omit block decoration modifications from undo stack
+  e436abc Treat quote and verse blocks as well
+  9bbe591 Store set-line-properties function def on load
+  4e71fd3 Discuss line-spacing and need for indent
+  f27c48f Update README.md
+  280d009 Update README.md
+  bc5819f Add readme info
+  bc77d61 Do not extend end block styling beyond end line.
+  1d020fc Initial import
+  1abf8c7 Initial commit
+
+org-contrib: 8d14a600a2 → f1f6b6ec81
+  f1f6b6e lisp/org-collector.el (org-dblock-write:propview): Add support for the :tblfm keyword.
+
+calibredb: 77b9c49151 → 689ea5157e
+  689ea51 Add calibredb-folder-update-tags-by-lpath
+  373cb36 Change the cover path to covers subfolder
+  40a16be Add cache calibredb-search-buffer-line-pixel-height
+  4db58ca Update doc
+  e647ee9 Add back doc
+  ba8a5d6 Set calibredb-search-page-max-rows-auto-adjust nil
+  5aff47b Add calibredb-search-page-max-rows-auto-adjust-offset
+  b64e8e2 Add calibredb-search-page-max-rows-auto-adjust
+  64c211a Encode org-protocol link correctly
+  1be7ba7 Add calibredb-zipfile.py
+
+elcord: e2775f40ec → deeb22f843
+  deeb22f Fix ‘make-network-process’ warning
+  fbcce82 Add icon for nasm mode (#100)
+  97f57d6 elcord--send-packet: only send when elcord--sock exists
+  35f4ac4 make janet-mode icon square
+  b47767e add icon for janet-mode
+  252019e Properly search for other ipc pipes (flatpaks, other instances)
+
+keycast: 53514c3dc3 → 7e5f0bc263
+  7e5f0bc Add .dir-locals.el
+  965ceb0 keycast-substitute-alist: Clarify format expected for events
+  83216f9 Release version 1.4.3
+  b231289 keycast--tree-member: Use equal as test function
+  df329db Release version 1.4.2
+  011cf53 Bump compat dependency
+  e4ccf3c Require Emacs 28.1
+  e996bc9 Bump copyright years
+  c44618d Release version 1.4.1
+  76df5fd Depend on Emacs 26.1
+  82affc7 keycast-mode-line-mode: Handle being enabled twice
+  cce63c1 Bump compat dependency
+  f04466c Release version 1.4.0
+  4f163c2 Bump compat dependency
+  c156fd1 Use define-advice instead of advice-add
+  04fa2c6 Update contact information
+  ec90b16 keycast-mode-line-mode: More carefully unwind buffer-local formats
+  72f649c keycast-mode-line-mode: Fix handling of single element special-case
+  7fe65f1 Fix removing our format entry if it comes last in a list
+  34f6125 keycast--maybe-edit-local-format: Do not edit if eq to default
+  f235bd8 keycast--maybe-edit-local-format: Use keycast--tree-member
+  5ed2e12 keycast--update: Use length>
+  c4a995a keycast--update: Handle prefix command peculiarity
+  b094915 Remove keycast-mode alias
+  8530b75 keycast--unpdate: Handle undefined keys
+  13e18d8 keycast-show-minibuffer-exit-command: Add note about M-x
+  12dbeb0 By default only show minibuffer exiting command in log
+  f350948 keycast--update: Fix special-handling of execute-extended-command
+  988b051 keycast--update: Fix a comment
+  b5e7a45 Avoid adding duplicated keycast elements
+  0c5687a Fix custom type mismatches
+  bfc1f93 Bump copyright years
+  74a10c3 make: Add redo target
+  c47fa15 Release version 1.3.3
+  044efbc Correct type of format options
+  6a6f910 keycast-header-line: Use correct predicate function
+  75d3862 keycast-log-mode: Also toggle focus-avoidance of log frame
+  404ff78 Add missing section heading
+  0a1cd94 Remove obsolete aliases
+  43b1f3b Update name or original mode in docstrings
+  481a162 Place comma after "i.e."
+  0b16d6a Release version 1.3.2
+  2da7852 keycast--tree-member: Fix pasto
+  a0549f4 Release version 1.3.1
+  d021658 keycast--tree-member: Handle non-list root element
+  cbdedd8 Release version 1.3.0
+  e915674 Bump compat dependency
+  cabb3fa Bump compat dependency
+  9715be3 readme: Add nongnu badge
+  dd3d855 Make elpa happy
+  1af05c6 readme: Add badges
+  8104b97 readme: Add badges
+  e277337 ci: Add compile workflow
+  bd7ed50 Bump copyright years
+
+modus-themes: f3cd4d6983 → 847311bf74
+  847311b Make "ancient" Gnus look like a regular "read" message
+  93e89bd Add support for some tmr faces
+  1fe0a3c Introduce 'property' mapping
+  792ebec Make small refinements to modus-vivendi-tinted bg-paren-match value
+  16fc1ed Revert "Revise all "paren" colours to be mappings"
+  51c7c4d Tweak modus-vivendi-tinted mail mappings for consistency
+  d85547d Tweak modus-operandi-tinted mail mappings for consistency
+  7cc3d14 Fix some typos in the manual
+  d5a0eeb Update to modus-themes version 4.7.0
+  d3164f4 Make yellow-cooler of modus-operandi-tinted even more dark
+  d3fc756 Swap the mappings of 'type' and 'variable' in modus-operandi-tinted
+  81037da Tweak the identifier mapping of modus-operandi-tinted
+  ad58ce7 Make yellow-faint of modus-operandi-tinted a bit darker
+  0666b7e Make yellow-cooler of modus-operandi-tinted a bit darker
+  a7a018c Make modus-vivendi-tinted 'mail-cite-2' more teal
+  fc3c16f Make modus-vivendi-tinted 'mail-cite-0' more blue
+  38b7b35 Change hue of accent-2 mapping in modus-vivendi-tinted
+  9e51b1b Make modus-vivendi-tinted 'green-cooler' a bit more bright
+  87e84aa Make modus-vivendi-tinted type a bit more blue
+  5df9c6c Make modus-vivendi-tinted strings blue instead of teal
+  0c03c3b Use slightly different colour for mail-cite-2 in modus-vivendi-tinted
+  de28e15 Use slightly different colours for the mail cite mappings in modus-operandi-tinted
+  ed44bba Make stylistic refinements to some modus-operandi-tinted prose mappings
+  2569f4a Use blue-cooler for weekends in modus-operandi-deuteranopia
+  9966f9f Tweak the mail mappings in the tinted variants
+  063ae64 Refine 'green-warmer' in modus-vivendi-tinted
+  63af2ad Refine 'green-warmer' in modus-operandi-tinted
+  3d7e9d6 Refine 'yellow-cooler' and 'yellow-faint' in modus-operandi-tinted
+  cfe8702 Tweak value of yellow-cooler in modus-operandi-tinted
+  4c82e40 Refine the value of bg-hover-secondary in most themes
+  6725de0 Further tweak the value of modus-vivendi-tinted 'green-warmer'
+  e520baf Tweak the value of modus-vivendi-tinted 'green-warmer'
+  c98df72 Tweak the value of 'yellow-cooler' in modus-operandi-tinted
+  1c582c4 Tweak the blue used in modus-operandi-tinted 'keyword' mapping
+  654244e Tweak the fg-alt value of the tritanopia themes
+  dfd1879 Change 'prose-tag' mapping in the tritanopia themes to be more neutral
+  3c30961 Make modus-vivendi-tinted 'green-warmer' less intense
+  453f69b Make modus-vivendi-tinted 'red-faint' a bit darker
+  7c8d476 Update meow sample code to not use bg-char mappings that I removed in 42e1611
+  42e1611 REMOVE bg-char mappings and use search faces for Avy and related
+  80b8de3 Revise all "paren" colours to be mappings
+  a162cd0 Make the bg-search-replace yellow in the deuteranopia themes
+  26e9ab4 Make small refinements to the git-commit branch and file faces
+  3631e70 Revise some of the prose mappings in the deuteranopia themes
+  fe05b2a Tweak accent-0 in modus-vivendi-deuteranopia
+  34b8a50 Refine the "bg-char-*" values of the deuteranopia themes
+  5917d8a Use 'magenta-cooler' for the deuteranopia 'date-weekend' mappings
+  bd28200 Reduce the amount of magenta in some parts of the deuteranopia variants
+  03312ad REVISE the style of modus-vivendi-tinted
+  d650f01 REVISE the style of modus-operandi-tinted
+  5341ab7 Refine green-warmer in modus-vivendi-tinted
+  ce5477a Refine many colour values in modus-operandi-tinted
+  4661315 Update copyright header years in the theme files
+  d8d36c4 Refine how modus-themes-to-toggle gets the list of themes in its :type
+  8e45bc9 Add support for new icomplete-vertical-mode faces (Emacs 31)
+  edb78e5 Acknowledge Leilei332 for expanding support for adoc-mode
+  0f65633 Merge pull request #137 from Leilei332/adoc-support
+  e6702f9 Update adoc-meta-hide-face
+  5d9a43b Add adoc-mode support
+  5560922 Change the accent mappings in modus-vivendi-tinted for stylistic consistency
+  8535e32 Change the accent mappings in modus-operandi-tinted for stylistic consistency
+
+gptel: 5cafffd19a → fcdbe07414
+  fcdbe07 gptel-org: More fixes for conversion in punctuation (#813)
+  e1050ef gptel-org: Fix org-conversion around punctuation (#813)
+  fb1e64d README: Fix typo (missing tag) (#846)
+  fd9200b gptel: Reset reasoning-block after tool call
+  32bbf5e gptel: use explicit nil in letrec (#835)
+  7670670 gptel-gh: Fix media capability for gpt-4.1 model (#836)
+  d0c19ba gptel: Only preprocess :args of tools spec (#837)
+  a54e777 gptel-ollama: Don't add tool call id when parsing lists
+  1078cac gptel: Mention tool use in package commentary
+  f368861 gptel: Update documentation of gptel-integrations
+  ce46b9a gptel-integrations: Start MCP servers automatically
+  7e22a97 gptel-gemini: Fix filtering of unsupported tool attributes (#834)
+  3d1856f README: Add screencast of gptel + mcp.el integration
+  18a5eb4 gptel-integrations: Add utilities for MCP
+  8558841 gptel-transient: Use more keys in dynamic menus
+  b891789 gptel-transient: Don't capitalize tool category names
+  15d056f gptel: Raise an error if tool can't be found
+  58f2677 gptel: Turn prompt/response prefix lookups into defsubsts
+  a7dde72 gptel: Fix bug with navigating responses
+  8ad60c5 gptel-gemini: add gemini-2.5-pro-preview-05-06 (#829)
+  1aa5f1c gptel-gemini: Filter schema attributes in tools (#827)
+  8f1a4fb gptel: Test new prompt-list format for gptel-request
+  11fbb4d gptel: Ignore non-streaming blank responses
+  5b21ef9 gptel-openai: Always check for tool-calls (non-streaming only)
+  db4e5c7 Readme: Add Sambanova documentation (#803)
+  118431e gptel: Clear reasoning field in multi-turn request
+  da01adf gptel: (Testing) Don't (un)format tool ids (#792)
+  f08065d gptel-ollama: Fix media injection for Ollama (#790)
+  7f9b063 gptel-openai: Tool call check with empty response chunk (#799)
+  0c5a95d gptel-org: Don't include tags in gptel-org-set-topic (#801)
+  42fb1bf gptel-gemini: Add gemini-2.5-flash-preview-04-17 (#793)
+  d7a170f dir-locals: Set some project specific local variables (#712)
+  59c0048 gptel: Handle case of missing tool-id
+  107a8cf gptel: Linting and update test module
+  d7ce87e gptel: Fix typo (#795)
+  b30cee0 gptel: No advice for tool spec argument preprocessing (#794)
+  08abac1 gptel: Try to ensure tool spec argument preprocessing (#794)
+  b44bad8 gptel: Set request URL from request buffer
+  4f8df08 gptel-openai: Fix max_tokens field for o4-mini (#791)
+  e8523ec gptel: Update tool arg types preprocesing
+  7b00e85 gptel: Allow all JSON schema keys in tool arg specs (#788)
+  8e20fae gptel: Add support for o3 and o4-mini (#789)
+  6e48a0b gptel-gh: add new models (#789)
+  a7e1dbb gptel: Ignore unknown keys in tool constructor
+  5374c18 gptel: Remove deprecated OpenAI models
+  f30f117 gptel: Add support for GPT 4.1 models
+  8329ee7 gptel-gemini: Add support for Gemini 2.5 Pro Preview (#781)
+  9349d90 gptel-openai-extras: Add Grok 3 model variants to xAI (#775)
+  4301165 README: Fix pairing of details tags (#780)
+  243bd07 gptel-gh: Add gemini-2.5-pro (#779)
+  cfebc21 README: tool-use is no longer experimental
+  5436fde README: Update suggested Gemini model (#778)
+  e3fdfdb gptel: allow customize-variable to set temperature to nil (#777)
+  b60589f gptel-gh: Add support for Github Copilot Chat (#767)
+  c818ce3 gptel: read-only handling for non-default callbacks
+  3d7a512 gptel: Add OCaml to gptel--mode-description-alist (#771)
+  55355bd gptel-org: Make gptel-org-branching-context global
+  e19b700 gptel-rewrite: Make other modes not clobber rewrite overlay (#744)
+  f79c9d0 README: Instructions for Mistral Le Chat (#766)
+  4b505e7 gptel: Set process coding to utf-8-unix explicitly (#754)
+  e073666 gptel: Don't use dynamic value of gptel-use-tools (#755)
+  03cff27 README: Install without submodule in Doom (#758)
+  397cc2f gptel-anthropic: Handle streaming + thinking + tool-use
+  dfd8879 gptel-openai: Adapt OpenAI tool-ids for Openrouter+Anthropic
+  35d53ca gptel-ollama: Fix docstring (#752)
+  9db263a gptel-openai-extras: Linting
+  9793426 gptel: Run tools in request buffer (#748)
+  5caa292 gptel-rewrite: Use correct form of `with-demoted-errors' (#745)
+  6a000d6 gptel-anthropic: Increase default max_tokens
+  66d93f3 gptel: Spacing changes around reasoning, tool result blocks
+  0be44d5 gptel-gemini: Add gemini-2.5-pro-exp-03-25 (#742)
+  3dc1cf4 gptel: tool block spacing changes (#735)
+  c5ffae2 gptel-org: Fix branching context prompt creation bug
+  913e9db gptel: Update docstrings, GPTel to gptel
+  833d2a6 README: Hide authinfo explanation, update Claude 3.7 info
+  7938768 gptel-rewrite: Don't turn on major-mode in rewrite buffer
+  51d39e9 gptel-anthropic: Fix invalid duplication of tool_call message (#734)
+  6cba8b5 README: Clarify installation instructions (#732)
+  bbc6ec2 gptel-rewrite: Ensure kill-buffer does not ask for confirmation (#733)
+  075376c gptel-rewrite: Make rewrite work on Emacs < 29 again (#721)
+  0ce917a gptel-rewrite: Diff buffers, not files (#731)
