@@ -3858,7 +3858,7 @@ the mode on startup, let's prevent installation of the package.
 #+call: confpkg("!Pkg gptel")
 
 #+begin_src emacs-lisp :tangle packages.el
-(package! gptel :pin "5cafffd19afcb4f6708af2d781446e8dc592af42")
+(package! gptel :pin "94bf19da93aee9a101429d7ecbfbb9c7c5b67216")
 #+end_src
 
 #+begin_src emacs-lisp
@@ -4610,13 +4610,13 @@ welcomed into Emacs 28. However, he is also rather attentive with updates, and
 so I'd like to make sure we have a recent version.
 
 #+begin_src emacs-lisp :tangle packages.el
-(package! modus-themes :pin "f3cd4d6983566dab0ef3bcddf812cfd565d00d08")
+(package! modus-themes :pin "f3cd4d6983566dab0ef3bcddf812cfd565d00d08" :pin "3576d14f06f245c3111496bfb035bb0926f48089")
 #+end_src
 
 *** Spacemacs themes
 
 #+begin_src emacs-lisp :tangle packages.el
-(package! spacemacs-theme :pin "6c74684c4d55713c8359bedf1936e429918a8c33")
+(package! spacemacs-theme :pin "a7c5dccb4a037ba1f090015fc8ffb9566c64e369")
 #+end_src
 
 *** Theme magic
@@ -5768,7 +5768,7 @@ we're at it.
 What's even the point of using Emacs unless you're constantly telling everyone
 about it?
 #+begin_src emacs-lisp :tangle packages.el
-(package! elcord :pin "e2775f40ec55dfdceea83d535dff77d60534b6bc")
+(package! elcord :pin "deeb22f84378b382f09e78f1718bc4c39a3582b8")
 #+end_src
 
 #+begin_src emacs-lisp
@@ -5804,7 +5804,7 @@ For managing my ebooks, I'll hook into the well-established ebook library
 manager [[https://calibre-ebook.com/][calibre]]. A number of Emacs clients for this exist, but this seems like a
 good option.
 #+begin_src emacs-lisp :tangle packages.el
-(package! calibredb :pin "77b9c491511c7f6f3a37d688097a035b7dc6d794")
+(package! calibredb :pin "7d33947462c77f9e87e8078fa7b7b398feeef0f7")
 #+end_src
 
 Then for reading them, the only currently viable options seems to be [[https://depp.brause.cc/nov.el/][nov.el]].
@@ -8032,7 +8032,7 @@ Fontifying =org-mode= buffers to be as pretty as possible is of paramount import
 and Minad's lovely =org-modern= goes a long way in this regard.
 
 #+begin_src emacs-lisp :tangle packages.el
-(package! org-modern :pin "e7a4c5e4a1d309895c60b3a3b3e62ab1f6a926b4")
+(package! org-modern :pin "a58534475b4312b0920aa9d3824272470c8e3500")
 #+end_src
 
 ...with a touch of configuration...
@@ -8685,7 +8685,7 @@ functionality as in LaTeX. Let's try viewing possible output files with this.
 
 The agenda is nice, but a souped up version is nicer.
 #+begin_src emacs-lisp :tangle packages.el
-(package! org-super-agenda :pin "51c9da5ce7b791150758984bab469d2222516844")
+(package! org-super-agenda :pin "fb20ad9c8a9705aa05d40751682beae2d094e0fe")
 #+end_src
 
 #+begin_src emacs-lisp
