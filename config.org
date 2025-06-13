@@ -7925,7 +7925,7 @@ update-mime-database ~/.local/share/mime
 #+end_src
 Then set Emacs as the default editor
 #+begin_src shell :tangle (if (string= (shell-command-to-string "xdg-mime query default text/org") "emacs-client.desktop\n") "no" "setup.sh")
-xdg-mime default emacs.desktop text/org
+xdg-mime default emacs-client.desktop text/org
 #+end_src
 
 Once again, we will add =doctor= checks around this.
