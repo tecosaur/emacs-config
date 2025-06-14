@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>fancy-splash.el.html</title>
+    <style>
+      body { background: #fafafa; color: #383a42; }
+      pre {
+        font-size: 1rem;
+        max-width: min(100rem, 100%);
+        width: max-content;
+        white-space: pre-wrap;
+        margin: auto; }
+      .ef-D {
+        color: #383a42; background-color: #fafafa; font-weight: 400; }
+      .ef-vp {
+         }
+      .ef-h {
+        color: #84888b; }
+      .ef-sc {
+        color: #50a14f; }
+      .ef-w {
+        color: #986801; }
+      .ef-e {
+        color: #e45649; }
+      .ef-l {
+        color: #4078f2; font-weight: 700; }
+      .ef-lv {
+        color: #8b008b; font-weight: 700; }
+      .ef-hi {
+        color: #f0f0f0; background-color: #4078f2; }
+      .ef-c {
+        color: #84888b; }
+      .ef-cd {
+        color: #84888b; }
+      .ef-s {
+        color: #50a14f; }
+      .ef-d {
+        color: #727578; text-decoration: italic; }
+      .ef-m {
+        color: #b751b6; }
+      .ef-k {
+        color: #e45649; }
+      .ef-b {
+        color: #a626a4; }
+      .ef-f {
+        color: #a626a4; }
+      .ef-v {
+        color: #6a1868; }
+      .ef-t {
+        color: #986801; }
+      .ef-o {
+        color: #b751b6; }
+      .ef-wr {
+        color: #986801; }
+      .ef-nc {
+        color: #4078f2; font-weight: 700; }
+      .ef-pp {
+        color: #4078f2; font-weight: 700; }
+      .ef-rc {
+        color: #4078f2; font-weight: 700; }
+      .ef-rb {
+        color: #4078f2; font-weight: 700; }
+      .ef-ob {
+        background-color: #e7e7e7; }
+      .ef-obb {
+        background-color: #e7e7e7; text-decoration: italic; }
+      .ef-obe {
+        background-color: #e7e7e7; text-decoration: italic; }
+      .ef-Oa {
+        color: #e45649; font-weight: nil; font-size: 1.25em }
+      .ef-Ob {
+        color: #da8548; font-weight: 700; font-size: 1.15em }
+      .ef-Oc {
+        color: #b751b6; font-weight: 700; font-size: 1.12em }
+      .ef-Od {
+        color: #6f99f5; font-weight: 600; font-size: 1.09em }
+      .ef-Oe {
+        color: #bc5cba; font-weight: 600; font-size: 1.06em }
+      .ef-Of {
+        color: #9fbbf8; font-weight: 600; font-size: 1.03em }
+      .ef-Og {
+        color: #d292d1; font-weight: 700; }
+      .ef-Oh {
+        color: #d8e4fc; font-weight: 600; }
+      .ef-hn {
+        color: #da8548; font-weight: 700; }
+      .ef-hq {
+        color: #4078f2; }
+      .ef-hs {
+        color: #986801; }
+      .ef-rda {
+        color: #4078f2; }
+      .ef-rdb {
+        color: #a626a4; }
+      .ef-rdc {
+        color: #50a14f; }
+      .ef-rdd {
+        color: #b751b6; }
+      .ef-rde {
+        color: #4db5bd; }
+      .ef-rdf {
+        color: #4078f2; }
+      .ef-rdg {
+        color: #a626a4; }
+      .ef-rdh {
+        color: #50a14f; }
+      .ef-rdi {
+        color: #b751b6; }
+    </style>
+  </head>
+  <body>
+<pre>
+<span class="ef-cd">;;; </span><span class="ef-c">fancy-splash.el --- Generated package (no.6) from my config -*- lexical-binding: t; -*-
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;; </span><span class="ef-c">Copyright (C) 2025 TEC
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;; </span><span class="ef-c">Author: TEC &lt;https://code.tecosaur.net/tec&gt;
+</span><span class="ef-cd">;; </span><span class="ef-c">Maintainer: TEC &lt;contact@tecosaur.net&gt;
+</span><span class="ef-cd">;; </span><span class="ef-c">Created: June 14, 2025
+</span><span class="ef-cd">;; </span><span class="ef-c">Modified: June 14, 2025
+</span><span class="ef-cd">;; </span><span class="ef-c">Version: 2025.06.14
+</span><span class="ef-cd">;; </span><span class="ef-c">Homepage: https://code.tecosaur.net/tec/emacs-config
+</span><span class="ef-cd">;; </span><span class="ef-c">Package-Requires: ((emacs "29.1"))
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;; </span><span class="ef-c">This file is not part of GNU Emacs.
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;; </span><span class="ef-c">Commentary:
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;  </span><span class="ef-c">Generated package (no.6) from my config.
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;  </span><span class="ef-c">During generation, dependency on other aspects of my configuration and
+</span><span class="ef-cd">;;  </span><span class="ef-c">packages is inferred via (regexp-based) static analysis.  While this seems
+</span><span class="ef-cd">;;  </span><span class="ef-c">to do a good job, this method is imperfect.  This code likely depends on
+</span><span class="ef-cd">;;  </span><span class="ef-c">utilities provided by Doom, and if you try to run it in isolation you may
+</span><span class="ef-cd">;;  </span><span class="ef-c">discover the code makes more assumptions.
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;  </span><span class="ef-c">That said, I've found pretty good results so far.
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;; </span><span class="ef-c">Code:
+</span>
+(<span class="ef-k">defvar</span> <span class="ef-v">fancy-splash-image-directory</span>
+  (expand-file-name <span class="ef-s">"misc/splash-images/"</span> doom-user-dir)
+  <span class="ef-d">"Directory in which to look for splash image templates."</span>)
+
+(<span class="ef-k">defvar</span> <span class="ef-v">fancy-splash-image-template</span>
+  (expand-file-name <span class="ef-s">"emacs-e-template.svg"</span> fancy-splash-image-directory)
+  <span class="ef-d">"Default template svg used for the splash image.
+Colours are substituted as per `</span><span style="color: #b751b6; text-decoration: italic;">fancy-splash-template-colours</span><span class="ef-d">'."</span>)
+
+(<span class="ef-k">defvar</span> <span class="ef-v">fancy-splash-template-colours</span>
+  '((<span class="ef-s">"#111112"</span> <span class="ef-b">:face</span> default   <span class="ef-b">:attr</span> <span class="ef-b">:foreground</span>)
+    (<span class="ef-s">"#8b8c8d"</span> <span class="ef-b">:face</span> shadow)
+    (<span class="ef-s">"#eeeeef"</span> <span class="ef-b">:face</span> default   <span class="ef-b">:attr</span> <span class="ef-b">:background</span>)
+    (<span class="ef-s">"#e66100"</span> <span class="ef-b">:face</span> highlight <span class="ef-b">:attr</span> <span class="ef-b">:background</span>)
+    (<span class="ef-s">"#1c71d8"</span> <span class="ef-b">:face</span> font-lock-keyword-face)
+    (<span class="ef-s">"#f5c211"</span> <span class="ef-b">:face</span> font-lock-type-face)
+    (<span class="ef-s">"#813d9c"</span> <span class="ef-b">:face</span> font-lock-constant-face)
+    (<span class="ef-s">"#865e3c"</span> <span class="ef-b">:face</span> font-lock-function-name-face)
+    (<span class="ef-s">"#2ec27e"</span> <span class="ef-b">:face</span> font-lock-string-face)
+    (<span class="ef-s">"#c01c28"</span> <span class="ef-b">:face</span> error)
+    (<span class="ef-s">"#000001"</span> <span class="ef-b">:face</span> ansi-color-black)
+    (<span class="ef-s">"#ff0000"</span> <span class="ef-b">:face</span> ansi-color-red)
+    (<span class="ef-s">"#ff00ff"</span> <span class="ef-b">:face</span> ansi-color-magenta)
+    (<span class="ef-s">"#00ff00"</span> <span class="ef-b">:face</span> ansi-color-green)
+    (<span class="ef-s">"#ffff00"</span> <span class="ef-b">:face</span> ansi-color-yellow)
+    (<span class="ef-s">"#0000ff"</span> <span class="ef-b">:face</span> ansi-color-blue)
+    (<span class="ef-s">"#00ffff"</span> <span class="ef-b">:face</span> ansi-color-cyan)
+    (<span class="ef-s">"#fffffe"</span> <span class="ef-b">:face</span> ansi-color-white))
+  <span class="ef-d">"Alist of colour-replacement plists.
+Each plist is of the form (\"$placeholder\" :doom-color 'key :face 'face).
+If the current theme is a doom theme :doom-color will be used,
+otherwise the colour will be face foreground."</span>)
+
+(<span class="ef-k">defun</span> <span class="ef-f">fancy-splash-check-buffer</span> ()
+  <span class="ef-d">"Check the current SVG buffer for bad colours."</span>
+  (<span class="ef-k">interactive</span>)
+  (<span class="ef-k">when</span> (eq major-mode 'image-mode)
+    (xml-mode))
+  (<span class="ef-k">when</span> (<span class="ef-k">and</span> (<span class="ef-k">featurep</span> '<span class="ef-o">rainbow-mode</span>)
+             (not (<span class="ef-k">bound-and-true-p</span> rainbow-mode)))
+    (rainbow-mode 1))
+  (<span class="ef-k">let*</span> ((colours (mapcar #'car fancy-splash-template-colours))
+         (colourise-hex
+          (<span class="ef-k">lambda</span> (hex)
+            (propertize
+             hex
+             'face `((<span class="ef-b">:foreground</span>
+                      ,(<span class="ef-k">if</span> (&lt; 0.5
+                              (<span class="ef-k">cl-destructuring-bind</span> (r g b) (x-color-values hex)
+                                <span class="ef-cd">;; </span><span class="ef-c">Values taken from `</span><span style="color: #b751b6;">rainbow-color-luminance</span><span class="ef-c">'
+</span>                                (/ (+ (* .2126 r) (* .7152 g) (* .0722 b))
+                                   (* 256 255 1.0))))
+                           <span class="ef-s">"white"</span> <span class="ef-s">"black"</span>)
+                      (<span class="ef-b">:background</span> ,hex))))))
+         (cn 96)
+         (colour-menu-entries
+          (mapcar
+           (<span class="ef-k">lambda</span> (colour)
+             (<span class="ef-k">cl-incf</span> cn)
+             (cons cn
+                   (cons
+                    (substring-no-properties colour)
+                    (format <span class="ef-s">" (%s) %s %s"</span>
+                            (propertize (char-to-string cn)
+                                        'face 'font-lock-keyword-face)
+                            (funcall colourise-hex colour)
+                            (propertize
+                             (symbol-name
+                              (plist-get
+                               (cdr (assoc colour fancy-splash-template-colours))
+                               <span class="ef-b">:face</span>))
+                             'face 'shadow)))))
+           colours))
+         (colour-menu-template
+          (format
+           <span class="ef-s">"Colour %%s is unexpected! Should this be one of the following?\n
+%s
+ %s to ignore
+ %s to quit"</span>
+           (mapconcat
+            #'cddr
+            colour-menu-entries
+            <span class="ef-s">"\n"</span>)
+           (propertize <span class="ef-s">"SPC"</span> 'face 'font-lock-keyword-face)
+           (propertize <span class="ef-s">"ESC"</span> 'face 'font-lock-keyword-face)))
+         (colour-menu-choice-keys
+          (append (mapcar #'car colour-menu-entries)
+                  (list ?\s)))
+         (buf (get-buffer-create <span class="ef-s">"*fancy-splash-lint-colours-popup*"</span>))
+         (good-colour-p
+          (<span class="ef-k">lambda</span> (colour)
+            (<span class="ef-k">or</span> (assoc colour fancy-splash-template-colours)
+                <span class="ef-cd">;; </span><span class="ef-c">Check if greyscale
+</span>                (<span class="ef-k">or</span> (<span class="ef-k">and</span> (= (length colour) 4)
+                         (= (aref colour 1)   <span class="ef-cd">; </span><span class="ef-c">r
+</span>                            (aref colour 2)   <span class="ef-cd">; </span><span class="ef-c">g
+</span>                            (aref colour 3))) <span class="ef-cd">; </span><span class="ef-c">b
+</span>                    (<span class="ef-k">and</span> (= (length colour) 7)
+                         (string= (substring colour 1 3)       <span class="ef-cd">; </span><span class="ef-c">rr =
+</span>                                  (substring colour 3 5))      <span class="ef-cd">; </span><span class="ef-c">gg
+</span>                         (string= (substring colour 3 5)       <span class="ef-cd">; </span><span class="ef-c">gg =
+</span>                                  (substring colour 5 7))))))) <span class="ef-cd">; </span><span class="ef-c">bb
+</span>         (prompt-to-replace
+          (<span class="ef-k">lambda</span> (target)
+            (<span class="ef-k">with-current-buffer</span> buf
+              (erase-buffer)
+              (insert (format colour-menu-template
+                              (funcall colourise-hex target)))
+              (<span class="ef-k">setq-local</span> cursor-type nil)
+              (set-buffer-modified-p nil)
+              (goto-char (point-min)))
+            (<span class="ef-k">save-window-excursion</span>
+              (pop-to-buffer buf)
+              (fit-window-to-buffer (get-buffer-window buf))
+              (car (alist-get
+                    (read-char-choice
+                     (format <span class="ef-s">"Select replacement, %s-%s or SPC: "</span>
+                             (char-to-string (caar colour-menu-entries))
+                             (char-to-string (caar (last colour-menu-entries))))
+                     colour-menu-choice-keys)
+                    colour-menu-entries))))))
+    (<span class="ef-k">save-excursion</span>
+      (goto-char (point-min))
+      (<span class="ef-k">while</span> (re-search-forward <span class="ef-s">"#[0-9A-Fa-f]\\{</span><span style="color: #6a1868;">6\\</span><span class="ef-s">}</span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">|</span><span class="ef-s">#[0-9A-Fa-f]\\{</span><span style="color: #6a1868;">3\\</span><span class="ef-s">}"</span> nil t)
+        (recenter)
+        (<span class="ef-k">let*</span> ((colour (match-string 0))
+               (replacement (<span class="ef-k">and</span> (not (funcall good-colour-p colour))
+                                 (funcall prompt-to-replace colour))))
+          (<span class="ef-k">when</span> replacement
+            (replace-match replacement t t))))
+      (message <span class="ef-s">"Done"</span>))))
+
+(<span class="ef-k">defvar</span> <span class="ef-v">fancy-splash-cache-dir</span> (expand-file-name <span class="ef-s">"theme-splashes/"</span> doom-cache-dir))
+
+(<span class="ef-k">defvar</span> <span class="ef-v">fancy-splash-sizes</span>
+  `((<span class="ef-b">:height</span> 300 <span class="ef-b">:min-height</span> 50 <span class="ef-b">:padding</span> (0 . 2))
+    (<span class="ef-b">:height</span> 250 <span class="ef-b">:min-height</span> 42 <span class="ef-b">:padding</span> (2 . 4))
+    (<span class="ef-b">:height</span> 200 <span class="ef-b">:min-height</span> 35 <span class="ef-b">:padding</span> (3 . 3))
+    (<span class="ef-b">:height</span> 150 <span class="ef-b">:min-height</span> 28 <span class="ef-b">:padding</span> (3 . 3))
+    (<span class="ef-b">:height</span> 100 <span class="ef-b">:min-height</span> 20 <span class="ef-b">:padding</span> (2 . 2))
+    (<span class="ef-b">:height</span> 75  <span class="ef-b">:min-height</span> 15 <span class="ef-b">:padding</span> (2 . 1))
+    (<span class="ef-b">:height</span> 50  <span class="ef-b">:min-height</span> 10 <span class="ef-b">:padding</span> (1 . 0))
+    (<span class="ef-b">:height</span> 1   <span class="ef-b">:min-height</span> 0  <span class="ef-b">:padding</span> (0 . 0)))
+  <span class="ef-d">"List of plists specifying image sizing states.
+Each plist should have the following properties:
+- :height, the height of the image
+- :min-height, the minimum `</span><span style="color: #b751b6; text-decoration: italic;">frame-height</span><span class="ef-d">' for image
+- :padding, a `</span><span style="color: #b751b6; text-decoration: italic;">+doom-dashboard-banner-padding</span><span class="ef-d">' (top . bottom) padding
+  specification to apply
+Optionally, each plist may set the following two properties:
+- :template, a non-default template file
+- :file, a file to use instead of template"</span>)
+
+(<span class="ef-k">defun</span> <span class="ef-f">fancy-splash-filename</span> (theme template height)
+  <span class="ef-d">"Get the file name for the splash image with THEME and of HEIGHT."</span>
+  (expand-file-name (format <span class="ef-s">"%s-%s-%d.svg"</span> theme (file-name-base template) height) fancy-splash-cache-dir))
+
+(<span class="ef-k">defun</span> <span class="ef-f">fancy-splash-generate-image</span> (template height)
+  <span class="ef-d">"Create a themed image from TEMPLATE of HEIGHT.
+The theming is performed using `</span><span style="color: #b751b6; text-decoration: italic;">fancy-splash-template-colours</span><span class="ef-d">'
+and the current theme."</span>
+  (<span class="ef-k">with-temp-buffer</span>
+    (insert-file-contents template)
+    (goto-char (point-min))
+    (<span class="ef-k">if</span> (re-search-forward <span class="ef-s">"$height"</span> nil t)
+        (replace-match (number-to-string height) t t)
+      (<span class="ef-k">if</span> (re-search-forward <span class="ef-s">"height=\"100</span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">(?:</span><span class="ef-s">\\.0[0-9]*</span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">)</span><span class="ef-s">?\""</span> nil t)
+          (<span class="ef-k">progn</span>
+            (replace-match (format <span class="ef-s">"height=\"%s\""</span> height) t t)
+            (goto-char (point-min))
+            (<span class="ef-k">when</span> (re-search-forward <span class="ef-s">"</span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">(</span><span class="ef-s">[ \t\n]</span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">)</span><span class="ef-s">width=\"[\\.0-9]+\"[ \t\n]*"</span> nil t)
+              (replace-match <span class="ef-s">"\\1"</span>)))
+        (<span class="ef-wr">warn</span> <span class="ef-s">"Warning! fancy splash template: neither $height nor height=100 not found in %s"</span> template)))
+    (<span class="ef-k">dolist</span> (substitution fancy-splash-template-colours)
+      (goto-char (point-min))
+      (<span class="ef-k">let*</span> ((replacement-colour
+              (face-attribute (plist-get (cdr substitution) <span class="ef-b">:face</span>)
+                              (<span class="ef-k">or</span> (plist-get (cdr substitution) <span class="ef-b">:attr</span>) <span class="ef-b">:foreground</span>)
+                              nil 'default))
+             (replacement-hex
+              (<span class="ef-k">if</span> (string-prefix-p <span class="ef-s">"#"</span> replacement-colour)
+                  replacement-colour
+                (apply 'format <span class="ef-s">"#%02x%02x%02x"</span>
+                       (mapcar (<span class="ef-k">lambda</span> (c) (ash c -8))
+                               (color-values replacement-colour))))))
+        (<span class="ef-k">while</span> (search-forward (car substitution) nil t)
+          (replace-match replacement-hex nil nil))))
+    (<span class="ef-k">unless</span> (file-exists-p fancy-splash-cache-dir)
+      (make-directory fancy-splash-cache-dir t))
+    (<span class="ef-k">let</span> ((inhibit-message t))
+      (write-region nil nil (fancy-splash-filename (car custom-enabled-themes) template height)))))
+
+(<span class="ef-k">defun</span> <span class="ef-f">fancy-splash-generate-all-images</span> ()
+  <span class="ef-d">"Perform `</span><span style="color: #b751b6; text-decoration: italic;">fancy-splash-generate-image</span><span class="ef-d">' in bulk."</span>
+  (<span class="ef-k">dolist</span> (size fancy-splash-sizes)
+    (<span class="ef-k">unless</span> (plist-get size <span class="ef-b">:file</span>)
+      (fancy-splash-generate-image
+       (<span class="ef-k">or</span> (plist-get size <span class="ef-b">:template</span>)
+           fancy-splash-image-template)
+       (plist-get size <span class="ef-b">:height</span>)))))
+
+(<span class="ef-k">defun</span> <span class="ef-f">fancy-splash-ensure-theme-images-exist</span> (<span class="ef-t">&amp;optional</span> height)
+  <span class="ef-d">"Ensure that the relevant images exist.
+Use the image of HEIGHT to check, defaulting to the height of the first
+specification in `</span><span style="color: #b751b6; text-decoration: italic;">fancy-splash-sizes</span><span class="ef-d">'. If that file does not exist for
+the current theme, `</span><span style="color: #b751b6; text-decoration: italic;">fancy-splash-generate-all-images</span><span class="ef-d">' is called. "</span>
+  (<span class="ef-k">unless</span> (file-exists-p
+           (fancy-splash-filename
+            (car custom-enabled-themes)
+            fancy-splash-image-template
+            (<span class="ef-k">or</span> height (plist-get (car fancy-splash-sizes) <span class="ef-b">:height</span>))))
+    (fancy-splash-generate-all-images)))
+
+(<span class="ef-k">defun</span> <span class="ef-f">fancy-splash-clear-cache</span> (<span class="ef-t">&amp;optional</span> delete-files)
+  <span class="ef-d">"Clear all cached fancy splash images.
+Optionally delete all cache files and regenerate the currently relevant set."</span>
+  (<span class="ef-k">interactive</span> (list t))
+  (<span class="ef-k">dolist</span> (size fancy-splash-sizes)
+    (<span class="ef-k">unless</span> (plist-get size <span class="ef-b">:file</span>)
+      (<span class="ef-k">let</span> ((image-file
+             (fancy-splash-filename
+              (car custom-enabled-themes)
+              (<span class="ef-k">or</span> (plist-get size <span class="ef-b">:template</span>)
+                  fancy-splash-image-template)
+              (plist-get size <span class="ef-b">:height</span>))))
+        (image-flush (create-image image-file) t))))
+  (message <span class="ef-s">"Fancy splash image cache cleared!"</span>)
+  (<span class="ef-k">when</span> delete-files
+    (delete-directory fancy-splash-cache-dir t)
+    (fancy-splash-generate-all-images)
+    (message <span class="ef-s">"Fancy splash images cache deleted!"</span>)))
+
+(<span class="ef-k">defun</span> <span class="ef-f">fancy-splash-switch-template</span> ()
+  <span class="ef-d">"Switch the template used for the fancy splash image."</span>
+  (<span class="ef-k">interactive</span>)
+  (<span class="ef-k">let</span> ((new (completing-read
+              <span class="ef-s">"Splash template: "</span>
+              (mapcar
+               (<span class="ef-k">lambda</span> (template)
+                 (replace-regexp-in-string <span class="ef-s">"-template\\.svg$"</span> <span class="ef-s">""</span> template))
+               (directory-files fancy-splash-image-directory nil <span class="ef-s">"-template\\.svg\\'"</span>))
+              nil t)))
+    (<span class="ef-k">setq</span> fancy-splash-image-template
+          (expand-file-name (concat new <span class="ef-s">"-template.svg"</span>) fancy-splash-image-directory))
+    (fancy-splash-clear-cache)
+    (message <span class="ef-s">""</span>) <span class="ef-cd">; </span><span class="ef-c">Clear message from `</span><span style="color: #b751b6;">fancy-splash-clear-cache</span><span class="ef-c">'.
+</span>    (<span class="ef-k">setq</span> fancy-splash--last-size nil)
+    (fancy-splash-apply-appropriate-image)))
+
+(<span class="ef-k">defun</span> <span class="ef-f">fancy-splash-get-appropriate-size</span> ()
+  <span class="ef-d">"Find the firt `</span><span style="color: #b751b6; text-decoration: italic;">fancy-splash-sizes</span><span class="ef-d">' with min-height of at least frame height."</span>
+  (<span class="ef-k">let</span> ((height (frame-height)))
+    (cl-some (<span class="ef-k">lambda</span> (size) (<span class="ef-k">when</span> (&gt;= height (plist-get size <span class="ef-b">:min-height</span>)) size))
+             fancy-splash-sizes)))
+
+(<span class="ef-k">setq</span> fancy-splash--last-size nil)
+(<span class="ef-k">setq</span> fancy-splash--last-theme nil)
+
+(<span class="ef-k">defun</span> <span class="ef-f">fancy-splash-apply-appropriate-image</span> (<span class="ef-t">&amp;rest</span> _)
+  <span class="ef-d">"Ensure the appropriate splash image is applied to the dashboard.
+This function's signature is \"&amp;rest _\" to allow it to be used
+in hooks that call functions with arguments."</span>
+  (<span class="ef-k">let</span> ((appropriate-size (fancy-splash-get-appropriate-size)))
+    (<span class="ef-k">unless</span> (<span class="ef-k">and</span> (equal appropriate-size fancy-splash--last-size)
+                 (equal (car custom-enabled-themes) fancy-splash--last-theme))
+      (<span class="ef-k">unless</span> (plist-get appropriate-size <span class="ef-b">:file</span>)
+        (fancy-splash-ensure-theme-images-exist (plist-get appropriate-size <span class="ef-b">:height</span>)))
+      (<span class="ef-k">setq</span> fancy-splash-image
+            (<span class="ef-k">or</span> (plist-get appropriate-size <span class="ef-b">:file</span>)
+                (fancy-splash-filename (car custom-enabled-themes)
+                                       fancy-splash-image-template
+                                       (plist-get appropriate-size <span class="ef-b">:height</span>)))
+            +doom-dashboard-banner-padding (plist-get appropriate-size <span class="ef-b">:padding</span>)
+            fancy-splash--last-size appropriate-size
+            fancy-splash--last-theme (car custom-enabled-themes))
+      (+doom-dashboard-reload))))
+
+(<span class="ef-k">provide</span> '<span class="ef-o">fancy-splash</span>)
+<span class="ef-cd">;;; </span><span class="ef-c">fancy-splash.el ends here
+</span>
+</pre>
+  <body>
+</html>

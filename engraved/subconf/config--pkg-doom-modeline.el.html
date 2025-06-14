@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>config--pkg-doom-modeline.el.html</title>
+    <style>
+      body { background: #fafafa; color: #383a42; }
+      pre {
+        font-size: 1rem;
+        max-width: min(100rem, 100%);
+        width: max-content;
+        white-space: pre-wrap;
+        margin: auto; }
+      .ef-D {
+        color: #383a42; background-color: #fafafa; font-weight: 400; }
+      .ef-vp {
+         }
+      .ef-h {
+        color: #84888b; }
+      .ef-sc {
+        color: #50a14f; }
+      .ef-w {
+        color: #986801; }
+      .ef-e {
+        color: #e45649; }
+      .ef-l {
+        color: #4078f2; font-weight: 700; }
+      .ef-lv {
+        color: #8b008b; font-weight: 700; }
+      .ef-hi {
+        color: #f0f0f0; background-color: #4078f2; }
+      .ef-c {
+        color: #84888b; }
+      .ef-cd {
+        color: #84888b; }
+      .ef-s {
+        color: #50a14f; }
+      .ef-d {
+        color: #727578; text-decoration: italic; }
+      .ef-m {
+        color: #b751b6; }
+      .ef-k {
+        color: #e45649; }
+      .ef-b {
+        color: #a626a4; }
+      .ef-f {
+        color: #a626a4; }
+      .ef-v {
+        color: #6a1868; }
+      .ef-t {
+        color: #986801; }
+      .ef-o {
+        color: #b751b6; }
+      .ef-wr {
+        color: #986801; }
+      .ef-nc {
+        color: #4078f2; font-weight: 700; }
+      .ef-pp {
+        color: #4078f2; font-weight: 700; }
+      .ef-rc {
+        color: #4078f2; font-weight: 700; }
+      .ef-rb {
+        color: #4078f2; font-weight: 700; }
+      .ef-ob {
+        background-color: #e7e7e7; }
+      .ef-obb {
+        background-color: #e7e7e7; text-decoration: italic; }
+      .ef-obe {
+        background-color: #e7e7e7; text-decoration: italic; }
+      .ef-Oa {
+        color: #e45649; font-weight: nil; font-size: 1.25em }
+      .ef-Ob {
+        color: #da8548; font-weight: 700; font-size: 1.15em }
+      .ef-Oc {
+        color: #b751b6; font-weight: 700; font-size: 1.12em }
+      .ef-Od {
+        color: #6f99f5; font-weight: 600; font-size: 1.09em }
+      .ef-Oe {
+        color: #bc5cba; font-weight: 600; font-size: 1.06em }
+      .ef-Of {
+        color: #9fbbf8; font-weight: 600; font-size: 1.03em }
+      .ef-Og {
+        color: #d292d1; font-weight: 700; }
+      .ef-Oh {
+        color: #d8e4fc; font-weight: 600; }
+      .ef-hn {
+        color: #da8548; font-weight: 700; }
+      .ef-hq {
+        color: #4078f2; }
+      .ef-hs {
+        color: #986801; }
+      .ef-rda {
+        color: #4078f2; }
+      .ef-rdb {
+        color: #a626a4; }
+      .ef-rdc {
+        color: #50a14f; }
+      .ef-rdd {
+        color: #b751b6; }
+      .ef-rde {
+        color: #4db5bd; }
+      .ef-rdf {
+        color: #4078f2; }
+      .ef-rdg {
+        color: #a626a4; }
+      .ef-rdh {
+        color: #50a14f; }
+      .ef-rdi {
+        color: #b751b6; }
+    </style>
+  </head>
+  <body>
+<pre>
+<span class="ef-cd">;;; </span><span class="ef-c">config--pkg-doom-modeline.el --- Generated package (no.38) from my config -*- lexical-binding: t; -*-
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;; </span><span class="ef-c">Copyright (C) 2025 TEC
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;; </span><span class="ef-c">Author: TEC &lt;https://code.tecosaur.net/tec&gt;
+</span><span class="ef-cd">;; </span><span class="ef-c">Maintainer: TEC &lt;contact@tecosaur.net&gt;
+</span><span class="ef-cd">;; </span><span class="ef-c">Created: June 14, 2025
+</span><span class="ef-cd">;; </span><span class="ef-c">Modified: June 14, 2025
+</span><span class="ef-cd">;; </span><span class="ef-c">Version: 2025.06.14
+</span><span class="ef-cd">;; </span><span class="ef-c">Homepage: https://code.tecosaur.net/tec/emacs-config
+</span><span class="ef-cd">;; </span><span class="ef-c">Package-Requires: ((emacs "29.1"))
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;; </span><span class="ef-c">This file is not part of GNU Emacs.
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;; </span><span class="ef-c">Commentary:
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;  </span><span class="ef-c">Generated package (no.38) from my config.
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;  </span><span class="ef-c">During generation, dependency on other aspects of my configuration and
+</span><span class="ef-cd">;;  </span><span class="ef-c">packages is inferred via (regexp-based) static analysis.  While this seems
+</span><span class="ef-cd">;;  </span><span class="ef-c">to do a good job, this method is imperfect.  This code likely depends on
+</span><span class="ef-cd">;;  </span><span class="ef-c">utilities provided by Doom, and if you try to run it in isolation you may
+</span><span class="ef-cd">;;  </span><span class="ef-c">discover the code makes more assumptions.
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;  </span><span class="ef-c">That said, I've found pretty good results so far.
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;; </span><span class="ef-c">Code:
+</span>
+(<span class="ef-k">require</span> '<span class="ef-o">doom-modeline</span>)
+
+(custom-set-faces!
+  '(doom-modeline-buffer-modified <span class="ef-b">:foreground</span> <span class="ef-s">"orange"</span>))
+
+(<span class="ef-k">setq</span> doom-modeline-height 45)
+
+(<span class="ef-k">defun</span> <span class="ef-f">doom-modeline-conditional-buffer-encoding</span> ()
+  <span class="ef-d">"We expect the encoding to be LF UTF-8, so only show the modeline when this is not the case"</span>
+  (<span class="ef-k">setq-local</span> doom-modeline-buffer-encoding
+              (<span class="ef-k">unless</span> (<span class="ef-k">and</span> (memq (plist-get (coding-system-plist buffer-file-coding-system) <span class="ef-b">:category</span>)
+                                 '(coding-category-undecided coding-category-utf-8))
+                           (not (memq (coding-system-eol-type buffer-file-coding-system) '(1 2))))
+                t)))
+
+(add-hook 'after-change-major-mode-hook #'doom-modeline-conditional-buffer-encoding)
+
+(<span class="ef-k">setq</span> doom-modeline-time-clock-size 0.65)
+
+(use-package! doom-modeline-media-player
+  <span class="ef-b">:defer</span> t
+  <span class="ef-b">:init</span>
+  (<span class="ef-k">after!</span> doom-modeline
+    (add-to-list 'doom-modeline-fn-alist
+                 (cons 'media-player #'doom-modeline-segment--media-player)))
+  <span class="ef-b">:config</span>
+  (<span class="ef-k">defun</span> <span class="ef-f">+single-fullscreen-window-p</span> ()
+    (<span class="ef-k">and</span> (memq (frame-parameter nil 'fullscreen) '(fullscreen fullboth))
+         (not (consp (car (window-tree))))))
+  (<span class="ef-k">setq</span> doom-modeline-media-player #'+single-fullscreen-window-p
+        doom-modeline-media-player-playback-indication 'dim))
+
+(doom-modeline-def-segment buffer-name
+  <span class="ef-s">"Display the current buffer's name, without any other information."</span>
+  (concat
+   (doom-modeline-spc)
+   (doom-modeline--buffer-name)))
+
+(doom-modeline-def-segment pdf-icon
+  <span class="ef-s">"PDF icon from nerd-icons."</span>
+  (concat
+   (doom-modeline-icon sucicon <span class="ef-s">"nf-seti-pdf"</span> nil nil
+   (doom-modeline-spc)
+                       <span class="ef-b">:face</span> (<span class="ef-k">if</span> (doom-modeline--active)
+                                 'nerd-icons-red
+                               'mode-line-inactive)
+                       <span class="ef-b">:v-adjust</span> 0.02)))
+
+(<span class="ef-k">defun</span> <span class="ef-f">doom-modeline-update-pdf-pages</span> ()
+  <span class="ef-d">"Update PDF pages."</span>
+  (<span class="ef-k">setq</span> doom-modeline--pdf-pages
+        (<span class="ef-k">let</span> ((current-page-str (number-to-string (eval `(pdf-view-current-page))))
+              (total-page-str (number-to-string (pdf-cache-number-of-pages))))
+          (concat
+           (propertize
+            (concat (make-string (- (length total-page-str) (length current-page-str)) ? )
+                    <span class="ef-s">" P"</span> current-page-str)
+            'face 'mode-line)
+           (propertize (concat <span class="ef-s">"/"</span> total-page-str) 'face 'doom-modeline-buffer-minor-mode)))))
+
+(doom-modeline-def-segment pdf-pages
+  <span class="ef-s">"Display PDF pages."</span>
+  (<span class="ef-k">if</span> (doom-modeline--active) doom-modeline--pdf-pages
+    (propertize doom-modeline--pdf-pages 'face 'mode-line-inactive)))
+
+(doom-modeline-def-modeline 'pdf
+  '(bar window-number pdf-pages pdf-icon buffer-name)
+  '(media-player misc-info matches major-mode process vcs))
+
+(<span class="ef-k">provide</span> '<span class="ef-o">config--pkg-doom-modeline</span>)
+<span class="ef-cd">;;; </span><span class="ef-c">config--pkg-doom-modeline.el ends here
+</span>
+</pre>
+  <body>
+</html>

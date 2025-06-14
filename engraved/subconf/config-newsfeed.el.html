@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>config-newsfeed.el.html</title>
+    <style>
+      body { background: #fafafa; color: #383a42; }
+      pre {
+        font-size: 1rem;
+        max-width: min(100rem, 100%);
+        width: max-content;
+        white-space: pre-wrap;
+        margin: auto; }
+      .ef-D {
+        color: #383a42; background-color: #fafafa; font-weight: 400; }
+      .ef-vp {
+         }
+      .ef-h {
+        color: #84888b; }
+      .ef-sc {
+        color: #50a14f; }
+      .ef-w {
+        color: #986801; }
+      .ef-e {
+        color: #e45649; }
+      .ef-l {
+        color: #4078f2; font-weight: 700; }
+      .ef-lv {
+        color: #8b008b; font-weight: 700; }
+      .ef-hi {
+        color: #f0f0f0; background-color: #4078f2; }
+      .ef-c {
+        color: #84888b; }
+      .ef-cd {
+        color: #84888b; }
+      .ef-s {
+        color: #50a14f; }
+      .ef-d {
+        color: #727578; text-decoration: italic; }
+      .ef-m {
+        color: #b751b6; }
+      .ef-k {
+        color: #e45649; }
+      .ef-b {
+        color: #a626a4; }
+      .ef-f {
+        color: #a626a4; }
+      .ef-v {
+        color: #6a1868; }
+      .ef-t {
+        color: #986801; }
+      .ef-o {
+        color: #b751b6; }
+      .ef-wr {
+        color: #986801; }
+      .ef-nc {
+        color: #4078f2; font-weight: 700; }
+      .ef-pp {
+        color: #4078f2; font-weight: 700; }
+      .ef-rc {
+        color: #4078f2; font-weight: 700; }
+      .ef-rb {
+        color: #4078f2; font-weight: 700; }
+      .ef-ob {
+        background-color: #e7e7e7; }
+      .ef-obb {
+        background-color: #e7e7e7; text-decoration: italic; }
+      .ef-obe {
+        background-color: #e7e7e7; text-decoration: italic; }
+      .ef-Oa {
+        color: #e45649; font-weight: nil; font-size: 1.25em }
+      .ef-Ob {
+        color: #da8548; font-weight: 700; font-size: 1.15em }
+      .ef-Oc {
+        color: #b751b6; font-weight: 700; font-size: 1.12em }
+      .ef-Od {
+        color: #6f99f5; font-weight: 600; font-size: 1.09em }
+      .ef-Oe {
+        color: #bc5cba; font-weight: 600; font-size: 1.06em }
+      .ef-Of {
+        color: #9fbbf8; font-weight: 600; font-size: 1.03em }
+      .ef-Og {
+        color: #d292d1; font-weight: 700; }
+      .ef-Oh {
+        color: #d8e4fc; font-weight: 600; }
+      .ef-hn {
+        color: #da8548; font-weight: 700; }
+      .ef-hq {
+        color: #4078f2; }
+      .ef-hs {
+        color: #986801; }
+      .ef-rda {
+        color: #4078f2; }
+      .ef-rdb {
+        color: #a626a4; }
+      .ef-rdc {
+        color: #50a14f; }
+      .ef-rdd {
+        color: #b751b6; }
+      .ef-rde {
+        color: #4db5bd; }
+      .ef-rdf {
+        color: #4078f2; }
+      .ef-rdg {
+        color: #a626a4; }
+      .ef-rdh {
+        color: #50a14f; }
+      .ef-rdi {
+        color: #b751b6; }
+    </style>
+  </head>
+  <body>
+<pre>
+<span class="ef-cd">;;; </span><span class="ef-c">config-newsfeed.el --- Generated package (no.58) from my config -*- lexical-binding: t; -*-
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;; </span><span class="ef-c">Copyright (C) 2025 TEC
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;; </span><span class="ef-c">Author: TEC &lt;https://code.tecosaur.net/tec&gt;
+</span><span class="ef-cd">;; </span><span class="ef-c">Maintainer: TEC &lt;contact@tecosaur.net&gt;
+</span><span class="ef-cd">;; </span><span class="ef-c">Created: June 14, 2025
+</span><span class="ef-cd">;; </span><span class="ef-c">Modified: June 14, 2025
+</span><span class="ef-cd">;; </span><span class="ef-c">Version: 2025.06.14
+</span><span class="ef-cd">;; </span><span class="ef-c">Homepage: https://code.tecosaur.net/tec/emacs-config
+</span><span class="ef-cd">;; </span><span class="ef-c">Package-Requires: ((emacs "29.1"))
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;; </span><span class="ef-c">This file is not part of GNU Emacs.
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;; </span><span class="ef-c">Commentary:
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;  </span><span class="ef-c">Generated package (no.58) from my config.
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;  </span><span class="ef-c">During generation, dependency on other aspects of my configuration and
+</span><span class="ef-cd">;;  </span><span class="ef-c">packages is inferred via (regexp-based) static analysis.  While this seems
+</span><span class="ef-cd">;;  </span><span class="ef-c">to do a good job, this method is imperfect.  This code likely depends on
+</span><span class="ef-cd">;;  </span><span class="ef-c">utilities provided by Doom, and if you try to run it in isolation you may
+</span><span class="ef-cd">;;  </span><span class="ef-c">discover the code makes more assumptions.
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;  </span><span class="ef-c">That said, I've found pretty good results so far.
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;; </span><span class="ef-c">Code:
+</span>
+(map! <span class="ef-b">:map</span> elfeed-search-mode-map
+      <span class="ef-b">:after</span> elfeed-search
+      [remap kill-this-buffer] <span class="ef-s">"q"</span>
+      [remap kill-buffer] <span class="ef-s">"q"</span>
+      <span class="ef-b">:n</span> doom-leader-key nil
+      <span class="ef-b">:n</span> <span class="ef-s">"q"</span> #'+rss/quit
+      <span class="ef-b">:n</span> <span class="ef-s">"e"</span> #'elfeed-update
+      <span class="ef-b">:n</span> <span class="ef-s">"r"</span> #'elfeed-search-untag-all-unread
+      <span class="ef-b">:n</span> <span class="ef-s">"u"</span> #'elfeed-search-tag-all-unread
+      <span class="ef-b">:n</span> <span class="ef-s">"s"</span> #'elfeed-search-live-filter
+      <span class="ef-b">:n</span> <span class="ef-s">"RET"</span> #'elfeed-search-show-entry
+      <span class="ef-b">:n</span> <span class="ef-s">"p"</span> #'elfeed-show-pdf
+      <span class="ef-b">:n</span> <span class="ef-s">"+"</span> #'elfeed-search-tag-all
+      <span class="ef-b">:n</span> <span class="ef-s">"-"</span> #'elfeed-search-untag-all
+      <span class="ef-b">:n</span> <span class="ef-s">"S"</span> #'elfeed-search-set-filter
+      <span class="ef-b">:n</span> <span class="ef-s">"b"</span> #'elfeed-search-browse-url
+      <span class="ef-b">:n</span> <span class="ef-s">"y"</span> #'elfeed-search-yank)
+(map! <span class="ef-b">:map</span> elfeed-show-mode-map
+      <span class="ef-b">:after</span> elfeed-show
+      [remap kill-this-buffer] <span class="ef-s">"q"</span>
+      [remap kill-buffer] <span class="ef-s">"q"</span>
+      <span class="ef-b">:n</span> doom-leader-key nil
+      <span class="ef-b">:nm</span> <span class="ef-s">"q"</span> #'+rss/delete-pane
+      <span class="ef-b">:nm</span> <span class="ef-s">"o"</span> #'ace-link-elfeed
+      <span class="ef-b">:nm</span> <span class="ef-s">"RET"</span> #'org-ref-elfeed-add
+      <span class="ef-b">:nm</span> <span class="ef-s">"n"</span> #'elfeed-show-next
+      <span class="ef-b">:nm</span> <span class="ef-s">"N"</span> #'elfeed-show-prev
+      <span class="ef-b">:nm</span> <span class="ef-s">"p"</span> #'elfeed-show-pdf
+      <span class="ef-b">:nm</span> <span class="ef-s">"+"</span> #'elfeed-show-tag
+      <span class="ef-b">:nm</span> <span class="ef-s">"-"</span> #'elfeed-show-untag
+      <span class="ef-b">:nm</span> <span class="ef-s">"s"</span> #'elfeed-show-new-live-search
+      <span class="ef-b">:nm</span> <span class="ef-s">"y"</span> #'elfeed-show-yank)
+
+(<span class="ef-k">after!</span> elfeed-search
+  (set-evil-initial-state! 'elfeed-search-mode 'normal))
+(<span class="ef-k">after!</span> elfeed-show-mode
+  (set-evil-initial-state! 'elfeed-show-mode   'normal))
+
+(<span class="ef-k">after!</span> evil-snipe
+  (<span class="ef-k">push</span> 'elfeed-show-mode   evil-snipe-disabled-modes)
+  (<span class="ef-k">push</span> 'elfeed-search-mode evil-snipe-disabled-modes))
+
+(<span class="ef-k">after!</span> elfeed
+
+  (elfeed-org)
+  (use-package! elfeed-link)
+
+  (<span class="ef-k">setq</span> elfeed-search-filter <span class="ef-s">"@1-week-ago +unread"</span>
+        elfeed-search-print-entry-function '+rss/elfeed-search-print-entry
+        elfeed-search-title-min-width 80
+        elfeed-show-entry-switch #'pop-to-buffer
+        elfeed-show-entry-delete #'+rss/delete-pane
+        elfeed-show-refresh-function #'+rss/elfeed-show-refresh--better-style
+        shr-max-image-proportion 0.6)
+
+  (<span class="ef-k">add-hook!</span> 'elfeed-show-mode-hook (hide-mode-line-mode 1))
+  (<span class="ef-k">add-hook!</span> 'elfeed-search-update-hook #'hide-mode-line-mode)
+
+  (<span class="ef-k">defface</span> <span class="ef-v">elfeed-show-title-face</span> '((t (<span class="ef-b">:weight</span> ultrabold <span class="ef-b">:slant</span> italic <span class="ef-b">:height</span> 1.5)))
+    <span class="ef-d">"title face in elfeed show buffer"</span>
+    <span class="ef-b">:group</span> 'elfeed)
+  (<span class="ef-k">defface</span> <span class="ef-v">elfeed-show-author-face</span> `((t (<span class="ef-b">:weight</span> light)))
+    <span class="ef-d">"title face in elfeed show buffer"</span>
+    <span class="ef-b">:group</span> 'elfeed)
+  (set-face-attribute 'elfeed-search-title-face nil
+                      <span class="ef-b">:foreground</span> 'nil
+                      <span class="ef-b">:weight</span> 'light)
+
+  (<span class="ef-k">defadvice!</span> +rss-elfeed-wrap-h-nicer ()
+    <span class="ef-d">"Enhances an elfeed entry's readability by wrapping it to a width of
+`</span><span style="color: #b751b6; text-decoration: italic;">fill-column</span><span class="ef-d">' and centering it with `</span><span style="color: #b751b6; text-decoration: italic;">visual-fill-column-mode</span><span class="ef-d">'."</span>
+    <span class="ef-b">:override</span> #'+rss-elfeed-wrap-h
+    (<span class="ef-k">setq-local</span> truncate-lines nil
+                shr-width 120
+                visual-fill-column-center-text t
+                default-text-properties '(line-height 1.1))
+    (<span class="ef-k">let</span> ((inhibit-read-only t)
+          (inhibit-modification-hooks t))
+      (visual-fill-column-mode)
+      <span class="ef-cd">;; </span><span class="ef-c">(setq-local shr-current-font '(:family "Merriweather" :height 1.2))
+</span>      (set-buffer-modified-p nil)))
+
+  (<span class="ef-k">defun</span> <span class="ef-f">+rss/elfeed-search-print-entry</span> (entry)
+    <span class="ef-d">"Print ENTRY to the buffer."</span>
+    (<span class="ef-k">let*</span> ((elfeed-goodies/tag-column-width 40)
+           (elfeed-goodies/feed-source-column-width 30)
+           (title (<span class="ef-k">or</span> (elfeed-meta entry <span class="ef-b">:title</span>) (elfeed-entry-title entry) <span class="ef-s">""</span>))
+           (title-faces (elfeed-search--faces (elfeed-entry-tags entry)))
+           (feed (elfeed-entry-feed entry))
+           (feed-title
+            (<span class="ef-k">when</span> feed
+              (<span class="ef-k">or</span> (elfeed-meta feed <span class="ef-b">:title</span>) (elfeed-feed-title feed))))
+           (tags (mapcar #'symbol-name (elfeed-entry-tags entry)))
+           (tags-str (concat (mapconcat 'identity tags <span class="ef-s">","</span>)))
+           (title-width (- (window-width) elfeed-goodies/feed-source-column-width
+                           elfeed-goodies/tag-column-width 4))
+
+           (tag-column (elfeed-format-column
+                        tags-str (elfeed-clamp (length tags-str)
+                                               elfeed-goodies/tag-column-width
+                                               elfeed-goodies/tag-column-width)
+                        <span class="ef-b">:left</span>))
+           (feed-column (elfeed-format-column
+                         feed-title (elfeed-clamp elfeed-goodies/feed-source-column-width
+                                                  elfeed-goodies/feed-source-column-width
+                                                  elfeed-goodies/feed-source-column-width)
+                         <span class="ef-b">:left</span>)))
+
+      (insert (propertize feed-column 'face 'elfeed-search-feed-face) <span class="ef-s">" "</span>)
+      (insert (propertize tag-column 'face 'elfeed-search-tag-face) <span class="ef-s">" "</span>)
+      (insert (propertize title 'face title-faces 'kbd-help title))
+      (<span class="ef-k">setq-local</span> line-spacing 0.2)))
+
+  (<span class="ef-k">defun</span> <span class="ef-f">+rss/elfeed-show-refresh--better-style</span> ()
+    <span class="ef-d">"Update the buffer to match the selected entry, using a mail-style."</span>
+    (<span class="ef-k">interactive</span>)
+    (<span class="ef-k">let*</span> ((inhibit-read-only t)
+           (title (elfeed-entry-title elfeed-show-entry))
+           (date (seconds-to-time (elfeed-entry-date elfeed-show-entry)))
+           (author (elfeed-meta elfeed-show-entry <span class="ef-b">:author</span>))
+           (link (elfeed-entry-link elfeed-show-entry))
+           (tags (elfeed-entry-tags elfeed-show-entry))
+           (tagsstr (mapconcat #'symbol-name tags <span class="ef-s">", "</span>))
+           (nicedate (format-time-string <span class="ef-s">"%a, %e %b %Y %T %Z"</span> date))
+           (content (elfeed-deref (elfeed-entry-content elfeed-show-entry)))
+           (type (elfeed-entry-content-type elfeed-show-entry))
+           (feed (elfeed-entry-feed elfeed-show-entry))
+           (feed-title (elfeed-feed-title feed))
+           (base (<span class="ef-k">and</span> feed (elfeed-compute-base (elfeed-feed-url feed)))))
+      (erase-buffer)
+      (insert <span class="ef-s">"\n"</span>)
+      (insert (format <span class="ef-s">"%s\n\n"</span> (propertize title 'face 'elfeed-show-title-face)))
+      (insert (format <span class="ef-s">"%s\t"</span> (propertize feed-title 'face 'elfeed-search-feed-face)))
+      (<span class="ef-k">when</span> (<span class="ef-k">and</span> author elfeed-show-entry-author)
+        (insert (format <span class="ef-s">"%s\n"</span> (propertize author 'face 'elfeed-show-author-face))))
+      (insert (format <span class="ef-s">"%s\n\n"</span> (propertize nicedate 'face 'elfeed-log-date-face)))
+      (<span class="ef-k">when</span> tags
+        (insert (format <span class="ef-s">"%s\n"</span>
+                        (propertize tagsstr 'face 'elfeed-search-tag-face))))
+      <span class="ef-cd">;; </span><span class="ef-c">(insert (propertize "Link: " 'face 'message-header-name))
+</span>      <span class="ef-cd">;; </span><span class="ef-c">(elfeed-insert-link link link)
+</span>      <span class="ef-cd">;; </span><span class="ef-c">(insert "\n")
+</span>      (<span class="ef-k">cl-loop</span> for enclosure in (elfeed-entry-enclosures elfeed-show-entry)
+               do (insert (propertize <span class="ef-s">"Enclosure: "</span> 'face 'message-header-name))
+               do (elfeed-insert-link (car enclosure))
+               do (insert <span class="ef-s">"\n"</span>))
+      (insert <span class="ef-s">"\n"</span>)
+      (<span class="ef-k">if</span> content
+          (<span class="ef-k">if</span> (eq type 'html)
+              (elfeed-insert-html content base)
+            (insert content))
+        (insert (propertize <span class="ef-s">"(empty)\n"</span> 'face 'italic)))
+      (goto-char (point-min))))
+
+  )
+
+(<span class="ef-k">after!</span> elfeed-show
+  (<span class="ef-k">require</span> '<span class="ef-o">url</span>)
+
+  (<span class="ef-k">defvar</span> <span class="ef-v">elfeed-pdf-dir</span>
+    (expand-file-name <span class="ef-s">"pdfs/"</span>
+                      (file-name-directory (directory-file-name elfeed-enclosure-default-dir))))
+
+  (<span class="ef-k">defvar</span> <span class="ef-v">elfeed-link-pdfs</span>
+    '((<span class="ef-s">"https://www.jstatsoft.org/index.php/jss/article/view/v0</span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">(</span><span class="ef-s">[</span><span style="color: #4078f2; font-weight: 700;">^</span><span class="ef-s">/]+</span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">)</span><span class="ef-s">"</span> . <span class="ef-s">"https://www.jstatsoft.org/index.php/jss/article/view/v0\\1/v\\1.pdf"</span>)
+      (<span class="ef-s">"http://arxiv.org/abs/</span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">(</span><span class="ef-s">[</span><span style="color: #4078f2; font-weight: 700;">^</span><span class="ef-s">/]+</span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">)</span><span class="ef-s">"</span> . <span class="ef-s">"https://arxiv.org/pdf/\\1.pdf"</span>))
+    <span class="ef-d">"List of alists of the form (REGEX-FOR-LINK . FORM-FOR-PDF)"</span>)
+
+  (<span class="ef-k">defun</span> <span class="ef-f">elfeed-show-pdf</span> (entry)
+    (<span class="ef-k">interactive</span>
+     (list (<span class="ef-k">or</span> elfeed-show-entry (elfeed-search-selected <span class="ef-b">:ignore-region</span>))))
+    (<span class="ef-k">let</span> ((link (elfeed-entry-link entry))
+          (feed-name (plist-get (elfeed-feed-meta (elfeed-entry-feed entry)) <span class="ef-b">:title</span>))
+          (title (elfeed-entry-title entry))
+          (file-view-function
+           (<span class="ef-k">lambda</span> (f)
+             (<span class="ef-k">when</span> elfeed-show-entry
+               (elfeed-kill-buffer))
+             (pop-to-buffer (find-file-noselect f))))
+          pdf)
+
+      (<span class="ef-k">let</span> ((file (expand-file-name
+                   (concat (subst-char-in-string ?/ ?, title) <span class="ef-s">".pdf"</span>)
+                   (expand-file-name (subst-char-in-string ?/ ?, feed-name)
+                                     elfeed-pdf-dir))))
+        (<span class="ef-k">if</span> (file-exists-p file)
+            (funcall file-view-function file)
+          (<span class="ef-k">dolist</span> (link-pdf elfeed-link-pdfs)
+            (<span class="ef-k">when</span> (<span class="ef-k">and</span> (string-match-p (car link-pdf) link)
+                       (not pdf))
+              (<span class="ef-k">setq</span> pdf (replace-regexp-in-string (car link-pdf) (cdr link-pdf) link))))
+          (<span class="ef-k">if</span> (not pdf)
+              (message <span class="ef-s">"No associated PDF for entry"</span>)
+            (message <span class="ef-s">"Fetching %s"</span> pdf)
+            (<span class="ef-k">unless</span> (file-exists-p (file-name-directory file))
+              (make-directory (file-name-directory file) t))
+            (url-copy-file pdf file)
+            (funcall file-view-function file))))))
+
+  )
+
+(<span class="ef-k">provide</span> '<span class="ef-o">config-newsfeed</span>)
+<span class="ef-cd">;;; </span><span class="ef-c">config-newsfeed.el ends here
+</span>
+</pre>
+  <body>
+</html>

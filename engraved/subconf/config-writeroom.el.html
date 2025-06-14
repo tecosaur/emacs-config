@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>config-writeroom.el.html</title>
+    <style>
+      body { background: #fafafa; color: #383a42; }
+      pre {
+        font-size: 1rem;
+        max-width: min(100rem, 100%);
+        width: max-content;
+        white-space: pre-wrap;
+        margin: auto; }
+      .ef-D {
+        color: #383a42; background-color: #fafafa; font-weight: 400; }
+      .ef-vp {
+         }
+      .ef-h {
+        color: #84888b; }
+      .ef-sc {
+        color: #50a14f; }
+      .ef-w {
+        color: #986801; }
+      .ef-e {
+        color: #e45649; }
+      .ef-l {
+        color: #4078f2; font-weight: 700; }
+      .ef-lv {
+        color: #8b008b; font-weight: 700; }
+      .ef-hi {
+        color: #f0f0f0; background-color: #4078f2; }
+      .ef-c {
+        color: #84888b; }
+      .ef-cd {
+        color: #84888b; }
+      .ef-s {
+        color: #50a14f; }
+      .ef-d {
+        color: #727578; text-decoration: italic; }
+      .ef-m {
+        color: #b751b6; }
+      .ef-k {
+        color: #e45649; }
+      .ef-b {
+        color: #a626a4; }
+      .ef-f {
+        color: #a626a4; }
+      .ef-v {
+        color: #6a1868; }
+      .ef-t {
+        color: #986801; }
+      .ef-o {
+        color: #b751b6; }
+      .ef-wr {
+        color: #986801; }
+      .ef-nc {
+        color: #4078f2; font-weight: 700; }
+      .ef-pp {
+        color: #4078f2; font-weight: 700; }
+      .ef-rc {
+        color: #4078f2; font-weight: 700; }
+      .ef-rb {
+        color: #4078f2; font-weight: 700; }
+      .ef-ob {
+        background-color: #e7e7e7; }
+      .ef-obb {
+        background-color: #e7e7e7; text-decoration: italic; }
+      .ef-obe {
+        background-color: #e7e7e7; text-decoration: italic; }
+      .ef-Oa {
+        color: #e45649; font-weight: nil; font-size: 1.25em }
+      .ef-Ob {
+        color: #da8548; font-weight: 700; font-size: 1.15em }
+      .ef-Oc {
+        color: #b751b6; font-weight: 700; font-size: 1.12em }
+      .ef-Od {
+        color: #6f99f5; font-weight: 600; font-size: 1.09em }
+      .ef-Oe {
+        color: #bc5cba; font-weight: 600; font-size: 1.06em }
+      .ef-Of {
+        color: #9fbbf8; font-weight: 600; font-size: 1.03em }
+      .ef-Og {
+        color: #d292d1; font-weight: 700; }
+      .ef-Oh {
+        color: #d8e4fc; font-weight: 600; }
+      .ef-hn {
+        color: #da8548; font-weight: 700; }
+      .ef-hq {
+        color: #4078f2; }
+      .ef-hs {
+        color: #986801; }
+      .ef-rda {
+        color: #4078f2; }
+      .ef-rdb {
+        color: #a626a4; }
+      .ef-rdc {
+        color: #50a14f; }
+      .ef-rdd {
+        color: #b751b6; }
+      .ef-rde {
+        color: #4db5bd; }
+      .ef-rdf {
+        color: #4078f2; }
+      .ef-rdg {
+        color: #a626a4; }
+      .ef-rdh {
+        color: #50a14f; }
+      .ef-rdi {
+        color: #b751b6; }
+    </style>
+  </head>
+  <body>
+<pre>
+<span class="ef-cd">;;; </span><span class="ef-c">config-writeroom.el --- Generated package (no.47) from my config -*- lexical-binding: t; -*-
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;; </span><span class="ef-c">Copyright (C) 2025 TEC
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;; </span><span class="ef-c">Author: TEC &lt;https://code.tecosaur.net/tec&gt;
+</span><span class="ef-cd">;; </span><span class="ef-c">Maintainer: TEC &lt;contact@tecosaur.net&gt;
+</span><span class="ef-cd">;; </span><span class="ef-c">Created: June 14, 2025
+</span><span class="ef-cd">;; </span><span class="ef-c">Modified: June 14, 2025
+</span><span class="ef-cd">;; </span><span class="ef-c">Version: 2025.06.14
+</span><span class="ef-cd">;; </span><span class="ef-c">Homepage: https://code.tecosaur.net/tec/emacs-config
+</span><span class="ef-cd">;; </span><span class="ef-c">Package-Requires: ((emacs "29.1"))
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;; </span><span class="ef-c">This file is not part of GNU Emacs.
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;; </span><span class="ef-c">Commentary:
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;  </span><span class="ef-c">Generated package (no.47) from my config.
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;  </span><span class="ef-c">During generation, dependency on other aspects of my configuration and
+</span><span class="ef-cd">;;  </span><span class="ef-c">packages is inferred via (regexp-based) static analysis.  While this seems
+</span><span class="ef-cd">;;  </span><span class="ef-c">to do a good job, this method is imperfect.  This code likely depends on
+</span><span class="ef-cd">;;  </span><span class="ef-c">utilities provided by Doom, and if you try to run it in isolation you may
+</span><span class="ef-cd">;;  </span><span class="ef-c">discover the code makes more assumptions.
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;  </span><span class="ef-c">That said, I've found pretty good results so far.
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;; </span><span class="ef-c">Code:
+</span>
+(<span class="ef-k">require</span> '<span class="ef-o">config--pkg-mixed-pitch</span>)
+
+(<span class="ef-k">setq</span> +zen-text-scale 0.8)
+
+(<span class="ef-k">defvar</span> <span class="ef-v">+zen-serif-p</span> t
+  <span class="ef-d">"Whether to use a serifed font with `</span><span style="color: #b751b6; text-decoration: italic;">mixed-pitch-mode</span><span class="ef-d">'."</span>)
+(<span class="ef-k">defvar</span> <span class="ef-v">+zen-org-starhide</span> t
+  <span class="ef-d">"The value `</span><span style="color: #b751b6; text-decoration: italic;">org-modern-hide-stars</span><span class="ef-d">' is set to."</span>)
+
+(<span class="ef-k">after!</span> writeroom-mode
+  (<span class="ef-k">defvar-local</span> <span class="ef-v">+zen--original-org-indent-mode-p</span> nil)
+  (<span class="ef-k">defvar-local</span> <span class="ef-v">+zen--original-mixed-pitch-mode-p</span> nil)
+  (<span class="ef-k">defun</span> <span class="ef-f">+zen-enable-mixed-pitch-mode-h</span> ()
+    <span class="ef-d">"Enable `</span><span style="color: #b751b6; text-decoration: italic;">mixed-pitch-mode</span><span class="ef-d">' when in `</span><span style="color: #b751b6; text-decoration: italic;">+zen-mixed-pitch-modes</span><span class="ef-d">'."</span>
+    (<span class="ef-k">when</span> (apply #'derived-mode-p +zen-mixed-pitch-modes)
+      (<span class="ef-k">if</span> writeroom-mode
+          (<span class="ef-k">progn</span>
+            (<span class="ef-k">setq</span> +zen--original-mixed-pitch-mode-p mixed-pitch-mode)
+            (funcall (<span class="ef-k">if</span> +zen-serif-p #'mixed-pitch-serif-mode #'mixed-pitch-mode) 1))
+        (funcall #'mixed-pitch-mode (<span class="ef-k">if</span> +zen--original-mixed-pitch-mode-p 1 -1)))))
+  (<span class="ef-k">defun</span> <span class="ef-f">+zen-prose-org-h</span> ()
+    <span class="ef-d">"Reformat the current Org buffer appearance for prose."</span>
+    (<span class="ef-k">when</span> (eq major-mode 'org-mode)
+      (<span class="ef-k">setq</span> display-line-numbers nil
+            visual-fill-column-width 60
+            org-adapt-indentation nil)
+      (<span class="ef-k">when</span> (<span class="ef-k">featurep</span> '<span class="ef-o">org-modern</span>)
+        (<span class="ef-k">setq-local</span> org-modern-star '(<span class="ef-s">"🙘"</span> <span class="ef-s">"🙙"</span> <span class="ef-s">"🙚"</span> <span class="ef-s">"🙛"</span>)
+                    <span class="ef-cd">;; </span><span class="ef-c">org-modern-star '("🙐" "🙑" "🙒" "🙓" "🙔" "🙕" "🙖" "🙗")
+</span>                    org-modern-hide-stars +zen-org-starhide)
+        (org-modern-mode -1)
+        (org-modern-mode 1))
+      (<span class="ef-k">setq</span>
+       +zen--original-org-indent-mode-p org-indent-mode)
+      (org-indent-mode -1)))
+  (<span class="ef-k">defun</span> <span class="ef-f">+zen-nonprose-org-h</span> ()
+    <span class="ef-d">"Reverse the effect of `</span><span style="color: #b751b6; text-decoration: italic;">+zen-prose-org</span><span class="ef-d">'."</span>
+    (<span class="ef-k">when</span> (eq major-mode 'org-mode)
+      (<span class="ef-k">when</span> (<span class="ef-k">bound-and-true-p</span> org-modern-mode)
+        (org-modern-mode -1)
+        (org-modern-mode 1))
+      (<span class="ef-k">when</span> +zen--original-org-indent-mode-p (org-indent-mode 1))))
+  (<span class="ef-k">pushnew!</span> writeroom--local-variables
+            'display-line-numbers
+            'visual-fill-column-width
+            'org-adapt-indentation
+            'org-modern-mode
+            'org-modern-star
+            'org-modern-hide-stars)
+  (add-hook 'writeroom-mode-enable-hook #'+zen-prose-org-h)
+  (add-hook 'writeroom-mode-disable-hook #'+zen-nonprose-org-h))
+
+(<span class="ef-k">provide</span> '<span class="ef-o">config-writeroom</span>)
+<span class="ef-cd">;;; </span><span class="ef-c">config-writeroom.el ends here
+</span>
+</pre>
+  <body>
+</html>

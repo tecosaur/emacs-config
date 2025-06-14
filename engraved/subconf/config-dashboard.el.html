@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>config-dashboard.el.html</title>
+    <style>
+      body { background: #fafafa; color: #383a42; }
+      pre {
+        font-size: 1rem;
+        max-width: min(100rem, 100%);
+        width: max-content;
+        white-space: pre-wrap;
+        margin: auto; }
+      .ef-D {
+        color: #383a42; background-color: #fafafa; font-weight: 400; }
+      .ef-vp {
+         }
+      .ef-h {
+        color: #84888b; }
+      .ef-sc {
+        color: #50a14f; }
+      .ef-w {
+        color: #986801; }
+      .ef-e {
+        color: #e45649; }
+      .ef-l {
+        color: #4078f2; font-weight: 700; }
+      .ef-lv {
+        color: #8b008b; font-weight: 700; }
+      .ef-hi {
+        color: #f0f0f0; background-color: #4078f2; }
+      .ef-c {
+        color: #84888b; }
+      .ef-cd {
+        color: #84888b; }
+      .ef-s {
+        color: #50a14f; }
+      .ef-d {
+        color: #727578; text-decoration: italic; }
+      .ef-m {
+        color: #b751b6; }
+      .ef-k {
+        color: #e45649; }
+      .ef-b {
+        color: #a626a4; }
+      .ef-f {
+        color: #a626a4; }
+      .ef-v {
+        color: #6a1868; }
+      .ef-t {
+        color: #986801; }
+      .ef-o {
+        color: #b751b6; }
+      .ef-wr {
+        color: #986801; }
+      .ef-nc {
+        color: #4078f2; font-weight: 700; }
+      .ef-pp {
+        color: #4078f2; font-weight: 700; }
+      .ef-rc {
+        color: #4078f2; font-weight: 700; }
+      .ef-rb {
+        color: #4078f2; font-weight: 700; }
+      .ef-ob {
+        background-color: #e7e7e7; }
+      .ef-obb {
+        background-color: #e7e7e7; text-decoration: italic; }
+      .ef-obe {
+        background-color: #e7e7e7; text-decoration: italic; }
+      .ef-Oa {
+        color: #e45649; font-weight: nil; font-size: 1.25em }
+      .ef-Ob {
+        color: #da8548; font-weight: 700; font-size: 1.15em }
+      .ef-Oc {
+        color: #b751b6; font-weight: 700; font-size: 1.12em }
+      .ef-Od {
+        color: #6f99f5; font-weight: 600; font-size: 1.09em }
+      .ef-Oe {
+        color: #bc5cba; font-weight: 600; font-size: 1.06em }
+      .ef-Of {
+        color: #9fbbf8; font-weight: 600; font-size: 1.03em }
+      .ef-Og {
+        color: #d292d1; font-weight: 700; }
+      .ef-Oh {
+        color: #d8e4fc; font-weight: 600; }
+      .ef-hn {
+        color: #da8548; font-weight: 700; }
+      .ef-hq {
+        color: #4078f2; }
+      .ef-hs {
+        color: #986801; }
+      .ef-rda {
+        color: #4078f2; }
+      .ef-rdb {
+        color: #a626a4; }
+      .ef-rdc {
+        color: #50a14f; }
+      .ef-rdd {
+        color: #b751b6; }
+      .ef-rde {
+        color: #4db5bd; }
+      .ef-rdf {
+        color: #4078f2; }
+      .ef-rdg {
+        color: #a626a4; }
+      .ef-rdh {
+        color: #50a14f; }
+      .ef-rdi {
+        color: #b751b6; }
+    </style>
+  </head>
+  <body>
+<pre>
+<span class="ef-cd">;;; </span><span class="ef-c">config-dashboard.el --- Generated package (no.5) from my config -*- lexical-binding: t; -*-
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;; </span><span class="ef-c">Copyright (C) 2025 TEC
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;; </span><span class="ef-c">Author: TEC &lt;https://code.tecosaur.net/tec&gt;
+</span><span class="ef-cd">;; </span><span class="ef-c">Maintainer: TEC &lt;contact@tecosaur.net&gt;
+</span><span class="ef-cd">;; </span><span class="ef-c">Created: June 14, 2025
+</span><span class="ef-cd">;; </span><span class="ef-c">Modified: June 14, 2025
+</span><span class="ef-cd">;; </span><span class="ef-c">Version: 2025.06.14
+</span><span class="ef-cd">;; </span><span class="ef-c">Homepage: https://code.tecosaur.net/tec/emacs-config
+</span><span class="ef-cd">;; </span><span class="ef-c">Package-Requires: ((emacs "29.1"))
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;; </span><span class="ef-c">This file is not part of GNU Emacs.
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;; </span><span class="ef-c">Commentary:
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;  </span><span class="ef-c">Generated package (no.5) from my config.
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;  </span><span class="ef-c">During generation, dependency on other aspects of my configuration and
+</span><span class="ef-cd">;;  </span><span class="ef-c">packages is inferred via (regexp-based) static analysis.  While this seems
+</span><span class="ef-cd">;;  </span><span class="ef-c">to do a good job, this method is imperfect.  This code likely depends on
+</span><span class="ef-cd">;;  </span><span class="ef-c">utilities provided by Doom, and if you try to run it in isolation you may
+</span><span class="ef-cd">;;  </span><span class="ef-c">discover the code makes more assumptions.
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;  </span><span class="ef-c">That said, I've found pretty good results so far.
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;; </span><span class="ef-c">Code:
+</span>
+(<span class="ef-k">require</span> '<span class="ef-o">fancy-splash</span>)
+(<span class="ef-k">require</span> '<span class="ef-o">splash-phrases</span>)
+
+(<span class="ef-k">defun</span> <span class="ef-f">doom-dashboard-draw-ascii-emacs-banner-fn</span> ()
+  (<span class="ef-k">let*</span> ((banner
+          '(<span class="ef-s">",---.,-.-.,---.,---.,---."</span>
+            <span class="ef-s">"|---'| | |,---||    `---."</span>
+            <span class="ef-s">"`</span><span style="color: #b751b6;">---</span><span class="ef-s">'` ' '`---^`</span><span style="color: #b751b6;">---</span><span class="ef-s">'`</span><span style="color: #b751b6;">---</span><span class="ef-s">'"</span>))
+         (longest-line (apply #'max (mapcar #'length banner))))
+    (put-text-property
+     (point)
+     (<span class="ef-k">dolist</span> (line banner (point))
+       (insert (+doom-dashboard--center
+                +doom-dashboard--width
+                (concat
+                 line (make-string (max 0 (- longest-line (length line)))
+                                   32)))
+               <span class="ef-s">"\n"</span>))
+     'face 'doom-dashboard-banner)))
+
+(<span class="ef-k">unless</span> (display-graphic-p) <span class="ef-cd">; </span><span class="ef-c">for some reason this messes up the graphical splash screen atm
+</span>  (<span class="ef-k">setq</span> +doom-dashboard-ascii-banner-fn #'doom-dashboard-draw-ascii-emacs-banner-fn))
+
+(<span class="ef-k">defun</span> <span class="ef-f">+doom-dashboard-setup-modified-keymap</span> ()
+  (<span class="ef-k">setq</span> +doom-dashboard-mode-map (make-sparse-keymap))
+  (map! <span class="ef-b">:map</span> +doom-dashboard-mode-map
+        <span class="ef-b">:desc</span> <span class="ef-s">"Find file"</span> <span class="ef-b">:ng</span> <span class="ef-s">"f"</span> #'find-file
+        <span class="ef-b">:desc</span> <span class="ef-s">"Recent files"</span> <span class="ef-b">:ng</span> <span class="ef-s">"r"</span> #'consult-recent-file
+        <span class="ef-b">:desc</span> <span class="ef-s">"Config dir"</span> <span class="ef-b">:ng</span> <span class="ef-s">"C"</span> #'doom/open-private-config
+        <span class="ef-b">:desc</span> <span class="ef-s">"Open config.org"</span> <span class="ef-b">:ng</span> <span class="ef-s">"c"</span> (<span class="ef-k">cmd!</span> (find-file (expand-file-name <span class="ef-s">"config.org"</span> doom-user-dir)))
+        <span class="ef-b">:desc</span> <span class="ef-s">"Open org-mode root"</span> <span class="ef-b">:ng</span> <span class="ef-s">"O"</span> (<span class="ef-k">cmd!</span> (find-file (expand-file-name <span class="ef-s">"lisp/org/"</span> doom-user-dir)))
+        <span class="ef-b">:desc</span> <span class="ef-s">"Open dotfile"</span> <span class="ef-b">:ng</span> <span class="ef-s">"."</span> (<span class="ef-k">cmd!</span> (doom-project-find-file <span class="ef-s">"~/.config/"</span>))
+        <span class="ef-b">:desc</span> <span class="ef-s">"Notes (roam)"</span> <span class="ef-b">:ng</span> <span class="ef-s">"n"</span> #'org-roam-node-find
+        <span class="ef-b">:desc</span> <span class="ef-s">"Switch buffer"</span> <span class="ef-b">:ng</span> <span class="ef-s">"b"</span> #'+vertico/switch-workspace-buffer
+        <span class="ef-b">:desc</span> <span class="ef-s">"Switch buffers (all)"</span> <span class="ef-b">:ng</span> <span class="ef-s">"B"</span> #'consult-buffer
+        <span class="ef-b">:desc</span> <span class="ef-s">"IBuffer"</span> <span class="ef-b">:ng</span> <span class="ef-s">"i"</span> #'ibuffer
+        <span class="ef-b">:desc</span> <span class="ef-s">"Previous buffer"</span> <span class="ef-b">:ng</span> <span class="ef-s">"p"</span> #'previous-buffer
+        <span class="ef-b">:desc</span> <span class="ef-s">"Set theme"</span> <span class="ef-b">:ng</span> <span class="ef-s">"t"</span> #'consult-theme
+        <span class="ef-b">:desc</span> <span class="ef-s">"Quit"</span> <span class="ef-b">:ng</span> <span class="ef-s">"Q"</span> #'save-buffers-kill-terminal
+        <span class="ef-b">:desc</span> <span class="ef-s">"Show keybindings"</span> <span class="ef-b">:ng</span> <span class="ef-s">"h"</span> (<span class="ef-k">cmd!</span> (which-key-show-keymap '+doom-dashboard-mode-map))))
+
+(<span class="ef-k">add-transient-hook!</span> #'+doom-dashboard-mode (+doom-dashboard-setup-modified-keymap))
+(<span class="ef-k">add-transient-hook!</span> #'+doom-dashboard-mode <span class="ef-b">:append</span> (+doom-dashboard-setup-modified-keymap))
+(<span class="ef-k">add-hook!</span> 'doom-init-ui-hook <span class="ef-b">:append</span> (+doom-dashboard-setup-modified-keymap))
+
+(map! <span class="ef-b">:leader</span> <span class="ef-b">:desc</span> <span class="ef-s">"Dashboard"</span> <span class="ef-s">"d"</span> #'+doom-dashboard/open)
+
+(<span class="ef-k">defun</span> <span class="ef-f">+doom-dashboard-benchmark-line</span> ()
+  <span class="ef-d">"Insert the load time line."</span>
+  (<span class="ef-k">when</span> doom-init-time
+    (insert
+     <span class="ef-s">"\n\n"</span>
+     (propertize
+      (+doom-dashboard--center
+       +doom-dashboard--width
+       (doom-display-benchmark-h 'return))
+      'face 'doom-dashboard-loaded))))
+
+(remove-hook 'doom-after-init-hook #'doom-display-benchmark-h)
+
+(<span class="ef-k">setq</span> +doom-dashboard-functions
+      (list #'doom-dashboard-widget-banner
+            #'+doom-dashboard-benchmark-line
+            #'splash-phrase-dashboard-insert))
+
+(<span class="ef-k">defun</span> <span class="ef-f">+doom-dashboard-tweak</span> (<span class="ef-t">&amp;optional</span> _)
+  (<span class="ef-k">with-current-buffer</span> (get-buffer +doom-dashboard-name)
+    (<span class="ef-k">setq-local</span> line-spacing 0.2
+                mode-line-format nil
+                mode-name <span class="ef-s">""</span>
+                evil-normal-state-cursor (list nil))))
+
+(add-hook '+doom-dashboard-mode-hook #'+doom-dashboard-tweak)
+
+(add-hook 'doom-after-init-hook #'+doom-dashboard-tweak 1)
+
+(<span class="ef-k">setq</span> +doom-dashboard-name <span class="ef-s">"► Doom"</span>
+      doom-fallback-buffer-name +doom-dashboard-name)
+
+(add-hook 'window-size-change-functions #'fancy-splash-apply-appropriate-image)
+(add-hook 'doom-load-theme-hook #'fancy-splash-apply-appropriate-image)
+
+(<span class="ef-k">provide</span> '<span class="ef-o">config-dashboard</span>)
+<span class="ef-cd">;;; </span><span class="ef-c">config-dashboard.el ends here
+</span>
+</pre>
+  <body>
+</html>

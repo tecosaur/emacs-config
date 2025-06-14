@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>config--pkg-vlf.el.html</title>
+    <style>
+      body { background: #fafafa; color: #383a42; }
+      pre {
+        font-size: 1rem;
+        max-width: min(100rem, 100%);
+        width: max-content;
+        white-space: pre-wrap;
+        margin: auto; }
+      .ef-D {
+        color: #383a42; background-color: #fafafa; font-weight: 400; }
+      .ef-vp {
+         }
+      .ef-h {
+        color: #84888b; }
+      .ef-sc {
+        color: #50a14f; }
+      .ef-w {
+        color: #986801; }
+      .ef-e {
+        color: #e45649; }
+      .ef-l {
+        color: #4078f2; font-weight: 700; }
+      .ef-lv {
+        color: #8b008b; font-weight: 700; }
+      .ef-hi {
+        color: #f0f0f0; background-color: #4078f2; }
+      .ef-c {
+        color: #84888b; }
+      .ef-cd {
+        color: #84888b; }
+      .ef-s {
+        color: #50a14f; }
+      .ef-d {
+        color: #727578; text-decoration: italic; }
+      .ef-m {
+        color: #b751b6; }
+      .ef-k {
+        color: #e45649; }
+      .ef-b {
+        color: #a626a4; }
+      .ef-f {
+        color: #a626a4; }
+      .ef-v {
+        color: #6a1868; }
+      .ef-t {
+        color: #986801; }
+      .ef-o {
+        color: #b751b6; }
+      .ef-wr {
+        color: #986801; }
+      .ef-nc {
+        color: #4078f2; font-weight: 700; }
+      .ef-pp {
+        color: #4078f2; font-weight: 700; }
+      .ef-rc {
+        color: #4078f2; font-weight: 700; }
+      .ef-rb {
+        color: #4078f2; font-weight: 700; }
+      .ef-ob {
+        background-color: #e7e7e7; }
+      .ef-obb {
+        background-color: #e7e7e7; text-decoration: italic; }
+      .ef-obe {
+        background-color: #e7e7e7; text-decoration: italic; }
+      .ef-Oa {
+        color: #e45649; font-weight: nil; font-size: 1.25em }
+      .ef-Ob {
+        color: #da8548; font-weight: 700; font-size: 1.15em }
+      .ef-Oc {
+        color: #b751b6; font-weight: 700; font-size: 1.12em }
+      .ef-Od {
+        color: #6f99f5; font-weight: 600; font-size: 1.09em }
+      .ef-Oe {
+        color: #bc5cba; font-weight: 600; font-size: 1.06em }
+      .ef-Of {
+        color: #9fbbf8; font-weight: 600; font-size: 1.03em }
+      .ef-Og {
+        color: #d292d1; font-weight: 700; }
+      .ef-Oh {
+        color: #d8e4fc; font-weight: 600; }
+      .ef-hn {
+        color: #da8548; font-weight: 700; }
+      .ef-hq {
+        color: #4078f2; }
+      .ef-hs {
+        color: #986801; }
+      .ef-rda {
+        color: #4078f2; }
+      .ef-rdb {
+        color: #a626a4; }
+      .ef-rdc {
+        color: #50a14f; }
+      .ef-rdd {
+        color: #b751b6; }
+      .ef-rde {
+        color: #4db5bd; }
+      .ef-rdf {
+        color: #4078f2; }
+      .ef-rdg {
+        color: #a626a4; }
+      .ef-rdh {
+        color: #50a14f; }
+      .ef-rdi {
+        color: #b751b6; }
+    </style>
+  </head>
+  <body>
+<pre>
+<span class="ef-cd">;;; </span><span class="ef-c">config--pkg-vlf.el --- Generated package (no.16) from my config -*- lexical-binding: t; -*-
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;; </span><span class="ef-c">Copyright (C) 2025 TEC
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;; </span><span class="ef-c">Author: TEC &lt;https://code.tecosaur.net/tec&gt;
+</span><span class="ef-cd">;; </span><span class="ef-c">Maintainer: TEC &lt;contact@tecosaur.net&gt;
+</span><span class="ef-cd">;; </span><span class="ef-c">Created: June 14, 2025
+</span><span class="ef-cd">;; </span><span class="ef-c">Modified: June 14, 2025
+</span><span class="ef-cd">;; </span><span class="ef-c">Version: 2025.06.14
+</span><span class="ef-cd">;; </span><span class="ef-c">Homepage: https://code.tecosaur.net/tec/emacs-config
+</span><span class="ef-cd">;; </span><span class="ef-c">Package-Requires: ((emacs "29.1"))
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;; </span><span class="ef-c">This file is not part of GNU Emacs.
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;; </span><span class="ef-c">Commentary:
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;  </span><span class="ef-c">Generated package (no.16) from my config.
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;  </span><span class="ef-c">During generation, dependency on other aspects of my configuration and
+</span><span class="ef-cd">;;  </span><span class="ef-c">packages is inferred via (regexp-based) static analysis.  While this seems
+</span><span class="ef-cd">;;  </span><span class="ef-c">to do a good job, this method is imperfect.  This code likely depends on
+</span><span class="ef-cd">;;  </span><span class="ef-c">utilities provided by Doom, and if you try to run it in isolation you may
+</span><span class="ef-cd">;;  </span><span class="ef-c">discover the code makes more assumptions.
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;  </span><span class="ef-c">That said, I've found pretty good results so far.
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;  </span><span class="ef-c">Package statement:
+</span><span class="ef-cd">;;   </span><span class="ef-c">(package! vlf :recipe (:host github :repo "emacs-straight/vlf" :files ("*.el"))
+</span><span class="ef-cd">;;     </span><span class="ef-c">:pin "d500f39672b35bf8551fdfafa892c551626c8d54")
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;; </span><span class="ef-c">Code:
+</span>
+
+(use-package! vlf-setup
+  <span class="ef-b">:defer-incrementally</span> vlf-tune vlf-base vlf-write
+  vlf-search vlf-occur vlf-follow vlf-ediff vlf
+  <span class="ef-b">:commands</span> vlf vlf-mode
+  <span class="ef-b">:init</span>
+  (<span class="ef-k">defvar</span> <span class="ef-v">vlf-application</span> 'ask) <span class="ef-cd">; </span><span class="ef-c">Avoid load-order issues
+</span>  (<span class="ef-k">defadvice!</span> +files--ask-about-large-file-vlf (size op-type filename offer-raw)
+  <span class="ef-d">"Like `</span><span style="color: #b751b6; text-decoration: italic;">files--ask-user-about-large-file</span><span class="ef-d">', but with support for `</span><span style="color: #b751b6; text-decoration: italic;">vlf</span><span class="ef-d">'."</span>
+  <span class="ef-b">:override</span> #'files--ask-user-about-large-file
+  (<span class="ef-k">if</span> (eq vlf-application 'dont-ask)
+      (<span class="ef-k">progn</span> (vlf filename) (<span class="ef-wr">error</span> <span class="ef-s">""</span>))
+    (<span class="ef-k">let</span> ((prompt (format <span class="ef-s">"File %s is large (%s), really %s?"</span>
+                          (file-name-nondirectory filename)
+                          (funcall byte-count-to-string-function size) op-type)))
+      (<span class="ef-k">if</span> (not offer-raw)
+          (<span class="ef-k">if</span> (y-or-n-p prompt) nil 'abort)
+        (<span class="ef-k">let</span> ((choice
+               (car
+                (read-multiple-choice
+                 prompt '((?y <span class="ef-s">"yes"</span>)
+                          (?n <span class="ef-s">"no"</span>)
+                          (?l <span class="ef-s">"literally"</span>)
+                          (?v <span class="ef-s">"vlf"</span>))
+                 (files--ask-user-about-large-file-help-text
+                  op-type (funcall byte-count-to-string-function size))))))
+          (<span class="ef-k">cond</span> ((eq choice ?y) nil)
+                ((eq choice ?l) 'raw)
+                ((eq choice ?v)
+                 (vlf filename)
+                 (<span class="ef-wr">error</span> <span class="ef-s">""</span>))
+                (t 'abort)))))))
+  <span class="ef-b">:config</span>
+  (advice-remove 'abort-if-file-too-large #'ad-Advice-abort-if-file-too-large)
+  (<span class="ef-k">defvar-local</span> <span class="ef-v">+vlf-cumulative-linenum</span> '((0 . 0))
+  <span class="ef-d">"An alist keeping track of the cumulative line number."</span>)
+
+(<span class="ef-k">defun</span> <span class="ef-f">+vlf-update-linum</span> ()
+  <span class="ef-d">"Update the line number offset."</span>
+  (<span class="ef-k">let</span> ((linenum-offset (alist-get vlf-start-pos +vlf-cumulative-linenum)))
+    (<span class="ef-k">setq</span> display-line-numbers-offset (<span class="ef-k">or</span> linenum-offset 0))
+    (<span class="ef-k">when</span> (<span class="ef-k">and</span> linenum-offset (not (assq vlf-end-pos +vlf-cumulative-linenum)))
+      (<span class="ef-k">push</span> (cons vlf-end-pos (+ linenum-offset
+                                 (count-lines (point-min) (point-max))))
+            +vlf-cumulative-linenum))))
+
+(add-hook 'vlf-after-chunk-update-hook #'+vlf-update-linum)
+
+<span class="ef-cd">;; </span><span class="ef-c">Since this only works with absolute line numbers, let's make sure we use them.
+</span>(<span class="ef-k">add-hook!</span> 'vlf-mode-hook (<span class="ef-k">setq-local</span> display-line-numbers t))
+  (<span class="ef-k">defun</span> <span class="ef-f">+vlf-next-chunk-or-start</span> ()
+  (<span class="ef-k">if</span> (= vlf-file-size vlf-end-pos)
+      (vlf-jump-to-chunk 1)
+    (vlf-next-batch 1))
+  (goto-char (point-min)))
+
+(<span class="ef-k">defun</span> <span class="ef-f">+vlf-last-chunk-or-end</span> ()
+  (<span class="ef-k">if</span> (= 0 vlf-start-pos)
+      (vlf-end-of-file)
+    (vlf-prev-batch 1))
+  (goto-char (point-max)))
+
+(<span class="ef-k">defun</span> <span class="ef-f">+vlf-isearch-wrap</span> ()
+  (<span class="ef-k">if</span> isearch-forward
+      (+vlf-next-chunk-or-start)
+    (+vlf-last-chunk-or-end)))
+
+(<span class="ef-k">add-hook!</span> 'vlf-mode-hook (<span class="ef-k">setq-local</span> isearch-wrap-function #'+vlf-isearch-wrap)))
+
+(<span class="ef-k">provide</span> '<span class="ef-o">config--pkg-vlf</span>)
+<span class="ef-cd">;;; </span><span class="ef-c">config--pkg-vlf.el ends here
+</span>
+</pre>
+  <body>
+</html>

@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>config-org-visuals.el.html</title>
+    <style>
+      body { background: #fafafa; color: #383a42; }
+      pre {
+        font-size: 1rem;
+        max-width: min(100rem, 100%);
+        width: max-content;
+        white-space: pre-wrap;
+        margin: auto; }
+      .ef-D {
+        color: #383a42; background-color: #fafafa; font-weight: 400; }
+      .ef-vp {
+         }
+      .ef-h {
+        color: #84888b; }
+      .ef-sc {
+        color: #50a14f; }
+      .ef-w {
+        color: #986801; }
+      .ef-e {
+        color: #e45649; }
+      .ef-l {
+        color: #4078f2; font-weight: 700; }
+      .ef-lv {
+        color: #8b008b; font-weight: 700; }
+      .ef-hi {
+        color: #f0f0f0; background-color: #4078f2; }
+      .ef-c {
+        color: #84888b; }
+      .ef-cd {
+        color: #84888b; }
+      .ef-s {
+        color: #50a14f; }
+      .ef-d {
+        color: #727578; text-decoration: italic; }
+      .ef-m {
+        color: #b751b6; }
+      .ef-k {
+        color: #e45649; }
+      .ef-b {
+        color: #a626a4; }
+      .ef-f {
+        color: #a626a4; }
+      .ef-v {
+        color: #6a1868; }
+      .ef-t {
+        color: #986801; }
+      .ef-o {
+        color: #b751b6; }
+      .ef-wr {
+        color: #986801; }
+      .ef-nc {
+        color: #4078f2; font-weight: 700; }
+      .ef-pp {
+        color: #4078f2; font-weight: 700; }
+      .ef-rc {
+        color: #4078f2; font-weight: 700; }
+      .ef-rb {
+        color: #4078f2; font-weight: 700; }
+      .ef-ob {
+        background-color: #e7e7e7; }
+      .ef-obb {
+        background-color: #e7e7e7; text-decoration: italic; }
+      .ef-obe {
+        background-color: #e7e7e7; text-decoration: italic; }
+      .ef-Oa {
+        color: #e45649; font-weight: nil; font-size: 1.25em }
+      .ef-Ob {
+        color: #da8548; font-weight: 700; font-size: 1.15em }
+      .ef-Oc {
+        color: #b751b6; font-weight: 700; font-size: 1.12em }
+      .ef-Od {
+        color: #6f99f5; font-weight: 600; font-size: 1.09em }
+      .ef-Oe {
+        color: #bc5cba; font-weight: 600; font-size: 1.06em }
+      .ef-Of {
+        color: #9fbbf8; font-weight: 600; font-size: 1.03em }
+      .ef-Og {
+        color: #d292d1; font-weight: 700; }
+      .ef-Oh {
+        color: #d8e4fc; font-weight: 600; }
+      .ef-hn {
+        color: #da8548; font-weight: 700; }
+      .ef-hq {
+        color: #4078f2; }
+      .ef-hs {
+        color: #986801; }
+      .ef-rda {
+        color: #4078f2; }
+      .ef-rdb {
+        color: #a626a4; }
+      .ef-rdc {
+        color: #50a14f; }
+      .ef-rdd {
+        color: #b751b6; }
+      .ef-rde {
+        color: #4db5bd; }
+      .ef-rdf {
+        color: #4078f2; }
+      .ef-rdg {
+        color: #a626a4; }
+      .ef-rdh {
+        color: #50a14f; }
+      .ef-rdi {
+        color: #b751b6; }
+    </style>
+  </head>
+  <body>
+<pre>
+<span class="ef-cd">;;; </span><span class="ef-c">config-org-visuals.el --- Generated package (no.80) from my config -*- lexical-binding: t; -*-
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;; </span><span class="ef-c">Copyright (C) 2025 TEC
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;; </span><span class="ef-c">Author: TEC &lt;https://code.tecosaur.net/tec&gt;
+</span><span class="ef-cd">;; </span><span class="ef-c">Maintainer: TEC &lt;contact@tecosaur.net&gt;
+</span><span class="ef-cd">;; </span><span class="ef-c">Created: June 14, 2025
+</span><span class="ef-cd">;; </span><span class="ef-c">Modified: June 14, 2025
+</span><span class="ef-cd">;; </span><span class="ef-c">Version: 2025.06.14
+</span><span class="ef-cd">;; </span><span class="ef-c">Homepage: https://code.tecosaur.net/tec/emacs-config
+</span><span class="ef-cd">;; </span><span class="ef-c">Package-Requires: ((emacs "29.1"))
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;; </span><span class="ef-c">This file is not part of GNU Emacs.
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;; </span><span class="ef-c">Commentary:
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;  </span><span class="ef-c">Generated package (no.80) from my config.
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;  </span><span class="ef-c">During generation, dependency on other aspects of my configuration and
+</span><span class="ef-cd">;;  </span><span class="ef-c">packages is inferred via (regexp-based) static analysis.  While this seems
+</span><span class="ef-cd">;;  </span><span class="ef-c">to do a good job, this method is imperfect.  This code likely depends on
+</span><span class="ef-cd">;;  </span><span class="ef-c">utilities provided by Doom, and if you try to run it in isolation you may
+</span><span class="ef-cd">;;  </span><span class="ef-c">discover the code makes more assumptions.
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;  </span><span class="ef-c">That said, I've found pretty good results so far.
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;; </span><span class="ef-c">Code:
+</span>
+(<span class="ef-k">require</span> '<span class="ef-o">org</span>)
+
+(add-hook 'org-mode-hook #'+org-pretty-mode)
+
+(custom-set-faces!
+  '(outline-1 <span class="ef-b">:weight</span> extra-bold <span class="ef-b">:height</span> 1.25)
+  '(outline-2 <span class="ef-b">:weight</span> bold <span class="ef-b">:height</span> 1.15)
+  '(outline-3 <span class="ef-b">:weight</span> bold <span class="ef-b">:height</span> 1.12)
+  '(outline-4 <span class="ef-b">:weight</span> semi-bold <span class="ef-b">:height</span> 1.09)
+  '(outline-5 <span class="ef-b">:weight</span> semi-bold <span class="ef-b">:height</span> 1.06)
+  '(outline-6 <span class="ef-b">:weight</span> semi-bold <span class="ef-b">:height</span> 1.03)
+  '(outline-8 <span class="ef-b">:weight</span> semi-bold)
+  '(outline-9 <span class="ef-b">:weight</span> semi-bold))
+
+(custom-set-faces!
+  '(org-document-title <span class="ef-b">:height</span> 1.2))
+
+(<span class="ef-k">setq</span> org-agenda-deadline-faces
+      '((1.001 . error)
+        (1.0 . org-warning)
+        (0.5 . org-upcoming-deadline)
+        (0.0 . org-upcoming-distant-deadline)))
+
+(<span class="ef-k">setq</span> org-fontify-quote-and-verse-blocks t)
+
+(<span class="ef-k">defun</span> <span class="ef-f">locally-defer-font-lock</span> ()
+  <span class="ef-d">"Set jit-lock defer and stealth, when buffer is over a certain size."</span>
+  (<span class="ef-k">when</span> (&gt; (buffer-size) 50000)
+    (<span class="ef-k">setq-local</span> jit-lock-defer-time 0.05
+                jit-lock-stealth-time 1)))
+
+(add-hook 'org-mode-hook #'locally-defer-font-lock)
+
+(<span class="ef-k">defadvice!</span> +org-indent--reduced-text-prefixes ()
+  <span class="ef-b">:after</span> #'org-indent--compute-prefixes
+  (<span class="ef-k">setq</span> org-indent--text-line-prefixes
+        (make-vector org-indent--deepest-level nil))
+  (<span class="ef-k">when</span> (&gt; org-indent-indentation-per-level 0)
+    (<span class="ef-k">dotimes</span> (n org-indent--deepest-level)
+      (aset org-indent--text-line-prefixes
+            n
+            (org-add-props
+                (concat (make-string (* n (1- org-indent-indentation-per-level))
+                                     ?\s)
+                        (<span class="ef-k">if</span> (&gt; n 0)
+                             (char-to-string org-indent-boundary-char)
+                          <span class="ef-s">"\u200b"</span>))
+                nil 'face 'org-indent)))))
+
+(<span class="ef-k">setq</span> org-inline-src-prettify-results '(<span class="ef-s">"⟨"</span> . <span class="ef-s">"⟩"</span>))
+
+(<span class="ef-k">setq</span> doom-themes-org-fontify-special-tags nil)
+
+(<span class="ef-k">setq</span> org-ellipsis <span class="ef-s">" ▾ "</span>
+      org-hide-leading-stars t
+      org-priority-highest ?A
+      org-priority-lowest ?E
+      org-priority-faces
+      '((?A . 'nerd-icons-red)
+        (?B . 'nerd-icons-orange)
+        (?C . 'nerd-icons-yellow)
+        (?D . 'nerd-icons-green)
+        (?E . 'nerd-icons-blue)))
+
+(<span class="ef-k">appendq!</span> +ligatures-extra-symbols
+          (list <span class="ef-b">:list_property</span> <span class="ef-s">"∷"</span>
+                <span class="ef-b">:em_dash</span>       <span class="ef-s">"—"</span>
+                <span class="ef-b">:ellipses</span>      <span class="ef-s">"…"</span>
+                <span class="ef-b">:arrow_right</span>   <span class="ef-s">"→"</span>
+                <span class="ef-b">:arrow_left</span>    <span class="ef-s">"←"</span>
+                <span class="ef-b">:arrow_lr</span>      <span class="ef-s">"↔"</span>
+                <span class="ef-b">:properties</span>    <span class="ef-s">"⚙"</span>
+                <span class="ef-b">:end</span>           <span class="ef-s">"∎"</span>
+                <span class="ef-b">:priority_a</span>    #(<span class="ef-s">"⚑"</span> 0 1 (face nerd-icons-red))
+                <span class="ef-b">:priority_b</span>    #(<span class="ef-s">"⬆"</span> 0 1 (face nerd-icons-orange))
+                <span class="ef-b">:priority_c</span>    #(<span class="ef-s">"■"</span> 0 1 (face nerd-icons-yellow))
+                <span class="ef-b">:priority_d</span>    #(<span class="ef-s">"⬇"</span> 0 1 (face nerd-icons-green))
+                <span class="ef-b">:priority_e</span>    #(<span class="ef-s">"❓"</span> 0 1 (face nerd-icons-blue))))
+
+(<span class="ef-k">defadvice!</span> +org-init-appearance-h--no-ligatures-a ()
+  <span class="ef-b">:after</span> #'+org-init-appearance-h
+  (set-ligatures! 'org-mode nil)
+  (set-ligatures! 'org-mode
+    <span class="ef-b">:list_property</span> <span class="ef-s">"::"</span>
+    <span class="ef-b">:em_dash</span>       <span class="ef-s">"---"</span>
+    <span class="ef-b">:ellipsis</span>      <span class="ef-s">"..."</span>
+    <span class="ef-b">:arrow_right</span>   <span class="ef-s">"-&gt;"</span>
+    <span class="ef-b">:arrow_left</span>    <span class="ef-s">"&lt;-"</span>
+    <span class="ef-b">:arrow_lr</span>      <span class="ef-s">"&lt;-&gt;"</span>
+    <span class="ef-b">:properties</span>    <span class="ef-s">":PROPERTIES:"</span>
+    <span class="ef-b">:end</span>           <span class="ef-s">":END:"</span>
+    <span class="ef-b">:priority_a</span>    <span class="ef-s">"[#A]"</span>
+    <span class="ef-b">:priority_b</span>    <span class="ef-s">"[#B]"</span>
+    <span class="ef-b">:priority_c</span>    <span class="ef-s">"[#C]"</span>
+    <span class="ef-b">:priority_d</span>    <span class="ef-s">"[#D]"</span>
+    <span class="ef-b">:priority_e</span>    <span class="ef-s">"[#E]"</span>))
+
+<span class="ef-cd">;; </span><span class="ef-c">(package! org-pretty-tags :pin "5c7521651b35ae9a7d3add4a66ae8cc176ae1c76")
+</span>
+<span class="ef-cd">;; </span><span class="ef-c">(use-package org-pretty-tags
+</span><span class="ef-cd">;; </span><span class="ef-c">:config
+</span><span class="ef-cd">;;  </span><span class="ef-c">(setq org-pretty-tags-surrogate-strings
+</span><span class="ef-cd">;;        </span><span class="ef-c">`(("uni"        . ,(all-the-icons-faicon   "graduation-cap" :face 'all-the-icons-purple  :v-adjust 0.01))
+</span><span class="ef-cd">;;          </span><span class="ef-c">("ucc"        . ,(all-the-icons-material "computer"       :face 'all-the-icons-silver  :v-adjust 0.01))
+</span><span class="ef-cd">;;          </span><span class="ef-c">("assignment" . ,(all-the-icons-material "library_books"  :face 'all-the-icons-orange  :v-adjust 0.01))
+</span><span class="ef-cd">;;          </span><span class="ef-c">("test"       . ,(all-the-icons-material "timer"          :face 'all-the-icons-red     :v-adjust 0.01))
+</span><span class="ef-cd">;;          </span><span class="ef-c">("lecture"    . ,(all-the-icons-fileicon "keynote"        :face 'all-the-icons-orange  :v-adjust 0.01))
+</span><span class="ef-cd">;;          </span><span class="ef-c">("email"      . ,(all-the-icons-faicon   "envelope"       :face 'all-the-icons-blue    :v-adjust 0.01))
+</span><span class="ef-cd">;;          </span><span class="ef-c">("read"       . ,(all-the-icons-octicon  "book"           :face 'all-the-icons-lblue   :v-adjust 0.01))
+</span><span class="ef-cd">;;          </span><span class="ef-c">("article"    . ,(all-the-icons-octicon  "file-text"      :face 'all-the-icons-yellow  :v-adjust 0.01))
+</span><span class="ef-cd">;;          </span><span class="ef-c">("web"        . ,(all-the-icons-faicon   "globe"          :face 'all-the-icons-green   :v-adjust 0.01))
+</span><span class="ef-cd">;;          </span><span class="ef-c">("info"       . ,(all-the-icons-faicon   "info-circle"    :face 'all-the-icons-blue    :v-adjust 0.01))
+</span><span class="ef-cd">;;          </span><span class="ef-c">("issue"      . ,(all-the-icons-faicon   "bug"            :face 'all-the-icons-red     :v-adjust 0.01))
+</span><span class="ef-cd">;;          </span><span class="ef-c">("someday"    . ,(all-the-icons-faicon   "calendar-o"     :face 'all-the-icons-cyan    :v-adjust 0.01))
+</span><span class="ef-cd">;;          </span><span class="ef-c">("idea"       . ,(all-the-icons-octicon  "light-bulb"     :face 'all-the-icons-yellow  :v-adjust 0.01))
+</span><span class="ef-cd">;;          </span><span class="ef-c">("emacs"      . ,(all-the-icons-fileicon "emacs"          :face 'all-the-icons-lpurple :v-adjust 0.01))))
+</span><span class="ef-cd">;;  </span><span class="ef-c">(org-pretty-tags-global-mode))
+</span>
+(<span class="ef-k">setq</span> org-highlight-latex-and-related '(latex script entities))
+
+(<span class="ef-k">require</span> '<span class="ef-o">org-src</span>)
+(add-to-list 'org-src-block-faces '(<span class="ef-s">"latex"</span> (<span class="ef-b">:inherit</span> default <span class="ef-b">:extend</span> t)))
+
+(add-hook 'org-mode-hook #'org-latex-preview-auto-mode)
+
+(<span class="ef-k">setq</span> org-latex-preview-preamble
+      (concat
+       <span class="ef-s">"\\documentclass{article}
+[DEFAULT-PACKAGES]
+[PACKAGES]
+\\usepackage{xcolor}"</span>
+       <span class="ef-s">"\n% Custom font\n\\usepackage{arev}\n\n"</span>
+       <span class="ef-s">"%% Maths-related packages
+% More maths environments, commands, and symbols.
+\\usepackage{amsmath, amssymb}
+% Slanted fractions with \\sfrac{a}{b}, in text and maths.
+\\usepackage{xfrac}
+% Visually cancel expressions with \\cancel{value} and \\cancelto{expression}{value}
+\\usepackage[makeroom]{cancel}
+% Improvements on amsmath and utilities for mathematical typesetting
+\\usepackage{mathtools}
+
+% Deliminators
+\\DeclarePairedDelimiter{\\abs}{\\lvert}{\\rvert}
+\\DeclarePairedDelimiter{\\norm}{\\lVert}{\\rVert}
+
+\\DeclarePairedDelimiter{\\ceil}{\\lceil}{\\rceil}
+\\DeclarePairedDelimiter{\\floor}{\\lfloor}{\\rfloor}
+\\DeclarePairedDelimiter{\\round}{\\lfloor}{\\rceil}
+
+\\newcommand{\\RR}[1][]{\\ensuremath{\\ifstrempty{#1}{\\mathbb{R}}{\\mathbb{R}^{#1}}}} % Real numbers
+\\newcommand{\\NN}[1][]{\\ensuremath{\\ifstrempty{#1}{\\mathbb{N}}{\\mathbb{N}^{#1}}}} % Natural numbers
+\\newcommand{\\ZZ}[1][]{\\ensuremath{\\ifstrempty{#1}{\\mathbb{Z}}{\\mathbb{Z}^{#1}}}} % Integer numbers
+\\newcommand{\\QQ}[1][]{\\ensuremath{\\ifstrempty{#1}{\\mathbb{Q}}{\\mathbb{Q}^{#1}}}} % Rational numbers
+\\newcommand{\\CC}[1][]{\\ensuremath{\\ifstrempty{#1}{\\mathbb{C}}{\\mathbb{C}^{#1}}}} % Complex numbers
+
+% Easy derivatives
+\\ProvideDocumentCommand\\dv{o m g}{%
+  \\IfNoValueTF{#3}{%
+    \\dv[#1]{}{#2}}{%
+    \\IfNoValueTF{#1}{%
+      \\frac{\\dd #2}{\\dd #3}%
+    }{\\frac{\\dd[#1] #2}{\\dd {#3}^{#1}}}}}
+% Easy partial derivatives
+\\ExplSyntaxOn
+\\ProvideDocumentCommand\\pdv{o m g}{%
+  \\IfNoValueTF{#3}{\\pdv[#1]{}{#2}}%
+  {\\ifnum\\clist_count:n{#3}&lt;2
+    \\IfValueTF{#1}{\\frac{\\partial^{#1} #2}{\\partial {#3}^{#1}}}%
+    {\\frac{\\partial #2}{\\partial #3}}
+    \\else
+    \\frac{\\IfValueTF{#1}{\\partial^{#1}}{\\partial^{\\clist_count:n{#3}}}#2}%
+    {\\clist_map_inline:nn{#3}{\\partial ##1 \\,}\\!}
+    \\fi}}
+\\ExplSyntaxOff
+
+% Laplacian
+\\DeclareMathOperator{\\Lap}{\\mathcal{L}}
+
+% Statistics
+\\DeclareMathOperator{\\Var}{Var} % varience
+\\DeclareMathOperator{\\Cov}{Cov} % covarience
+\\newcommand{\\EE}{\\ensuremath{\\mathbb{E}}} % expected value
+\\DeclareMathOperator{\\E}{E} % expected value
+
+% I prefer the slanted \\leq/\\geq
+\\let\\barleq\\leq % Save them in case they're every wanted
+\\let\\bargeq\\geq
+\\renewcommand{\\leq}{\\leqslant}
+\\renewcommand{\\geq}{\\geqslant}
+
+% Redefine the matrix environment to allow for alignment
+% via an optional argument, and use r as the default.
+\\makeatletter
+\\renewcommand*\\env@matrix[1][r]{\\hskip -\\arraycolsep%
+    \\let\\@ifnextchar\\new@ifnextchar
+    \\array{*\\c@MaxMatrixCols #1}}
+\\makeatother
+
+% Slanted roman \"d\" for derivatives
+\\ifcsname pdfoutput\\endcsname
+  \\ifnum\\pdfoutput&gt;0 % PDF
+    \\newsavebox\\diffdbox{}
+    \\newcommand{\\slantedromand}{{\\mathpalette\\makesl{d}}}
+    \\newcommand{\\makesl}[2]{%
+      \\begingroup
+      \\sbox{\\diffdbox}{$\\mathsurround=0pt#1\\mathrm{#2}$}%
+      \\pdfsave%
+      \\pdfsetmatrix{1 0 0.2 1}%
+      \\rlap{\\usebox{\\diffdbox}}%
+      \\pdfrestore%
+      \\hskip\\wd\\diffdbox%
+      \\endgroup}
+  \\else % DVI
+    \\newcommand{\\slantedromand}{d} % fallback
+  \\fi
+\\else % Also DVI
+  \\newcommand{\\slantedromand}{d} % fallback
+\\fi
+
+% Derivative d^n, nicely spaced
+\\makeatletter
+\\newcommand{\\dd}[1][]{\\mathop{}\\!%
+  \\expandafter\\ifx\\expandafter&amp;\\detokenize{#1}&amp;% \\ifstrempty from etoolbox
+    \\slantedromand\\@ifnextchar^{\\hspace{0.2ex}}{\\hspace{0.1ex}}
+  \\else
+    \\slantedromand\\hspace{0.2ex}^{#1}
+  \\fi}
+\\makeatother
+
+\\NewCommandCopy{\\daccent}{\\d}
+\\renewcommand{\\d}{\\ifmmode\\dd\\else\\daccent\\fi}"</span>))
+
+<span class="ef-cd">;; </span><span class="ef-c">Calibrated based on the TeX font and org-buffer font.
+</span>(plist-put org-format-latex-options <span class="ef-b">:zoom</span> 0.93)
+
+(<span class="ef-k">defvar</span> <span class="ef-v">+org-plot-term-size</span> '(1050 . 650)
+  <span class="ef-d">"The size of the GNUPlot terminal, in the form (WIDTH . HEIGHT)."</span>)
+
+(<span class="ef-k">after!</span> org-plot
+  (<span class="ef-k">defun</span> <span class="ef-f">+org-plot-generate-theme</span> (_type)
+    <span class="ef-d">"Use the current Doom theme colours to generate a GnuPlot preamble."</span>
+    (format <span class="ef-s">"
+fgt = \"textcolor rgb '</span><span style="color: #b751b6;">%s</span><span class="ef-s">'\" # foreground text
+fgat = \"textcolor rgb '</span><span style="color: #b751b6;">%s</span><span class="ef-s">'\" # foreground alt text
+fgl = \"linecolor rgb '</span><span style="color: #b751b6;">%s</span><span class="ef-s">'\" # foreground line
+fgal = \"linecolor rgb '</span><span style="color: #b751b6;">%s</span><span class="ef-s">'\" # foreground alt line
+
+# foreground colors
+set border lc rgb '</span><span style="color: #b751b6;">%s</span><span class="ef-s">'
+# change text colors of  tics
+set xtics @fgt
+set ytics @fgt
+# change text colors of labels
+set title @fgt
+set xlabel @fgt
+set ylabel @fgt
+# change a text color of key
+set key @fgt
+
+# line styles
+set linetype 1 lw 2 lc rgb '</span><span style="color: #b751b6;">%s</span><span class="ef-s">' # red
+set linetype 2 lw 2 lc rgb '</span><span style="color: #b751b6;">%s</span><span class="ef-s">' # blue
+set linetype 3 lw 2 lc rgb '</span><span style="color: #b751b6;">%s</span><span class="ef-s">' # green
+set linetype 4 lw 2 lc rgb '</span><span style="color: #b751b6;">%s</span><span class="ef-s">' # magenta
+set linetype 5 lw 2 lc rgb '</span><span style="color: #b751b6;">%s</span><span class="ef-s">' # orange
+set linetype 6 lw 2 lc rgb '</span><span style="color: #b751b6;">%s</span><span class="ef-s">' # yellow
+set linetype 7 lw 2 lc rgb '</span><span style="color: #b751b6;">%s</span><span class="ef-s">' # teal
+set linetype 8 lw 2 lc rgb '</span><span style="color: #b751b6;">%s</span><span class="ef-s">' # violet
+
+# border styles
+set tics out nomirror
+set border 3
+
+# palette
+set palette maxcolors 8
+set palette defined ( 0 '</span><span style="color: #b751b6;">%s</span><span class="ef-s">',\
+1 '</span><span style="color: #b751b6;">%s</span><span class="ef-s">',\
+2 '</span><span style="color: #b751b6;">%s</span><span class="ef-s">',\
+3 '</span><span style="color: #b751b6;">%s</span><span class="ef-s">',\
+4 '</span><span style="color: #b751b6;">%s</span><span class="ef-s">',\
+5 '</span><span style="color: #b751b6;">%s</span><span class="ef-s">',\
+6 '</span><span style="color: #b751b6;">%s</span><span class="ef-s">',\
+7 '</span><span style="color: #b751b6;">%s</span><span class="ef-s">' )
+"</span>
+            (doom-color 'fg)
+            (doom-color 'fg-alt)
+            (doom-color 'fg)
+            (doom-color 'fg-alt)
+            (doom-color 'fg)
+            <span class="ef-cd">;; </span><span class="ef-c">colours
+</span>            (doom-color 'red)
+            (doom-color 'blue)
+            (doom-color 'green)
+            (doom-color 'magenta)
+            (doom-color 'orange)
+            (doom-color 'yellow)
+            (doom-color 'teal)
+            (doom-color 'violet)
+            <span class="ef-cd">;; </span><span class="ef-c">duplicated
+</span>            (doom-color 'red)
+            (doom-color 'blue)
+            (doom-color 'green)
+            (doom-color 'magenta)
+            (doom-color 'orange)
+            (doom-color 'yellow)
+            (doom-color 'teal)
+            (doom-color 'violet)))
+
+  (<span class="ef-k">defun</span> <span class="ef-f">+org-plot-gnuplot-term-properties</span> (_type)
+    (format <span class="ef-s">"background rgb '</span><span style="color: #b751b6;">%s</span><span class="ef-s">' size %s,%s"</span>
+            (doom-color 'bg) (car +org-plot-term-size) (cdr +org-plot-term-size)))
+
+  (<span class="ef-k">setq</span> org-plot/gnuplot-script-preamble #'+org-plot-generate-theme)
+  (<span class="ef-k">setq</span> org-plot/gnuplot-term-extra #'+org-plot-gnuplot-term-properties))
+
+(<span class="ef-k">provide</span> '<span class="ef-o">config-org-visuals</span>)
+<span class="ef-cd">;;; </span><span class="ef-c">config-org-visuals.el ends here
+</span>
+</pre>
+  <body>
+</html>

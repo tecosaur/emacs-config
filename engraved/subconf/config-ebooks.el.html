@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>config-ebooks.el.html</title>
+    <style>
+      body { background: #fafafa; color: #383a42; }
+      pre {
+        font-size: 1rem;
+        max-width: min(100rem, 100%);
+        width: max-content;
+        white-space: pre-wrap;
+        margin: auto; }
+      .ef-D {
+        color: #383a42; background-color: #fafafa; font-weight: 400; }
+      .ef-vp {
+         }
+      .ef-h {
+        color: #84888b; }
+      .ef-sc {
+        color: #50a14f; }
+      .ef-w {
+        color: #986801; }
+      .ef-e {
+        color: #e45649; }
+      .ef-l {
+        color: #4078f2; font-weight: 700; }
+      .ef-lv {
+        color: #8b008b; font-weight: 700; }
+      .ef-hi {
+        color: #f0f0f0; background-color: #4078f2; }
+      .ef-c {
+        color: #84888b; }
+      .ef-cd {
+        color: #84888b; }
+      .ef-s {
+        color: #50a14f; }
+      .ef-d {
+        color: #727578; text-decoration: italic; }
+      .ef-m {
+        color: #b751b6; }
+      .ef-k {
+        color: #e45649; }
+      .ef-b {
+        color: #a626a4; }
+      .ef-f {
+        color: #a626a4; }
+      .ef-v {
+        color: #6a1868; }
+      .ef-t {
+        color: #986801; }
+      .ef-o {
+        color: #b751b6; }
+      .ef-wr {
+        color: #986801; }
+      .ef-nc {
+        color: #4078f2; font-weight: 700; }
+      .ef-pp {
+        color: #4078f2; font-weight: 700; }
+      .ef-rc {
+        color: #4078f2; font-weight: 700; }
+      .ef-rb {
+        color: #4078f2; font-weight: 700; }
+      .ef-ob {
+        background-color: #e7e7e7; }
+      .ef-obb {
+        background-color: #e7e7e7; text-decoration: italic; }
+      .ef-obe {
+        background-color: #e7e7e7; text-decoration: italic; }
+      .ef-Oa {
+        color: #e45649; font-weight: nil; font-size: 1.25em }
+      .ef-Ob {
+        color: #da8548; font-weight: 700; font-size: 1.15em }
+      .ef-Oc {
+        color: #b751b6; font-weight: 700; font-size: 1.12em }
+      .ef-Od {
+        color: #6f99f5; font-weight: 600; font-size: 1.09em }
+      .ef-Oe {
+        color: #bc5cba; font-weight: 600; font-size: 1.06em }
+      .ef-Of {
+        color: #9fbbf8; font-weight: 600; font-size: 1.03em }
+      .ef-Og {
+        color: #d292d1; font-weight: 700; }
+      .ef-Oh {
+        color: #d8e4fc; font-weight: 600; }
+      .ef-hn {
+        color: #da8548; font-weight: 700; }
+      .ef-hq {
+        color: #4078f2; }
+      .ef-hs {
+        color: #986801; }
+      .ef-rda {
+        color: #4078f2; }
+      .ef-rdb {
+        color: #a626a4; }
+      .ef-rdc {
+        color: #50a14f; }
+      .ef-rdd {
+        color: #b751b6; }
+      .ef-rde {
+        color: #4db5bd; }
+      .ef-rdf {
+        color: #4078f2; }
+      .ef-rdg {
+        color: #a626a4; }
+      .ef-rdh {
+        color: #50a14f; }
+      .ef-rdi {
+        color: #b751b6; }
+    </style>
+  </head>
+  <body>
+<pre>
+<span class="ef-cd">;;; </span><span class="ef-c">config-ebooks.el --- Generated package (no.56) from my config -*- lexical-binding: t; -*-
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;; </span><span class="ef-c">Copyright (C) 2025 TEC
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;; </span><span class="ef-c">Author: TEC &lt;https://code.tecosaur.net/tec&gt;
+</span><span class="ef-cd">;; </span><span class="ef-c">Maintainer: TEC &lt;contact@tecosaur.net&gt;
+</span><span class="ef-cd">;; </span><span class="ef-c">Created: June 14, 2025
+</span><span class="ef-cd">;; </span><span class="ef-c">Modified: June 14, 2025
+</span><span class="ef-cd">;; </span><span class="ef-c">Version: 2025.06.14
+</span><span class="ef-cd">;; </span><span class="ef-c">Homepage: https://code.tecosaur.net/tec/emacs-config
+</span><span class="ef-cd">;; </span><span class="ef-c">Package-Requires: ((emacs "29.1"))
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;; </span><span class="ef-c">This file is not part of GNU Emacs.
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;; </span><span class="ef-c">Commentary:
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;  </span><span class="ef-c">Generated package (no.56) from my config.
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;  </span><span class="ef-c">During generation, dependency on other aspects of my configuration and
+</span><span class="ef-cd">;;  </span><span class="ef-c">packages is inferred via (regexp-based) static analysis.  While this seems
+</span><span class="ef-cd">;;  </span><span class="ef-c">to do a good job, this method is imperfect.  This code likely depends on
+</span><span class="ef-cd">;;  </span><span class="ef-c">utilities provided by Doom, and if you try to run it in isolation you may
+</span><span class="ef-cd">;;  </span><span class="ef-c">discover the code makes more assumptions.
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;  </span><span class="ef-c">That said, I've found pretty good results so far.
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;  </span><span class="ef-c">Package statement:
+</span><span class="ef-cd">;;   </span><span class="ef-c">(package! calibredb :pin "7d33947462c77f9e87e8078fa7b7b398feeef0f7")
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;  </span><span class="ef-c">Package statement:
+</span><span class="ef-cd">;;   </span><span class="ef-c">(package! nov :pin "b37d9380752e541db3f4b947c219ca54d50ca273")
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;; </span><span class="ef-c">Code:
+</span>
+
+
+(use-package! calibredb
+  <span class="ef-b">:commands</span> calibredb
+  <span class="ef-b">:config</span>
+  (<span class="ef-k">setq</span> calibredb-root-dir <span class="ef-s">"~/.local/share/calibre-library"</span>
+        calibredb-db-dir (expand-file-name <span class="ef-s">"metadata.db"</span> calibredb-root-dir))
+  (map! <span class="ef-b">:map</span> calibredb-show-mode-map
+        <span class="ef-b">:ne</span> <span class="ef-s">"?"</span> #'calibredb-entry-dispatch
+        <span class="ef-b">:ne</span> <span class="ef-s">"o"</span> #'calibredb-find-file
+        <span class="ef-b">:ne</span> <span class="ef-s">"O"</span> #'calibredb-find-file-other-frame
+        <span class="ef-b">:ne</span> <span class="ef-s">"V"</span> #'calibredb-open-file-with-default-tool
+        <span class="ef-b">:ne</span> <span class="ef-s">"s"</span> #'calibredb-set-metadata-dispatch
+        <span class="ef-b">:ne</span> <span class="ef-s">"e"</span> #'calibredb-export-dispatch
+        <span class="ef-b">:ne</span> <span class="ef-s">"q"</span> #'calibredb-entry-quit
+        <span class="ef-b">:ne</span> <span class="ef-s">"."</span> #'calibredb-open-dired
+        <span class="ef-b">:ne</span> [tab] #'calibredb-toggle-view-at-point
+        <span class="ef-b">:ne</span> <span class="ef-s">"M-t"</span> #'calibredb-set-metadata--tags
+        <span class="ef-b">:ne</span> <span class="ef-s">"M-a"</span> #'calibredb-set-metadata--author_sort
+        <span class="ef-b">:ne</span> <span class="ef-s">"M-A"</span> #'calibredb-set-metadata--authors
+        <span class="ef-b">:ne</span> <span class="ef-s">"M-T"</span> #'calibredb-set-metadata--title
+        <span class="ef-b">:ne</span> <span class="ef-s">"M-c"</span> #'calibredb-set-metadata--comments)
+  (map! <span class="ef-b">:map</span> calibredb-search-mode-map
+        <span class="ef-b">:ne</span> [mouse-3] #'calibredb-search-mouse
+        <span class="ef-b">:ne</span> <span class="ef-s">"RET"</span> #'calibredb-find-file
+        <span class="ef-b">:ne</span> <span class="ef-s">"?"</span> #'calibredb-dispatch
+        <span class="ef-b">:ne</span> <span class="ef-s">"a"</span> #'calibredb-add
+        <span class="ef-b">:ne</span> <span class="ef-s">"A"</span> #'calibredb-add-dir
+        <span class="ef-b">:ne</span> <span class="ef-s">"c"</span> #'calibredb-clone
+        <span class="ef-b">:ne</span> <span class="ef-s">"d"</span> #'calibredb-remove
+        <span class="ef-b">:ne</span> <span class="ef-s">"D"</span> #'calibredb-remove-marked-items
+        <span class="ef-b">:ne</span> <span class="ef-s">"j"</span> #'calibredb-next-entry
+        <span class="ef-b">:ne</span> <span class="ef-s">"k"</span> #'calibredb-previous-entry
+        <span class="ef-b">:ne</span> <span class="ef-s">"l"</span> #'calibredb-virtual-library-list
+        <span class="ef-b">:ne</span> <span class="ef-s">"L"</span> #'calibredb-library-list
+        <span class="ef-b">:ne</span> <span class="ef-s">"n"</span> #'calibredb-virtual-library-next
+        <span class="ef-b">:ne</span> <span class="ef-s">"N"</span> #'calibredb-library-next
+        <span class="ef-b">:ne</span> <span class="ef-s">"p"</span> #'calibredb-virtual-library-previous
+        <span class="ef-b">:ne</span> <span class="ef-s">"P"</span> #'calibredb-library-previous
+        <span class="ef-b">:ne</span> <span class="ef-s">"s"</span> #'calibredb-set-metadata-dispatch
+        <span class="ef-b">:ne</span> <span class="ef-s">"S"</span> #'calibredb-switch-library
+        <span class="ef-b">:ne</span> <span class="ef-s">"o"</span> #'calibredb-find-file
+        <span class="ef-b">:ne</span> <span class="ef-s">"O"</span> #'calibredb-find-file-other-frame
+        <span class="ef-b">:ne</span> <span class="ef-s">"v"</span> #'calibredb-view
+        <span class="ef-b">:ne</span> <span class="ef-s">"V"</span> #'calibredb-open-file-with-default-tool
+        <span class="ef-b">:ne</span> <span class="ef-s">"."</span> #'calibredb-open-dired
+        <span class="ef-b">:ne</span> <span class="ef-s">"b"</span> #'calibredb-catalog-bib-dispatch
+        <span class="ef-b">:ne</span> <span class="ef-s">"e"</span> #'calibredb-export-dispatch
+        <span class="ef-b">:ne</span> <span class="ef-s">"r"</span> #'calibredb-search-refresh-and-clear-filter
+        <span class="ef-b">:ne</span> <span class="ef-s">"R"</span> #'calibredb-search-clear-filter
+        <span class="ef-b">:ne</span> <span class="ef-s">"q"</span> #'calibredb-search-quit
+        <span class="ef-b">:ne</span> <span class="ef-s">"m"</span> #'calibredb-mark-and-forward
+        <span class="ef-b">:ne</span> <span class="ef-s">"f"</span> #'calibredb-toggle-favorite-at-point
+        <span class="ef-b">:ne</span> <span class="ef-s">"x"</span> #'calibredb-toggle-archive-at-point
+        <span class="ef-b">:ne</span> <span class="ef-s">"h"</span> #'calibredb-toggle-highlight-at-point
+        <span class="ef-b">:ne</span> <span class="ef-s">"u"</span> #'calibredb-unmark-and-forward
+        <span class="ef-b">:ne</span> <span class="ef-s">"i"</span> #'calibredb-edit-annotation
+        <span class="ef-b">:ne</span> <span class="ef-s">"DEL"</span> #'calibredb-unmark-and-backward
+        <span class="ef-b">:ne</span> [backtab] #'calibredb-toggle-view
+        <span class="ef-b">:ne</span> [tab] #'calibredb-toggle-view-at-point
+        <span class="ef-b">:ne</span> <span class="ef-s">"M-n"</span> #'calibredb-show-next-entry
+        <span class="ef-b">:ne</span> <span class="ef-s">"M-p"</span> #'calibredb-show-previous-entry
+        <span class="ef-b">:ne</span> <span class="ef-s">"/"</span> #'calibredb-search-live-filter
+        <span class="ef-b">:ne</span> <span class="ef-s">"M-t"</span> #'calibredb-set-metadata--tags
+        <span class="ef-b">:ne</span> <span class="ef-s">"M-a"</span> #'calibredb-set-metadata--author_sort
+        <span class="ef-b">:ne</span> <span class="ef-s">"M-A"</span> #'calibredb-set-metadata--authors
+        <span class="ef-b">:ne</span> <span class="ef-s">"M-T"</span> #'calibredb-set-metadata--title
+        <span class="ef-b">:ne</span> <span class="ef-s">"M-c"</span> #'calibredb-set-metadata--comments))
+
+(use-package! nov
+  <span class="ef-b">:mode</span> (<span class="ef-s">"\\.epub\\'"</span> . nov-mode)
+  <span class="ef-b">:config</span>
+  (map! <span class="ef-b">:map</span> nov-mode-map
+        <span class="ef-b">:n</span> <span class="ef-s">"RET"</span> #'nov-scroll-up)
+
+  (advice-add 'nov-render-title <span class="ef-b">:override</span> #'ignore)
+
+  (<span class="ef-k">defun</span> <span class="ef-f">+nov-mode-setup</span> ()
+    <span class="ef-d">"Tweak nov-mode to our liking."</span>
+    (face-remap-add-relative 'variable-pitch
+                             <span class="ef-b">:family</span> <span class="ef-s">"Merriweather"</span>
+                             <span class="ef-b">:height</span> 1.4
+                             <span class="ef-b">:width</span> 'semi-expanded)
+    (face-remap-add-relative 'default <span class="ef-b">:height</span> 1.3)
+    (variable-pitch-mode 1)
+    (<span class="ef-k">setq-local</span> line-spacing 0.2
+                next-screen-context-lines 4
+                shr-use-colors nil)
+    (<span class="ef-k">when</span> (<span class="ef-k">require</span> '<span class="ef-o">visual-fill-column</span> nil t)
+      (<span class="ef-k">setq-local</span> visual-fill-column-center-text t
+                  visual-fill-column-width 64
+                  nov-text-width 106)
+      (visual-fill-column-mode 1))
+    (<span class="ef-k">when</span> (<span class="ef-k">featurep</span> '<span class="ef-o">hl-line-mode</span>)
+      (hl-line-mode -1))
+    <span class="ef-cd">;; </span><span class="ef-c">Re-render with new display settings
+</span>    (nov-render-document)
+    <span class="ef-cd">;; </span><span class="ef-c">Look up words with the dictionary.
+</span>    (add-to-list '+lookup-definition-functions #'+lookup/dictionary-definition))
+
+  (add-hook 'nov-mode-hook #'+nov-mode-setup))
+
+(<span class="ef-k">after!</span> doom-modeline
+  (<span class="ef-k">defvar</span> <span class="ef-v">doom-modeline-nov-title-max-length</span> 40)
+  (doom-modeline-def-segment nov-author
+    (propertize
+     (cdr (assoc 'creator nov-metadata))
+     'face (doom-modeline-face 'doom-modeline-project-parent-dir)))
+  (doom-modeline-def-segment nov-title
+    (<span class="ef-k">let</span> ((title (<span class="ef-k">or</span> (cdr (assoc 'title nov-metadata)) <span class="ef-s">""</span>)))
+      (<span class="ef-k">if</span> (&lt;= (length title) doom-modeline-nov-title-max-length)
+          (concat <span class="ef-s">" "</span> title)
+        (propertize
+         (concat <span class="ef-s">" "</span> (truncate-string-to-width title doom-modeline-nov-title-max-length nil nil t))
+         'help-echo title))))
+  (doom-modeline-def-segment nov-current-page
+    (<span class="ef-k">let</span> ((words (count-words (point-min) (point-max))))
+      (propertize
+       (format <span class="ef-s">" %d/%d"</span>
+               (1+ nov-documents-index)
+               (length nov-documents))
+       'face (doom-modeline-face 'doom-modeline-info)
+       'help-echo (<span class="ef-k">if</span> (= words 1) <span class="ef-s">"1 word in this chapter"</span>
+                    (format <span class="ef-s">"%s words in this chapter"</span> words)))))
+  (doom-modeline-def-segment scroll-percentage-subtle
+    (concat
+     (doom-modeline-spc)
+     (propertize (format-mode-line '(<span class="ef-s">""</span> doom-modeline-percent-position <span class="ef-s">"%%"</span>))
+                 'face (doom-modeline-face 'shadow)
+                 'help-echo <span class="ef-s">"Buffer percentage"</span>)))
+
+  (doom-modeline-def-modeline 'nov
+    '(workspace-name window-number nov-author nov-title nov-current-page scroll-percentage-subtle)
+    '(media-player misc-info major-mode time))
+
+  (add-to-list 'doom-modeline-mode-alist '(nov-mode . nov)))
+
+(<span class="ef-k">provide</span> '<span class="ef-o">config-ebooks</span>)
+<span class="ef-cd">;;; </span><span class="ef-c">config-ebooks.el ends here
+</span>
+</pre>
+  <body>
+</html>

@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>config--pkg-org-super-agenda.el.html</title>
+    <style>
+      body { background: #fafafa; color: #383a42; }
+      pre {
+        font-size: 1rem;
+        max-width: min(100rem, 100%);
+        width: max-content;
+        white-space: pre-wrap;
+        margin: auto; }
+      .ef-D {
+        color: #383a42; background-color: #fafafa; font-weight: 400; }
+      .ef-vp {
+         }
+      .ef-h {
+        color: #84888b; }
+      .ef-sc {
+        color: #50a14f; }
+      .ef-w {
+        color: #986801; }
+      .ef-e {
+        color: #e45649; }
+      .ef-l {
+        color: #4078f2; font-weight: 700; }
+      .ef-lv {
+        color: #8b008b; font-weight: 700; }
+      .ef-hi {
+        color: #f0f0f0; background-color: #4078f2; }
+      .ef-c {
+        color: #84888b; }
+      .ef-cd {
+        color: #84888b; }
+      .ef-s {
+        color: #50a14f; }
+      .ef-d {
+        color: #727578; text-decoration: italic; }
+      .ef-m {
+        color: #b751b6; }
+      .ef-k {
+        color: #e45649; }
+      .ef-b {
+        color: #a626a4; }
+      .ef-f {
+        color: #a626a4; }
+      .ef-v {
+        color: #6a1868; }
+      .ef-t {
+        color: #986801; }
+      .ef-o {
+        color: #b751b6; }
+      .ef-wr {
+        color: #986801; }
+      .ef-nc {
+        color: #4078f2; font-weight: 700; }
+      .ef-pp {
+        color: #4078f2; font-weight: 700; }
+      .ef-rc {
+        color: #4078f2; font-weight: 700; }
+      .ef-rb {
+        color: #4078f2; font-weight: 700; }
+      .ef-ob {
+        background-color: #e7e7e7; }
+      .ef-obb {
+        background-color: #e7e7e7; text-decoration: italic; }
+      .ef-obe {
+        background-color: #e7e7e7; text-decoration: italic; }
+      .ef-Oa {
+        color: #e45649; font-weight: nil; font-size: 1.25em }
+      .ef-Ob {
+        color: #da8548; font-weight: 700; font-size: 1.15em }
+      .ef-Oc {
+        color: #b751b6; font-weight: 700; font-size: 1.12em }
+      .ef-Od {
+        color: #6f99f5; font-weight: 600; font-size: 1.09em }
+      .ef-Oe {
+        color: #bc5cba; font-weight: 600; font-size: 1.06em }
+      .ef-Of {
+        color: #9fbbf8; font-weight: 600; font-size: 1.03em }
+      .ef-Og {
+        color: #d292d1; font-weight: 700; }
+      .ef-Oh {
+        color: #d8e4fc; font-weight: 600; }
+      .ef-hn {
+        color: #da8548; font-weight: 700; }
+      .ef-hq {
+        color: #4078f2; }
+      .ef-hs {
+        color: #986801; }
+      .ef-rda {
+        color: #4078f2; }
+      .ef-rdb {
+        color: #a626a4; }
+      .ef-rdc {
+        color: #50a14f; }
+      .ef-rdd {
+        color: #b751b6; }
+      .ef-rde {
+        color: #4db5bd; }
+      .ef-rdf {
+        color: #4078f2; }
+      .ef-rdg {
+        color: #a626a4; }
+      .ef-rdh {
+        color: #50a14f; }
+      .ef-rdi {
+        color: #b751b6; }
+    </style>
+  </head>
+  <body>
+<pre>
+<span class="ef-cd">;;; </span><span class="ef-c">config--pkg-org-super-agenda.el --- Generated package (no.76) from my config -*- lexical-binding: t; -*-
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;; </span><span class="ef-c">Copyright (C) 2025 TEC
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;; </span><span class="ef-c">Author: TEC &lt;https://code.tecosaur.net/tec&gt;
+</span><span class="ef-cd">;; </span><span class="ef-c">Maintainer: TEC &lt;contact@tecosaur.net&gt;
+</span><span class="ef-cd">;; </span><span class="ef-c">Created: June 14, 2025
+</span><span class="ef-cd">;; </span><span class="ef-c">Modified: June 14, 2025
+</span><span class="ef-cd">;; </span><span class="ef-c">Version: 2025.06.14
+</span><span class="ef-cd">;; </span><span class="ef-c">Homepage: https://code.tecosaur.net/tec/emacs-config
+</span><span class="ef-cd">;; </span><span class="ef-c">Package-Requires: ((emacs "29.1"))
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;; </span><span class="ef-c">This file is not part of GNU Emacs.
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;; </span><span class="ef-c">Commentary:
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;  </span><span class="ef-c">Generated package (no.76) from my config.
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;  </span><span class="ef-c">During generation, dependency on other aspects of my configuration and
+</span><span class="ef-cd">;;  </span><span class="ef-c">packages is inferred via (regexp-based) static analysis.  While this seems
+</span><span class="ef-cd">;;  </span><span class="ef-c">to do a good job, this method is imperfect.  This code likely depends on
+</span><span class="ef-cd">;;  </span><span class="ef-c">utilities provided by Doom, and if you try to run it in isolation you may
+</span><span class="ef-cd">;;  </span><span class="ef-c">discover the code makes more assumptions.
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;  </span><span class="ef-c">That said, I've found pretty good results so far.
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;  </span><span class="ef-c">Package statement:
+</span><span class="ef-cd">;;   </span><span class="ef-c">(package! org-super-agenda :pin "fb20ad9c8a9705aa05d40751682beae2d094e0fe")
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;; </span><span class="ef-c">Code:
+</span>
+
+(use-package! org-super-agenda
+  <span class="ef-b">:commands</span> org-super-agenda-mode)
+
+(<span class="ef-k">after!</span> org-agenda
+  (<span class="ef-k">let</span> ((inhibit-message t))
+    (org-super-agenda-mode)))
+
+(<span class="ef-k">setq</span> org-agenda-skip-scheduled-if-done t
+      org-agenda-skip-deadline-if-done t
+      org-agenda-include-deadlines t
+      org-agenda-block-separator nil
+      org-agenda-tags-column 100 <span class="ef-cd">;; </span><span class="ef-c">from testing this seems to be a good value
+</span>      org-agenda-compact-blocks t)
+
+(<span class="ef-k">setq</span> org-agenda-custom-commands
+      '((<span class="ef-s">"o"</span> <span class="ef-s">"Overview"</span>
+         ((agenda <span class="ef-s">""</span> ((org-agenda-span 'day)
+                      (org-super-agenda-groups
+                       '((<span class="ef-b">:name</span> <span class="ef-s">"Today"</span>
+                          <span class="ef-b">:time-grid</span> t
+                          <span class="ef-b">:date</span> today
+                          <span class="ef-b">:todo</span> <span class="ef-s">"TODAY"</span>
+                          <span class="ef-b">:scheduled</span> today
+                          <span class="ef-b">:order</span> 1)))))
+          (alltodo <span class="ef-s">""</span> ((org-agenda-overriding-header <span class="ef-s">""</span>)
+                       (org-super-agenda-groups
+                        '((<span class="ef-b">:name</span> <span class="ef-s">"Next to do"</span>
+                           <span class="ef-b">:todo</span> <span class="ef-s">"NEXT"</span>
+                           <span class="ef-b">:order</span> 1)
+                          (<span class="ef-b">:name</span> <span class="ef-s">"Important"</span>
+                           <span class="ef-b">:tag</span> <span class="ef-s">"Important"</span>
+                           <span class="ef-b">:priority</span> <span class="ef-s">"A"</span>
+                           <span class="ef-b">:order</span> 6)
+                          (<span class="ef-b">:name</span> <span class="ef-s">"Due Today"</span>
+                           <span class="ef-b">:deadline</span> today
+                           <span class="ef-b">:order</span> 2)
+                          (<span class="ef-b">:name</span> <span class="ef-s">"Due Soon"</span>
+                           <span class="ef-b">:deadline</span> future
+                           <span class="ef-b">:order</span> 8)
+                          (<span class="ef-b">:name</span> <span class="ef-s">"Overdue"</span>
+                           <span class="ef-b">:deadline</span> past
+                           <span class="ef-b">:face</span> error
+                           <span class="ef-b">:order</span> 7)
+                          (<span class="ef-b">:name</span> <span class="ef-s">"Assignments"</span>
+                           <span class="ef-b">:tag</span> <span class="ef-s">"Assignment"</span>
+                           <span class="ef-b">:order</span> 10)
+                          (<span class="ef-b">:name</span> <span class="ef-s">"Issues"</span>
+                           <span class="ef-b">:tag</span> <span class="ef-s">"Issue"</span>
+                           <span class="ef-b">:order</span> 12)
+                          (<span class="ef-b">:name</span> <span class="ef-s">"Emacs"</span>
+                           <span class="ef-b">:tag</span> <span class="ef-s">"Emacs"</span>
+                           <span class="ef-b">:order</span> 13)
+                          (<span class="ef-b">:name</span> <span class="ef-s">"Projects"</span>
+                           <span class="ef-b">:tag</span> <span class="ef-s">"Project"</span>
+                           <span class="ef-b">:order</span> 14)
+                          (<span class="ef-b">:name</span> <span class="ef-s">"Research"</span>
+                           <span class="ef-b">:tag</span> <span class="ef-s">"Research"</span>
+                           <span class="ef-b">:order</span> 15)
+                          (<span class="ef-b">:name</span> <span class="ef-s">"To read"</span>
+                           <span class="ef-b">:tag</span> <span class="ef-s">"Read"</span>
+                           <span class="ef-b">:order</span> 30)
+                          (<span class="ef-b">:name</span> <span class="ef-s">"Waiting"</span>
+                           <span class="ef-b">:todo</span> <span class="ef-s">"WAITING"</span>
+                           <span class="ef-b">:order</span> 20)
+                          (<span class="ef-b">:name</span> <span class="ef-s">"University"</span>
+                           <span class="ef-b">:tag</span> <span class="ef-s">"uni"</span>
+                           <span class="ef-b">:order</span> 32)
+                          (<span class="ef-b">:name</span> <span class="ef-s">"Trivial"</span>
+                           <span class="ef-b">:priority&lt;=</span> <span class="ef-s">"E"</span>
+                           <span class="ef-b">:tag</span> (<span class="ef-s">"Trivial"</span> <span class="ef-s">"Unimportant"</span>)
+                           <span class="ef-b">:todo</span> (<span class="ef-s">"SOMEDAY"</span> )
+                           <span class="ef-b">:order</span> 90)
+                          (<span class="ef-b">:discard</span> (<span class="ef-b">:tag</span> (<span class="ef-s">"Chore"</span> <span class="ef-s">"Routine"</span> <span class="ef-s">"Daily"</span>)))))))))))
+
+(<span class="ef-k">provide</span> '<span class="ef-o">config--pkg-org-super-agenda</span>)
+<span class="ef-cd">;;; </span><span class="ef-c">config--pkg-org-super-agenda.el ends here
+</span>
+</pre>
+  <body>
+</html>

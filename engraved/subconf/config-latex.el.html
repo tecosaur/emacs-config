@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>config-latex.el.html</title>
+    <style>
+      body { background: #fafafa; color: #383a42; }
+      pre {
+        font-size: 1rem;
+        max-width: min(100rem, 100%);
+        width: max-content;
+        white-space: pre-wrap;
+        margin: auto; }
+      .ef-D {
+        color: #383a42; background-color: #fafafa; font-weight: 400; }
+      .ef-vp {
+         }
+      .ef-h {
+        color: #84888b; }
+      .ef-sc {
+        color: #50a14f; }
+      .ef-w {
+        color: #986801; }
+      .ef-e {
+        color: #e45649; }
+      .ef-l {
+        color: #4078f2; font-weight: 700; }
+      .ef-lv {
+        color: #8b008b; font-weight: 700; }
+      .ef-hi {
+        color: #f0f0f0; background-color: #4078f2; }
+      .ef-c {
+        color: #84888b; }
+      .ef-cd {
+        color: #84888b; }
+      .ef-s {
+        color: #50a14f; }
+      .ef-d {
+        color: #727578; text-decoration: italic; }
+      .ef-m {
+        color: #b751b6; }
+      .ef-k {
+        color: #e45649; }
+      .ef-b {
+        color: #a626a4; }
+      .ef-f {
+        color: #a626a4; }
+      .ef-v {
+        color: #6a1868; }
+      .ef-t {
+        color: #986801; }
+      .ef-o {
+        color: #b751b6; }
+      .ef-wr {
+        color: #986801; }
+      .ef-nc {
+        color: #4078f2; font-weight: 700; }
+      .ef-pp {
+        color: #4078f2; font-weight: 700; }
+      .ef-rc {
+        color: #4078f2; font-weight: 700; }
+      .ef-rb {
+        color: #4078f2; font-weight: 700; }
+      .ef-ob {
+        background-color: #e7e7e7; }
+      .ef-obb {
+        background-color: #e7e7e7; text-decoration: italic; }
+      .ef-obe {
+        background-color: #e7e7e7; text-decoration: italic; }
+      .ef-Oa {
+        color: #e45649; font-weight: nil; font-size: 1.25em }
+      .ef-Ob {
+        color: #da8548; font-weight: 700; font-size: 1.15em }
+      .ef-Oc {
+        color: #b751b6; font-weight: 700; font-size: 1.12em }
+      .ef-Od {
+        color: #6f99f5; font-weight: 600; font-size: 1.09em }
+      .ef-Oe {
+        color: #bc5cba; font-weight: 600; font-size: 1.06em }
+      .ef-Of {
+        color: #9fbbf8; font-weight: 600; font-size: 1.03em }
+      .ef-Og {
+        color: #d292d1; font-weight: 700; }
+      .ef-Oh {
+        color: #d8e4fc; font-weight: 600; }
+      .ef-hn {
+        color: #da8548; font-weight: 700; }
+      .ef-hq {
+        color: #4078f2; }
+      .ef-hs {
+        color: #986801; }
+      .ef-rda {
+        color: #4078f2; }
+      .ef-rdb {
+        color: #a626a4; }
+      .ef-rdc {
+        color: #50a14f; }
+      .ef-rdd {
+        color: #b751b6; }
+      .ef-rde {
+        color: #4db5bd; }
+      .ef-rdf {
+        color: #4078f2; }
+      .ef-rdg {
+        color: #a626a4; }
+      .ef-rdh {
+        color: #50a14f; }
+      .ef-rdi {
+        color: #b751b6; }
+    </style>
+  </head>
+  <body>
+<pre>
+<span class="ef-cd">;;; </span><span class="ef-c">config-latex.el --- Generated package (no.93) from my config -*- lexical-binding: t; -*-
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;; </span><span class="ef-c">Copyright (C) 2025 TEC
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;; </span><span class="ef-c">Author: TEC &lt;https://code.tecosaur.net/tec&gt;
+</span><span class="ef-cd">;; </span><span class="ef-c">Maintainer: TEC &lt;contact@tecosaur.net&gt;
+</span><span class="ef-cd">;; </span><span class="ef-c">Created: June 14, 2025
+</span><span class="ef-cd">;; </span><span class="ef-c">Modified: June 14, 2025
+</span><span class="ef-cd">;; </span><span class="ef-c">Version: 2025.06.14
+</span><span class="ef-cd">;; </span><span class="ef-c">Homepage: https://code.tecosaur.net/tec/emacs-config
+</span><span class="ef-cd">;; </span><span class="ef-c">Package-Requires: ((emacs "29.1"))
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;; </span><span class="ef-c">This file is not part of GNU Emacs.
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;; </span><span class="ef-c">Commentary:
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;  </span><span class="ef-c">Generated package (no.93) from my config.
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;  </span><span class="ef-c">During generation, dependency on other aspects of my configuration and
+</span><span class="ef-cd">;;  </span><span class="ef-c">packages is inferred via (regexp-based) static analysis.  While this seems
+</span><span class="ef-cd">;;  </span><span class="ef-c">to do a good job, this method is imperfect.  This code likely depends on
+</span><span class="ef-cd">;;  </span><span class="ef-c">utilities provided by Doom, and if you try to run it in isolation you may
+</span><span class="ef-cd">;;  </span><span class="ef-c">discover the code makes more assumptions.
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;  </span><span class="ef-c">That said, I've found pretty good results so far.
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;; </span><span class="ef-c">Code:
+</span>
+(<span class="ef-k">setq</span> TeX-save-query nil
+      TeX-show-compilation t
+      TeX-command-extra-options <span class="ef-s">"-shell-escape"</span>)
+(<span class="ef-k">after!</span> latex
+  (add-to-list 'TeX-command-list '(<span class="ef-s">"XeLaTeX"</span> <span class="ef-s">"%`xelatex%(mode)%' %t"</span> TeX-run-TeX nil t)))
+
+(<span class="ef-k">setq</span> +latex-viewers '(pdf-tools evince zathura okular skim sumatrapdf))
+
+(<span class="ef-k">setq</span> tec/yas-latex-template-preamble <span class="ef-s">"
+\\usepackage[pdfa,unicode=true,hidelinks]{hyperref}
+
+\\usepackage[dvipsnames,svgnames,table,hyperref]{xcolor}
+\\renewcommand{\\UrlFont}{\\ttfamily\\small}
+
+\\usepackage[a-2b]{pdfx} % why not be archival
+
+\\usepackage[T1]{fontenc}
+\\usepackage[osf]{newpxtext}  % Palatino
+\\usepackage{gillius}
+\\usepackage[scale=0.9]{sourcecodepro}
+
+\\usepackage{mathtools}
+\\usepackage{amssymb}
+\\let\\Bbbk\\relax
+\\usepackage[varbb]{newpxmath}
+
+\\usepackage[activate={true,nocompatibility},final,tracking=true,kerning=true,spacing=true,factor=2000]{microtype}
+% microtype makes text look nicer
+
+\\usepackage{graphicx} % include graphics
+
+\\usepackage{booktabs} % nice table rules
+"</span>)
+
+(<span class="ef-k">defun</span> <span class="ef-f">tec/yas-latex-get-class-choice</span> ()
+  <span class="ef-d">"Prompt user for LaTeX class choice"</span>
+  (<span class="ef-k">setq</span> tec/yas-latex-class-choice (completing-read <span class="ef-s">"Select document class: "</span> '(<span class="ef-s">"article"</span> <span class="ef-s">"scrartcl"</span> <span class="ef-s">"bmc"</span>))))
+
+(<span class="ef-k">defun</span> <span class="ef-f">tec/yas-latex-preamble-if</span> ()
+  <span class="ef-d">"Based on class choice prompt for insertion of default preamble"</span>
+  (<span class="ef-k">if</span> (equal tec/yas-latex-class-choice <span class="ef-s">"bmc"</span>) 'nil
+    (eq (read-char-choice <span class="ef-s">"Include default preamble? [Type y/n]"</span> '(?y ?n)) ?y)))
+
+(<span class="ef-k">after!</span> tex
+  (<span class="ef-k">defvar</span> <span class="ef-v">tec/tex-last-delim-char</span> nil
+    <span class="ef-d">"Last open delim expanded in a tex document"</span>)
+  (<span class="ef-k">defvar</span> <span class="ef-v">tec/tex-delim-dot-second</span> t
+    <span class="ef-d">"When the `</span><span style="color: #b751b6; text-decoration: italic;">tec/tex-last-delim-char</span><span class="ef-d">' is . a second character (this) is prompted for"</span>)
+  (<span class="ef-k">defun</span> <span class="ef-f">tec/get-open-delim-char</span> ()
+    <span class="ef-d">"Exclusivly read next char to tec/tex-last-delim-char"</span>
+    (<span class="ef-k">setq</span> tec/tex-delim-dot-second nil)
+    (<span class="ef-k">setq</span> tec/tex-last-delim-char (read-char-exclusive <span class="ef-s">"Opening deliminator, recognises: 9 ( [ { &lt; | ."</span>))
+    (<span class="ef-k">when</span> (eql ?. tec/tex-last-delim-char)
+      (<span class="ef-k">setq</span> tec/tex-delim-dot-second (read-char-exclusive <span class="ef-s">"Other deliminator, recognises: 0 9 (  ) [ ] { } &lt; &gt; |"</span>))))
+  (<span class="ef-k">defun</span> <span class="ef-f">tec/tex-open-delim-from-char</span> (<span class="ef-t">&amp;optional</span> open-char)
+    <span class="ef-d">"Find the associated opening delim as string"</span>
+    (<span class="ef-k">unless</span> open-char (<span class="ef-k">setq</span> open-char (<span class="ef-k">if</span> (eql ?. tec/tex-last-delim-char)
+                                          tec/tex-delim-dot-second
+                                        tec/tex-last-delim-char)))
+    (<span class="ef-k">pcase</span> open-char
+      (?\( <span class="ef-s">"("</span>)
+      (?9  <span class="ef-s">"("</span>)
+      (?\[ <span class="ef-s">"["</span>)
+      (?\{ <span class="ef-s">"\\{"</span>)
+      (?&lt;  <span class="ef-s">"&lt;"</span>)
+      (?|  (<span class="ef-k">if</span> tec/tex-delim-dot-second <span class="ef-s">"."</span> <span class="ef-s">"|"</span>))
+      (_   <span class="ef-s">"."</span>)))
+  (<span class="ef-k">defun</span> <span class="ef-f">tec/tex-close-delim-from-char</span> (<span class="ef-t">&amp;optional</span> open-char)
+    <span class="ef-d">"Find the associated closing delim as string"</span>
+    (<span class="ef-k">if</span> tec/tex-delim-dot-second
+        (<span class="ef-k">pcase</span> tec/tex-delim-dot-second
+          (?\) <span class="ef-s">")"</span>)
+          (?0  <span class="ef-s">")"</span>)
+          (?\] <span class="ef-s">"]"</span>)
+          (?\} <span class="ef-s">"\\}"</span>)
+          (?\&gt; <span class="ef-s">"&gt;"</span>)
+          (?|  <span class="ef-s">"|"</span>)
+          (_   <span class="ef-s">"."</span>))
+      (<span class="ef-k">pcase</span> (<span class="ef-k">or</span> open-char tec/tex-last-delim-char)
+        (?\( <span class="ef-s">")"</span>)
+        (?9  <span class="ef-s">")"</span>)
+        (?\[ <span class="ef-s">"]"</span>)
+        (?\{ <span class="ef-s">"\\}"</span>)
+        (?&lt;  <span class="ef-s">"&gt;"</span>)
+        (?\) <span class="ef-s">")"</span>)
+        (?0  <span class="ef-s">")"</span>)
+        (?\] <span class="ef-s">"]"</span>)
+        (?\} <span class="ef-s">"\\}"</span>)
+        (?\&gt; <span class="ef-s">"&gt;"</span>)
+        (?|  <span class="ef-s">"|"</span>)
+        (_   <span class="ef-s">"."</span>))))
+  (<span class="ef-k">defun</span> <span class="ef-f">tec/tex-next-char-smart-close-delim</span> (<span class="ef-t">&amp;optional</span> open-char)
+    (<span class="ef-k">and</span> (<span class="ef-k">bound-and-true-p</span> smartparens-mode)
+         (eql (char-after) (<span class="ef-k">pcase</span> (<span class="ef-k">or</span> open-char tec/tex-last-delim-char)
+                             (?\( ?\))
+                             (?\[ ?\])
+                             (?{ ?})
+                             (?&lt; ?&gt;)))))
+  (<span class="ef-k">defun</span> <span class="ef-f">tec/tex-delim-yas-expand</span> (<span class="ef-t">&amp;optional</span> open-char)
+    (yas-expand-snippet (yas-lookup-snippet <span class="ef-s">"_deliminators"</span> 'latex-mode) (point) (+ (point) (<span class="ef-k">if</span> (tec/tex-next-char-smart-close-delim open-char) 2 1)))))
+
+(<span class="ef-k">after!</span> latex
+  (setcar (assoc <span class="ef-s">"⋆"</span> LaTeX-fold-math-spec-list) <span class="ef-s">"★"</span>)) <span class="ef-cd">;; </span><span class="ef-c">make \star bigger
+</span>
+(<span class="ef-k">setq</span> TeX-fold-math-spec-list
+      `(<span class="ef-cd">;; </span><span class="ef-c">missing/better symbols
+</span>        (<span class="ef-s">"≤"</span> (<span class="ef-s">"le"</span>))
+        (<span class="ef-s">"≥"</span> (<span class="ef-s">"ge"</span>))
+        (<span class="ef-s">"≠"</span> (<span class="ef-s">"ne"</span>))
+        <span class="ef-cd">;; </span><span class="ef-c">convenience shorts -- these don't work nicely ATM
+</span>        <span class="ef-cd">;; </span><span class="ef-c">("‹" ("left"))
+</span>        <span class="ef-cd">;; </span><span class="ef-c">("›" ("right"))
+</span>        <span class="ef-cd">;; </span><span class="ef-c">private macros
+</span>        (<span class="ef-s">"ℝ"</span> (<span class="ef-s">"RR"</span>))
+        (<span class="ef-s">"ℕ"</span> (<span class="ef-s">"NN"</span>))
+        (<span class="ef-s">"ℤ"</span> (<span class="ef-s">"ZZ"</span>))
+        (<span class="ef-s">"ℚ"</span> (<span class="ef-s">"QQ"</span>))
+        (<span class="ef-s">"ℂ"</span> (<span class="ef-s">"CC"</span>))
+        (<span class="ef-s">"ℙ"</span> (<span class="ef-s">"PP"</span>))
+        (<span class="ef-s">"ℍ"</span> (<span class="ef-s">"HH"</span>))
+        (<span class="ef-s">"𝔼"</span> (<span class="ef-s">"EE"</span>))
+        (<span class="ef-s">"𝑑"</span> (<span class="ef-s">"dd"</span>))
+        <span class="ef-cd">;; </span><span class="ef-c">known commands
+</span>        (<span class="ef-s">""</span> (<span class="ef-s">"phantom"</span>))
+        (,(<span class="ef-k">lambda</span> (num den) (<span class="ef-k">if</span> (<span class="ef-k">and</span> (TeX-string-single-token-p num) (TeX-string-single-token-p den))
+                                (concat num <span class="ef-s">"／"</span> den)
+                              (concat <span class="ef-s">"❪"</span> num <span class="ef-s">"／"</span> den <span class="ef-s">"❫"</span>))) <span class="ef-wr">(</span><span style="color: #986801;">"frac"</span><span class="ef-wr">))</span>
+        (,(<span class="ef-k">lambda</span> (arg) (concat <span class="ef-s">"√"</span> (TeX-fold-parenthesize-as-necessary arg))) (<span class="ef-s">"sqrt"</span>))
+        (,(<span class="ef-k">lambda</span> (arg) (concat <span class="ef-s">"⭡"</span> (TeX-fold-parenthesize-as-necessary arg))) (<span class="ef-s">"vec"</span>))
+        (<span class="ef-s">"‘</span><span style="color: #b751b6;">{1}</span><span class="ef-s">’"</span> (<span class="ef-s">"text"</span>))
+        <span class="ef-cd">;; </span><span class="ef-c">private commands
+</span>        (<span class="ef-s">"|{1}|"</span> (<span class="ef-s">"abs"</span>))
+        (<span class="ef-s">"‖{1}‖"</span> (<span class="ef-s">"norm"</span>))
+        (<span class="ef-s">"⌊{1}⌋"</span> (<span class="ef-s">"floor"</span>))
+        (<span class="ef-s">"⌈{1}⌉"</span> (<span class="ef-s">"ceil"</span>))
+        (<span class="ef-s">"⌊{1}⌉"</span> (<span class="ef-s">"round"</span>))
+        (<span class="ef-s">"𝑑{1}/𝑑{2}"</span> (<span class="ef-s">"dv"</span>))
+        (<span class="ef-s">"∂{1}/∂{2}"</span> (<span class="ef-s">"pdv"</span>))
+        <span class="ef-cd">;; </span><span class="ef-c">fancification
+</span>        (<span class="ef-s">"{1}"</span> (<span class="ef-s">"mathrm"</span>))
+        (,(<span class="ef-k">lambda</span> (word) (string-offset-roman-chars 119743 word)) (<span class="ef-s">"mathbf"</span>))
+        (,(<span class="ef-k">lambda</span> (word) (string-offset-roman-chars 119951 word)) (<span class="ef-s">"mathcal"</span>))
+        (,(<span class="ef-k">lambda</span> (word) (string-offset-roman-chars 120003 word)) (<span class="ef-s">"mathfrak"</span>))
+        (,(<span class="ef-k">lambda</span> (word) (string-offset-roman-chars 120055 word)) (<span class="ef-s">"mathbb"</span>))
+        (,(<span class="ef-k">lambda</span> (word) (string-offset-roman-chars 120159 word)) (<span class="ef-s">"mathsf"</span>))
+        (,(<span class="ef-k">lambda</span> (word) (string-offset-roman-chars 120367 word)) (<span class="ef-s">"mathtt"</span>))
+        )
+      TeX-fold-macro-spec-list
+      '(
+        <span class="ef-cd">;; </span><span class="ef-c">as the defaults
+</span>        (<span class="ef-s">"[f]"</span> (<span class="ef-s">"footnote"</span> <span class="ef-s">"marginpar"</span>))
+        (<span class="ef-s">"[c]"</span> (<span class="ef-s">"cite"</span>))
+        (<span class="ef-s">"[l]"</span> (<span class="ef-s">"label"</span>))
+        (<span class="ef-s">"[r]"</span> (<span class="ef-s">"ref"</span> <span class="ef-s">"pageref"</span> <span class="ef-s">"eqref"</span>))
+        (<span class="ef-s">"[i]"</span> (<span class="ef-s">"index"</span> <span class="ef-s">"glossary"</span>))
+        (<span class="ef-s">"..."</span> (<span class="ef-s">"dots"</span>))
+        (<span class="ef-s">"{1}"</span> (<span class="ef-s">"emph"</span> <span class="ef-s">"textit"</span> <span class="ef-s">"textsl"</span> <span class="ef-s">"textmd"</span> <span class="ef-s">"textrm"</span> <span class="ef-s">"textsf"</span> <span class="ef-s">"texttt"</span>
+                <span class="ef-s">"textbf"</span> <span class="ef-s">"textsc"</span> <span class="ef-s">"textup"</span>))
+        <span class="ef-cd">;; </span><span class="ef-c">tweaked defaults
+</span>        (<span class="ef-s">"©"</span> (<span class="ef-s">"copyright"</span>))
+        (<span class="ef-s">"®"</span> (<span class="ef-s">"textregistered"</span>))
+        (<span class="ef-s">"™"</span>  (<span class="ef-s">"texttrademark"</span>))
+        (<span class="ef-s">"[1]:||►"</span> (<span class="ef-s">"item"</span>))
+        (<span class="ef-s">"❡❡ {1}"</span> (<span class="ef-s">"part"</span> <span class="ef-s">"part*"</span>))
+        (<span class="ef-s">"❡ {1}"</span> (<span class="ef-s">"chapter"</span> <span class="ef-s">"chapter*"</span>))
+        (<span class="ef-s">"§ {1}"</span> (<span class="ef-s">"section"</span> <span class="ef-s">"section*"</span>))
+        (<span class="ef-s">"§§ {1}"</span> (<span class="ef-s">"subsection"</span> <span class="ef-s">"subsection*"</span>))
+        (<span class="ef-s">"§§§ {1}"</span> (<span class="ef-s">"subsubsection"</span> <span class="ef-s">"subsubsection*"</span>))
+        (<span class="ef-s">"¶ {1}"</span> (<span class="ef-s">"paragraph"</span> <span class="ef-s">"paragraph*"</span>))
+        (<span class="ef-s">"¶¶ {1}"</span> (<span class="ef-s">"subparagraph"</span> <span class="ef-s">"subparagraph*"</span>))
+        <span class="ef-cd">;; </span><span class="ef-c">extra
+</span>        (<span class="ef-s">"⬖ {1}"</span> (<span class="ef-s">"begin"</span>))
+        (<span class="ef-s">"⬗ {1}"</span> (<span class="ef-s">"end"</span>))
+        ))
+
+(<span class="ef-k">defun</span> <span class="ef-f">string-offset-roman-chars</span> (offset word)
+  <span class="ef-d">"Shift the codepoint of each character in WORD by OFFSET with an extra -6 shift if the letter is lowercase"</span>
+  (apply 'string
+         (mapcar (<span class="ef-k">lambda</span> (c)
+                   (string-offset-apply-roman-char-exceptions
+                    (+ (<span class="ef-k">if</span> (&gt;= c 97) (- c 6) c) offset)))
+                 word)))
+
+(<span class="ef-k">defvar</span> <span class="ef-v">string-offset-roman-char-exceptions</span>
+  '(<span class="ef-cd">;; </span><span class="ef-c">lowercase serif
+</span>    (119892 .  8462) <span class="ef-cd">; </span><span class="ef-c">ℎ
+</span>    <span class="ef-cd">;; </span><span class="ef-c">lowercase caligraphic
+</span>    (119994 . 8495) <span class="ef-cd">; </span><span class="ef-c">ℯ
+</span>    (119996 . 8458) <span class="ef-cd">; </span><span class="ef-c">ℊ
+</span>    (120004 . 8500) <span class="ef-cd">; </span><span class="ef-c">ℴ
+</span>    <span class="ef-cd">;; </span><span class="ef-c">caligraphic
+</span>    (119965 . 8492) <span class="ef-cd">; </span><span class="ef-c">ℬ
+</span>    (119968 . 8496) <span class="ef-cd">; </span><span class="ef-c">ℰ
+</span>    (119969 . 8497) <span class="ef-cd">; </span><span class="ef-c">ℱ
+</span>    (119971 . 8459) <span class="ef-cd">; </span><span class="ef-c">ℋ
+</span>    (119972 . 8464) <span class="ef-cd">; </span><span class="ef-c">ℐ
+</span>    (119975 . 8466) <span class="ef-cd">; </span><span class="ef-c">ℒ
+</span>    (119976 . 8499) <span class="ef-cd">; </span><span class="ef-c">ℳ
+</span>    (119981 . 8475) <span class="ef-cd">; </span><span class="ef-c">ℛ
+</span>    <span class="ef-cd">;; </span><span class="ef-c">fraktur
+</span>    (120070 . 8493) <span class="ef-cd">; </span><span class="ef-c">ℭ
+</span>    (120075 . 8460) <span class="ef-cd">; </span><span class="ef-c">ℌ
+</span>    (120076 . 8465) <span class="ef-cd">; </span><span class="ef-c">ℑ
+</span>    (120085 . 8476) <span class="ef-cd">; </span><span class="ef-c">ℜ
+</span>    (120092 . 8488) <span class="ef-cd">; </span><span class="ef-c">ℨ
+</span>    <span class="ef-cd">;; </span><span class="ef-c">blackboard
+</span>    (120122 . 8450) <span class="ef-cd">; </span><span class="ef-c">ℂ
+</span>    (120127 . 8461) <span class="ef-cd">; </span><span class="ef-c">ℍ
+</span>    (120133 . 8469) <span class="ef-cd">; </span><span class="ef-c">ℕ
+</span>    (120135 . 8473) <span class="ef-cd">; </span><span class="ef-c">ℙ
+</span>    (120136 . 8474) <span class="ef-cd">; </span><span class="ef-c">ℚ
+</span>    (120137 . 8477) <span class="ef-cd">; </span><span class="ef-c">ℝ
+</span>    (120145 . 8484) <span class="ef-cd">; </span><span class="ef-c">ℤ
+</span>    )
+  <span class="ef-d">"An alist of deceptive codepoints, and then where the glyph actually resides."</span>)
+
+(<span class="ef-k">defun</span> <span class="ef-f">string-offset-apply-roman-char-exceptions</span> (char)
+  <span class="ef-d">"Sometimes the codepoint doesn't contain the char you expect.
+Such special cases should be remapped to another value, as given in `</span><span style="color: #b751b6; text-decoration: italic;">string-offset-roman-char-exceptions</span><span class="ef-d">'."</span>
+  (<span class="ef-k">if</span> (assoc char string-offset-roman-char-exceptions)
+      (cdr (assoc char string-offset-roman-char-exceptions))
+    char))
+
+(<span class="ef-k">defun</span> <span class="ef-f">TeX-fold-parenthesize-as-necessary</span> (tokens <span class="ef-t">&amp;optional</span> suppress-left suppress-right)
+  <span class="ef-d">"Add ❪ ❫ parenthesis as if multiple LaTeX tokens appear to be present"</span>
+  (<span class="ef-k">if</span> (TeX-string-single-token-p tokens) tokens
+    (concat (<span class="ef-k">if</span> suppress-left <span class="ef-s">""</span> <span class="ef-s">"❪"</span>)
+            tokens
+            (<span class="ef-k">if</span> suppress-right <span class="ef-s">""</span> <span class="ef-s">"❫"</span>))))
+
+(<span class="ef-k">defun</span> <span class="ef-f">TeX-string-single-token-p</span> (teststring)
+  <span class="ef-d">"Return t if TESTSTRING appears to be a single token, nil otherwise"</span>
+  (<span class="ef-k">if</span> (string-match-p <span class="ef-s">"^\\\\?\\w+$"</span> teststring) t nil))
+
+(<span class="ef-k">after!</span> tex
+  (map!
+   <span class="ef-b">:map</span> LaTeX-mode-map
+   <span class="ef-b">:ei</span> [C-return] #'LaTeX-insert-item)
+  (<span class="ef-k">setq</span> TeX-electric-math '(<span class="ef-s">"</span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">(</span><span class="ef-s">"</span> . <span class="ef-s">""</span>)))
+
+<span class="ef-cd">;; </span><span class="ef-c">Making \( \) less visible
+</span>(<span class="ef-k">defface</span> <span class="ef-v">unimportant-latex-face</span>
+  '((t <span class="ef-b">:inherit</span> font-lock-comment-face <span class="ef-b">:weight</span> extra-light))
+  <span class="ef-d">"Face used to make \\(\\), \\[</span><span style="color: #b751b6; text-decoration: italic;">\\</span><span class="ef-d">] less visible."</span>
+  <span class="ef-b">:group</span> 'LaTeX-math)
+
+(font-lock-add-keywords
+ 'latex-mode
+ `((<span class="ef-s">"\\\\[]()[]"</span> 0 'unimportant-latex-face prepend))
+ 'end)
+
+<span class="ef-cd">;; </span><span class="ef-c">(font-lock-add-keywords
+</span><span class="ef-cd">;;  </span><span class="ef-c">'latex-mode
+</span><span class="ef-cd">;;  </span><span class="ef-c">'(("\\\\[[:word:]]+" 0 'font-lock-keyword-face prepend))
+</span><span class="ef-cd">;;  </span><span class="ef-c">'end)
+</span>
+(<span class="ef-k">setq</span> preview-LaTeX-command '(<span class="ef-s">"%`%l \"\\nonstopmode\\nofiles\
+\\PassOptionsToPackage{"</span> (<span class="ef-s">","</span> . preview-required-option-list) <span class="ef-s">"}{preview}\
+\\AtBeginDocument{\\ifx\\ifPreview\\undefined"</span>
+preview-default-preamble <span class="ef-s">"\\fi}\"%' \"\\detokenize{\" %t \"}\""</span>))
+
+(<span class="ef-k">after!</span> cdlatex
+  (<span class="ef-k">setq</span> cdlatex-env-alist
+        '((<span class="ef-s">"bmatrix"</span> <span class="ef-s">"\\begin{bmatrix}\n?\n\\end{bmatrix}"</span> nil)
+          (<span class="ef-s">"equation*"</span> <span class="ef-s">"\\begin{equation*}\n?\n\\end{equation*}"</span> nil)))
+  (<span class="ef-k">setq</span> <span class="ef-cd">;; </span><span class="ef-c">cdlatex-math-symbol-prefix ?\; ;; doesn't work at the moment :(
+</span>   cdlatex-math-symbol-alist
+   '( <span class="ef-cd">;; </span><span class="ef-c">adding missing functions to 3rd level symbols
+</span>     (?_    (<span class="ef-s">"\\downarrow"</span>  <span class="ef-s">""</span>           <span class="ef-s">"\\inf"</span>))
+     (?2    (<span class="ef-s">"^2"</span>           <span class="ef-s">"\\sqrt{?}"</span>     <span class="ef-s">""</span>     ))
+     (?3    (<span class="ef-s">"^3"</span>           <span class="ef-s">"\\sqrt[3]{?}"</span>  <span class="ef-s">""</span>     ))
+     (?^    (<span class="ef-s">"\\uparrow"</span>    <span class="ef-s">""</span>           <span class="ef-s">"\\sup"</span>))
+     (?k    (<span class="ef-s">"\\kappa"</span>      <span class="ef-s">""</span>           <span class="ef-s">"\\ker"</span>))
+     (?m    (<span class="ef-s">"\\mu"</span>         <span class="ef-s">""</span>           <span class="ef-s">"\\lim"</span>))
+     (?c    (<span class="ef-s">""</span>             <span class="ef-s">"\\circ"</span>     <span class="ef-s">"\\cos"</span>))
+     (?d    (<span class="ef-s">"\\delta"</span>      <span class="ef-s">"\\partial"</span>  <span class="ef-s">"\\dim"</span>))
+     (?D    (<span class="ef-s">"\\Delta"</span>      <span class="ef-s">"\\nabla"</span>    <span class="ef-s">"\\deg"</span>))
+     <span class="ef-cd">;; </span><span class="ef-c">no idea why \Phi isnt on '</span><span style="color: #b751b6;">F</span><span class="ef-c">' in first place, \phi is on '</span><span style="color: #b751b6;">f</span><span class="ef-c">'.
+</span>     (?F    (<span class="ef-s">"\\Phi"</span>))
+     <span class="ef-cd">;; </span><span class="ef-c">now just convenience
+</span>     (?.    (<span class="ef-s">"\\cdot"</span> <span class="ef-s">"\\dots"</span>))
+     (?:    (<span class="ef-s">"\\vdots"</span> <span class="ef-s">"\\ddots"</span>))
+     (?*    (<span class="ef-s">"\\times"</span> <span class="ef-s">"\\star"</span> <span class="ef-s">"\\ast"</span>)))
+   cdlatex-math-modify-alist
+   '( <span class="ef-cd">;; </span><span class="ef-c">my own stuff
+</span>     (?B    <span class="ef-s">"\\mathbb"</span>        nil          t    nil  nil)
+     (?a    <span class="ef-s">"\\abs"</span>           nil          t    nil  nil))))
+
+(<span class="ef-k">after!</span> tex
+  (add-to-list 'TeX-view-program-list '(<span class="ef-s">"Evince"</span> <span class="ef-s">"evince %o"</span>))
+  (add-to-list 'TeX-view-program-selection '(output-pdf <span class="ef-s">"Evince"</span>)))
+
+(<span class="ef-k">when</span> (&gt;= emacs-major-version 28)
+  (add-hook 'latex-mode-hook #'TeX-latex-mode))
+
+(<span class="ef-k">when</span> (<span class="ef-k">and</span> (= emacs-major-version 29) (= emacs-minor-version 4))
+  (<span class="ef-k">after!</span> auctex <span class="ef-cd">; </span><span class="ef-c">See &lt;https://github.com/minad/vertico/discussions/475&gt;
+</span>    (fmakunbound 'ConTeXt-mode)))
+
+(<span class="ef-k">provide</span> '<span class="ef-o">config-latex</span>)
+<span class="ef-cd">;;; </span><span class="ef-c">config-latex.el ends here
+</span>
+</pre>
+  <body>
+</html>

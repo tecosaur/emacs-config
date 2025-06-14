@@ -1,0 +1,214 @@
+
+beancount: ddd4b87257 → 9c3c429b16
+  9c3c429 Fixed #66, use (string-width) instead of (length) to compute width.
+  029d0c9 (Merge remote-tracking branch 'github/main')
+  2303612 I meant 0.9.0!
+  71c1622 Releasing version 0.9.
+  152020d Applied changes from code review from monnier.
+  4f0bb09 (Merge branch 'vkazanov-more-xref')
+  b01c8c5 Merge branch 'main' into more-xref
+  142c5a4 Using actions/checkout@v4
+  696565a Made beancount-linked able to pull out tag at point.
+  146b84d tags and links support for xref definitions/references/apropos
+  0a242af interactive spec fixes
+  e5b50a6 correct function used
+  649388f better version checking
+  bdd71c5 Implement xref backend
+  aa0582a Refactor collection of completion candidates
+  0c68d19 Fix indentation
+  bb3aef8 Add .gitignore
+  fe682ff Remove some weird advice from etc/emacsrc
+  60cf331 Move adding to auto-mode-alist into an autoload
+  8cafe1c Provide functions for shifting date on the current line
+  bc753ce ci: Run tests on Emacs 29 releases too
+  fbfdf2b Make beancount-amount face inherit from default face
+  3725c02 Update account name regex to allow starting with a number
+  546163f flymake-bean-check: Send buffer contents over stdin
+  dfd402e Autocomplete the second account in a pad directive
+  0f1e330 Fix a bug where `beancount-accounts` was read from the minibuffer
+  d9ac93f Enable easy access to old-style keybindings
+  4750bfa Change keybindings to respect Emacs conventions
+  72956f0 Change sign of prefix argument for `beancount-insert-date`
+  da9073b Update readme
+  763a8d3 Add docstrings
+  f55912c Add flymake-bean-check
+  519bfd8 (Merge remote-tracking branch 'github/main')
+  e32e44e Added personal binding to aggregate balance binding.
+  94bae42 Extend CI to run tests on Emacs 28 too
+  2f743e6 Derive from prog-mode instead than from fundamental-mode
+  bde2d6c Add function to jump to previous transaction
+  687775d Minor refactoring of region commands (with no expected functionality changes).
+  73b2afc (Merge remote-tracking branch 'github/main')
+  e8a5bce Fix typo in beancount-number-alignment-column docstring
+  41039a8 Added support for accounts in thing-at-point.
+  ea82578 Fix amount alignment on tab key press
+  42edc5b Align amounts in balance directives in the same way as in postings
+  dbafe6a Shift beancount-insert-date by DAYS from today using prefix args
+  5be04a3 (Merge branch 'main' into cost)
+  dd024c8 Added support for cost over regions
+  e98047d Tweak Makefile
+  3ef6031 Fix headlines fontification and two minor cleanups
+  7b8f02e Cleanup faces definitions
+  90c3992 Fix imenu tests
+  16c1b34 Fix thing-at-point tests
+  aab2a23 Fix headlines fontification test
+  2bed4f6 Setup CI using GitHub Actions
+  4492124 fix parenthses mismatch on beancount outline 1-8
+  d560451 Use beancount-level-N faces instead of org-level-N
+  02fe03e Fix font lock for accounts
+  3c04745 Add missing paren to configuration example in README.org
+  53a3f8e Fix typo and make code a bit more idiomatic.
+  7785e88 Improve thing-at-point definition for beancount-link
+  7a0ef01 Add command to open file with fava
+  7410724 beancount-region: Added bindings for region_value variant.
+  dcb317e If the cursor is over a link, invoke 'bean-doctor linked' command with the link instead of the line number.
+  5ff5090 Fixes to /etc
+  fda1819 Update COPYING to GPLv3
+  194a9e9 Added license.
+  9508e56 Add README.org
+  05d4798 (emacs) Added experimental beancount-mode support for running a journal for the account under the cursor.
+  ba6bada beancount.el: Rework imenu support and add tests
+  ca4babb Merged in imenu-support (pull request #132)
+  8091f35 beancount.el: Add beancount-electric-currency
+  0cd55a8 beancount.el: Introduce beancount-insert-date and bind it to M-RET
+  615881f beancount.el: Fix beancount-collect to correctly ignore entry at point
+  0062cc9 beancount.el: Remove an useless defvar
+  d51963d beancount.el: Remove redundant :group
+  70d4878 Merged in default (pull request #133)
+  83cd933 beancount.el: Include underscore and dash to metadata regexp.
+  60ef7f5 beancount.el: Fix typos in the comment
+  35d127f beancount.el: Add imenu support
+  b377d14 (merge)
+  008d1bc Added missing binding for outline more to go up a heading level.
+  a48aaa7 beacnount.el: Tweak beancount-indent-line
+  aec1146 Automated merge with ssh://bitbucket.org/blais/beancount
+  4cae6ee beancount.el: Make beancount-number-regexp more strict
+  d4db16f beancount.el: Fix fontification of outline headings
+  695104d beancount.el: Fix beancount-insert-account
+  f27ea30 (changes for updated Emacs mode)
+  8a1557b beancount.el: Silence byte-compilation warnings about unused arguments
+  d5471cf beancount.el: Highlight headings when combined with outline-minor-mode
+  77027e2 beancount.el: Add outline-minor-mode integration tests
+  d8d95a2 beancount.el: Small tests cleanup
+  b6e34fc beancount.el: Add simple completion-at-point test
+  c5e02d4 beancount.el: Correct option names list
+  fa28595 beancount.el: Drop unused function
+  2016293 beancount.el: Sort option names alphabetically
+  57e2700 beancount.el: Fix beancount-use-ido defcustum
+  8c52ee0 beancount.el: Revamp function to toggle transaction flag
+  8de6790 beancount.el: Add support to highlight transaction at point
+  ec4b299 beancount.el: Bring back outline folding functionality
+  d464468 beancount.el: Add indentation tests
+  35ef808 beancount.el: Implement indentation support
+  ad26ec2 beancount.el: Add fontification tests
+  6e104dc beancount.el: Revamp fontification
+  fd64acd beancount.el: Restructure completion-at-point
+  ad05238 beancount.el: Small simplifications
+  ea357a9 beancount.el: Update Copyright and Author
+  b1fa650 beancount.el: Add tests
+  eda34d1 beancount.el: Convert the minor mode into a major mode
+  1da4c88 Merged in elisp-comment-fixes (pull request #107)
+  3f5e4fc beancount.el: kill more comment-related Org variables
+  8496f49 Fixed #302: Fixed second bug with font-locking for account names (starting with digit).
+  404876f Fixed #302: beancount.el does not fontify account names with single letter components.
+  1343aaa Fixed Emacs functionality to uncomment regions (change submitted by Stefan Monnier).
+  9f82d86 Fixed #209: Don't require 'ido. User will have to make sure that beancount-use-ido is false.
+  ada0966 Moved src/python/beancount/... to beancount/...
+  a93df92 Moved src/elisp/beancount.el to editors/emacs/beancount.el.
+  83a046d (merge booking -> default)
+  9ee4aaa (merge default -> booking)
+  9a688bb Added an experimental Emacs binding for reformatting the entire file using bean-format.
+  49db3ce Found irregularity with holdings, will need to fix. Fixed holdings web page which still had equity accounts.
+  517046b In reports, render to a maximum number of digits (5) that is more reasonable than the default.
+  d3eccf1 More work on price update generation, positions as csv files, and fixes for files moved.
+  36e82fc Made beancount.el very decent, decent enough to start working with it for real.
+  c77e340 .
+  e7e3b81 Misc.
+  f284722 .
+
+org-chef: 1710b54441 → 6a6bccfd85
+  6a6bccf Add README about org-protocol usage, as well as a helper function for it.
+  5bb361c Fixes to many websites.
+
+org-graph-view: 172157aee1 → 15d49a3a3d
+  15d49a3 Tests: Add data file
+
+org-modern: a58534475b → 16bef888cb
+  16bef88 Version 1.9
+  96c2999 Update changelog
+  4cac2a4 Fix out-of-range error when formatting tables in truncated files
+
+org-contrib: 8d14a600a2 → f1f6b6ec81
+  f1f6b6e lisp/org-collector.el (org-dblock-write:propview): Add support for the :tblfm keyword.
+
+keycast: 53514c3dc3 → 6570b73c4d
+  6570b73 Release version 1.4.4
+  7e5f0bc Add .dir-locals.el
+  965ceb0 keycast-substitute-alist: Clarify format expected for events
+  83216f9 Release version 1.4.3
+  b231289 keycast--tree-member: Use equal as test function
+  df329db Release version 1.4.2
+  011cf53 Bump compat dependency
+  e4ccf3c Require Emacs 28.1
+  e996bc9 Bump copyright years
+  c44618d Release version 1.4.1
+  76df5fd Depend on Emacs 26.1
+  82affc7 keycast-mode-line-mode: Handle being enabled twice
+  cce63c1 Bump compat dependency
+  f04466c Release version 1.4.0
+  4f163c2 Bump compat dependency
+  c156fd1 Use define-advice instead of advice-add
+  04fa2c6 Update contact information
+  ec90b16 keycast-mode-line-mode: More carefully unwind buffer-local formats
+  72f649c keycast-mode-line-mode: Fix handling of single element special-case
+  7fe65f1 Fix removing our format entry if it comes last in a list
+  34f6125 keycast--maybe-edit-local-format: Do not edit if eq to default
+  f235bd8 keycast--maybe-edit-local-format: Use keycast--tree-member
+  5ed2e12 keycast--update: Use length>
+  c4a995a keycast--update: Handle prefix command peculiarity
+  b094915 Remove keycast-mode alias
+  8530b75 keycast--unpdate: Handle undefined keys
+  13e18d8 keycast-show-minibuffer-exit-command: Add note about M-x
+  12dbeb0 By default only show minibuffer exiting command in log
+  f350948 keycast--update: Fix special-handling of execute-extended-command
+  988b051 keycast--update: Fix a comment
+  b5e7a45 Avoid adding duplicated keycast elements
+  0c5687a Fix custom type mismatches
+  bfc1f93 Bump copyright years
+  74a10c3 make: Add redo target
+  c47fa15 Release version 1.3.3
+  044efbc Correct type of format options
+  6a6f910 keycast-header-line: Use correct predicate function
+  75d3862 keycast-log-mode: Also toggle focus-avoidance of log frame
+  404ff78 Add missing section heading
+  0a1cd94 Remove obsolete aliases
+  43b1f3b Update name or original mode in docstrings
+  481a162 Place comma after "i.e."
+  0b16d6a Release version 1.3.2
+  2da7852 keycast--tree-member: Fix pasto
+  a0549f4 Release version 1.3.1
+  d021658 keycast--tree-member: Handle non-list root element
+  cbdedd8 Release version 1.3.0
+  e915674 Bump compat dependency
+  cabb3fa Bump compat dependency
+  9715be3 readme: Add nongnu badge
+  dd3d855 Make elpa happy
+  1af05c6 readme: Add badges
+  8104b97 readme: Add badges
+  e277337 ci: Add compile workflow
+  bd7ed50 Bump copyright years
+
+spacemacs-theme: a7c5dccb4a → 2ffca41e6e
+  2ffca41 imenu support
+
+modus-themes: 3576d14f06 → b7aa3ae780
+  b7aa3ae Update modus-themes to version 4.8.0
+  6979a37 Add support for the header-line-inactive face (Emacs 31)
+
+gptel: 94bf19da93 → d91675db95
+  d91675d gptel-org: Fix save-state to handle nil buffer bounds
+  fdd4ede gptel-ollama: Handle combined tool calls and reasoning content
+  a5af15c gptel: Bump version to 0.9.8.5, add release date
+  8bd1f61 gptel: Bookkeeping updates
+  6d42fd2 gptel-transient: Redesign tools menu with two-column layout
+  0a77446 gptel: Fix char-before comparison with eql in preset-capf

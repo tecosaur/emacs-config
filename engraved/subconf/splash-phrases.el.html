@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>splash-phrases.el.html</title>
+    <style>
+      body { background: #fafafa; color: #383a42; }
+      pre {
+        font-size: 1rem;
+        max-width: min(100rem, 100%);
+        width: max-content;
+        white-space: pre-wrap;
+        margin: auto; }
+      .ef-D {
+        color: #383a42; background-color: #fafafa; font-weight: 400; }
+      .ef-vp {
+         }
+      .ef-h {
+        color: #84888b; }
+      .ef-sc {
+        color: #50a14f; }
+      .ef-w {
+        color: #986801; }
+      .ef-e {
+        color: #e45649; }
+      .ef-l {
+        color: #4078f2; font-weight: 700; }
+      .ef-lv {
+        color: #8b008b; font-weight: 700; }
+      .ef-hi {
+        color: #f0f0f0; background-color: #4078f2; }
+      .ef-c {
+        color: #84888b; }
+      .ef-cd {
+        color: #84888b; }
+      .ef-s {
+        color: #50a14f; }
+      .ef-d {
+        color: #727578; text-decoration: italic; }
+      .ef-m {
+        color: #b751b6; }
+      .ef-k {
+        color: #e45649; }
+      .ef-b {
+        color: #a626a4; }
+      .ef-f {
+        color: #a626a4; }
+      .ef-v {
+        color: #6a1868; }
+      .ef-t {
+        color: #986801; }
+      .ef-o {
+        color: #b751b6; }
+      .ef-wr {
+        color: #986801; }
+      .ef-nc {
+        color: #4078f2; font-weight: 700; }
+      .ef-pp {
+        color: #4078f2; font-weight: 700; }
+      .ef-rc {
+        color: #4078f2; font-weight: 700; }
+      .ef-rb {
+        color: #4078f2; font-weight: 700; }
+      .ef-ob {
+        background-color: #e7e7e7; }
+      .ef-obb {
+        background-color: #e7e7e7; text-decoration: italic; }
+      .ef-obe {
+        background-color: #e7e7e7; text-decoration: italic; }
+      .ef-Oa {
+        color: #e45649; font-weight: nil; font-size: 1.25em }
+      .ef-Ob {
+        color: #da8548; font-weight: 700; font-size: 1.15em }
+      .ef-Oc {
+        color: #b751b6; font-weight: 700; font-size: 1.12em }
+      .ef-Od {
+        color: #6f99f5; font-weight: 600; font-size: 1.09em }
+      .ef-Oe {
+        color: #bc5cba; font-weight: 600; font-size: 1.06em }
+      .ef-Of {
+        color: #9fbbf8; font-weight: 600; font-size: 1.03em }
+      .ef-Og {
+        color: #d292d1; font-weight: 700; }
+      .ef-Oh {
+        color: #d8e4fc; font-weight: 600; }
+      .ef-hn {
+        color: #da8548; font-weight: 700; }
+      .ef-hq {
+        color: #4078f2; }
+      .ef-hs {
+        color: #986801; }
+      .ef-rda {
+        color: #4078f2; }
+      .ef-rdb {
+        color: #a626a4; }
+      .ef-rdc {
+        color: #50a14f; }
+      .ef-rdd {
+        color: #b751b6; }
+      .ef-rde {
+        color: #4db5bd; }
+      .ef-rdf {
+        color: #4078f2; }
+      .ef-rdg {
+        color: #a626a4; }
+      .ef-rdh {
+        color: #50a14f; }
+      .ef-rdi {
+        color: #b751b6; }
+    </style>
+  </head>
+  <body>
+<pre>
+<span class="ef-cd">;;; </span><span class="ef-c">splash-phrases.el --- Generated package (no.7) from my config -*- lexical-binding: t; -*-
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;; </span><span class="ef-c">Copyright (C) 2025 TEC
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;; </span><span class="ef-c">Author: TEC &lt;https://code.tecosaur.net/tec&gt;
+</span><span class="ef-cd">;; </span><span class="ef-c">Maintainer: TEC &lt;contact@tecosaur.net&gt;
+</span><span class="ef-cd">;; </span><span class="ef-c">Created: June 14, 2025
+</span><span class="ef-cd">;; </span><span class="ef-c">Modified: June 14, 2025
+</span><span class="ef-cd">;; </span><span class="ef-c">Version: 2025.06.14
+</span><span class="ef-cd">;; </span><span class="ef-c">Homepage: https://code.tecosaur.net/tec/emacs-config
+</span><span class="ef-cd">;; </span><span class="ef-c">Package-Requires: ((emacs "29.1"))
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;; </span><span class="ef-c">This file is not part of GNU Emacs.
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;; </span><span class="ef-c">Commentary:
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;  </span><span class="ef-c">Generated package (no.7) from my config.
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;  </span><span class="ef-c">During generation, dependency on other aspects of my configuration and
+</span><span class="ef-cd">;;  </span><span class="ef-c">packages is inferred via (regexp-based) static analysis.  While this seems
+</span><span class="ef-cd">;;  </span><span class="ef-c">to do a good job, this method is imperfect.  This code likely depends on
+</span><span class="ef-cd">;;  </span><span class="ef-c">utilities provided by Doom, and if you try to run it in isolation you may
+</span><span class="ef-cd">;;  </span><span class="ef-c">discover the code makes more assumptions.
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;  </span><span class="ef-c">That said, I've found pretty good results so far.
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;; </span><span class="ef-c">Code:
+</span>
+(<span class="ef-k">defvar</span> <span class="ef-v">splash-phrase-source-folder</span>
+  (expand-file-name <span class="ef-s">"misc/splash-phrases"</span> doom-user-dir)
+  <span class="ef-d">"A folder of text files with a fun phrase on each line."</span>)
+
+(<span class="ef-k">defvar</span> <span class="ef-v">splash-phrase-sources</span>
+  (<span class="ef-k">let*</span> ((files (directory-files splash-phrase-source-folder nil <span class="ef-s">"\\.txt\\'"</span>))
+         (sets (delete-dups (mapcar
+                             (<span class="ef-k">lambda</span> (file)
+                               (replace-regexp-in-string <span class="ef-s">"</span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">(?:</span><span class="ef-s">-[0-9]+-\\w+</span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">)</span><span class="ef-s">?\\.txt"</span> <span class="ef-s">""</span> file))
+                             files))))
+    (mapcar (<span class="ef-k">lambda</span> (sset)
+              (cons sset
+                    (delq nil (mapcar
+                               (<span class="ef-k">lambda</span> (file)
+                                 (<span class="ef-k">when</span> (string-match-p (regexp-quote sset) file)
+                                   file))
+                               files))))
+            sets))
+  <span class="ef-d">"A list of cons giving the phrase set name, and a list of files which contain phrase components."</span>)
+
+(<span class="ef-k">defvar</span> <span class="ef-v">splash-phrase-set</span>
+  (nth (random (length splash-phrase-sources)) (mapcar #'car splash-phrase-sources))
+  <span class="ef-d">"The default phrase set. See `</span><span style="color: #b751b6; text-decoration: italic;">splash-phrase-sources</span><span class="ef-d">'."</span>)
+
+(<span class="ef-k">defun</span> <span class="ef-f">splash-phrase-set-random-set</span> ()
+  <span class="ef-d">"Set a new random splash phrase set."</span>
+  (<span class="ef-k">interactive</span>)
+  (<span class="ef-k">setq</span> splash-phrase-set
+        (nth (random (1- (length splash-phrase-sources)))
+             (cl-set-difference (mapcar #'car splash-phrase-sources) (list splash-phrase-set))))
+  (+doom-dashboard-reload t))
+
+(<span class="ef-k">defun</span> <span class="ef-f">splash-phrase-select-set</span> ()
+  <span class="ef-d">"Select a specific splash phrase set."</span>
+  (<span class="ef-k">interactive</span>)
+  (<span class="ef-k">setq</span> splash-phrase-set (completing-read <span class="ef-s">"Phrase set: "</span> (mapcar #'car splash-phrase-sources)))
+  (+doom-dashboard-reload t))
+
+(<span class="ef-k">defvar</span> <span class="ef-v">splash-phrase--cached-lines</span> nil)
+
+(<span class="ef-k">defun</span> <span class="ef-f">splash-phrase-get-from-file</span> (file)
+  <span class="ef-d">"Fetch a random line from FILE."</span>
+  (<span class="ef-k">let</span> ((lines (<span class="ef-k">or</span> (cdr (assoc file splash-phrase--cached-lines))
+                   (cdar (<span class="ef-k">push</span> (cons file
+                                     (<span class="ef-k">with-temp-buffer</span>
+                                       (insert-file-contents (expand-file-name file splash-phrase-source-folder))
+                                       (split-string (string-trim (buffer-string)) <span class="ef-s">"\n"</span>)))
+                               splash-phrase--cached-lines)))))
+    (nth (random (length lines)) lines)))
+
+(<span class="ef-k">defun</span> <span class="ef-f">splash-phrase</span> (<span class="ef-t">&amp;optional</span> set)
+  <span class="ef-d">"Construct a splash phrase from SET. See `</span><span style="color: #b751b6; text-decoration: italic;">splash-phrase-sources</span><span class="ef-d">'."</span>
+  (mapconcat
+   #'splash-phrase-get-from-file
+   (cdr (assoc (<span class="ef-k">or</span> set splash-phrase-set) splash-phrase-sources))
+   <span class="ef-s">" "</span>))
+
+(<span class="ef-k">defun</span> <span class="ef-f">splash-phrase-dashboard-formatted</span> ()
+  <span class="ef-d">"Get a splash phrase, flow it over multiple lines as needed, and fontify it."</span>
+  (mapconcat
+   (<span class="ef-k">lambda</span> (line)
+     (+doom-dashboard--center
+      +doom-dashboard--width
+      (<span class="ef-k">with-temp-buffer</span>
+        (insert-text-button
+         line
+         'action
+         (<span class="ef-k">lambda</span> (_) (+doom-dashboard-reload t))
+         'face 'doom-dashboard-menu-title
+         'mouse-face 'doom-dashboard-menu-title
+         'help-echo <span class="ef-s">"Random phrase"</span>
+         'follow-link t)
+        (buffer-string))))
+   (split-string
+    (<span class="ef-k">with-temp-buffer</span>
+      (insert (splash-phrase))
+      (<span class="ef-k">setq</span> fill-column (min 70 (/ (* 2 (window-width)) 3)))
+      (fill-region (point-min) (point-max))
+      (buffer-string))
+    <span class="ef-s">"\n"</span>)
+   <span class="ef-s">"\n"</span>))
+
+(<span class="ef-k">defun</span> <span class="ef-f">splash-phrase-dashboard-insert</span> ()
+  <span class="ef-d">"Insert the splash phrase surrounded by newlines."</span>
+  (insert <span class="ef-s">"\n"</span> (splash-phrase-dashboard-formatted) <span class="ef-s">"\n"</span>))
+
+(<span class="ef-k">provide</span> '<span class="ef-o">splash-phrases</span>)
+<span class="ef-cd">;;; </span><span class="ef-c">splash-phrases.el ends here
+</span>
+</pre>
+  <body>
+</html>

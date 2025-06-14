@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>config-better-defaults.el.html</title>
+    <style>
+      body { background: #fafafa; color: #383a42; }
+      pre {
+        font-size: 1rem;
+        max-width: min(100rem, 100%);
+        width: max-content;
+        white-space: pre-wrap;
+        margin: auto; }
+      .ef-D {
+        color: #383a42; background-color: #fafafa; font-weight: 400; }
+      .ef-vp {
+         }
+      .ef-h {
+        color: #84888b; }
+      .ef-sc {
+        color: #50a14f; }
+      .ef-w {
+        color: #986801; }
+      .ef-e {
+        color: #e45649; }
+      .ef-l {
+        color: #4078f2; font-weight: 700; }
+      .ef-lv {
+        color: #8b008b; font-weight: 700; }
+      .ef-hi {
+        color: #f0f0f0; background-color: #4078f2; }
+      .ef-c {
+        color: #84888b; }
+      .ef-cd {
+        color: #84888b; }
+      .ef-s {
+        color: #50a14f; }
+      .ef-d {
+        color: #727578; text-decoration: italic; }
+      .ef-m {
+        color: #b751b6; }
+      .ef-k {
+        color: #e45649; }
+      .ef-b {
+        color: #a626a4; }
+      .ef-f {
+        color: #a626a4; }
+      .ef-v {
+        color: #6a1868; }
+      .ef-t {
+        color: #986801; }
+      .ef-o {
+        color: #b751b6; }
+      .ef-wr {
+        color: #986801; }
+      .ef-nc {
+        color: #4078f2; font-weight: 700; }
+      .ef-pp {
+        color: #4078f2; font-weight: 700; }
+      .ef-rc {
+        color: #4078f2; font-weight: 700; }
+      .ef-rb {
+        color: #4078f2; font-weight: 700; }
+      .ef-ob {
+        background-color: #e7e7e7; }
+      .ef-obb {
+        background-color: #e7e7e7; text-decoration: italic; }
+      .ef-obe {
+        background-color: #e7e7e7; text-decoration: italic; }
+      .ef-Oa {
+        color: #e45649; font-weight: nil; font-size: 1.25em }
+      .ef-Ob {
+        color: #da8548; font-weight: 700; font-size: 1.15em }
+      .ef-Oc {
+        color: #b751b6; font-weight: 700; font-size: 1.12em }
+      .ef-Od {
+        color: #6f99f5; font-weight: 600; font-size: 1.09em }
+      .ef-Oe {
+        color: #bc5cba; font-weight: 600; font-size: 1.06em }
+      .ef-Of {
+        color: #9fbbf8; font-weight: 600; font-size: 1.03em }
+      .ef-Og {
+        color: #d292d1; font-weight: 700; }
+      .ef-Oh {
+        color: #d8e4fc; font-weight: 600; }
+      .ef-hn {
+        color: #da8548; font-weight: 700; }
+      .ef-hq {
+        color: #4078f2; }
+      .ef-hs {
+        color: #986801; }
+      .ef-rda {
+        color: #4078f2; }
+      .ef-rdb {
+        color: #a626a4; }
+      .ef-rdc {
+        color: #50a14f; }
+      .ef-rdd {
+        color: #b751b6; }
+      .ef-rde {
+        color: #4db5bd; }
+      .ef-rdf {
+        color: #4078f2; }
+      .ef-rdg {
+        color: #a626a4; }
+      .ef-rdh {
+        color: #50a14f; }
+      .ef-rdi {
+        color: #b751b6; }
+    </style>
+  </head>
+  <body>
+<pre>
+<span class="ef-cd">;;; </span><span class="ef-c">config-better-defaults.el --- Generated package (no.3) from my config -*- lexical-binding: t; -*-
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;; </span><span class="ef-c">Copyright (C) 2025 TEC
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;; </span><span class="ef-c">Author: TEC &lt;https://code.tecosaur.net/tec&gt;
+</span><span class="ef-cd">;; </span><span class="ef-c">Maintainer: TEC &lt;contact@tecosaur.net&gt;
+</span><span class="ef-cd">;; </span><span class="ef-c">Created: June 14, 2025
+</span><span class="ef-cd">;; </span><span class="ef-c">Modified: June 14, 2025
+</span><span class="ef-cd">;; </span><span class="ef-c">Version: 2025.06.14
+</span><span class="ef-cd">;; </span><span class="ef-c">Homepage: https://code.tecosaur.net/tec/emacs-config
+</span><span class="ef-cd">;; </span><span class="ef-c">Package-Requires: ((emacs "29.1"))
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;; </span><span class="ef-c">This file is not part of GNU Emacs.
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;; </span><span class="ef-c">Commentary:
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;  </span><span class="ef-c">Generated package (no.3) from my config.
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;  </span><span class="ef-c">During generation, dependency on other aspects of my configuration and
+</span><span class="ef-cd">;;  </span><span class="ef-c">packages is inferred via (regexp-based) static analysis.  While this seems
+</span><span class="ef-cd">;;  </span><span class="ef-c">to do a good job, this method is imperfect.  This code likely depends on
+</span><span class="ef-cd">;;  </span><span class="ef-c">utilities provided by Doom, and if you try to run it in isolation you may
+</span><span class="ef-cd">;;  </span><span class="ef-c">discover the code makes more assumptions.
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;  </span><span class="ef-c">That said, I've found pretty good results so far.
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;; </span><span class="ef-c">Code:
+</span>
+(<span class="ef-k">setq-default</span>
+ delete-by-moving-to-trash t                      <span class="ef-cd">; </span><span class="ef-c">Delete files to trash
+</span> window-combination-resize t                      <span class="ef-cd">; </span><span class="ef-c">take new window space from all other windows (not just current)
+</span> x-stretch-cursor t)                              <span class="ef-cd">; </span><span class="ef-c">Stretch cursor to the glyph width
+</span>
+(<span class="ef-k">setq</span> undo-limit 80000000                         <span class="ef-cd">; </span><span class="ef-c">Raise undo-limit to 80Mb
+</span>      evil-want-fine-undo t                       <span class="ef-cd">; </span><span class="ef-c">By default while in insert all changes are one big blob. Be more granular
+</span>      auto-save-default t                         <span class="ef-cd">; </span><span class="ef-c">Nobody likes to loose work, I certainly don't
+</span>      truncate-string-ellipsis <span class="ef-s">"…"</span>                <span class="ef-cd">; </span><span class="ef-c">Unicode ellispis are nicer than "...", and also save /precious/ space
+</span>      password-cache-expiry nil                   <span class="ef-cd">; </span><span class="ef-c">I can trust my computers ... can't I?
+</span>      <span class="ef-cd">;; </span><span class="ef-c">scroll-preserve-screen-position 'always     ; Don't have `</span><span style="color: #b751b6;">point</span><span class="ef-c">' jump around
+</span>      scroll-margin 2                             <span class="ef-cd">; </span><span class="ef-c">It's nice to maintain a little margin
+</span>      display-time-default-load-average nil)      <span class="ef-cd">; </span><span class="ef-c">I don't think I've ever found this useful
+</span>
+(display-time-mode 1)                             <span class="ef-cd">; </span><span class="ef-c">Enable time in the mode-line
+</span>(global-subword-mode 1)                           <span class="ef-cd">; </span><span class="ef-c">Iterate through CamelCase words
+</span>
+
+
+(add-to-list 'default-frame-alist '(height . 24))
+(add-to-list 'default-frame-alist '(width . 80))
+
+(<span class="ef-k">setq-default</span> custom-file (expand-file-name <span class="ef-s">".custom.el"</span> doom-user-dir))
+(<span class="ef-k">when</span> (file-exists-p custom-file)
+  (load custom-file))
+
+(<span class="ef-k">setq</span> evil-vsplit-window-right t
+      evil-split-window-below t)
+
+(<span class="ef-k">defadvice!</span> prompt-for-buffer (<span class="ef-t">&amp;rest</span> _)
+  <span class="ef-b">:after</span> '(evil-window-split evil-window-vsplit)
+  (consult-buffer))
+
+(map! <span class="ef-b">:map</span> evil-window-map
+      <span class="ef-s">"SPC"</span> #'rotate-layout
+      <span class="ef-cd">;; </span><span class="ef-c">Navigation
+</span>      <span class="ef-s">"&lt;left&gt;"</span>     #'evil-window-left
+      <span class="ef-s">"&lt;down&gt;"</span>     #'evil-window-down
+      <span class="ef-s">"&lt;up&gt;"</span>       #'evil-window-up
+      <span class="ef-s">"&lt;right&gt;"</span>    #'evil-window-right
+      <span class="ef-cd">;; </span><span class="ef-c">Swapping windows
+</span>      <span class="ef-s">"C-&lt;left&gt;"</span>       #'+evil/window-move-left
+      <span class="ef-s">"C-&lt;down&gt;"</span>       #'+evil/window-move-down
+      <span class="ef-s">"C-&lt;up&gt;"</span>         #'+evil/window-move-up
+      <span class="ef-s">"C-&lt;right&gt;"</span>      #'+evil/window-move-right)
+
+(global-set-key [remap dabbrev-expand] #'hippie-expand)
+
+(<span class="ef-k">setq</span> hippie-expand-try-functions-list
+      '(try-expand-list
+        try-expand-dabbrev-visible
+        try-expand-dabbrev
+        try-expand-all-abbrevs
+        try-expand-dabbrev-all-buffers
+        try-complete-file-name-partially
+        try-complete-file-name
+        try-expand-dabbrev-from-kill
+        try-expand-whole-kill
+        try-expand-line
+        try-complete-lisp-symbol-partially
+        try-complete-lisp-symbol))
+
+(<span class="ef-k">defun</span> <span class="ef-f">+he-subst-suffix-overlap</span> (ins rem)
+  <span class="ef-d">"The longest suffix of the string INS that is a prefix of REM.
+This is intended to be used when INS is a newly inserted string and REM is the
+remainder of the line, to allow for handling potentially duplicated content."</span>
+  (<span class="ef-k">let</span> ((len (min (length ins) (length rem))))
+    (<span class="ef-k">while</span> (<span class="ef-k">and</span> (&gt; len 0)
+                (not (eq 't (compare-strings ins (- len) nil rem 0 len))))
+      (<span class="ef-k">setq</span> len (1- len)))
+    len))
+
+(<span class="ef-k">defun</span> <span class="ef-f">+he-suffix-strip-a</span> (args)
+  <span class="ef-d">"Filter ARG list for `</span><span style="color: #b751b6; text-decoration: italic;">he-substitute-string</span><span class="ef-d">', truncating duplicated suffix.
+ARGS is the raw argument list (STRING &amp;optional TRANS-CASE)."</span>
+  (<span class="ef-k">pcase-let*</span> ((`(,ins <span class="ef-t">&amp;optional</span> ,trans-case) args)
+               (rem (<span class="ef-k">save-excursion</span>
+                      (goto-char (marker-position he-string-end))
+                      (buffer-substring-no-properties
+                       (point) (line-end-position))))
+               (ov (+he-subst-suffix-overlap ins rem)))
+    (<span class="ef-k">when</span> (&gt;= ov 0)
+      (<span class="ef-k">setq</span> ins (substring ins 0 (- (length ins) ov))))
+    (list ins trans-case)))
+
+(advice-add #'he-substitute-string <span class="ef-b">:filter-args</span> #'+he-suffix-strip-a)
+
+<span class="ef-cd">;; </span><span class="ef-c">(setq-default major-mode 'org-mode)
+</span>
+(<span class="ef-k">provide</span> '<span class="ef-o">config-better-defaults</span>)
+<span class="ef-cd">;;; </span><span class="ef-c">config-better-defaults.el ends here
+</span>
+</pre>
+  <body>
+</html>

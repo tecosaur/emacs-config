@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>config--pkg-mixed-pitch.el.html</title>
+    <style>
+      body { background: #fafafa; color: #383a42; }
+      pre {
+        font-size: 1rem;
+        max-width: min(100rem, 100%);
+        width: max-content;
+        white-space: pre-wrap;
+        margin: auto; }
+      .ef-D {
+        color: #383a42; background-color: #fafafa; font-weight: 400; }
+      .ef-vp {
+         }
+      .ef-h {
+        color: #84888b; }
+      .ef-sc {
+        color: #50a14f; }
+      .ef-w {
+        color: #986801; }
+      .ef-e {
+        color: #e45649; }
+      .ef-l {
+        color: #4078f2; font-weight: 700; }
+      .ef-lv {
+        color: #8b008b; font-weight: 700; }
+      .ef-hi {
+        color: #f0f0f0; background-color: #4078f2; }
+      .ef-c {
+        color: #84888b; }
+      .ef-cd {
+        color: #84888b; }
+      .ef-s {
+        color: #50a14f; }
+      .ef-d {
+        color: #727578; text-decoration: italic; }
+      .ef-m {
+        color: #b751b6; }
+      .ef-k {
+        color: #e45649; }
+      .ef-b {
+        color: #a626a4; }
+      .ef-f {
+        color: #a626a4; }
+      .ef-v {
+        color: #6a1868; }
+      .ef-t {
+        color: #986801; }
+      .ef-o {
+        color: #b751b6; }
+      .ef-wr {
+        color: #986801; }
+      .ef-nc {
+        color: #4078f2; font-weight: 700; }
+      .ef-pp {
+        color: #4078f2; font-weight: 700; }
+      .ef-rc {
+        color: #4078f2; font-weight: 700; }
+      .ef-rb {
+        color: #4078f2; font-weight: 700; }
+      .ef-ob {
+        background-color: #e7e7e7; }
+      .ef-obb {
+        background-color: #e7e7e7; text-decoration: italic; }
+      .ef-obe {
+        background-color: #e7e7e7; text-decoration: italic; }
+      .ef-Oa {
+        color: #e45649; font-weight: nil; font-size: 1.25em }
+      .ef-Ob {
+        color: #da8548; font-weight: 700; font-size: 1.15em }
+      .ef-Oc {
+        color: #b751b6; font-weight: 700; font-size: 1.12em }
+      .ef-Od {
+        color: #6f99f5; font-weight: 600; font-size: 1.09em }
+      .ef-Oe {
+        color: #bc5cba; font-weight: 600; font-size: 1.06em }
+      .ef-Of {
+        color: #9fbbf8; font-weight: 600; font-size: 1.03em }
+      .ef-Og {
+        color: #d292d1; font-weight: 700; }
+      .ef-Oh {
+        color: #d8e4fc; font-weight: 600; }
+      .ef-hn {
+        color: #da8548; font-weight: 700; }
+      .ef-hq {
+        color: #4078f2; }
+      .ef-hs {
+        color: #986801; }
+      .ef-rda {
+        color: #4078f2; }
+      .ef-rdb {
+        color: #a626a4; }
+      .ef-rdc {
+        color: #50a14f; }
+      .ef-rdd {
+        color: #b751b6; }
+      .ef-rde {
+        color: #4db5bd; }
+      .ef-rdf {
+        color: #4078f2; }
+      .ef-rdg {
+        color: #a626a4; }
+      .ef-rdh {
+        color: #50a14f; }
+      .ef-rdi {
+        color: #b751b6; }
+    </style>
+  </head>
+  <body>
+<pre>
+<span class="ef-cd">;;; </span><span class="ef-c">config--pkg-mixed-pitch.el --- Generated package (no.41) from my config -*- lexical-binding: t; -*-
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;; </span><span class="ef-c">Copyright (C) 2025 TEC
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;; </span><span class="ef-c">Author: TEC &lt;https://code.tecosaur.net/tec&gt;
+</span><span class="ef-cd">;; </span><span class="ef-c">Maintainer: TEC &lt;contact@tecosaur.net&gt;
+</span><span class="ef-cd">;; </span><span class="ef-c">Created: June 14, 2025
+</span><span class="ef-cd">;; </span><span class="ef-c">Modified: June 14, 2025
+</span><span class="ef-cd">;; </span><span class="ef-c">Version: 2025.06.14
+</span><span class="ef-cd">;; </span><span class="ef-c">Homepage: https://code.tecosaur.net/tec/emacs-config
+</span><span class="ef-cd">;; </span><span class="ef-c">Package-Requires: ((emacs "29.1"))
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;; </span><span class="ef-c">This file is not part of GNU Emacs.
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;; </span><span class="ef-c">Commentary:
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;  </span><span class="ef-c">Generated package (no.41) from my config.
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;  </span><span class="ef-c">During generation, dependency on other aspects of my configuration and
+</span><span class="ef-cd">;;  </span><span class="ef-c">packages is inferred via (regexp-based) static analysis.  While this seems
+</span><span class="ef-cd">;;  </span><span class="ef-c">to do a good job, this method is imperfect.  This code likely depends on
+</span><span class="ef-cd">;;  </span><span class="ef-c">utilities provided by Doom, and if you try to run it in isolation you may
+</span><span class="ef-cd">;;  </span><span class="ef-c">discover the code makes more assumptions.
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;  </span><span class="ef-c">That said, I've found pretty good results so far.
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;; </span><span class="ef-c">Code:
+</span>
+(<span class="ef-k">require</span> '<span class="ef-o">config-variable-pitch-serif-font</span>)
+
+(<span class="ef-k">defvar</span> <span class="ef-v">mixed-pitch-modes</span> '(org-mode LaTeX-mode markdown-mode gfm-mode Info-mode)
+  <span class="ef-d">"Modes that `</span><span style="color: #b751b6; text-decoration: italic;">mixed-pitch-mode</span><span class="ef-d">' should be enabled in, but only after UI initialisation."</span>)
+(<span class="ef-k">defun</span> <span class="ef-f">init-mixed-pitch-h</span> ()
+  <span class="ef-d">"Hook `</span><span style="color: #b751b6; text-decoration: italic;">mixed-pitch-mode</span><span class="ef-d">' into each mode in `</span><span style="color: #b751b6; text-decoration: italic;">mixed-pitch-modes</span><span class="ef-d">'.
+Also immediately enables `</span><span style="color: #b751b6; text-decoration: italic;">mixed-pitch-modes</span><span class="ef-d">' if currently in one of the modes."</span>
+  (<span class="ef-k">when</span> (memq major-mode mixed-pitch-modes)
+    (mixed-pitch-mode 1))
+  (<span class="ef-k">dolist</span> (hook mixed-pitch-modes)
+    (add-hook (intern (concat (symbol-name hook) <span class="ef-s">"-hook"</span>)) #'mixed-pitch-mode)))
+(add-hook 'doom-init-ui-hook #'init-mixed-pitch-h)
+
+(autoload #'mixed-pitch-serif-mode <span class="ef-s">"mixed-pitch"</span>
+  <span class="ef-d">"Change the default face of the current buffer to a serifed variable pitch, while keeping some faces fixed pitch."</span> t)
+
+(<span class="ef-k">setq!</span> variable-pitch-serif-font (font-spec <span class="ef-b">:family</span> <span class="ef-s">"Alegreya"</span> <span class="ef-b">:size</span> 27))
+
+(<span class="ef-k">after!</span> mixed-pitch
+  (<span class="ef-k">setq</span> mixed-pitch-set-height t)
+  (set-face-attribute 'variable-pitch-serif nil <span class="ef-b">:font</span> variable-pitch-serif-font)
+  (<span class="ef-k">defun</span> <span class="ef-f">mixed-pitch-serif-mode</span> (<span class="ef-t">&amp;optional</span> arg)
+    <span class="ef-d">"Change the default face of the current buffer to a serifed variable pitch, while keeping some faces fixed pitch."</span>
+    (<span class="ef-k">interactive</span>)
+    (<span class="ef-k">let</span> ((mixed-pitch-face 'variable-pitch-serif))
+      (mixed-pitch-mode (<span class="ef-k">or</span> arg 'toggle)))))
+
+(set-char-table-range composition-function-table ?f '([<span class="ef-s">"</span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">(?:</span><span class="ef-s">ff?[fijlt]</span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">)</span><span class="ef-s">"</span> 0 font-shape-gstring]))
+(set-char-table-range composition-function-table ?T '([<span class="ef-s">"</span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">(?:</span><span class="ef-s">Th</span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">)</span><span class="ef-s">"</span> 0 font-shape-gstring]))
+
+(<span class="ef-k">provide</span> '<span class="ef-o">config--pkg-mixed-pitch</span>)
+<span class="ef-cd">;;; </span><span class="ef-c">config--pkg-mixed-pitch.el ends here
+</span>
+</pre>
+  <body>
+</html>

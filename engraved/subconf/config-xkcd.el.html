@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>config-xkcd.el.html</title>
+    <style>
+      body { background: #fafafa; color: #383a42; }
+      pre {
+        font-size: 1rem;
+        max-width: min(100rem, 100%);
+        width: max-content;
+        white-space: pre-wrap;
+        margin: auto; }
+      .ef-D {
+        color: #383a42; background-color: #fafafa; font-weight: 400; }
+      .ef-vp {
+         }
+      .ef-h {
+        color: #84888b; }
+      .ef-sc {
+        color: #50a14f; }
+      .ef-w {
+        color: #986801; }
+      .ef-e {
+        color: #e45649; }
+      .ef-l {
+        color: #4078f2; font-weight: 700; }
+      .ef-lv {
+        color: #8b008b; font-weight: 700; }
+      .ef-hi {
+        color: #f0f0f0; background-color: #4078f2; }
+      .ef-c {
+        color: #84888b; }
+      .ef-cd {
+        color: #84888b; }
+      .ef-s {
+        color: #50a14f; }
+      .ef-d {
+        color: #727578; text-decoration: italic; }
+      .ef-m {
+        color: #b751b6; }
+      .ef-k {
+        color: #e45649; }
+      .ef-b {
+        color: #a626a4; }
+      .ef-f {
+        color: #a626a4; }
+      .ef-v {
+        color: #6a1868; }
+      .ef-t {
+        color: #986801; }
+      .ef-o {
+        color: #b751b6; }
+      .ef-wr {
+        color: #986801; }
+      .ef-nc {
+        color: #4078f2; font-weight: 700; }
+      .ef-pp {
+        color: #4078f2; font-weight: 700; }
+      .ef-rc {
+        color: #4078f2; font-weight: 700; }
+      .ef-rb {
+        color: #4078f2; font-weight: 700; }
+      .ef-ob {
+        background-color: #e7e7e7; }
+      .ef-obb {
+        background-color: #e7e7e7; text-decoration: italic; }
+      .ef-obe {
+        background-color: #e7e7e7; text-decoration: italic; }
+      .ef-Oa {
+        color: #e45649; font-weight: nil; font-size: 1.25em }
+      .ef-Ob {
+        color: #da8548; font-weight: 700; font-size: 1.15em }
+      .ef-Oc {
+        color: #b751b6; font-weight: 700; font-size: 1.12em }
+      .ef-Od {
+        color: #6f99f5; font-weight: 600; font-size: 1.09em }
+      .ef-Oe {
+        color: #bc5cba; font-weight: 600; font-size: 1.06em }
+      .ef-Of {
+        color: #9fbbf8; font-weight: 600; font-size: 1.03em }
+      .ef-Og {
+        color: #d292d1; font-weight: 700; }
+      .ef-Oh {
+        color: #d8e4fc; font-weight: 600; }
+      .ef-hn {
+        color: #da8548; font-weight: 700; }
+      .ef-hq {
+        color: #4078f2; }
+      .ef-hs {
+        color: #986801; }
+      .ef-rda {
+        color: #4078f2; }
+      .ef-rdb {
+        color: #a626a4; }
+      .ef-rdc {
+        color: #50a14f; }
+      .ef-rdd {
+        color: #b751b6; }
+      .ef-rde {
+        color: #4db5bd; }
+      .ef-rdf {
+        color: #4078f2; }
+      .ef-rdg {
+        color: #a626a4; }
+      .ef-rdh {
+        color: #50a14f; }
+      .ef-rdi {
+        color: #b751b6; }
+    </style>
+  </head>
+  <body>
+<pre>
+<span class="ef-cd">;;; </span><span class="ef-c">config-xkcd.el --- Generated package (no.50) from my config -*- lexical-binding: t; -*-
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;; </span><span class="ef-c">Copyright (C) 2025 TEC
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;; </span><span class="ef-c">Author: TEC &lt;https://code.tecosaur.net/tec&gt;
+</span><span class="ef-cd">;; </span><span class="ef-c">Maintainer: TEC &lt;contact@tecosaur.net&gt;
+</span><span class="ef-cd">;; </span><span class="ef-c">Created: June 14, 2025
+</span><span class="ef-cd">;; </span><span class="ef-c">Modified: June 14, 2025
+</span><span class="ef-cd">;; </span><span class="ef-c">Version: 2025.06.14
+</span><span class="ef-cd">;; </span><span class="ef-c">Homepage: https://code.tecosaur.net/tec/emacs-config
+</span><span class="ef-cd">;; </span><span class="ef-c">Package-Requires: ((emacs "29.1"))
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;; </span><span class="ef-c">This file is not part of GNU Emacs.
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;; </span><span class="ef-c">Commentary:
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;  </span><span class="ef-c">Generated package (no.50) from my config.
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;  </span><span class="ef-c">During generation, dependency on other aspects of my configuration and
+</span><span class="ef-cd">;;  </span><span class="ef-c">packages is inferred via (regexp-based) static analysis.  While this seems
+</span><span class="ef-cd">;;  </span><span class="ef-c">to do a good job, this method is imperfect.  This code likely depends on
+</span><span class="ef-cd">;;  </span><span class="ef-c">utilities provided by Doom, and if you try to run it in isolation you may
+</span><span class="ef-cd">;;  </span><span class="ef-c">discover the code makes more assumptions.
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;  </span><span class="ef-c">That said, I've found pretty good results so far.
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;  </span><span class="ef-c">Package statement:
+</span><span class="ef-cd">;;   </span><span class="ef-c">(package! xkcd :pin "80011da2e7def8f65233d4e0d790ca60d287081d")
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;; </span><span class="ef-c">Code:
+</span>
+
+(use-package! xkcd
+  <span class="ef-b">:commands</span> (xkcd-get-json
+             xkcd-download xkcd-get
+             <span class="ef-cd">;; </span><span class="ef-c">now for funcs from my extension of this pkg
+</span>             +xkcd-find-and-copy +xkcd-find-and-view
+             +xkcd-fetch-info +xkcd-select)
+  <span class="ef-b">:config</span>
+  (<span class="ef-k">setq</span> xkcd-cache-dir (expand-file-name <span class="ef-s">"xkcd/"</span> doom-cache-dir)
+        xkcd-cache-latest (concat xkcd-cache-dir <span class="ef-s">"latest"</span>))
+  (<span class="ef-k">unless</span> (file-exists-p xkcd-cache-dir)
+    (make-directory xkcd-cache-dir))
+  (<span class="ef-k">after!</span> evil-snipe
+    (add-to-list 'evil-snipe-disabled-modes 'xkcd-mode))
+  <span class="ef-b">:general</span> (<span class="ef-b">:states</span> 'normal
+            <span class="ef-b">:keymaps</span> 'xkcd-mode-map
+            <span class="ef-s">"&lt;right&gt;"</span> #'xkcd-next
+            <span class="ef-s">"n"</span>       #'xkcd-next <span class="ef-cd">; </span><span class="ef-c">evil-ish
+</span>            <span class="ef-s">"&lt;left&gt;"</span>  #'xkcd-prev
+            <span class="ef-s">"N"</span>       #'xkcd-prev <span class="ef-cd">; </span><span class="ef-c">evil-ish
+</span>            <span class="ef-s">"r"</span>       #'xkcd-rand
+            <span class="ef-s">"a"</span>       #'xkcd-rand <span class="ef-cd">; </span><span class="ef-c">because image-rotate can interfere
+</span>            <span class="ef-s">"t"</span>       #'xkcd-alt-text
+            <span class="ef-s">"q"</span>       #'xkcd-kill-buffer
+            <span class="ef-s">"o"</span>       #'xkcd-open-browser
+            <span class="ef-s">"e"</span>       #'xkcd-open-explanation-browser
+            <span class="ef-cd">;; </span><span class="ef-c">extras
+</span>            <span class="ef-s">"s"</span>       #'+xkcd-find-and-view
+            <span class="ef-s">"/"</span>       #'+xkcd-find-and-view
+            <span class="ef-s">"y"</span>       #'+xkcd-copy))
+
+(<span class="ef-k">after!</span> xkcd
+  (<span class="ef-k">require</span> '<span class="ef-o">emacsql-sqlite</span>)
+
+  (<span class="ef-k">defun</span> <span class="ef-f">+xkcd-select</span> ()
+    <span class="ef-d">"Prompt the user for an xkcd using `</span><span style="color: #b751b6; text-decoration: italic;">completing-read</span><span class="ef-d">' and `</span><span style="color: #b751b6; text-decoration: italic;">+xkcd-select-format</span><span class="ef-d">'. Return the xkcd number or nil"</span>
+    (<span class="ef-k">let*</span> (prompt-lines
+           (-dummy (maphash (<span class="ef-k">lambda</span> (key xkcd-info)
+                              (<span class="ef-k">push</span> (+xkcd-select-format xkcd-info) prompt-lines))
+                            +xkcd-stored-info))
+           (num (completing-read (format <span class="ef-s">"xkcd (%s): "</span> xkcd-latest) prompt-lines)))
+      (<span class="ef-k">if</span> (equal <span class="ef-s">""</span> num) xkcd-latest
+        (string-to-number (replace-regexp-in-string <span class="ef-s">"</span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">(</span><span class="ef-s">[0-9]+</span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">)</span><span class="ef-s">.*"</span> <span class="ef-s">"\\1"</span> num)))))
+
+  (<span class="ef-k">defun</span> <span class="ef-f">+xkcd-select-format</span> (xkcd-info)
+    <span class="ef-d">"Creates each completing-read line from an xkcd info plist. Must start with the xkcd number"</span>
+    (format <span class="ef-s">"%-4s  %-30s %s"</span>
+            (propertize (number-to-string (plist-get xkcd-info <span class="ef-b">:num</span>))
+                        'face 'counsel-key-binding)
+            (plist-get xkcd-info <span class="ef-b">:title</span>)
+            (propertize (plist-get xkcd-info <span class="ef-b">:alt</span>)
+                        'face '(variable-pitch font-lock-comment-face))))
+
+  (<span class="ef-k">defun</span> <span class="ef-f">+xkcd-fetch-info</span> (<span class="ef-t">&amp;optional</span> num)
+    <span class="ef-d">"Fetch the parsed json info for comic NUM. Fetches latest when omitted or 0"</span>
+    (<span class="ef-k">require</span> '<span class="ef-o">xkcd</span>)
+    (<span class="ef-k">when</span> (<span class="ef-k">or</span> (not num) (= num 0))
+      (+xkcd-check-latest)
+      (<span class="ef-k">setq</span> num xkcd-latest))
+    (<span class="ef-k">let</span> ((res (<span class="ef-k">or</span> (gethash num +xkcd-stored-info)
+                   (puthash num (+xkcd-db-read num) +xkcd-stored-info))))
+      (<span class="ef-k">unless</span> res
+        (+xkcd-db-write
+         (<span class="ef-k">let*</span> ((url (format <span class="ef-s">"https://xkcd.com/%d/info.0.json"</span> num))
+                (json-assoc
+                 (<span class="ef-k">if</span> (gethash num +xkcd-stored-info)
+                     (gethash num +xkcd-stored-info)
+                   (json-read-from-string (xkcd-get-json url num)))))
+           json-assoc))
+        (<span class="ef-k">setq</span> res (+xkcd-db-read num)))
+      res))
+
+  <span class="ef-cd">;; </span><span class="ef-c">since we've done this, we may as well go one little step further
+</span>  (<span class="ef-k">defun</span> <span class="ef-f">+xkcd-find-and-copy</span> ()
+    <span class="ef-d">"Prompt for an xkcd using `</span><span style="color: #b751b6; text-decoration: italic;">+xkcd-select</span><span class="ef-d">' and copy url to clipboard"</span>
+    (<span class="ef-k">interactive</span>)
+    (+xkcd-copy (+xkcd-select)))
+
+  (<span class="ef-k">defun</span> <span class="ef-f">+xkcd-copy</span> (<span class="ef-t">&amp;optional</span> num)
+    <span class="ef-d">"Copy a url to xkcd NUM to the clipboard"</span>
+    (<span class="ef-k">interactive</span> <span class="ef-s">"i"</span>)
+    (<span class="ef-k">let</span> ((num (<span class="ef-k">or</span> num xkcd-cur)))
+      (gui-select-text (format <span class="ef-s">"https://xkcd.com/%d"</span> num))
+      (message <span class="ef-s">"xkcd.com/%d copied to clipboard"</span> num)))
+
+  (<span class="ef-k">defun</span> <span class="ef-f">+xkcd-find-and-view</span> ()
+    <span class="ef-d">"Prompt for an xkcd using `</span><span style="color: #b751b6; text-decoration: italic;">+xkcd-select</span><span class="ef-d">' and view it"</span>
+    (<span class="ef-k">interactive</span>)
+    (xkcd-get (+xkcd-select))
+    (switch-to-buffer <span class="ef-s">"*xkcd*"</span>))
+
+  (<span class="ef-k">defvar</span> <span class="ef-v">+xkcd-latest-max-age</span> (* 60 60) <span class="ef-cd">; </span><span class="ef-c">1 hour
+</span>    <span class="ef-d">"Time after which xkcd-latest should be refreshed, in seconds"</span>)
+
+  <span class="ef-cd">;; </span><span class="ef-c">initialise `</span><span style="color: #b751b6;">xkcd-latest</span><span class="ef-c">' and `</span><span style="color: #b751b6;">+xkcd-stored-info</span><span class="ef-c">' with latest xkcd
+</span>  (<span class="ef-k">add-transient-hook!</span> '+xkcd-select
+    (<span class="ef-k">require</span> '<span class="ef-o">xkcd</span>)
+    (+xkcd-fetch-info xkcd-latest)
+    (<span class="ef-k">setq</span> +xkcd-stored-info (+xkcd-db-read-all)))
+
+  (<span class="ef-k">add-transient-hook!</span> '+xkcd-fetch-info
+    (xkcd-update-latest))
+
+  (<span class="ef-k">defun</span> <span class="ef-f">+xkcd-check-latest</span> ()
+    <span class="ef-d">"Use value in `</span><span style="color: #b751b6; text-decoration: italic;">xkcd-cache-latest</span><span class="ef-d">' as long as it isn't older thabn `</span><span style="color: #b751b6; text-decoration: italic;">+xkcd-latest-max-age</span><span class="ef-d">'"</span>
+    (<span class="ef-k">unless</span> (<span class="ef-k">and</span> (file-exists-p xkcd-cache-latest)
+                 (&lt; (- (time-to-seconds (current-time))
+                       (time-to-seconds (file-attribute-modification-time (file-attributes xkcd-cache-latest))))
+                    +xkcd-latest-max-age))
+      (<span class="ef-k">let*</span> ((out (xkcd-get-json <span class="ef-s">"http://xkcd.com/info.0.json"</span> 0))
+             (json-assoc (json-read-from-string out))
+             (latest (cdr (assoc 'num json-assoc))))
+        (<span class="ef-k">when</span> (/= xkcd-latest latest)
+          (+xkcd-db-write json-assoc)
+          (<span class="ef-k">with-current-buffer</span> (find-file xkcd-cache-latest)
+            (<span class="ef-k">setq</span> xkcd-latest latest)
+            (erase-buffer)
+            (insert (number-to-string latest))
+            (save-buffer)
+            (kill-buffer (current-buffer)))))
+      (shell-command (format <span class="ef-s">"touch %s"</span> xkcd-cache-latest))))
+
+  (<span class="ef-k">defvar</span> <span class="ef-v">+xkcd-stored-info</span> (make-hash-table <span class="ef-b">:test</span> 'eql)
+    <span class="ef-d">"Basic info on downloaded xkcds, in the form of a hashtable"</span>)
+
+  (<span class="ef-k">defadvice!</span> xkcd-get-json--and-cache (url <span class="ef-t">&amp;optional</span> num)
+    <span class="ef-d">"Fetch the Json coming from URL.
+If the file NUM.json exists, use it instead.
+If NUM is 0, always download from URL.
+The return value is a string."</span>
+    <span class="ef-b">:override</span> #'xkcd-get-json
+    (<span class="ef-k">let*</span> ((file (format <span class="ef-s">"%s%d.json"</span> xkcd-cache-dir num))
+           (cached (<span class="ef-k">and</span> (file-exists-p file) (not (eq num 0))))
+           (out (<span class="ef-k">with-current-buffer</span> (<span class="ef-k">if</span> cached
+                                         (find-file file)
+                                       (url-retrieve-synchronously url))
+                  (goto-char (point-min))
+                  (<span class="ef-k">unless</span> cached (re-search-forward <span class="ef-s">"^$"</span>))
+                  (<span class="ef-k">prog1</span>
+                      (buffer-substring-no-properties (point) (point-max))
+                    (kill-buffer (current-buffer))))))
+      (<span class="ef-k">unless</span> (<span class="ef-k">or</span> cached (eq num 0))
+        (xkcd-cache-json num out))
+      out))
+
+  (<span class="ef-k">defadvice!</span> +xkcd-get (num)
+    <span class="ef-d">"Get the xkcd number NUM."</span>
+    <span class="ef-b">:override</span> 'xkcd-get
+    (<span class="ef-k">interactive</span> <span class="ef-s">"nEnter comic number: "</span>)
+    (xkcd-update-latest)
+    (get-buffer-create <span class="ef-s">"*xkcd*"</span>)
+    (switch-to-buffer <span class="ef-s">"*xkcd*"</span>)
+    (xkcd-mode)
+    (<span class="ef-k">let</span> (buffer-read-only)
+      (erase-buffer)
+      (<span class="ef-k">setq</span> xkcd-cur num)
+      (<span class="ef-k">let*</span> ((xkcd-data (+xkcd-fetch-info num))
+             (num (plist-get xkcd-data <span class="ef-b">:num</span>))
+             (img (plist-get xkcd-data <span class="ef-b">:img</span>))
+             (safe-title (plist-get xkcd-data <span class="ef-b">:safe-title</span>))
+             (alt (plist-get xkcd-data <span class="ef-b">:alt</span>))
+             title file)
+        (message <span class="ef-s">"Getting comic..."</span>)
+        (<span class="ef-k">setq</span> file (xkcd-download img num))
+        (<span class="ef-k">setq</span> title (format <span class="ef-s">"%d: %s"</span> num safe-title))
+        (insert (propertize title
+                            'face 'outline-1))
+        (center-line)
+        (insert <span class="ef-s">"\n"</span>)
+        (xkcd-insert-image file num)
+        (<span class="ef-k">if</span> (eq xkcd-cur 0)
+            (<span class="ef-k">setq</span> xkcd-cur num))
+        (<span class="ef-k">setq</span> xkcd-alt alt)
+        (message <span class="ef-s">"%s"</span> title))))
+
+  (<span class="ef-k">defconst</span> <span class="ef-v">+xkcd-db--sqlite-available-p</span>
+    (<span class="ef-k">with-demoted-errors</span> <span class="ef-s">"+org-xkcd initialization: %S"</span>
+      (emacsql-sqlite-ensure-binary)
+      t))
+
+  (<span class="ef-k">defvar</span> <span class="ef-v">+xkcd-db--connection</span> (make-hash-table <span class="ef-b">:test</span> #'equal)
+    <span class="ef-d">"Database connection to +org-xkcd database."</span>)
+
+  (<span class="ef-k">defun</span> <span class="ef-f">+xkcd-db--get</span> ()
+    <span class="ef-d">"Return the sqlite db file."</span>
+    (expand-file-name <span class="ef-s">"xkcd.db"</span> xkcd-cache-dir))
+
+  (<span class="ef-k">defun</span> <span class="ef-f">+xkcd-db--get-connection</span> ()
+    <span class="ef-d">"Return the database connection, if any."</span>
+    (gethash (file-truename xkcd-cache-dir)
+             +xkcd-db--connection))
+
+  (<span class="ef-k">defconst</span> <span class="ef-v">+xkcd-db--table-schema</span>
+    '((xkcds
+       [(num integer <span class="ef-b">:unique</span> <span class="ef-b">:primary-key</span>)
+        (year        <span class="ef-b">:not-null</span>)
+        (month       <span class="ef-b">:not-null</span>)
+        (link        <span class="ef-b">:not-null</span>)
+        (news        <span class="ef-b">:not-null</span>)
+        (safe_title  <span class="ef-b">:not-null</span>)
+        (title       <span class="ef-b">:not-null</span>)
+        (transcript  <span class="ef-b">:not-null</span>)
+        (alt         <span class="ef-b">:not-null</span>)
+        (img         <span class="ef-b">:not-null</span>)])))
+
+  (<span class="ef-k">defun</span> <span class="ef-f">+xkcd-db--init</span> (db)
+    <span class="ef-d">"Initialize database DB with the correct schema and user version."</span>
+    (emacsql-with-transaction db
+      (<span class="ef-k">pcase-dolist</span> (`(,table . ,schema) +xkcd-db--table-schema)
+        (emacsql db [<span class="ef-b">:create-table</span> $i1 $S2] table schema))))
+
+  (<span class="ef-k">defun</span> <span class="ef-f">+xkcd-db</span> ()
+    <span class="ef-d">"Entrypoint to the +org-xkcd sqlite database.
+Initializes and stores the database, and the database connection.
+Performs a database upgrade when required."</span>
+    (<span class="ef-k">unless</span> (<span class="ef-k">and</span> (+xkcd-db--get-connection)
+                 (emacsql-live-p (+xkcd-db--get-connection)))
+      (<span class="ef-k">let*</span> ((db-file (+xkcd-db--get))
+             (init-db (not (file-exists-p db-file))))
+        (make-directory (file-name-directory db-file) t)
+        (<span class="ef-k">let</span> ((conn (emacsql-sqlite db-file)))
+          (set-process-query-on-exit-flag (emacsql-process conn) nil)
+          (puthash (file-truename xkcd-cache-dir)
+                   conn
+                   +xkcd-db--connection)
+          (<span class="ef-k">when</span> init-db
+            (+xkcd-db--init conn)))))
+    (+xkcd-db--get-connection))
+
+  (<span class="ef-k">defun</span> <span class="ef-f">+xkcd-db-query</span> (sql <span class="ef-t">&amp;rest</span> args)
+    <span class="ef-d">"Run SQL query on +org-xkcd database with ARGS.
+SQL can be either the emacsql vector representation, or a string."</span>
+    (<span class="ef-k">if</span>  (stringp sql)
+        (emacsql (+xkcd-db) (apply #'format sql args))
+      (apply #'emacsql (+xkcd-db) sql args)))
+
+  (<span class="ef-k">defun</span> <span class="ef-f">+xkcd-db-read</span> (num)
+    (<span class="ef-k">when-let</span> ((res
+                (car (+xkcd-db-query [<span class="ef-b">:select</span> * <span class="ef-b">:from</span> xkcds
+                                      <span class="ef-b">:where</span> (= num $s1)]
+                                     num
+                                     <span class="ef-b">:limit</span> 1))))
+      (+xkcd-db-list-to-plist res)))
+
+  (<span class="ef-k">defun</span> <span class="ef-f">+xkcd-db-read-all</span> ()
+    (<span class="ef-k">let</span> ((xkcd-table (make-hash-table <span class="ef-b">:test</span> 'eql <span class="ef-b">:size</span> 4000)))
+      (mapcar (<span class="ef-k">lambda</span> (xkcd-info-list)
+                (puthash (car xkcd-info-list) (+xkcd-db-list-to-plist xkcd-info-list) xkcd-table))
+              (+xkcd-db-query [<span class="ef-b">:select</span> * <span class="ef-b">:from</span> xkcds]))
+      xkcd-table))
+
+  (<span class="ef-k">defun</span> <span class="ef-f">+xkcd-db-list-to-plist</span> (xkcd-datalist)
+    `(<span class="ef-b">:num</span> ,(nth 0 xkcd-datalist)
+      <span class="ef-b">:year</span> ,(nth 1 xkcd-datalist)
+      <span class="ef-b">:month</span> ,(nth 2 xkcd-datalist)
+      <span class="ef-b">:link</span> ,(nth 3 xkcd-datalist)
+      <span class="ef-b">:news</span> ,(nth 4 xkcd-datalist)
+      <span class="ef-b">:safe-title</span> ,(nth 5 xkcd-datalist)
+      <span class="ef-b">:title</span> ,(nth 6 xkcd-datalist)
+      <span class="ef-b">:transcript</span> ,(nth 7 xkcd-datalist)
+      <span class="ef-b">:alt</span> ,(nth 8 xkcd-datalist)
+      <span class="ef-b">:img</span> ,(nth 9 xkcd-datalist)))
+
+  (<span class="ef-k">defun</span> <span class="ef-f">+xkcd-db-write</span> (data)
+    (+xkcd-db-query [<span class="ef-b">:insert-into</span> xkcds
+                     <span class="ef-b">:values</span> $v1]
+                    (list (vector
+                           (cdr (assoc 'num        data))
+                           (cdr (assoc 'year       data))
+                           (cdr (assoc 'month      data))
+                           (cdr (assoc 'link       data))
+                           (cdr (assoc 'news       data))
+                           (cdr (assoc 'safe_title data))
+                           (cdr (assoc 'title      data))
+                           (cdr (assoc 'transcript data))
+                           (cdr (assoc 'alt        data))
+                           (cdr (assoc 'img        data))
+                           )))))
+
+(<span class="ef-k">provide</span> '<span class="ef-o">config-xkcd</span>)
+<span class="ef-cd">;;; </span><span class="ef-c">config-xkcd.el ends here
+</span>
+</pre>
+  <body>
+</html>

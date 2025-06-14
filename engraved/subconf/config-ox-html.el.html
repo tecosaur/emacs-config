@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>config-ox-html.el.html</title>
+    <style>
+      body { background: #fafafa; color: #383a42; }
+      pre {
+        font-size: 1rem;
+        max-width: min(100rem, 100%);
+        width: max-content;
+        white-space: pre-wrap;
+        margin: auto; }
+      .ef-D {
+        color: #383a42; background-color: #fafafa; font-weight: 400; }
+      .ef-vp {
+         }
+      .ef-h {
+        color: #84888b; }
+      .ef-sc {
+        color: #50a14f; }
+      .ef-w {
+        color: #986801; }
+      .ef-e {
+        color: #e45649; }
+      .ef-l {
+        color: #4078f2; font-weight: 700; }
+      .ef-lv {
+        color: #8b008b; font-weight: 700; }
+      .ef-hi {
+        color: #f0f0f0; background-color: #4078f2; }
+      .ef-c {
+        color: #84888b; }
+      .ef-cd {
+        color: #84888b; }
+      .ef-s {
+        color: #50a14f; }
+      .ef-d {
+        color: #727578; text-decoration: italic; }
+      .ef-m {
+        color: #b751b6; }
+      .ef-k {
+        color: #e45649; }
+      .ef-b {
+        color: #a626a4; }
+      .ef-f {
+        color: #a626a4; }
+      .ef-v {
+        color: #6a1868; }
+      .ef-t {
+        color: #986801; }
+      .ef-o {
+        color: #b751b6; }
+      .ef-wr {
+        color: #986801; }
+      .ef-nc {
+        color: #4078f2; font-weight: 700; }
+      .ef-pp {
+        color: #4078f2; font-weight: 700; }
+      .ef-rc {
+        color: #4078f2; font-weight: 700; }
+      .ef-rb {
+        color: #4078f2; font-weight: 700; }
+      .ef-ob {
+        background-color: #e7e7e7; }
+      .ef-obb {
+        background-color: #e7e7e7; text-decoration: italic; }
+      .ef-obe {
+        background-color: #e7e7e7; text-decoration: italic; }
+      .ef-Oa {
+        color: #e45649; font-weight: nil; font-size: 1.25em }
+      .ef-Ob {
+        color: #da8548; font-weight: 700; font-size: 1.15em }
+      .ef-Oc {
+        color: #b751b6; font-weight: 700; font-size: 1.12em }
+      .ef-Od {
+        color: #6f99f5; font-weight: 600; font-size: 1.09em }
+      .ef-Oe {
+        color: #bc5cba; font-weight: 600; font-size: 1.06em }
+      .ef-Of {
+        color: #9fbbf8; font-weight: 600; font-size: 1.03em }
+      .ef-Og {
+        color: #d292d1; font-weight: 700; }
+      .ef-Oh {
+        color: #d8e4fc; font-weight: 600; }
+      .ef-hn {
+        color: #da8548; font-weight: 700; }
+      .ef-hq {
+        color: #4078f2; }
+      .ef-hs {
+        color: #986801; }
+      .ef-rda {
+        color: #4078f2; }
+      .ef-rdb {
+        color: #a626a4; }
+      .ef-rdc {
+        color: #50a14f; }
+      .ef-rdd {
+        color: #b751b6; }
+      .ef-rde {
+        color: #4db5bd; }
+      .ef-rdf {
+        color: #4078f2; }
+      .ef-rdg {
+        color: #a626a4; }
+      .ef-rdh {
+        color: #50a14f; }
+      .ef-rdi {
+        color: #b751b6; }
+    </style>
+  </head>
+  <body>
+<pre>
+<span class="ef-cd">;;; </span><span class="ef-c">config-ox-html.el --- Generated package (no.82) from my config -*- lexical-binding: t; -*-
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;; </span><span class="ef-c">Copyright (C) 2025 TEC
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;; </span><span class="ef-c">Author: TEC &lt;https://code.tecosaur.net/tec&gt;
+</span><span class="ef-cd">;; </span><span class="ef-c">Maintainer: TEC &lt;contact@tecosaur.net&gt;
+</span><span class="ef-cd">;; </span><span class="ef-c">Created: June 14, 2025
+</span><span class="ef-cd">;; </span><span class="ef-c">Modified: June 14, 2025
+</span><span class="ef-cd">;; </span><span class="ef-c">Version: 2025.06.14
+</span><span class="ef-cd">;; </span><span class="ef-c">Homepage: https://code.tecosaur.net/tec/emacs-config
+</span><span class="ef-cd">;; </span><span class="ef-c">Package-Requires: ((emacs "29.1"))
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;; </span><span class="ef-c">This file is not part of GNU Emacs.
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;; </span><span class="ef-c">Commentary:
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;  </span><span class="ef-c">Generated package (no.82) from my config.
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;  </span><span class="ef-c">During generation, dependency on other aspects of my configuration and
+</span><span class="ef-cd">;;  </span><span class="ef-c">packages is inferred via (regexp-based) static analysis.  While this seems
+</span><span class="ef-cd">;;  </span><span class="ef-c">to do a good job, this method is imperfect.  This code likely depends on
+</span><span class="ef-cd">;;  </span><span class="ef-c">utilities provided by Doom, and if you try to run it in isolation you may
+</span><span class="ef-cd">;;  </span><span class="ef-c">discover the code makes more assumptions.
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;  </span><span class="ef-c">That said, I've found pretty good results so far.
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;; </span><span class="ef-c">Code:
+</span>
+(<span class="ef-k">require</span> '<span class="ef-o">ox-html</span>)
+(<span class="ef-k">require</span> '<span class="ef-o">config-org-exports</span>)
+
+(<span class="ef-k">define-minor-mode</span> <span class="ef-f">org-fancy-html-export-mode</span>
+  <span class="ef-d">"Toggle my fabulous org export tweaks. While this mode itself does a little bit,
+the vast majority of the change in behaviour comes from switch statements in:
+ - `</span><span style="color: #b751b6; text-decoration: italic;">org-html-template-fancier</span><span class="ef-d">'
+ - `</span><span style="color: #b751b6; text-decoration: italic;">org-html--build-meta-info-extended</span><span class="ef-d">'
+ - `</span><span style="color: #b751b6; text-decoration: italic;">org-html-src-block-collapsable</span><span class="ef-d">'
+ - `</span><span style="color: #b751b6; text-decoration: italic;">org-html-block-collapsable</span><span class="ef-d">'
+ - `</span><span style="color: #b751b6; text-decoration: italic;">org-html-table-wrapped</span><span class="ef-d">'
+ - `</span><span style="color: #b751b6; text-decoration: italic;">org-html--format-toc-headline-colapseable</span><span class="ef-d">'
+ - `</span><span style="color: #b751b6; text-decoration: italic;">org-html--toc-text-stripped-leaves</span><span class="ef-d">'
+ - `</span><span style="color: #b751b6; text-decoration: italic;">org-export-html-headline-anchor</span><span class="ef-d">'"</span>
+  <span class="ef-b">:global</span> t
+  <span class="ef-b">:init-value</span> t
+  (<span class="ef-k">if</span> org-fancy-html-export-mode
+      (<span class="ef-k">setq</span> org-html-style-default org-html-style-fancy
+            org-html-meta-tags #'org-html-meta-tags-fancy
+            org-html-checkbox-type 'html-span)
+    (<span class="ef-k">setq</span> org-html-style-default org-html-style-plain
+          org-html-meta-tags #'org-html-meta-tags-default
+          org-html-checkbox-type 'html)))
+
+(<span class="ef-k">defadvice!</span> org-html-template-fancier (orig-fn contents info)
+  <span class="ef-d">"Return complete document string after HTML conversion.
+CONTENTS is the transcoded contents string.  INFO is a plist
+holding export options. Adds a few extra things to the body
+compared to the default implementation."</span>
+  <span class="ef-b">:around</span> #'org-html-template
+  (<span class="ef-k">if</span> (<span class="ef-k">or</span> (not org-fancy-html-export-mode) (<span class="ef-k">bound-and-true-p</span> org-msg-export-in-progress))
+      (funcall orig-fn contents info)
+    (concat
+     (<span class="ef-k">when</span> (<span class="ef-k">and</span> (not (org-html-html5-p info)) (org-html-xhtml-p info))
+       (<span class="ef-k">let*</span> ((xml-declaration (plist-get info <span class="ef-b">:html-xml-declaration</span>))
+              (decl (<span class="ef-k">or</span> (<span class="ef-k">and</span> (stringp xml-declaration) xml-declaration)
+                        (cdr (assoc (plist-get info <span class="ef-b">:html-extension</span>)
+                                    xml-declaration))
+                        (cdr (assoc <span class="ef-s">"html"</span> xml-declaration))
+                        <span class="ef-s">""</span>)))
+         (<span class="ef-k">when</span> (not (<span class="ef-k">or</span> (not decl) (string= <span class="ef-s">""</span> decl)))
+           (format <span class="ef-s">"%s\n"</span>
+                   (format decl
+                           (<span class="ef-k">or</span> (<span class="ef-k">and</span> org-html-coding-system
+                                    (fboundp 'coding-system-get)
+                                    (coding-system-get org-html-coding-system 'mime-charset))
+                               <span class="ef-s">"iso-8859-1"</span>))))))
+     (org-html-doctype info)
+     <span class="ef-s">"\n"</span>
+     (concat <span class="ef-s">"&lt;html"</span>
+             (<span class="ef-k">cond</span> ((org-html-xhtml-p info)
+                    (format
+                     <span class="ef-s">" xmlns=\"http://www.w3.org/1999/xhtml\" lang=\"%s\" xml:lang=\"%s\""</span>
+                     (plist-get info <span class="ef-b">:language</span>) (plist-get info <span class="ef-b">:language</span>)))
+                   ((org-html-html5-p info)
+                    (format <span class="ef-s">" lang=\"%s\""</span> (plist-get info <span class="ef-b">:language</span>))))
+             <span class="ef-s">"&gt;\n"</span>)
+     <span class="ef-s">"&lt;head&gt;\n"</span>
+     (org-html--build-meta-info info)
+     (org-html--build-head info)
+     (org-html--build-mathjax-config info)
+     <span class="ef-s">"&lt;/head&gt;\n"</span>
+     <span class="ef-s">"&lt;body&gt;\n&lt;input type='</span><span style="color: #b751b6;">checkbox</span><span class="ef-s">' id='</span><span style="color: #b751b6;">theme-switch</span><span class="ef-s">'&gt;&lt;div id='</span><span style="color: #b751b6;">page</span><span class="ef-s">'&gt;&lt;label id='</span><span style="color: #b751b6;">switch-label</span><span class="ef-s">' for='</span><span style="color: #b751b6;">theme-switch</span><span class="ef-s">'&gt;&lt;/label&gt;"</span>
+     (<span class="ef-k">let</span> ((link-up (org-trim (plist-get info <span class="ef-b">:html-link-up</span>)))
+           (link-home (org-trim (plist-get info <span class="ef-b">:html-link-home</span>))))
+       (<span class="ef-k">unless</span> (<span class="ef-k">and</span> (string= link-up <span class="ef-s">""</span>) (string= link-home <span class="ef-s">""</span>))
+         (format (plist-get info <span class="ef-b">:html-home/up-format</span>)
+                 (<span class="ef-k">or</span> link-up link-home)
+                 (<span class="ef-k">or</span> link-home link-up))))
+     <span class="ef-cd">;; </span><span class="ef-c">Preamble.
+</span>     (org-html--build-pre/postamble 'preamble info)
+     <span class="ef-cd">;; </span><span class="ef-c">Document contents.
+</span>     (<span class="ef-k">let</span> ((div (assq 'content (plist-get info <span class="ef-b">:html-divs</span>))))
+       (format <span class="ef-s">"&lt;%s id=\"%s\"&gt;\n"</span> (nth 1 div) (nth 2 div)))
+     <span class="ef-cd">;; </span><span class="ef-c">Document title.
+</span>     (<span class="ef-k">when</span> (plist-get info <span class="ef-b">:with-title</span>)
+       (<span class="ef-k">let</span> ((title (<span class="ef-k">and</span> (plist-get info <span class="ef-b">:with-title</span>)
+                         (plist-get info <span class="ef-b">:title</span>)))
+             (subtitle (plist-get info <span class="ef-b">:subtitle</span>))
+             (html5-fancy (org-html--html5-fancy-p info)))
+         (<span class="ef-k">when</span> title
+           (format
+            (<span class="ef-k">if</span> html5-fancy
+                <span class="ef-s">"&lt;header class=\"page-header\"&gt;%s\n&lt;h1 class=\"title\"&gt;%s&lt;/h1&gt;\n%s&lt;/header&gt;"</span>
+              <span class="ef-s">"&lt;h1 class=\"title\"&gt;%s%s&lt;/h1&gt;\n"</span>)
+            (<span class="ef-k">if</span> (<span class="ef-k">or</span> (plist-get info <span class="ef-b">:with-date</span>)
+                    (plist-get info <span class="ef-b">:with-author</span>))
+                (concat <span class="ef-s">"&lt;div class=\"page-meta\"&gt;"</span>
+                        (<span class="ef-k">when</span> (plist-get info <span class="ef-b">:with-date</span>)
+                          (org-export-data (plist-get info <span class="ef-b">:date</span>) info))
+                        (<span class="ef-k">when</span> (<span class="ef-k">and</span> (plist-get info <span class="ef-b">:with-date</span>) (plist-get info <span class="ef-b">:with-author</span>)) <span class="ef-s">", "</span>)
+                        (<span class="ef-k">when</span> (plist-get info <span class="ef-b">:with-author</span>)
+                          (org-export-data (plist-get info <span class="ef-b">:author</span>) info))
+                        <span class="ef-s">"&lt;/div&gt;\n"</span>)
+              <span class="ef-s">""</span>)
+            (org-export-data title info)
+            (<span class="ef-k">if</span> subtitle
+                (format
+                 (<span class="ef-k">if</span> html5-fancy
+                     <span class="ef-s">"&lt;p class=\"subtitle\" role=\"doc-subtitle\"&gt;%s&lt;/p&gt;\n"</span>
+                   (concat <span class="ef-s">"\n"</span> (org-html-close-tag <span class="ef-s">"br"</span> nil info) <span class="ef-s">"\n"</span>
+                           <span class="ef-s">"&lt;span class=\"subtitle\"&gt;%s&lt;/span&gt;\n"</span>))
+                 (org-export-data subtitle info))
+              <span class="ef-s">""</span>)))))
+     contents
+     (format <span class="ef-s">"&lt;/%s&gt;\n"</span> (nth 1 (assq 'content (plist-get info <span class="ef-b">:html-divs</span>))))
+     <span class="ef-cd">;; </span><span class="ef-c">Postamble.
+</span>     (org-html--build-pre/postamble 'postamble info)
+     <span class="ef-cd">;; </span><span class="ef-c">Possibly use the Klipse library live code blocks.
+</span>     (<span class="ef-k">when</span> (plist-get info <span class="ef-b">:html-klipsify-src</span>)
+       (concat <span class="ef-s">"&lt;script&gt;"</span> (plist-get info <span class="ef-b">:html-klipse-selection-script</span>)
+               <span class="ef-s">"&lt;/script&gt;&lt;script src=\""</span>
+               org-html-klipse-js
+               <span class="ef-s">"\"&gt;&lt;/script&gt;&lt;link rel=\"stylesheet\" type=\"text/css\" href=\""</span>
+               org-html-klipse-css <span class="ef-s">"\"/&gt;"</span>))
+     <span class="ef-cd">;; </span><span class="ef-c">Closing document.
+</span>     <span class="ef-s">"&lt;/div&gt;\n&lt;/body&gt;\n&lt;/html&gt;"</span>)))
+
+(<span class="ef-k">defadvice!</span> org-html-toc-linked (depth info <span class="ef-t">&amp;optional</span> scope)
+  <span class="ef-d">"Build a table of contents.
+
+Just like `</span><span style="color: #b751b6; text-decoration: italic;">org-html-toc</span><span class="ef-d">', except the header is a link to \"#\".
+
+DEPTH is an integer specifying the depth of the table.  INFO is
+a plist used as a communication channel.  Optional argument SCOPE
+is an element defining the scope of the table.  Return the table
+of contents as a string, or nil if it is empty."</span>
+  <span class="ef-b">:override</span> #'org-html-toc
+  (<span class="ef-k">let</span> ((toc-entries
+         (mapcar (<span class="ef-k">lambda</span> (headline)
+                   (cons (org-html--format-toc-headline headline info)
+                         (org-export-get-relative-level headline info)))
+                 (org-export-collect-headlines info depth scope))))
+    (<span class="ef-k">when</span> toc-entries
+      (<span class="ef-k">let</span> ((toc (concat <span class="ef-s">"&lt;div id=\"text-table-of-contents\"&gt;"</span>
+                         (org-html--toc-text toc-entries)
+                         <span class="ef-s">"&lt;/div&gt;\n"</span>)))
+        (<span class="ef-k">if</span> scope toc
+          (<span class="ef-k">let</span> ((outer-tag (<span class="ef-k">if</span> (org-html--html5-fancy-p info)
+                               <span class="ef-s">"nav"</span>
+                             <span class="ef-s">"div"</span>)))
+            (concat (format <span class="ef-s">"&lt;%s id=\"table-of-contents\"&gt;\n"</span> outer-tag)
+                    (<span class="ef-k">let</span> ((top-level (plist-get info <span class="ef-b">:html-toplevel-hlevel</span>)))
+                      (format <span class="ef-s">"&lt;h%d&gt;&lt;a href=\"#\" style=\"color:inherit; text-decoration: none;\"&gt;%s&lt;/a&gt;&lt;/h%d&gt;\n"</span>
+                              top-level
+                              (org-html--translate <span class="ef-s">"Table of Contents"</span> info)
+                              top-level))
+                    toc
+                    (format <span class="ef-s">"&lt;/%s&gt;\n"</span> outer-tag))))))))
+
+(<span class="ef-k">defvar</span> <span class="ef-v">org-html-meta-tags-opengraph-image</span>
+  '(<span class="ef-b">:image</span> <span class="ef-s">"https://tecosaur.com/resources/org/nib.png"</span>
+    <span class="ef-b">:type</span> <span class="ef-s">"image/png"</span>
+    <span class="ef-b">:width</span> <span class="ef-s">"200"</span>
+    <span class="ef-b">:height</span> <span class="ef-s">"200"</span>
+    <span class="ef-b">:alt</span> <span class="ef-s">"Green fountain pen nib"</span>)
+  <span class="ef-d">"Plist of og:image:PROP properties and their value, for use in `</span><span style="color: #b751b6; text-decoration: italic;">org-html-meta-tags-fancy</span><span class="ef-d">'."</span>)
+
+(<span class="ef-k">defun</span> <span class="ef-f">org-html-meta-tags-fancy</span> (info)
+  <span class="ef-d">"Use the INFO plist to construct the meta tags, as described in `</span><span style="color: #b751b6; text-decoration: italic;">org-html-meta-tags</span><span class="ef-d">'."</span>
+  (<span class="ef-k">let*</span> ((title (org-html-plain-text
+                 (org-element-interpret-data (plist-get info <span class="ef-b">:title</span>)) info))
+         (author (<span class="ef-k">and</span> (plist-get info <span class="ef-b">:with-author</span>)
+                      (<span class="ef-k">let</span> ((auth (plist-get info <span class="ef-b">:author</span>)))
+                        <span class="ef-cd">;; </span><span class="ef-c">Return raw Org syntax.
+</span>                        (<span class="ef-k">and</span> auth (org-html-plain-text
+                                   (org-element-interpret-data auth) info)))))
+         (author-first-last
+          (<span class="ef-k">and</span> (not (org-string-nw-p author))
+               (<span class="ef-k">save-match-data</span>
+                 (<span class="ef-k">if</span> (string-match <span class="ef-s">"\\`</span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">(</span><span class="ef-s">.+?</span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">)</span><span class="ef-s"> +</span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">(</span><span class="ef-s">.+?</span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">)</span><span class="ef-s">\\'"</span> author)
+                     (cons (match-string 1 author)
+                           (match-string 2 author))
+                   (cons author nil))))))
+    (append
+     (list
+      (<span class="ef-k">when</span> (org-string-nw-p author)
+        (list <span class="ef-s">"name"</span> <span class="ef-s">"author"</span> author))
+      (<span class="ef-k">when</span> (org-string-nw-p (plist-get info <span class="ef-b">:description</span>))
+        (list <span class="ef-s">"name"</span> <span class="ef-s">"description"</span>
+              (plist-get info <span class="ef-b">:description</span>)))
+      '(<span class="ef-s">"name"</span> <span class="ef-s">"generator"</span> <span class="ef-s">"org mode"</span>)
+      '(<span class="ef-s">"name"</span> <span class="ef-s">"theme-color"</span> <span class="ef-s">"#77aa99"</span>)
+      '(<span class="ef-s">"property"</span> <span class="ef-s">"og:type"</span> <span class="ef-s">"article"</span>)
+      (list <span class="ef-s">"property"</span> <span class="ef-s">"og:title"</span> title)
+      (<span class="ef-k">let</span> ((subtitle (org-export-data (plist-get info <span class="ef-b">:subtitle</span>) info)))
+        (<span class="ef-k">when</span> (org-string-nw-p subtitle)
+          (list <span class="ef-s">"property"</span> <span class="ef-s">"og:description"</span> subtitle))))
+     (<span class="ef-k">when</span> org-html-meta-tags-opengraph-image
+       (list (list <span class="ef-s">"property"</span> <span class="ef-s">"og:image"</span> (plist-get org-html-meta-tags-opengraph-image <span class="ef-b">:image</span>))
+             (list <span class="ef-s">"property"</span> <span class="ef-s">"og:image:type"</span> (plist-get org-html-meta-tags-opengraph-image <span class="ef-b">:type</span>))
+             (list <span class="ef-s">"property"</span> <span class="ef-s">"og:image:width"</span> (plist-get org-html-meta-tags-opengraph-image <span class="ef-b">:width</span>))
+             (list <span class="ef-s">"property"</span> <span class="ef-s">"og:image:height"</span> (plist-get org-html-meta-tags-opengraph-image <span class="ef-b">:height</span>))
+             (list <span class="ef-s">"property"</span> <span class="ef-s">"og:image:alt"</span> (plist-get org-html-meta-tags-opengraph-image <span class="ef-b">:alt</span>))))
+     (list
+      (<span class="ef-k">when</span> (car author-first-last)
+        (list <span class="ef-s">"property"</span> <span class="ef-s">"og:article:author:first_name"</span> (car author-first-last)))
+      (<span class="ef-k">when</span> (cdr author-first-last)
+        (list <span class="ef-s">"property"</span> <span class="ef-s">"og:article:author:last_name"</span> (cdr author-first-last)))
+      (list <span class="ef-s">"property"</span> <span class="ef-s">"og:article:published_time"</span>
+            (format-time-string
+             <span class="ef-s">"%FT%T%z"</span>
+             (<span class="ef-k">or</span>
+              (<span class="ef-k">when-let</span> ((date-str (cadar (org-collect-keywords '(<span class="ef-s">"DATE"</span>)))))
+                (<span class="ef-k">unless</span> (string= date-str (format-time-string <span class="ef-s">"%F"</span>))
+                  (<span class="ef-k">ignore-errors</span> (encode-time (org-parse-time-string date-str)))))
+              (<span class="ef-k">if</span> buffer-file-name
+                  (file-attribute-modification-time (file-attributes buffer-file-name))
+                (current-time)))))
+      (<span class="ef-k">when</span> buffer-file-name
+        (list <span class="ef-s">"property"</span> <span class="ef-s">"og:article:modified_time"</span>
+              (format-time-string <span class="ef-s">"%FT%T%z"</span> (file-attribute-modification-time (file-attributes buffer-file-name)))))))))
+
+(<span class="ef-k">unless</span> (functionp #'org-html-meta-tags-default)
+  (<span class="ef-k">defalias</span> '<span class="ef-f">org-html-meta-tags-default</span> #'ignore))
+(<span class="ef-k">setq</span> org-html-meta-tags #'org-html-meta-tags-fancy)
+
+(<span class="ef-k">setq</span> org-html-style-plain org-html-style-default
+      org-html-htmlize-output-type 'css
+      org-html-doctype <span class="ef-s">"html5"</span>
+      org-html-html5-fancy t)
+
+(<span class="ef-k">defun</span> <span class="ef-f">org-html-reload-fancy-style</span> ()
+  (<span class="ef-k">interactive</span>)
+  (<span class="ef-k">setq</span> org-html-style-fancy
+        (<span class="ef-k">with-temp-buffer</span>
+          (insert-file-contents (expand-file-name <span class="ef-s">"misc/org-export-header.html"</span> doom-user-dir))
+          (goto-char (point-max))
+          (insert <span class="ef-s">"&lt;script&gt;\n"</span>)
+          (insert-file-contents (expand-file-name <span class="ef-s">"misc/org-css/main.js"</span> doom-user-dir))
+          (goto-char (point-max))
+          (insert <span class="ef-s">"&lt;/script&gt;\n&lt;style&gt;\n"</span>)
+          (insert-file-contents (expand-file-name <span class="ef-s">"misc/org-css/main.min.css"</span> doom-user-dir))
+          (goto-char (point-max))
+          (insert <span class="ef-s">"&lt;/style&gt;"</span>)
+          (buffer-string)))
+  (<span class="ef-k">when</span> org-fancy-html-export-mode
+    (<span class="ef-k">setq</span> org-html-style-default org-html-style-fancy)))
+(org-html-reload-fancy-style)
+
+(<span class="ef-k">defvar</span> <span class="ef-v">org-html-export-collapsed</span> nil)
+(eval '(cl-pushnew '(<span class="ef-b">:collapsed</span> <span class="ef-s">"COLLAPSED"</span> <span class="ef-s">"collapsed"</span> org-html-export-collapsed t)
+                   (org-export-backend-options (org-export-get-backend 'html))))
+(add-to-list 'org-default-properties <span class="ef-s">"EXPORT_COLLAPSED"</span>)
+
+(<span class="ef-k">defadvice!</span> org-html-src-block-collapsable (orig-fn src-block contents info)
+  <span class="ef-d">"Wrap the usual &lt;pre&gt; block in a &lt;details&gt;"</span>
+  <span class="ef-b">:around</span> #'org-html-src-block
+  (<span class="ef-k">if</span> (<span class="ef-k">or</span> (not org-fancy-html-export-mode) (<span class="ef-k">bound-and-true-p</span> org-msg-export-in-progress))
+      (funcall orig-fn src-block contents info)
+    (<span class="ef-k">let*</span> ((properties (cadr src-block))
+           (lang (mode-name-to-lang-name
+                  (plist-get properties <span class="ef-b">:language</span>)))
+           (name (plist-get properties <span class="ef-b">:name</span>))
+           (ref (org-export-get-reference src-block info))
+           (collapsed-p (member (<span class="ef-k">or</span> (org-export-read-attribute <span class="ef-b">:attr_html</span> src-block <span class="ef-b">:collapsed</span>)
+                                    (plist-get info <span class="ef-b">:collapsed</span>))
+                                '(<span class="ef-s">"y"</span> <span class="ef-s">"yes"</span> <span class="ef-s">"t"</span> t <span class="ef-s">"true"</span> <span class="ef-s">"all"</span>))))
+      (format
+       <span class="ef-s">"&lt;details id='</span><span style="color: #b751b6;">%s</span><span class="ef-s">' class='</span><span style="color: #b751b6;">code</span><span class="ef-s">'%s&gt;&lt;summary%s&gt;%s&lt;/summary&gt;
+&lt;div class='</span><span style="color: #b751b6;">gutter</span><span class="ef-s">'&gt;
+&lt;a href='#%s'&gt;#&lt;/a&gt;
+&lt;button title='Copy to clipboard' onclick='copyPreToClipbord(this)'&gt;⎘&lt;/button&gt;\
+&lt;/div&gt;
+%s
+&lt;/details&gt;"</span>
+       ref
+       (<span class="ef-k">if</span> collapsed-p <span class="ef-s">""</span> <span class="ef-s">" open"</span>)
+       (<span class="ef-k">if</span> name <span class="ef-s">" class='</span><span style="color: #b751b6;">named</span><span class="ef-s">'"</span> <span class="ef-s">""</span>)
+       (concat
+        (<span class="ef-k">when</span> name (concat <span class="ef-s">"&lt;span class=\"name\"&gt;"</span> name <span class="ef-s">"&lt;/span&gt;"</span>))
+        <span class="ef-s">"&lt;span class=\"lang\"&gt;"</span> lang <span class="ef-s">"&lt;/span&gt;"</span>)
+       ref
+       (<span class="ef-k">if</span> name
+           (replace-regexp-in-string (format <span class="ef-s">"&lt;pre</span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">(</span><span class="ef-s"> class=\"[</span><span style="color: #4078f2; font-weight: 700;">^</span><span class="ef-s">\"]+\"</span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">)</span><span class="ef-s">? id=\"%s\"&gt;"</span> ref) <span class="ef-s">"&lt;pre\\1&gt;"</span>
+                                     (funcall orig-fn src-block contents info))
+         (funcall orig-fn src-block contents info))))))
+
+(<span class="ef-k">defun</span> <span class="ef-f">mode-name-to-lang-name</span> (mode)
+  (<span class="ef-k">or</span> (cadr (assoc mode
+                   '((<span class="ef-s">"asymptote"</span> <span class="ef-s">"Asymptote"</span>)
+                     (<span class="ef-s">"awk"</span> <span class="ef-s">"Awk"</span>)
+                     (<span class="ef-s">"C"</span> <span class="ef-s">"C"</span>)
+                     (<span class="ef-s">"clojure"</span> <span class="ef-s">"Clojure"</span>)
+                     (<span class="ef-s">"css"</span> <span class="ef-s">"CSS"</span>)
+                     (<span class="ef-s">"D"</span> <span class="ef-s">"D"</span>)
+                     (<span class="ef-s">"ditaa"</span> <span class="ef-s">"ditaa"</span>)
+                     (<span class="ef-s">"dot"</span> <span class="ef-s">"Graphviz"</span>)
+                     (<span class="ef-s">"calc"</span> <span class="ef-s">"Emacs Calc"</span>)
+                     (<span class="ef-s">"emacs-lisp"</span> <span class="ef-s">"Emacs Lisp"</span>)
+                     (<span class="ef-s">"fortran"</span> <span class="ef-s">"Fortran"</span>)
+                     (<span class="ef-s">"gnuplot"</span> <span class="ef-s">"gnuplot"</span>)
+                     (<span class="ef-s">"haskell"</span> <span class="ef-s">"Haskell"</span>)
+                     (<span class="ef-s">"hledger"</span> <span class="ef-s">"hledger"</span>)
+                     (<span class="ef-s">"java"</span> <span class="ef-s">"Java"</span>)
+                     (<span class="ef-s">"js"</span> <span class="ef-s">"Javascript"</span>)
+                     (<span class="ef-s">"latex"</span> <span class="ef-s">"LaTeX"</span>)
+                     (<span class="ef-s">"ledger"</span> <span class="ef-s">"Ledger"</span>)
+                     (<span class="ef-s">"lisp"</span> <span class="ef-s">"Lisp"</span>)
+                     (<span class="ef-s">"lilypond"</span> <span class="ef-s">"Lilypond"</span>)
+                     (<span class="ef-s">"lua"</span> <span class="ef-s">"Lua"</span>)
+                     (<span class="ef-s">"matlab"</span> <span class="ef-s">"MATLAB"</span>)
+                     (<span class="ef-s">"mscgen"</span> <span class="ef-s">"Mscgen"</span>)
+                     (<span class="ef-s">"ocaml"</span> <span class="ef-s">"Objective Caml"</span>)
+                     (<span class="ef-s">"octave"</span> <span class="ef-s">"Octave"</span>)
+                     (<span class="ef-s">"org"</span> <span class="ef-s">"Org mode"</span>)
+                     (<span class="ef-s">"oz"</span> <span class="ef-s">"OZ"</span>)
+                     (<span class="ef-s">"plantuml"</span> <span class="ef-s">"Plantuml"</span>)
+                     (<span class="ef-s">"processing"</span> <span class="ef-s">"Processing.js"</span>)
+                     (<span class="ef-s">"python"</span> <span class="ef-s">"Python"</span>)
+                     (<span class="ef-s">"R"</span> <span class="ef-s">"R"</span>)
+                     (<span class="ef-s">"ruby"</span> <span class="ef-s">"Ruby"</span>)
+                     (<span class="ef-s">"sass"</span> <span class="ef-s">"Sass"</span>)
+                     (<span class="ef-s">"scheme"</span> <span class="ef-s">"Scheme"</span>)
+                     (<span class="ef-s">"screen"</span> <span class="ef-s">"Gnu Screen"</span>)
+                     (<span class="ef-s">"sed"</span> <span class="ef-s">"Sed"</span>)
+                     (<span class="ef-s">"sh"</span> <span class="ef-s">"shell"</span>)
+                     (<span class="ef-s">"sql"</span> <span class="ef-s">"SQL"</span>)
+                     (<span class="ef-s">"sqlite"</span> <span class="ef-s">"SQLite"</span>)
+                     (<span class="ef-s">"forth"</span> <span class="ef-s">"Forth"</span>)
+                     (<span class="ef-s">"io"</span> <span class="ef-s">"IO"</span>)
+                     (<span class="ef-s">"J"</span> <span class="ef-s">"J"</span>)
+                     (<span class="ef-s">"makefile"</span> <span class="ef-s">"Makefile"</span>)
+                     (<span class="ef-s">"maxima"</span> <span class="ef-s">"Maxima"</span>)
+                     (<span class="ef-s">"perl"</span> <span class="ef-s">"Perl"</span>)
+                     (<span class="ef-s">"picolisp"</span> <span class="ef-s">"Pico Lisp"</span>)
+                     (<span class="ef-s">"scala"</span> <span class="ef-s">"Scala"</span>)
+                     (<span class="ef-s">"shell"</span> <span class="ef-s">"Shell Script"</span>)
+                     (<span class="ef-s">"ebnf2ps"</span> <span class="ef-s">"ebfn2ps"</span>)
+                     (<span class="ef-s">"cpp"</span> <span class="ef-s">"C++"</span>)
+                     (<span class="ef-s">"abc"</span> <span class="ef-s">"ABC"</span>)
+                     (<span class="ef-s">"coq"</span> <span class="ef-s">"Coq"</span>)
+                     (<span class="ef-s">"groovy"</span> <span class="ef-s">"Groovy"</span>)
+                     (<span class="ef-s">"bash"</span> <span class="ef-s">"bash"</span>)
+                     (<span class="ef-s">"csh"</span> <span class="ef-s">"csh"</span>)
+                     (<span class="ef-s">"ash"</span> <span class="ef-s">"ash"</span>)
+                     (<span class="ef-s">"dash"</span> <span class="ef-s">"dash"</span>)
+                     (<span class="ef-s">"ksh"</span> <span class="ef-s">"ksh"</span>)
+                     (<span class="ef-s">"mksh"</span> <span class="ef-s">"mksh"</span>)
+                     (<span class="ef-s">"posh"</span> <span class="ef-s">"posh"</span>)
+                     (<span class="ef-s">"ada"</span> <span class="ef-s">"Ada"</span>)
+                     (<span class="ef-s">"asm"</span> <span class="ef-s">"Assembler"</span>)
+                     (<span class="ef-s">"caml"</span> <span class="ef-s">"Caml"</span>)
+                     (<span class="ef-s">"delphi"</span> <span class="ef-s">"Delphi"</span>)
+                     (<span class="ef-s">"html"</span> <span class="ef-s">"HTML"</span>)
+                     (<span class="ef-s">"idl"</span> <span class="ef-s">"IDL"</span>)
+                     (<span class="ef-s">"mercury"</span> <span class="ef-s">"Mercury"</span>)
+                     (<span class="ef-s">"metapost"</span> <span class="ef-s">"MetaPost"</span>)
+                     (<span class="ef-s">"modula-2"</span> <span class="ef-s">"Modula-2"</span>)
+                     (<span class="ef-s">"pascal"</span> <span class="ef-s">"Pascal"</span>)
+                     (<span class="ef-s">"ps"</span> <span class="ef-s">"PostScript"</span>)
+                     (<span class="ef-s">"prolog"</span> <span class="ef-s">"Prolog"</span>)
+                     (<span class="ef-s">"simula"</span> <span class="ef-s">"Simula"</span>)
+                     (<span class="ef-s">"tcl"</span> <span class="ef-s">"tcl"</span>)
+                     (<span class="ef-s">"tex"</span> <span class="ef-s">"LaTeX"</span>)
+                     (<span class="ef-s">"plain-tex"</span> <span class="ef-s">"TeX"</span>)
+                     (<span class="ef-s">"verilog"</span> <span class="ef-s">"Verilog"</span>)
+                     (<span class="ef-s">"vhdl"</span> <span class="ef-s">"VHDL"</span>)
+                     (<span class="ef-s">"xml"</span> <span class="ef-s">"XML"</span>)
+                     (<span class="ef-s">"nxml"</span> <span class="ef-s">"XML"</span>)
+                     (<span class="ef-s">"conf"</span> <span class="ef-s">"Configuration File"</span>))))
+      mode))
+
+(<span class="ef-k">defun</span> <span class="ef-f">org-html-block-collapsable</span> (orig-fn block contents info)
+  <span class="ef-d">"Wrap the usual block in a &lt;details&gt;"</span>
+  (<span class="ef-k">if</span> (<span class="ef-k">or</span> (not org-fancy-html-export-mode) (<span class="ef-k">bound-and-true-p</span> org-msg-export-in-progress))
+      (funcall orig-fn block contents info)
+    (<span class="ef-k">let</span> ((ref (org-export-get-reference block info))
+          (type (<span class="ef-k">pcase</span> (car block)
+                  ('property-drawer <span class="ef-s">"Properties"</span>)))
+          (collapsed-default (<span class="ef-k">pcase</span> (car block)
+                               ('property-drawer t)
+                               (_ nil)))
+          (collapsed-value (org-export-read-attribute <span class="ef-b">:attr_html</span> block <span class="ef-b">:collapsed</span>))
+          (collapsed-p (<span class="ef-k">or</span> (member (org-export-read-attribute <span class="ef-b">:attr_html</span> block <span class="ef-b">:collapsed</span>)
+                                   '(<span class="ef-s">"y"</span> <span class="ef-s">"yes"</span> <span class="ef-s">"t"</span> t <span class="ef-s">"true"</span>))
+                           (member (plist-get info <span class="ef-b">:collapsed</span>) '(<span class="ef-s">"all"</span>)))))
+      (format
+       <span class="ef-s">"&lt;details id='</span><span style="color: #b751b6;">%s</span><span class="ef-s">' class='</span><span style="color: #b751b6;">code</span><span class="ef-s">'%s&gt;
+&lt;summary%s&gt;%s&lt;/summary&gt;
+&lt;div class='</span><span style="color: #b751b6;">gutter</span><span class="ef-s">'&gt;\
+&lt;a href='#%s'&gt;#&lt;/a&gt;
+&lt;button title='Copy to clipboard' onclick='copyPreToClipbord(this)'&gt;⎘&lt;/button&gt;\
+&lt;/div&gt;
+%s\n
+&lt;/details&gt;"</span>
+       ref
+       (<span class="ef-k">if</span> (<span class="ef-k">or</span> collapsed-p collapsed-default) <span class="ef-s">""</span> <span class="ef-s">" open"</span>)
+       (<span class="ef-k">if</span> type <span class="ef-s">" class='</span><span style="color: #b751b6;">named</span><span class="ef-s">'"</span> <span class="ef-s">""</span>)
+       (<span class="ef-k">if</span> type (format <span class="ef-s">"&lt;span class='</span><span style="color: #b751b6;">type</span><span class="ef-s">'&gt;%s&lt;/span&gt;"</span> type) <span class="ef-s">""</span>)
+       ref
+       (funcall orig-fn block contents info)))))
+
+(advice-add 'org-html-example-block   <span class="ef-b">:around</span> #'org-html-block-collapsable)
+(advice-add 'org-html-fixed-width     <span class="ef-b">:around</span> #'org-html-block-collapsable)
+(advice-add 'org-html-property-drawer <span class="ef-b">:around</span> #'org-html-block-collapsable)
+
+(autoload #'highlight-numbers--turn-on <span class="ef-s">"highlight-numbers"</span>)
+(add-hook 'htmlize-before-hook #'highlight-numbers--turn-on)
+
+(<span class="ef-k">defadvice!</span> org-html-table-wrapped (orig-fn table contents info)
+  <span class="ef-d">"Wrap the usual &lt;table&gt; in a &lt;div&gt;"</span>
+  <span class="ef-b">:around</span> #'org-html-table
+  (<span class="ef-k">if</span> (<span class="ef-k">or</span> (not org-fancy-html-export-mode) (<span class="ef-k">bound-and-true-p</span> org-msg-export-in-progress))
+      (funcall orig-fn table contents info)
+    (<span class="ef-k">let*</span> ((name (plist-get (cadr table) <span class="ef-b">:name</span>))
+           (ref (org-export-get-reference table info)))
+      (format <span class="ef-s">"&lt;div id='</span><span style="color: #b751b6;">%s</span><span class="ef-s">' class='</span><span style="color: #b751b6;">table</span><span class="ef-s">'&gt;
+&lt;div class='</span><span style="color: #b751b6;">gutter</span><span class="ef-s">'&gt;&lt;a href='#%s'&gt;#&lt;/a&gt;&lt;/div&gt;
+&lt;div class='</span><span style="color: #b751b6;">tabular</span><span class="ef-s">'&gt;
+%s
+&lt;/div&gt;\
+&lt;/div&gt;"</span>
+              ref ref
+              (<span class="ef-k">if</span> name
+                  (replace-regexp-in-string (format <span class="ef-s">"&lt;table id=\"%s\""</span> ref) <span class="ef-s">"&lt;table"</span>
+                                            (funcall orig-fn table contents info))
+                (funcall orig-fn table contents info))))))
+
+(<span class="ef-k">defadvice!</span> org-html--format-toc-headline-colapseable (orig-fn headline info)
+  <span class="ef-d">"Add a label and checkbox to `</span><span style="color: #b751b6; text-decoration: italic;">org-html--format-toc-headline</span><span class="ef-d">'s usual output,
+to allow the TOC to be a collapseable tree."</span>
+  <span class="ef-b">:around</span> #'org-html--format-toc-headline
+  (<span class="ef-k">if</span> (<span class="ef-k">or</span> (not org-fancy-html-export-mode) (<span class="ef-k">bound-and-true-p</span> org-msg-export-in-progress))
+      (funcall orig-fn headline info)
+    (<span class="ef-k">let</span> ((id (<span class="ef-k">or</span> (org-element-property <span class="ef-b">:CUSTOM_ID</span> headline)
+                  (org-export-get-reference headline info))))
+      (format <span class="ef-s">"&lt;input type='</span><span style="color: #b751b6;">checkbox</span><span class="ef-s">' id='</span><span style="color: #b751b6;">toc--%s</span><span class="ef-s">'/&gt;&lt;label for='</span><span style="color: #b751b6;">toc--%s</span><span class="ef-s">'&gt;%s&lt;/label&gt;"</span>
+              id id (funcall orig-fn headline info)))))
+
+(<span class="ef-k">defadvice!</span> org-html--toc-text-stripped-leaves (orig-fn toc-entries)
+  <span class="ef-d">"Remove label"</span>
+  <span class="ef-b">:around</span> #'org-html--toc-text
+  (<span class="ef-k">if</span> (<span class="ef-k">or</span> (not org-fancy-html-export-mode) (<span class="ef-k">bound-and-true-p</span> org-msg-export-in-progress))
+      (funcall orig-fn toc-entries)
+    (replace-regexp-in-string <span class="ef-s">"&lt;input [</span><span style="color: #4078f2; font-weight: 700;">^</span><span class="ef-s">&gt;]+&gt;&lt;label [</span><span style="color: #4078f2; font-weight: 700;">^</span><span class="ef-s">&gt;]+&gt;</span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">(</span><span class="ef-s">.+?</span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">)</span><span class="ef-s">&lt;/label&gt;&lt;/li&gt;"</span> <span class="ef-s">"\\1&lt;/li&gt;"</span>
+                              (funcall orig-fn toc-entries))))
+
+(<span class="ef-k">setq</span> org-html-text-markup-alist
+      '((bold . <span class="ef-s">"&lt;b&gt;%s&lt;/b&gt;"</span>)
+        (code . <span class="ef-s">"&lt;code&gt;%s&lt;/code&gt;"</span>)
+        (italic . <span class="ef-s">"&lt;i&gt;%s&lt;/i&gt;"</span>)
+        (strike-through . <span class="ef-s">"&lt;del&gt;%s&lt;/del&gt;"</span>)
+        (underline . <span class="ef-s">"&lt;span class=\"underline\"&gt;%s&lt;/span&gt;"</span>)
+        (verbatim . <span class="ef-s">"&lt;kbd&gt;%s&lt;/kbd&gt;"</span>)))
+
+(<span class="ef-k">appendq!</span> org-html-checkbox-types
+          '((html-span
+             (on . <span class="ef-s">"&lt;span class='</span><span style="color: #b751b6;">checkbox</span><span class="ef-s">'&gt;&lt;/span&gt;"</span>)
+             (off . <span class="ef-s">"&lt;span class='</span><span style="color: #b751b6;">checkbox</span><span class="ef-s">'&gt;&lt;/span&gt;"</span>)
+             (trans . <span class="ef-s">"&lt;span class='</span><span style="color: #b751b6;">checkbox</span><span class="ef-s">'&gt;&lt;/span&gt;"</span>))))
+(<span class="ef-k">setq</span> org-html-checkbox-type 'html-span)
+
+(<span class="ef-k">pushnew!</span> org-html-special-string-regexps
+          '(<span class="ef-s">"-&amp;gt;"</span> . <span class="ef-s">"&amp;#8594;"</span>)
+          '(<span class="ef-s">"&amp;lt;-"</span> . <span class="ef-s">"&amp;#8592;"</span>))
+
+(<span class="ef-k">defun</span> <span class="ef-f">org-export-html-headline-anchor</span> (text backend info)
+  (<span class="ef-k">when</span> (<span class="ef-k">and</span> (org-export-derived-backend-p backend 'html)
+             (not (org-export-derived-backend-p backend 're-reveal))
+             org-fancy-html-export-mode)
+    (<span class="ef-k">unless</span> (<span class="ef-k">bound-and-true-p</span> org-msg-export-in-progress)
+      (replace-regexp-in-string
+       <span class="ef-s">"&lt;h</span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">(</span><span class="ef-s">[0-9]</span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">)</span><span class="ef-s"> id=\"</span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">(</span><span class="ef-s">[a-z0-9-]+</span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">)</span><span class="ef-s">\"&gt;</span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">(</span><span class="ef-s">.*[</span><span style="color: #4078f2; font-weight: 700;">^</span><span class="ef-s"> ]</span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">)</span><span class="ef-s">&lt;\\/h[0-9]&gt;"</span> <span class="ef-cd">; </span><span class="ef-c">this is quite restrictive, but due to `</span><span style="color: #b751b6;">org-reference-contraction</span><span class="ef-c">' I can do this
+</span>       <span class="ef-s">"&lt;h\\1 id=\"\\2\"&gt;\\3&lt;a aria-hidden=\"true\" href=\"#\\2\"&gt;#&lt;/a&gt; &lt;/h\\1&gt;"</span>
+       text))))
+
+(add-to-list 'org-export-filter-headline-functions
+             'org-export-html-headline-anchor)
+
+(org-link-set-parameters <span class="ef-s">"Https"</span>
+                         <span class="ef-b">:follow</span> (<span class="ef-k">lambda</span> (url arg) (browse-url (concat <span class="ef-s">"https:"</span> url) arg))
+                         <span class="ef-b">:export</span> #'org-url-fancy-export)
+
+(<span class="ef-k">defun</span> <span class="ef-f">org-url-fancy-export</span> (url _desc backend)
+  (<span class="ef-k">let</span> ((metadata (org-url-unfurl-metadata (concat <span class="ef-s">"https:"</span> url))))
+    (<span class="ef-k">cond</span>
+     ((org-export-derived-backend-p backend 'html)
+      (concat
+       <span class="ef-s">"&lt;div class=\"link-preview\"&gt;"</span>
+       (format <span class="ef-s">"&lt;a href=\"%s\"&gt;"</span> (concat <span class="ef-s">"https:"</span> url))
+       (<span class="ef-k">when</span> (plist-get metadata <span class="ef-b">:image</span>)
+         (format <span class="ef-s">"&lt;img src=\"%s\"/&gt;"</span> (plist-get metadata <span class="ef-b">:image</span>)))
+       <span class="ef-s">"&lt;small&gt;"</span>
+       (replace-regexp-in-string <span class="ef-s">"//</span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">(?:</span><span class="ef-s">www\\.</span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">)</span><span class="ef-s">?</span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">(</span><span class="ef-s">[</span><span style="color: #4078f2; font-weight: 700;">^</span><span class="ef-s">/]+</span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">)</span><span class="ef-s">/?.*"</span> <span class="ef-s">"\\1"</span> url)
+       <span class="ef-s">"&lt;/small&gt;&lt;p&gt;"</span>
+       (<span class="ef-k">when</span> (plist-get metadata <span class="ef-b">:title</span>)
+         (concat <span class="ef-s">"&lt;b&gt;"</span> (org-html-encode-plain-text (plist-get metadata <span class="ef-b">:title</span>)) <span class="ef-s">"&lt;/b&gt;&lt;/br&gt;"</span>))
+       (<span class="ef-k">when</span> (plist-get metadata <span class="ef-b">:description</span>)
+         (org-html-encode-plain-text (plist-get metadata <span class="ef-b">:description</span>)))
+       <span class="ef-s">"&lt;/p&gt;&lt;/a&gt;&lt;/div&gt;"</span>))
+     (t url))))
+
+(<span class="ef-k">setq</span> org-url-unfurl-metadata--cache nil)
+(<span class="ef-k">defun</span> <span class="ef-f">org-url-unfurl-metadata</span> (url)
+  (cdr (<span class="ef-k">or</span> (assoc url org-url-unfurl-metadata--cache)
+           (car (<span class="ef-k">push</span>
+                 (cons
+                  url
+                  (<span class="ef-k">let*</span> ((head-data
+                          (cl-remove-if-not
+                           #'listp
+                           (cdaddr
+                            (<span class="ef-k">with-current-buffer</span>
+                                (<span class="ef-k">progn</span> (message <span class="ef-s">"Fetching metadata from %s"</span> url)
+                                       (<span class="ef-k">if</span> (executable-find <span class="ef-s">"curl"</span>)
+                                           (<span class="ef-k">with-current-buffer</span> (generate-new-buffer <span class="ef-s">" *curl*"</span>)
+                                             (call-process <span class="ef-s">"curl"</span> nil t nil <span class="ef-s">"--max-time"</span> <span class="ef-s">"5"</span> <span class="ef-s">"-sSL"</span> url)
+                                             (current-buffer))
+                                         (url-retrieve-synchronously url t t 5)))
+                              (goto-char (point-min))
+                              (delete-region (point-min) (- (search-forward <span class="ef-s">"&lt;head"</span>) 6))
+                              (delete-region (search-forward <span class="ef-s">"&lt;/head&gt;"</span>) (point-max))
+                              (goto-char (point-min))
+                              (<span class="ef-k">while</span> (re-search-forward <span class="ef-s">"&lt;script[</span><span style="color: #4078f2; font-weight: 700;">^</span><span class="ef-s">\u2800]+?&lt;/script&gt;"</span> nil t)
+                                (replace-match <span class="ef-s">""</span>))
+                              (goto-char (point-min))
+                              (<span class="ef-k">while</span> (re-search-forward <span class="ef-s">"&lt;style[</span><span style="color: #4078f2; font-weight: 700;">^</span><span class="ef-s">\u2800]+?&lt;/style&gt;"</span> nil t)
+                                (replace-match <span class="ef-s">""</span>))
+                              (libxml-parse-html-region (point-min) (point-max))))))
+                         (meta (delq nil
+                                     (mapcar
+                                      (<span class="ef-k">lambda</span> (tag)
+                                        (<span class="ef-k">when</span> (eq 'meta (car tag))
+                                          (cons (<span class="ef-k">or</span> (cdr (assoc 'name (cadr tag)))
+                                                    (cdr (assoc 'property (cadr tag))))
+                                                (cdr (assoc 'content (cadr tag))))))
+                                      head-data))))
+                    (<span class="ef-k">let</span> ((title (<span class="ef-k">or</span> (cdr (assoc <span class="ef-s">"og:title"</span> meta))
+                                     (cdr (assoc <span class="ef-s">"twitter:title"</span> meta))
+                                     (nth 2 (assq 'title head-data))))
+                          (description (<span class="ef-k">or</span> (cdr (assoc <span class="ef-s">"og:description"</span> meta))
+                                           (cdr (assoc <span class="ef-s">"twitter:description"</span> meta))
+                                           (cdr (assoc <span class="ef-s">"description"</span> meta))))
+                          (image (<span class="ef-k">or</span> (cdr (assoc <span class="ef-s">"og:image"</span> meta))
+                                     (cdr (assoc <span class="ef-s">"twitter:image"</span> meta)))))
+                      (<span class="ef-k">when</span> image
+                        (<span class="ef-k">setq</span> image (replace-regexp-in-string
+                                     <span class="ef-s">"^/"</span> (concat <span class="ef-s">"https://"</span> (replace-regexp-in-string <span class="ef-s">"//</span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">(</span><span class="ef-s">[</span><span style="color: #4078f2; font-weight: 700;">^</span><span class="ef-s">/]+</span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">)</span><span class="ef-s">/?.*"</span> <span class="ef-s">"\\1"</span> url) <span class="ef-s">"/"</span>)
+                                     (replace-regexp-in-string
+                                      <span class="ef-s">"^//"</span> <span class="ef-s">"https://"</span>
+                                      image))))
+                      (list <span class="ef-b">:title</span> title <span class="ef-b">:description</span> description <span class="ef-b">:image</span> image))))
+                 org-url-unfurl-metadata--cache)))))
+
+<span class="ef-cd">;; </span><span class="ef-c">(setq-default org-html-with-latex `dvisvgm)
+</span>
+(setcdr (assoc 'path org-html-mathjax-options)
+        (list <span class="ef-s">"https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"</span>))
+
+(<span class="ef-k">setq</span> org-html-mathjax-template
+  <span class="ef-s">"&lt;script&gt;
+  window.MathJax = {
+    loader: {
+      load: ['[tex]/mathtools'],
+    },
+    tex: {
+      ams: {
+        multlineWidth: '</span><span style="color: #b751b6;">%MULTLINEWIDTH</span><span class="ef-s">'
+      },
+      tags: '</span><span style="color: #b751b6;">%TAGS</span><span class="ef-s">',
+      tagSide: '</span><span style="color: #b751b6;">%TAGSIDE</span><span class="ef-s">',
+      tagIndent: '</span><span style="color: #b751b6;">%TAGINDENT</span><span class="ef-s">',
+      packages: {'[+]': ['</span><span style="color: #b751b6;">mathtools</span><span class="ef-s">']},
+      macros: {
+        RR: ['\\\\ifstrempty{#1}{\\\\mathbb{R}}{\\\\mathbb{R}^{#1}}', 1, ''],
+        NN: ['\\\\ifstrempty{#1}{\\\\mathbb{N}}{\\\\mathbb{N}^{#1}}', 1, ''],
+        ZZ: ['\\\\ifstrempty{#1}{\\\\mathbb{Z}}{\\\\mathbb{Z}^{#1}}', 1, ''],
+        QQ: ['\\\\ifstrempty{#1}{\\\\mathbb{Q}}{\\\\mathbb{Q}^{#1}}', 1, ''],
+        CC: ['\\\\ifstrempty{#1}{\\\\mathbb{C}}{\\\\mathbb{C}^{#1}}', 1, ''],
+        EE: '</span><span style="color: #b751b6;">\\\\mathbb{E}</span><span class="ef-s">',
+        Lap: '</span><span style="color: #b751b6;">\\\\operatorname{\\\\mathcal{L}}</span><span class="ef-s">',
+        Var: '</span><span style="color: #b751b6;">\\\\operatorname{Var}</span><span class="ef-s">',
+        Cor: '</span><span style="color: #b751b6;">\\\\operatorname{Cor}</span><span class="ef-s">',
+        E: '</span><span style="color: #b751b6;">\\\\operatorname{E}</span><span class="ef-s">',
+      },
+      mathtools: {
+        pairedDelimiters: {
+          abs: ['</span><span style="color: #b751b6;">\\\\lvert</span><span class="ef-s">', '</span><span style="color: #b751b6;">\\\\rvert</span><span class="ef-s">'],
+          norm: ['</span><span style="color: #b751b6;">\\\\lVert</span><span class="ef-s">', '</span><span style="color: #b751b6;">\\\\rVert</span><span class="ef-s">'],
+          ceil: ['</span><span style="color: #b751b6;">\\\\lceil</span><span class="ef-s">', '</span><span style="color: #b751b6;">\\\\rceil</span><span class="ef-s">'],
+          floor: ['</span><span style="color: #b751b6;">\\\\lfloor</span><span class="ef-s">', '</span><span style="color: #b751b6;">\\\\rfloor</span><span class="ef-s">'],
+          round: ['</span><span style="color: #b751b6;">\\\\lfloor</span><span class="ef-s">', '</span><span style="color: #b751b6;">\\\\rceil</span><span class="ef-s">'],
+        }
+      }
+    },
+    chtml: {
+      scale: %SCALE,
+      displayAlign: '</span><span style="color: #b751b6;">%ALIGN</span><span class="ef-s">',
+      displayIndent: '</span><span style="color: #b751b6;">%INDENT</span><span class="ef-s">'
+    },
+    svg: {
+      scale: %SCALE,
+      displayAlign: '</span><span style="color: #b751b6;">%ALIGN</span><span class="ef-s">',
+      displayIndent: '</span><span style="color: #b751b6;">%INDENT</span><span class="ef-s">'
+    },
+    output: {
+      font: '</span><span style="color: #b751b6;">%FONT</span><span class="ef-s">',
+      displayOverflow: '</span><span style="color: #b751b6;">%OVERFLOW</span><span class="ef-s">'
+    }
+  };
+&lt;/script&gt;
+
+&lt;script
+  id=\"MathJax-script\"
+  async
+  src=\"%PATH\"&gt;
+&lt;/script&gt;"</span>)
+
+(<span class="ef-k">provide</span> '<span class="ef-o">config-ox-html</span>)
+<span class="ef-cd">;;; </span><span class="ef-c">config-ox-html.el ends here
+</span>
+</pre>
+  <body>
+</html>

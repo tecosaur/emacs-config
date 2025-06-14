@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>config-mail.el.html</title>
+    <style>
+      body { background: #fafafa; color: #383a42; }
+      pre {
+        font-size: 1rem;
+        max-width: min(100rem, 100%);
+        width: max-content;
+        white-space: pre-wrap;
+        margin: auto; }
+      .ef-D {
+        color: #383a42; background-color: #fafafa; font-weight: 400; }
+      .ef-vp {
+         }
+      .ef-h {
+        color: #84888b; }
+      .ef-sc {
+        color: #50a14f; }
+      .ef-w {
+        color: #986801; }
+      .ef-e {
+        color: #e45649; }
+      .ef-l {
+        color: #4078f2; font-weight: 700; }
+      .ef-lv {
+        color: #8b008b; font-weight: 700; }
+      .ef-hi {
+        color: #f0f0f0; background-color: #4078f2; }
+      .ef-c {
+        color: #84888b; }
+      .ef-cd {
+        color: #84888b; }
+      .ef-s {
+        color: #50a14f; }
+      .ef-d {
+        color: #727578; text-decoration: italic; }
+      .ef-m {
+        color: #b751b6; }
+      .ef-k {
+        color: #e45649; }
+      .ef-b {
+        color: #a626a4; }
+      .ef-f {
+        color: #a626a4; }
+      .ef-v {
+        color: #6a1868; }
+      .ef-t {
+        color: #986801; }
+      .ef-o {
+        color: #b751b6; }
+      .ef-wr {
+        color: #986801; }
+      .ef-nc {
+        color: #4078f2; font-weight: 700; }
+      .ef-pp {
+        color: #4078f2; font-weight: 700; }
+      .ef-rc {
+        color: #4078f2; font-weight: 700; }
+      .ef-rb {
+        color: #4078f2; font-weight: 700; }
+      .ef-ob {
+        background-color: #e7e7e7; }
+      .ef-obb {
+        background-color: #e7e7e7; text-decoration: italic; }
+      .ef-obe {
+        background-color: #e7e7e7; text-decoration: italic; }
+      .ef-Oa {
+        color: #e45649; font-weight: nil; font-size: 1.25em }
+      .ef-Ob {
+        color: #da8548; font-weight: 700; font-size: 1.15em }
+      .ef-Oc {
+        color: #b751b6; font-weight: 700; font-size: 1.12em }
+      .ef-Od {
+        color: #6f99f5; font-weight: 600; font-size: 1.09em }
+      .ef-Oe {
+        color: #bc5cba; font-weight: 600; font-size: 1.06em }
+      .ef-Of {
+        color: #9fbbf8; font-weight: 600; font-size: 1.03em }
+      .ef-Og {
+        color: #d292d1; font-weight: 700; }
+      .ef-Oh {
+        color: #d8e4fc; font-weight: 600; }
+      .ef-hn {
+        color: #da8548; font-weight: 700; }
+      .ef-hq {
+        color: #4078f2; }
+      .ef-hs {
+        color: #986801; }
+      .ef-rda {
+        color: #4078f2; }
+      .ef-rdb {
+        color: #a626a4; }
+      .ef-rdc {
+        color: #50a14f; }
+      .ef-rdd {
+        color: #b751b6; }
+      .ef-rde {
+        color: #4db5bd; }
+      .ef-rdf {
+        color: #4078f2; }
+      .ef-rdg {
+        color: #a626a4; }
+      .ef-rdh {
+        color: #50a14f; }
+      .ef-rdi {
+        color: #b751b6; }
+    </style>
+  </head>
+  <body>
+<pre>
+<span class="ef-cd">;;; </span><span class="ef-c">config-mail.el --- Generated package (no.59) from my config -*- lexical-binding: t; -*-
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;; </span><span class="ef-c">Copyright (C) 2025 TEC
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;; </span><span class="ef-c">Author: TEC &lt;https://code.tecosaur.net/tec&gt;
+</span><span class="ef-cd">;; </span><span class="ef-c">Maintainer: TEC &lt;contact@tecosaur.net&gt;
+</span><span class="ef-cd">;; </span><span class="ef-c">Created: June 14, 2025
+</span><span class="ef-cd">;; </span><span class="ef-c">Modified: June 14, 2025
+</span><span class="ef-cd">;; </span><span class="ef-c">Version: 2025.06.14
+</span><span class="ef-cd">;; </span><span class="ef-c">Homepage: https://code.tecosaur.net/tec/emacs-config
+</span><span class="ef-cd">;; </span><span class="ef-c">Package-Requires: ((emacs "29.1"))
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;; </span><span class="ef-c">This file is not part of GNU Emacs.
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;; </span><span class="ef-c">Commentary:
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;  </span><span class="ef-c">Generated package (no.59) from my config.
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;  </span><span class="ef-c">During generation, dependency on other aspects of my configuration and
+</span><span class="ef-cd">;;  </span><span class="ef-c">packages is inferred via (regexp-based) static analysis.  While this seems
+</span><span class="ef-cd">;;  </span><span class="ef-c">to do a good job, this method is imperfect.  This code likely depends on
+</span><span class="ef-cd">;;  </span><span class="ef-c">utilities provided by Doom, and if you try to run it in isolation you may
+</span><span class="ef-cd">;;  </span><span class="ef-c">discover the code makes more assumptions.
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;  </span><span class="ef-c">That said, I've found pretty good results so far.
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;; </span><span class="ef-c">Code:
+</span>
+(<span class="ef-k">require</span> '<span class="ef-o">mu4e</span>)
+
+(<span class="ef-k">defvar</span> <span class="ef-v">mu4e-reindex-request-file</span> <span class="ef-s">"/tmp/mu_reindex_now"</span>
+  <span class="ef-d">"Location of the reindex request, signaled by existance"</span>)
+(<span class="ef-k">defvar</span> <span class="ef-v">mu4e-reindex-request-min-seperation</span> 5.0
+  <span class="ef-d">"Don't refresh again until this many second have elapsed.
+Prevents a series of redisplays from being called (when set to an appropriate value)"</span>)
+
+(<span class="ef-k">defvar</span> <span class="ef-v">mu4e-reindex-request--file-watcher</span> nil)
+(<span class="ef-k">defvar</span> <span class="ef-v">mu4e-reindex-request--file-just-deleted</span> nil)
+(<span class="ef-k">defvar</span> <span class="ef-v">mu4e-reindex-request--last-time</span> 0)
+
+(<span class="ef-k">defun</span> <span class="ef-f">mu4e-reindex-request--add-watcher</span> ()
+  (<span class="ef-k">setq</span> mu4e-reindex-request--file-just-deleted nil)
+  (<span class="ef-k">setq</span> mu4e-reindex-request--file-watcher
+        (file-notify-add-watch mu4e-reindex-request-file
+                               '(change)
+                               #'mu4e-file-reindex-request)))
+
+(<span class="ef-k">defadvice!</span> mu4e-stop-watching-for-reindex-request ()
+  <span class="ef-b">:after</span> #'mu4e--server-kill
+  (<span class="ef-k">if</span> mu4e-reindex-request--file-watcher
+      (file-notify-rm-watch mu4e-reindex-request--file-watcher)))
+
+(<span class="ef-k">defadvice!</span> mu4e-watch-for-reindex-request ()
+  <span class="ef-b">:after</span> #'mu4e--server-start
+  (mu4e-stop-watching-for-reindex-request)
+  (<span class="ef-k">when</span> (file-exists-p mu4e-reindex-request-file)
+    (delete-file mu4e-reindex-request-file))
+  (mu4e-reindex-request--add-watcher))
+
+(<span class="ef-k">defun</span> <span class="ef-f">mu4e-file-reindex-request</span> (event)
+  <span class="ef-d">"Act based on the existance of `</span><span style="color: #b751b6; text-decoration: italic;">mu4e-reindex-request-file</span><span class="ef-d">'"</span>
+  (<span class="ef-k">if</span> mu4e-reindex-request--file-just-deleted
+      (mu4e-reindex-request--add-watcher)
+    (<span class="ef-k">when</span> (equal (nth 1 event) 'created)
+      (delete-file mu4e-reindex-request-file)
+      (<span class="ef-k">setq</span> mu4e-reindex-request--file-just-deleted t)
+      (mu4e-reindex-maybe t))))
+
+(<span class="ef-k">defun</span> <span class="ef-f">mu4e-reindex-maybe</span> (<span class="ef-t">&amp;optional</span> new-request)
+  <span class="ef-d">"Run `</span><span style="color: #b751b6; text-decoration: italic;">mu4e--server-index</span><span class="ef-d">' if it's been more than
+`</span><span style="color: #b751b6; text-decoration: italic;">mu4e-reindex-request-min-seperation</span><span class="ef-d">'seconds since the last request,"</span>
+  (<span class="ef-k">let</span> ((time-since-last-request (- (float-time)
+                                    mu4e-reindex-request--last-time)))
+    (<span class="ef-k">when</span> new-request
+      (<span class="ef-k">setq</span> mu4e-reindex-request--last-time (float-time)))
+    (<span class="ef-k">if</span> (&gt; time-since-last-request mu4e-reindex-request-min-seperation)
+        (mu4e--server-index nil t)
+      (<span class="ef-k">when</span> new-request
+        (run-at-time (* 1.1 mu4e-reindex-request-min-seperation) nil
+                     #'mu4e-reindex-maybe)))))
+
+(<span class="ef-k">setq</span> mu4e-headers-fields
+      '((<span class="ef-b">:flags</span> . 6)
+        (<span class="ef-b">:account-stripe</span> . 2)
+        (<span class="ef-b">:from-or-to</span> . 25)
+        (<span class="ef-b">:folder</span> . 10)
+        (<span class="ef-b">:recipnum</span> . 2)
+        (<span class="ef-b">:subject</span> . 80)
+        (<span class="ef-b">:human-date</span> . 8))
+      +mu4e-min-header-frame-width 142
+      mu4e-headers-date-format <span class="ef-s">"%d/%m/%y"</span>
+      mu4e-headers-time-format <span class="ef-s">"⧖ %H:%M"</span>
+      mu4e-headers-results-limit 1000
+      mu4e-index-cleanup t)
+
+(add-to-list 'mu4e-bookmarks
+             '(<span class="ef-b">:name</span> <span class="ef-s">"Yesterday's messages"</span> <span class="ef-b">:query</span> <span class="ef-s">"date:2d..1d"</span> <span class="ef-b">:key</span> ?y) t)
+
+(<span class="ef-k">defvar</span> <span class="ef-v">+mu4e-header--folder-colors</span> nil)
+(<span class="ef-k">appendq!</span> mu4e-header-info-custom
+          '((<span class="ef-b">:folder</span> .
+             (<span class="ef-b">:name</span> <span class="ef-s">"Folder"</span> <span class="ef-b">:shortname</span> <span class="ef-s">"Folder"</span> <span class="ef-b">:help</span> <span class="ef-s">"Lowest level folder"</span> <span class="ef-b">:function</span>
+              (<span class="ef-k">lambda</span> (msg)
+                (+mu4e-colorize-str
+                 (replace-regexp-in-string <span class="ef-s">"\\`.*/"</span> <span class="ef-s">""</span> (mu4e-message-field msg <span class="ef-b">:maildir</span>))
+                 '+mu4e-header--folder-colors))))))
+(<span class="ef-k">defadvice!</span> +mu4e-personal-address-p--*-a (orig-fn addr)
+  <span class="ef-b">:around</span> #'mu4e-personal-address-p
+  (<span class="ef-k">or</span> (<span class="ef-k">and</span> (stringp addr)
+           (string-match-p <span class="ef-s">"@</span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">(</span><span class="ef-s">[a-z]+\\.</span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">)</span><span class="ef-s">?tecosaur\\.net$"</span> addr))
+      (funcall orig-fn addr)))
+(<span class="ef-k">setq</span> mu4e-alert-icon <span class="ef-s">"/usr/share/icons/Papirus/64x64/apps/evolution.svg"</span>)
+(custom-set-faces!
+  '(mu4e-thread-fold-face <span class="ef-b">:inherit</span> default))
+(<span class="ef-k">setq</span> sendmail-program <span class="ef-s">"/usr/bin/msmtp"</span>
+      send-mail-function #'smtpmail-send-it
+      message-sendmail-f-is-evil t
+      message-sendmail-extra-arguments '(<span class="ef-s">"--read-envelope-from"</span>)<span class="ef-cd">; </span><span class="ef-c">, "--read-recipients")
+</span>      message-send-mail-function #'message-send-mail-with-sendmail)
+(<span class="ef-k">defun</span> <span class="ef-f">mu4e-compose-from-mailto</span> (mailto-string <span class="ef-t">&amp;optional</span> quit-frame-after)
+  (<span class="ef-k">require</span> '<span class="ef-o">mu4e</span>)
+  (<span class="ef-k">unless</span> mu4e--server-props (mu4e t) (sleep-for 0.1))
+  (<span class="ef-k">let*</span> ((mailto (message-parse-mailto-url mailto-string))
+         (to (cadr (assoc <span class="ef-s">"to"</span> mailto)))
+         (subject (<span class="ef-k">or</span> (cadr (assoc <span class="ef-s">"subject"</span> mailto)) <span class="ef-s">""</span>))
+         (body (cadr (assoc <span class="ef-s">"body"</span> mailto)))
+         (headers (-filter (<span class="ef-k">lambda</span> (spec) (not (-contains-p '(<span class="ef-s">"to"</span> <span class="ef-s">"subject"</span> <span class="ef-s">"body"</span>) (car spec)))) mailto)))
+    (<span class="ef-k">when-let</span> ((mu4e-main (get-buffer mu4e-main-buffer-name)))
+      (switch-to-buffer mu4e-main))
+    (mu4e~compose-mail to subject headers)
+    (<span class="ef-k">when</span> body
+      (goto-char (point-min))
+      (<span class="ef-k">if</span> (eq major-mode 'org-msg-edit-mode)
+          (org-msg-goto-body)
+        (mu4e-compose-goto-bottom))
+      (insert body))
+    (goto-char (point-min))
+    (<span class="ef-k">cond</span> ((null to) (search-forward <span class="ef-s">"To: "</span>))
+          ((string= <span class="ef-s">""</span> subject) (search-forward <span class="ef-s">"Subject: "</span>))
+          (t (<span class="ef-k">if</span> (eq major-mode 'org-msg-edit-mode)
+                 (org-msg-goto-body)
+               (mu4e-compose-goto-bottom))))
+    (font-lock-ensure)
+    (<span class="ef-k">when</span> evil-normal-state-minor-mode
+      (evil-append 1))
+    (<span class="ef-k">when</span> quit-frame-after
+      (add-hook 'kill-buffer-hook
+                `(<span class="ef-k">lambda</span> ()
+                   (<span class="ef-k">when</span> (eq (selected-frame) ,(selected-frame))
+                     (delete-frame)))))))
+(<span class="ef-k">defvar</span> <span class="ef-v">mu4e-from-name</span> <span class="ef-s">"Timothy"</span>
+  <span class="ef-d">"Name used in \"From:\" template."</span>)
+(<span class="ef-k">defadvice!</span> mu4e~draft-from-construct-renamed (orig-fn)
+  <span class="ef-d">"Wrap `</span><span style="color: #b751b6; text-decoration: italic;">mu4e~draft-from-construct-renamed</span><span class="ef-d">' to change the name."</span>
+  <span class="ef-b">:around</span> #'mu4e~draft-from-construct
+  (<span class="ef-k">let</span> ((user-full-name mu4e-from-name))
+    (funcall orig-fn)))
+(<span class="ef-k">setq</span> message-signature mu4e-from-name)
+(<span class="ef-k">defun</span> <span class="ef-f">+mu4e-update-personal-addresses</span> ()
+  (<span class="ef-k">let</span> ((primary-address
+         (car (cl-remove-if-not
+               (<span class="ef-k">lambda</span> (a) (eq (mod (apply #'* (cl-coerce a 'list)) 600) 0))
+               (mu4e-personal-addresses)))))
+    (<span class="ef-k">setq</span> +mu4e-personal-addresses
+          (<span class="ef-k">and</span> primary-address
+               (append (mu4e-personal-addresses)
+                       (mapcar
+                        (<span class="ef-k">lambda</span> (subalias)
+                          (concat subalias <span class="ef-s">"@"</span>
+                                  (subst-char-in-string ?@ ?. primary-address)))
+                        '(<span class="ef-s">"orgmode"</span>))
+                       (mapcar
+                        (<span class="ef-k">lambda</span> (alias)
+                          (replace-regexp-in-string
+                           <span class="ef-s">"\\`</span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">(</span><span class="ef-s">.*</span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">)</span><span class="ef-s">@"</span> alias primary-address t t 1))
+                        '(<span class="ef-s">"contact"</span> <span class="ef-s">"timothy"</span>)))))))
+
+(<span class="ef-k">add-transient-hook!</span> 'mu4e-compose-pre-hook
+  (+mu4e-update-personal-addresses))
+(<span class="ef-k">defadvice!</span> +mu4e-set-from-adress-h-personal-a (orig-fn)
+  <span class="ef-b">:around</span> #'+mu4e-set-from-address-h
+  (<span class="ef-k">let*</span> ((msg-addrs
+          (<span class="ef-k">and</span> mu4e-compose-parent-message
+               (delq nil
+                     (mapcar
+                      (<span class="ef-k">lambda</span> (adr) (plist-get adr <span class="ef-b">:email</span>))
+                      (append (mu4e-message-field mu4e-compose-parent-message <span class="ef-b">:to</span>)
+                              (mu4e-message-field mu4e-compose-parent-message <span class="ef-b">:cc</span>)
+                              (mu4e-message-field mu4e-compose-parent-message <span class="ef-b">:from</span>))))))
+         (personal-addrs
+          (<span class="ef-k">if</span> (<span class="ef-k">or</span> mu4e-contexts +mu4e-personal-addresses)
+              (<span class="ef-k">and</span> (&gt; (length +mu4e-personal-addresses) 1)
+                   +mu4e-personal-addresses)
+            (mu4e-personal-addresses)))
+         (personal-domain-addr
+          (cl-some
+           (<span class="ef-k">lambda</span> (email)
+             (<span class="ef-k">and</span> (string-match-p <span class="ef-s">"@</span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">(?:</span><span class="ef-s">tec\\.</span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">)</span><span class="ef-s">?tecosaur\\.net&gt;?$"</span>
+                                  email)
+                  email))
+           msg-addrs)))
+    (<span class="ef-k">if</span> (<span class="ef-k">and</span> personal-domain-addr
+             (not (cl-intersection msg-addrs personal-addrs <span class="ef-b">:test</span> #'equal)))
+        (<span class="ef-k">setq</span> user-mail-address personal-domain-addr)
+      (funcall orig-fn))))
+(<span class="ef-k">defun</span> <span class="ef-f">+mu4e-account-sent-folder</span> (<span class="ef-t">&amp;optional</span> msg)
+  (<span class="ef-k">let</span> ((from (<span class="ef-k">if</span> msg
+                  (plist-get (car (plist-get msg <span class="ef-b">:from</span>)) <span class="ef-b">:email</span>)
+                (<span class="ef-k">save-restriction</span>
+                  (mail-narrow-to-head)
+                  (mail-fetch-field <span class="ef-s">"from"</span>)))))
+    (<span class="ef-k">if</span> (<span class="ef-k">and</span> from (string-match-p <span class="ef-s">"@tecosaur\\.net&gt;?\\'"</span> from))
+        <span class="ef-s">"/tecosaur-net/Sent"</span>
+      <span class="ef-s">"/sent"</span>)))
+(<span class="ef-k">setq</span> mu4e-sent-folder #'+mu4e-account-sent-folder)
+(<span class="ef-k">defun</span> <span class="ef-f">+mu4e-evil-enter-insert-mode</span> ()
+  (<span class="ef-k">when</span> (eq (<span class="ef-k">bound-and-true-p</span> evil-state) 'normal)
+    (call-interactively #'evil-append)))
+
+(add-hook 'mu4e-compose-mode-hook #'+mu4e-evil-enter-insert-mode 90)
+(<span class="ef-k">defun</span> <span class="ef-f">+mu4e-get-woof-header</span> ()
+  (<span class="ef-k">pcase</span> (read-char
+          (format <span class="ef-s">"\
+%s
+  %s Declare %s Applied %s Aborted
+%s
+  %s Confirm %s Fixed
+%s
+  %s Request %s Resolved
+
+%s remove X-Woof header"</span>
+                  (propertize <span class="ef-s">"Patch"</span> 'face 'outline-3)
+                  (propertize <span class="ef-s">"p"</span> 'face '(bold consult-key))
+                  (propertize <span class="ef-s">"a"</span> 'face '(bold consult-key))
+                  (propertize <span class="ef-s">"c"</span> 'face '(bold consult-key))
+                  (propertize <span class="ef-s">"Bug"</span> 'face 'outline-3)
+                  (propertize <span class="ef-s">"b"</span> 'face '(bold consult-key))
+                  (propertize <span class="ef-s">"f"</span> 'face '(bold consult-key))
+                  (propertize <span class="ef-s">"Help"</span> 'face 'outline-3)
+                  (propertize <span class="ef-s">"h"</span> 'face '(bold consult-key))
+                  (propertize <span class="ef-s">"r"</span> 'face '(bold consult-key))
+                  (propertize <span class="ef-s">"x"</span> 'face '(bold error))))
+    (?p <span class="ef-s">"X-Woof-Patch: confirmed"</span>)
+    (?a <span class="ef-s">"X-Woof-Patch: applied"</span>)
+    (?c <span class="ef-s">"X-Woof-Patch: cancelled"</span>)
+    (?b <span class="ef-s">"X-Woof-Bug: confirmed"</span>)
+    (?f <span class="ef-s">"X-Woof-Bug: fixed"</span>)
+    (?h <span class="ef-s">"X-Woof-Help: confirmed"</span>)
+    (?r <span class="ef-s">"X-Woof-Help: cancelled"</span>)
+    (?x 'delete)))
+(<span class="ef-k">defun</span> <span class="ef-f">+mu4e-insert-woof-header</span> ()
+  <span class="ef-d">"Insert an X-Woof header into the current message."</span>
+  (<span class="ef-k">interactive</span>)
+  (<span class="ef-k">when-let</span> ((header (+mu4e-get-woof-header)))
+    (<span class="ef-k">save-excursion</span>
+      (goto-char (point-min))
+      (search-forward <span class="ef-s">"--text follows this line--"</span>)
+      (<span class="ef-k">unless</span> (eq header 'delete)
+        (beginning-of-line)
+        (insert header <span class="ef-s">"\n"</span>)
+        (forward-line -1))
+      (<span class="ef-k">when</span> (re-search-backward <span class="ef-s">"^X-Woof-"</span> nil t)
+        (kill-whole-line)))))
+
+(map! <span class="ef-b">:map</span> mu4e-compose-mode-map
+      <span class="ef-b">:localleader</span>
+      <span class="ef-b">:desc</span> <span class="ef-s">"Insert X-Woof Header"</span> <span class="ef-s">"w"</span> #'+mu4e-insert-woof-header)
+
+(map! <span class="ef-b">:map</span> org-msg-edit-mode-map
+      <span class="ef-b">:after</span> org-msg
+      <span class="ef-b">:localleader</span>
+      <span class="ef-b">:desc</span> <span class="ef-s">"Insert X-Woof Header"</span> <span class="ef-s">"w"</span> #'+mu4e-insert-woof-header)
+(<span class="ef-k">after!</span> mu4e
+  (<span class="ef-k">defvar</span> <span class="ef-v">+org-ml-target-dir</span>
+    (expand-file-name <span class="ef-s">"lisp/org/"</span> doom-user-dir))
+  (<span class="ef-k">defvar</span> <span class="ef-v">+org-ml-max-age</span> 600
+    <span class="ef-d">"Maximum permissible age in seconds."</span>)
+  (<span class="ef-k">defvar</span> <span class="ef-v">+org-ml--cache-timestamp</span> 0)
+  (<span class="ef-k">defvar</span> <span class="ef-v">+org-ml--cache</span> nil)
+
+  (<span class="ef-k">define-minor-mode</span> <span class="ef-f">+org-ml-patchy-mood-mode</span>
+    <span class="ef-d">"Apply patches to Org in bulk."</span>
+    <span class="ef-b">:global</span> t
+    (<span class="ef-k">let</span> ((action (cons <span class="ef-s">"apply patch to org"</span> #'+org-ml-apply-patch)))
+      (<span class="ef-k">if</span> +org-ml-patchy-mood-mode
+          (add-to-list 'mu4e-view-actions action)
+        (<span class="ef-k">setq</span> mu4e-view-actions (delete action mu4e-view-actions)))))
+
+  (<span class="ef-k">defun</span> <span class="ef-f">+org-ml-apply-patch</span> (msg)
+    <span class="ef-d">"Apply the patch in the current message to Org."</span>
+    (<span class="ef-k">interactive</span>)
+    (<span class="ef-k">unless</span> msg (<span class="ef-k">setq</span> msg (mu4e-message-at-point)))
+    (<span class="ef-k">with-current-buffer</span> (get-buffer-create <span class="ef-s">"*Shell: Org apply patches*"</span>)
+      (erase-buffer)
+      (<span class="ef-k">let*</span> ((default-directory +org-ml-target-dir)
+             (exit-code (call-process <span class="ef-s">"git"</span> nil t nil <span class="ef-s">"am"</span> (mu4e-message-field msg <span class="ef-b">:path</span>))))
+        (magit-refresh)
+        (<span class="ef-k">when</span> (not (= 0 exit-code))
+          (+popup/buffer)))))
+
+  (<span class="ef-k">defun</span> <span class="ef-f">+org-ml-current-patches</span> ()
+    <span class="ef-d">"Get the currently open patches, as a list of alists.
+Entries of the form (subject . id)."</span>
+    (delq nil
+          (mapcar
+           (<span class="ef-k">lambda</span> (entry)
+             (<span class="ef-k">unless</span> (plist-get entry <span class="ef-b">:fixed</span>)
+               (cons
+                (format <span class="ef-s">"%-8s  %s"</span>
+                        (propertize
+                         (replace-regexp-in-string <span class="ef-s">"T.*"</span> <span class="ef-s">""</span>
+                                                   (plist-get entry <span class="ef-b">:date</span>))
+                         'face 'font-lock-doc-face)
+                        (propertize
+                         (replace-regexp-in-string <span class="ef-s">"\\[</span><span style="color: #b751b6;">PATCH\\</span><span class="ef-s">] ?"</span> <span class="ef-s">""</span>
+                                                   (plist-get entry <span class="ef-b">:summary</span>))
+                         'face 'font-lock-keyword-face))
+                (plist-get entry <span class="ef-b">:id</span>))))
+           (<span class="ef-k">with-current-buffer</span> (url-retrieve-synchronously <span class="ef-s">"https://updates.orgmode.org/data/patches"</span>)
+             (goto-char url-http-end-of-headers)
+             (json-parse-buffer <span class="ef-b">:object-type</span> 'plist)))))
+
+  (<span class="ef-k">defun</span> <span class="ef-f">+org-ml-select-patch-thread</span> ()
+    <span class="ef-d">"Find and apply a proposed Org patch."</span>
+    (<span class="ef-k">interactive</span>)
+    (<span class="ef-k">let*</span> ((current-workspace (+workspace-current))
+           (patches (<span class="ef-k">progn</span>
+                      (<span class="ef-k">when</span> (<span class="ef-k">or</span> (not +org-ml--cache)
+                                (&gt; (- (float-time) +org-ml--cache-timestamp)
+                                   +org-ml-max-age))
+                        (<span class="ef-k">setq</span> +org-ml--cache (+org-ml-current-patches)
+                              +org-ml--cache-timestamp (float-time)))
+                      +org-ml--cache))
+           (msg-id (cdr (assoc (completing-read
+                                <span class="ef-s">"Thread: "</span> (mapcar #'car patches))
+                               patches))))
+      (+workspace-switch +mu4e-workspace-name)
+      (mu4e-view-message-with-message-id msg-id)
+      (<span class="ef-k">unless</span> +org-ml-patchy-mood-mode
+        (add-to-list 'mu4e-view-actions
+                     (cons <span class="ef-s">"apply patch to org"</span> #'+org-ml-transient-mu4e-action)))))
+
+  (<span class="ef-k">defun</span> <span class="ef-f">+org-ml-transient-mu4e-action</span> (msg)
+    (<span class="ef-k">setq</span> mu4e-view-actions
+          (delete (cons <span class="ef-s">"apply patch to org"</span> #'+org-ml-transient-mu4e-action)
+                  mu4e-view-actions))
+    (+workspace/other)
+    (magit-status +org-ml-target-dir)
+    (+org-ml-apply-patch msg)))
+(<span class="ef-k">after!</span> mu4e
+  (<span class="ef-k">defun</span> <span class="ef-f">+mu4e-ml-message-link</span> (msg)
+    <span class="ef-d">"Copy the link to MSG on the mailing list archives."</span>
+    (<span class="ef-k">let*</span> ((list-addr (<span class="ef-k">or</span> (mu4e-message-field msg <span class="ef-b">:list</span>)
+                          (<span class="ef-k">thread-last</span> (append (mu4e-message-field-raw msg <span class="ef-b">:list-post</span>)
+                                               (mu4e-message-field msg <span class="ef-b">:to</span>)
+                                               (mu4e-message-field msg <span class="ef-b">:cc</span>))
+                                       (mapcar (<span class="ef-k">lambda</span> (e) (plist-get e <span class="ef-b">:email</span>)))
+                                       (mapcar (<span class="ef-k">lambda</span> (addr)
+                                                 (<span class="ef-k">when</span> (string-match-p <span class="ef-s">"emacs.*@gnu\\.org$"</span> addr)
+                                                   (replace-regexp-in-string <span class="ef-s">"@"</span> <span class="ef-s">"."</span> addr))))
+                                       (delq nil)
+                                       (car))))
+           (msg-url
+            (<span class="ef-k">pcase</span> list-addr
+              (<span class="ef-s">"emacs-orgmode.gnu.org"</span>
+               (format <span class="ef-s">"https://list.orgmode.org/%s"</span> (mu4e-message-field msg <span class="ef-b">:message-id</span>)))
+              (_ (<span class="ef-wr">user-error</span> <span class="ef-s">"Mailing list %s not supported"</span> list-addr)))))
+      (gui-select-text msg-url)
+      (message <span class="ef-s">"Link %s copied to clipboard"</span>
+               (propertize msg-url 'face '((<span class="ef-b">:weight</span> normal <span class="ef-b">:underline</span> nil) link)))
+      msg-url))
+
+  (add-to-list 'mu4e-view-actions (cons <span class="ef-s">"link to message ML"</span> #'+mu4e-ml-message-link) t))
+(<span class="ef-k">defun</span> <span class="ef-f">+browse-url-orgmode-ml</span> (url <span class="ef-t">&amp;optional</span> _)
+  <span class="ef-d">"Open an orgmode list url using notmuch."</span>
+  (<span class="ef-k">let</span> ((id (<span class="ef-k">and</span> (<span class="ef-k">or</span> (string-match <span class="ef-s">"^https?://orgmode\\.org/list/</span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">(</span><span class="ef-s">[</span><span style="color: #4078f2; font-weight: 700;">^</span><span class="ef-s">/]+</span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">)</span><span class="ef-s">"</span> url)
+                     (string-match <span class="ef-s">"^https?://list\\.orgmode\\.org/</span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">(</span><span class="ef-s">[</span><span style="color: #4078f2; font-weight: 700;">^</span><span class="ef-s">/]+</span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">)</span><span class="ef-s">"</span> url))
+                 (match-string 1 url))))
+    (mu4e-view-message-with-message-id id)))
+
+(add-to-list 'browse-url-handlers (cons <span class="ef-s">"^https?://orgmode\\.org/list"</span> #'+browse-url-orgmode-ml))
+(add-to-list 'browse-url-handlers (cons <span class="ef-s">"^https?://list\\.orgmode\\.org/"</span> #'+browse-url-orgmode-ml))
+(<span class="ef-k">defun</span> <span class="ef-f">+mu4e-compose-org-ml-setup</span> ()
+  (<span class="ef-k">when</span> (string-match-p <span class="ef-s">"\\`orgmode@"</span> user-mail-address)
+    (goto-char (point-min))
+    (<span class="ef-k">save-restriction</span>
+      (mail-narrow-to-head)
+      (<span class="ef-k">when</span> (string-empty-p (mail-fetch-field <span class="ef-s">"to"</span>))
+        (re-search-forward <span class="ef-s">"^To: .*$"</span>)
+        (replace-match <span class="ef-s">"To: emacs-orgmode@gnu.org"</span>)
+        (advice-add 'message-goto-to <span class="ef-b">:after</span> #'+mu4e-goto-subject-not-to-once)))
+    (<span class="ef-k">when</span> (<span class="ef-k">and</span> org-msg-mode
+               (re-search-forward <span class="ef-s">"^:alternatives: (</span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">(</span><span class="ef-s">utf-8 html</span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">)</span><span class="ef-s">)"</span> nil t))
+      (replace-match <span class="ef-s">"utf-8"</span> t t nil 1))
+    (<span class="ef-k">if</span> org-msg-mode
+        (<span class="ef-k">let</span> ((final-elem (org-element-at-point (point-max))))
+          (<span class="ef-k">when</span> (equal (org-element-property <span class="ef-b">:type</span> final-elem) <span class="ef-s">"signature"</span>)
+            (goto-char (org-element-property <span class="ef-b">:contents-begin</span> final-elem))
+            (delete-region (org-element-property <span class="ef-b">:contents-begin</span> final-elem)
+                           (org-element-property <span class="ef-b">:contents-end</span> final-elem))
+            (<span class="ef-k">setq-local</span> org-msg-signature
+                        (format <span class="ef-s">"\n\n#+begin_signature\n%s\n#+end_signature"</span>
+                                (cdr +mu4e-org-ml-signature)))
+            (insert (cdr +mu4e-org-ml-signature) <span class="ef-s">"\n"</span>)))
+      (goto-char (point-max))
+      (insert (car +mu4e-org-ml-signature)))
+    (<span class="ef-k">setq</span> default-directory
+          (file-name-concat doom-user-dir <span class="ef-s">"lisp/org/"</span>))))
+
+(<span class="ef-k">defun</span> <span class="ef-f">+mu4e-goto-subject-not-to-once</span> ()
+  (message-goto-subject)
+  (advice-remove 'message-goto-to #'+mu4e-goto-subject-not-to-once))
+(<span class="ef-k">defvar</span> <span class="ef-v">+mu4e-org-ml-signature</span>
+  (cons
+   <span class="ef-s">"All the best,
+Timothy
+
+-- \
+Timothy (‘</span><span style="color: #b751b6;">tecosaur</span><span class="ef-s">’/‘</span><span style="color: #b751b6;">TEC</span><span class="ef-s">’), Org mode contributor.
+Learn more about Org mode at &lt;https://orgmode.org/&gt;.
+Support Org development at &lt;https://liberapay.com/org-mode&gt;,
+or support my work at &lt;https://liberapay.com/tec&gt;.
+"</span>
+   <span class="ef-s">"All the best,\\\\
+@@html:&lt;b&gt;@@Timothy@@html:&lt;/b&gt;@@
+
+-\u200b- \\\\
+Timothy (‘</span><span style="color: #b751b6;">tecosaur</span><span class="ef-s">’/‘</span><span style="color: #b751b6;">TEC</span><span class="ef-s">’), Org mode contributor.\\\\
+Learn more about Org mode at https://orgmode.org/.\\\\
+Support Org development at https://liberapay.com/org-mode,\\\\
+or support my work at https://liberapay.com/tec."</span>)
+  <span class="ef-d">"Plain and Org version of the org-ml specific signature."</span>)
+(add-hook 'mu4e-compose-mode-hook #'+mu4e-compose-org-ml-setup 1)
+
+(<span class="ef-k">setq</span> org-msg-greeting-fmt <span class="ef-s">"\nHi%s,\n\n"</span>
+      org-msg-signature <span class="ef-s">"\n\n#+begin_signature\nAll the best,\\\\\n@@html:&lt;b&gt;@@Timothy@@html:&lt;/b&gt;@@\n#+end_signature"</span>)
+
+(<span class="ef-k">defun</span> <span class="ef-f">+org-msg-goto-body</span> (<span class="ef-t">&amp;optional</span> end)
+  <span class="ef-d">"Go to either the beginning or the end of the body.
+END can be the symbol top, bottom, or nil to toggle."</span>
+  (<span class="ef-k">interactive</span>)
+  (<span class="ef-k">let</span> ((initial-pos (point)))
+    (org-msg-goto-body)
+    (<span class="ef-k">when</span> (<span class="ef-k">or</span> (eq end 'top)
+              (<span class="ef-k">and</span> (<span class="ef-k">or</span> (memq initial-pos <span class="ef-cd">; </span><span class="ef-c">Already at bottom
+</span>                             (list (point) (1- (point))))
+                       (&lt;= initial-pos <span class="ef-cd">; </span><span class="ef-c">Above message body
+</span>                           (<span class="ef-k">save-excursion</span>
+                             (message-goto-body)
+                             (point))))
+                   (not (eq end 'bottom))))
+      (message-goto-body)
+      (re-search-forward
+       (format (regexp-quote org-msg-greeting-fmt) <span class="ef-cd">; </span><span class="ef-c">%s is unaffected.
+</span>               (concat <span class="ef-s">"</span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">(?:</span><span class="ef-s"> "</span> (regexp-quote (org-msg-get-to-name)) <span class="ef-s">"</span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">)</span><span class="ef-s">?"</span>))))))
+
+(map! <span class="ef-b">:map</span> org-msg-edit-mode-map
+      <span class="ef-b">:after</span> org-msg
+      <span class="ef-b">:n</span> <span class="ef-s">"G"</span> #'+org-msg-goto-body)
+
+(<span class="ef-k">defun</span> <span class="ef-f">+org-msg-goto-body-when-replying</span> (compose-type <span class="ef-t">&amp;rest</span> _)
+  <span class="ef-d">"Call `</span><span style="color: #b751b6; text-decoration: italic;">+org-msg-goto-body</span><span class="ef-d">' when the current message is a reply."</span>
+  (<span class="ef-k">when</span> (<span class="ef-k">and</span> org-msg-edit-mode (eq compose-type 'reply))
+    (+org-msg-goto-body)))
+
+(advice-add 'mu4e~compose-handler <span class="ef-b">:after</span> #'+org-msg-goto-body-when-replying)
+
+(<span class="ef-k">provide</span> '<span class="ef-o">config-mail</span>)
+<span class="ef-cd">;;; </span><span class="ef-c">config-mail.el ends here
+</span>
+</pre>
+  <body>
+</html>

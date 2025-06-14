@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>config-doom.el.html</title>
+    <style>
+      body { background: #fafafa; color: #383a42; }
+      pre {
+        font-size: 1rem;
+        max-width: min(100rem, 100%);
+        width: max-content;
+        white-space: pre-wrap;
+        margin: auto; }
+      .ef-D {
+        color: #383a42; background-color: #fafafa; font-weight: 400; }
+      .ef-vp {
+         }
+      .ef-h {
+        color: #84888b; }
+      .ef-sc {
+        color: #50a14f; }
+      .ef-w {
+        color: #986801; }
+      .ef-e {
+        color: #e45649; }
+      .ef-l {
+        color: #4078f2; font-weight: 700; }
+      .ef-lv {
+        color: #8b008b; font-weight: 700; }
+      .ef-hi {
+        color: #f0f0f0; background-color: #4078f2; }
+      .ef-c {
+        color: #84888b; }
+      .ef-cd {
+        color: #84888b; }
+      .ef-s {
+        color: #50a14f; }
+      .ef-d {
+        color: #727578; text-decoration: italic; }
+      .ef-m {
+        color: #b751b6; }
+      .ef-k {
+        color: #e45649; }
+      .ef-b {
+        color: #a626a4; }
+      .ef-f {
+        color: #a626a4; }
+      .ef-v {
+        color: #6a1868; }
+      .ef-t {
+        color: #986801; }
+      .ef-o {
+        color: #b751b6; }
+      .ef-wr {
+        color: #986801; }
+      .ef-nc {
+        color: #4078f2; font-weight: 700; }
+      .ef-pp {
+        color: #4078f2; font-weight: 700; }
+      .ef-rc {
+        color: #4078f2; font-weight: 700; }
+      .ef-rb {
+        color: #4078f2; font-weight: 700; }
+      .ef-ob {
+        background-color: #e7e7e7; }
+      .ef-obb {
+        background-color: #e7e7e7; text-decoration: italic; }
+      .ef-obe {
+        background-color: #e7e7e7; text-decoration: italic; }
+      .ef-Oa {
+        color: #e45649; font-weight: nil; font-size: 1.25em }
+      .ef-Ob {
+        color: #da8548; font-weight: 700; font-size: 1.15em }
+      .ef-Oc {
+        color: #b751b6; font-weight: 700; font-size: 1.12em }
+      .ef-Od {
+        color: #6f99f5; font-weight: 600; font-size: 1.09em }
+      .ef-Oe {
+        color: #bc5cba; font-weight: 600; font-size: 1.06em }
+      .ef-Of {
+        color: #9fbbf8; font-weight: 600; font-size: 1.03em }
+      .ef-Og {
+        color: #d292d1; font-weight: 700; }
+      .ef-Oh {
+        color: #d8e4fc; font-weight: 600; }
+      .ef-hn {
+        color: #da8548; font-weight: 700; }
+      .ef-hq {
+        color: #4078f2; }
+      .ef-hs {
+        color: #986801; }
+      .ef-rda {
+        color: #4078f2; }
+      .ef-rdb {
+        color: #a626a4; }
+      .ef-rdc {
+        color: #50a14f; }
+      .ef-rdd {
+        color: #b751b6; }
+      .ef-rde {
+        color: #4db5bd; }
+      .ef-rdf {
+        color: #4078f2; }
+      .ef-rdg {
+        color: #a626a4; }
+      .ef-rdh {
+        color: #50a14f; }
+      .ef-rdi {
+        color: #b751b6; }
+    </style>
+  </head>
+  <body>
+<pre>
+<span class="ef-cd">;;; </span><span class="ef-c">config-doom.el --- Generated package (no.4) from my config -*- lexical-binding: t; -*-
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;; </span><span class="ef-c">Copyright (C) 2025 TEC
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;; </span><span class="ef-c">Author: TEC &lt;https://code.tecosaur.net/tec&gt;
+</span><span class="ef-cd">;; </span><span class="ef-c">Maintainer: TEC &lt;contact@tecosaur.net&gt;
+</span><span class="ef-cd">;; </span><span class="ef-c">Created: June 14, 2025
+</span><span class="ef-cd">;; </span><span class="ef-c">Modified: June 14, 2025
+</span><span class="ef-cd">;; </span><span class="ef-c">Version: 2025.06.14
+</span><span class="ef-cd">;; </span><span class="ef-c">Homepage: https://code.tecosaur.net/tec/emacs-config
+</span><span class="ef-cd">;; </span><span class="ef-c">Package-Requires: ((emacs "29.1"))
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;; </span><span class="ef-c">This file is not part of GNU Emacs.
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;; </span><span class="ef-c">Commentary:
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;  </span><span class="ef-c">Generated package (no.4) from my config.
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;  </span><span class="ef-c">During generation, dependency on other aspects of my configuration and
+</span><span class="ef-cd">;;  </span><span class="ef-c">packages is inferred via (regexp-based) static analysis.  While this seems
+</span><span class="ef-cd">;;  </span><span class="ef-c">to do a good job, this method is imperfect.  This code likely depends on
+</span><span class="ef-cd">;;  </span><span class="ef-c">utilities provided by Doom, and if you try to run it in isolation you may
+</span><span class="ef-cd">;;  </span><span class="ef-c">discover the code makes more assumptions.
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;  </span><span class="ef-c">That said, I've found pretty good results so far.
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;; </span><span class="ef-c">Code:
+</span>
+(<span class="ef-k">setq</span> doom-font (font-spec <span class="ef-b">:family</span> <span class="ef-s">"JetBrains Mono"</span> <span class="ef-b">:size</span> 24)
+      doom-big-font (font-spec <span class="ef-b">:family</span> <span class="ef-s">"JetBrains Mono"</span> <span class="ef-b">:size</span> 36)
+      doom-variable-pitch-font (font-spec <span class="ef-b">:family</span> <span class="ef-s">"Overpass"</span> <span class="ef-b">:size</span> 26)
+      doom-symbol-font (font-spec <span class="ef-b">:family</span> <span class="ef-s">"JuliaMono"</span>)
+      doom-emoji-font (font-spec <span class="ef-b">:family</span> <span class="ef-s">"Twitter Color Emoji"</span>) <span class="ef-cd">; </span><span class="ef-c">Just used by me
+</span>      doom-serif-font (font-spec <span class="ef-b">:family</span> <span class="ef-s">"IBM Plex Mono"</span> <span class="ef-b">:size</span> 22 <span class="ef-b">:weight</span> 'light))
+
+(<span class="ef-k">dolist</span> (char '(?⏩ ?⏪ ?❓))
+  (set-char-table-range char-script-table char 'symbol))
+
+(<span class="ef-k">add-hook!</span> 'after-setting-font-hook
+  (<span class="ef-k">defun</span> <span class="ef-f">+emoji-set-font</span> ()
+    (set-fontset-font t 'emoji doom-emoji-font nil 'prepend)))
+
+(<span class="ef-k">defvar</span> <span class="ef-v">+emoji-rx</span>
+  (<span class="ef-k">let</span> (emojis)
+    (map-char-table
+     (<span class="ef-k">lambda</span> (char set)
+       (<span class="ef-k">when</span> (eq set 'emoji)
+         (<span class="ef-k">push</span> (copy-tree char) emojis)))
+     char-script-table)
+    (rx-to-string `(any ,@emojis)))
+  <span class="ef-d">"A regexp to find all emoji-script characters."</span>)
+
+(<span class="ef-k">setq</span> emoji-alternate-names
+      '((<span class="ef-s">"🙂"</span> <span class="ef-s">":)"</span>)
+        (<span class="ef-s">"😄"</span> <span class="ef-s">":D"</span>)
+        (<span class="ef-s">"😉"</span> <span class="ef-s">";)"</span>)
+        (<span class="ef-s">"🙁"</span> <span class="ef-s">":("</span>)
+        (<span class="ef-s">"😆"</span> <span class="ef-s">"laughing face"</span> <span class="ef-s">"xD"</span>)
+        (<span class="ef-s">"🤣"</span> <span class="ef-s">"ROFL face"</span>)
+        (<span class="ef-s">"😢"</span> <span class="ef-s">":'("</span>)
+        (<span class="ef-s">"🥲"</span> <span class="ef-s">":')"</span>)
+        (<span class="ef-s">"😮"</span> <span class="ef-s">":o"</span>)
+        (<span class="ef-s">"😑"</span> <span class="ef-s">":|"</span>)
+        (<span class="ef-s">"😎"</span> <span class="ef-s">"cool face"</span>)
+        (<span class="ef-s">"🤪"</span> <span class="ef-s">"goofy face"</span>)
+        (<span class="ef-s">"🤥"</span> <span class="ef-s">"pinnochio face"</span> <span class="ef-s">"liar face"</span>)
+        (<span class="ef-s">"😠"</span> <span class="ef-s">"&gt;:("</span>)
+        (<span class="ef-s">"😡"</span> <span class="ef-s">"angry+ face"</span>)
+        (<span class="ef-s">"🤬"</span> <span class="ef-s">"swearing face"</span>)
+        (<span class="ef-s">"🤢"</span> <span class="ef-s">"sick face"</span>)
+        (<span class="ef-s">"😈"</span> <span class="ef-s">"smiling imp"</span>)
+        (<span class="ef-s">"👿"</span> <span class="ef-s">"frowning imp"</span>)
+        (<span class="ef-s">"❤️"</span> <span class="ef-s">"&lt;3"</span>)
+        (<span class="ef-s">"🫡"</span> <span class="ef-s">"o7"</span>)
+        (<span class="ef-s">"👍"</span> <span class="ef-s">"+1"</span>)
+        (<span class="ef-s">"👎"</span> <span class="ef-s">"-1"</span>)
+        (<span class="ef-s">"👈"</span> <span class="ef-s">"left"</span>)
+        (<span class="ef-s">"👉"</span> <span class="ef-s">"right"</span>)
+        (<span class="ef-s">"👆"</span> <span class="ef-s">"up"</span>)
+        (<span class="ef-s">"💯"</span> <span class="ef-s">"100"</span>)
+        (<span class="ef-s">"💸"</span> <span class="ef-s">"flying money"</span>)))
+
+(<span class="ef-k">when</span> (&gt;= emacs-major-version 29)
+  (map! <span class="ef-b">:leader</span>
+        (<span class="ef-b">:prefix</span> (<span class="ef-s">"e"</span> . <span class="ef-s">"Emoji"</span>)
+         <span class="ef-b">:desc</span> <span class="ef-s">"Search"</span> <span class="ef-s">"s"</span> #'emoji-search
+         <span class="ef-b">:desc</span> <span class="ef-s">"Recent"</span> <span class="ef-s">"r"</span> #'emoji-recent
+         <span class="ef-b">:desc</span> <span class="ef-s">"List"</span> <span class="ef-s">"l"</span> #'emoji-list
+         <span class="ef-b">:desc</span> <span class="ef-s">"Describe"</span> <span class="ef-s">"d"</span> #'emoji-describe
+         <span class="ef-b">:desc</span> <span class="ef-s">"Insert"</span> <span class="ef-s">"i"</span> #'emoji-insert
+         <span class="ef-b">:desc</span> <span class="ef-s">"Insert"</span> <span class="ef-s">"e"</span> #'emoji-insert)))
+
+(<span class="ef-k">unless</span> noninteractive
+  (<span class="ef-k">add-hook!</span> 'doom-init-ui-hook
+    (run-at-time nil nil
+		 (<span class="ef-k">lambda</span> nil
+		   (<span class="ef-k">let</span> (required-fonts available-fonts missing-fonts)
+		     (<span class="ef-k">setq</span> required-fonts
+			   '(<span class="ef-s">"JetBrains ?Mono.*"</span> <span class="ef-s">"Overpass"</span>
+			     <span class="ef-s">"JuliaMono"</span> <span class="ef-s">"IBM Plex Mono"</span>
+			     <span class="ef-s">"Merriweather"</span> <span class="ef-s">"Alegreya"</span>
+			     <span class="ef-s">"Twitter Color Emoji"</span>))
+		     (<span class="ef-k">setq</span> available-fonts
+			   (delete-dups
+			    (<span class="ef-k">or</span> (font-family-list)
+				(<span class="ef-k">and</span> (executable-find <span class="ef-s">"fc-list"</span>)
+				     (<span class="ef-k">with-temp-buffer</span>
+				       (call-process <span class="ef-s">"fc-list"</span> nil t
+						     nil <span class="ef-s">":"</span> <span class="ef-s">"family"</span>)
+				       (split-string (buffer-string)
+						     <span class="ef-s">"[,\n]"</span>))))))
+		     (<span class="ef-k">setq</span> missing-fonts
+			   (delq nil
+				 (mapcar
+				  (<span class="ef-k">lambda</span> (font)
+				    (<span class="ef-k">unless</span>
+					(delq nil
+					      (mapcar
+					       (<span class="ef-k">lambda</span> (f)
+						 (string-match-p
+						  (format <span class="ef-s">"^%s$"</span> font)
+						  f))
+					       available-fonts))
+				      font))
+				  required-fonts)))
+		     (message <span class="ef-s">"%s missing the following fonts: %s"</span>
+			      (propertize <span class="ef-s">"Warning!"</span> 'face
+					  '(bold warning))
+			      (mapconcat
+			       (<span class="ef-k">lambda</span> (font)
+				 (propertize font 'face
+					     'font-lock-variable-name-face))
+			       '(<span class="ef-s">"JetBrains ?Mono.*"</span> <span class="ef-s">"Overpass"</span>
+				 <span class="ef-s">"JuliaMono"</span> <span class="ef-s">"IBM Plex Mono"</span>
+				 <span class="ef-s">"Merriweather"</span> <span class="ef-s">"Alegreya"</span>
+				 <span class="ef-s">"Twitter Color Emoji"</span>)
+			       <span class="ef-s">", "</span>)))
+		   (sleep-for 0.5)))))
+
+
+(<span class="ef-k">setq</span> doom-theme <span class="ef-cd">; </span><span class="ef-c">Set according to the env var or system-dependent default
+</span>      (<span class="ef-k">let</span> ((env-theme (getenv <span class="ef-s">"DOOM_THEME"</span>)))
+        (<span class="ef-k">if</span> env-theme
+            (intern env-theme) <span class="ef-cd">; </span><span class="ef-c">Note: `</span><span style="color: #b751b6;">intern-soft</span><span class="ef-c">' doesn't work here
+</span>          'doom-vibrant)))
+
+(<span class="ef-k">delq!</span> t custom-theme-load-path)
+
+(<span class="ef-k">declare-function</span> 'xterm-query <span class="ef-s">"xterm"</span>)
+
+(<span class="ef-k">defvar</span> <span class="ef-v">term-background-rgb</span> nil
+  <span class="ef-d">"A RGB triple corresponding to the current terminal background, if known."</span>)
+
+(<span class="ef-k">defun</span> <span class="ef-f">+interpret-term-bg</span> ()
+  <span class="ef-d">"Examine an OSC color query response, and set `</span><span style="color: #b751b6; text-decoration: italic;">term-background-rgb</span><span class="ef-d">' accordingly."</span>
+  (<span class="ef-k">let</span> ((str <span class="ef-s">""</span>)
+        chr)
+    <span class="ef-cd">;; </span><span class="ef-c">The reply should be: \e ] 11 ; rgb: NUMBER1 / NUMBER2 / NUMBER3 \e \\
+</span>    (<span class="ef-k">while</span> (<span class="ef-k">and</span> (<span class="ef-k">setq</span> chr (xterm--read-event-for-query)) (not (equal chr ?\\)))
+      (<span class="ef-k">setq</span> str (concat str (string chr))))
+    (<span class="ef-k">when</span> (string-match
+           <span class="ef-s">"rgb:</span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">(</span><span class="ef-s">[a-f0-9]+</span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">)</span><span class="ef-s">/</span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">(</span><span class="ef-s">[a-f0-9]+</span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">)</span><span class="ef-s">/</span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">(</span><span class="ef-s">[a-f0-9]+</span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">)</span><span class="ef-s">"</span> str)
+      (<span class="ef-k">let</span> ((r (string-to-number (match-string 1 str) 16))
+            (g (string-to-number (match-string 2 str) 16))
+            (b (string-to-number (match-string 3 str) 16)))
+        (<span class="ef-k">setq</span> term-background-rgb (list r g b))))))
+
+(<span class="ef-k">defun</span> <span class="ef-f">+doom-init-theme-termaware</span> ()
+  <span class="ef-d">"Update `</span><span style="color: #b751b6; text-decoration: italic;">doom-theme</span><span class="ef-d">' if in a terminal, unless DOOM_THEME has been set."</span>
+  (<span class="ef-k">let</span> (term-shade)
+    (<span class="ef-k">when</span> (<span class="ef-k">and</span> (not (display-graphic-p (selected-frame)))
+               (not (getenv <span class="ef-s">"DOOM_THEME"</span>))
+               (<span class="ef-k">require</span> '<span class="ef-o">xterm</span> nil t))
+      (message <span class="ef-s">"Querying terminal background color"</span>)
+      (xterm--query <span class="ef-s">"\e]11;?\e\\"</span> '((<span class="ef-s">"\e]11;"</span> . +interpret-term-bg)))
+      (<span class="ef-k">when</span> term-background-rgb
+        (<span class="ef-k">setq</span> term-shade (<span class="ef-k">if</span> (&lt; (apply #'+ term-background-rgb) (* 0.6 3 65535))
+                             'dark 'light))
+        (<span class="ef-k">pcase</span> term-shade
+          ('dark (<span class="ef-k">setq</span> doom-theme 'doom-vibrant))
+          ('light (<span class="ef-k">setq</span> doom-theme 'doom-tomorrow-day)))))
+    (doom-init-theme-h)))
+
+(remove-hook 'window-setup-hook #'doom-init-theme-h)
+(remove-hook 'after-init-hook   #'doom-init-theme-h)
+(add-hook    'after-init-hook   #'+doom-init-theme-termaware 'append)
+
+(<span class="ef-k">setq</span> display-line-numbers-type 'relative)
+
+(evil-define-command +evil-buffer-org-new (_count file)
+  <span class="ef-s">"Creates a new ORG buffer replacing the current window, optionally
+   editing a certain FILE"</span>
+  <span class="ef-b">:repeat</span> nil
+  (<span class="ef-k">interactive</span> <span class="ef-s">"P&lt;f&gt;"</span>)
+  (<span class="ef-k">if</span> file
+      (evil-edit file)
+    (<span class="ef-k">let</span> ((buffer (generate-new-buffer <span class="ef-s">"*new org*"</span>)))
+      (set-window-buffer nil buffer)
+      (<span class="ef-k">with-current-buffer</span> buffer
+        (org-mode)
+        (<span class="ef-k">setq-local</span> doom-real-buffer-p t)))))
+
+(map! <span class="ef-b">:leader</span>
+      (<span class="ef-b">:prefix</span> <span class="ef-s">"b"</span>
+       <span class="ef-b">:desc</span> <span class="ef-s">"New empty Org buffer"</span> <span class="ef-s">"o"</span> #'+evil-buffer-org-new))
+
+(<span class="ef-k">provide</span> '<span class="ef-o">config-doom</span>)
+<span class="ef-cd">;;; </span><span class="ef-c">config-doom.el ends here
+</span>
+</pre>
+  <body>
+</html>

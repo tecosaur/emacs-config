@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>config-org-exports.el.html</title>
+    <style>
+      body { background: #fafafa; color: #383a42; }
+      pre {
+        font-size: 1rem;
+        max-width: min(100rem, 100%);
+        width: max-content;
+        white-space: pre-wrap;
+        margin: auto; }
+      .ef-D {
+        color: #383a42; background-color: #fafafa; font-weight: 400; }
+      .ef-vp {
+         }
+      .ef-h {
+        color: #84888b; }
+      .ef-sc {
+        color: #50a14f; }
+      .ef-w {
+        color: #986801; }
+      .ef-e {
+        color: #e45649; }
+      .ef-l {
+        color: #4078f2; font-weight: 700; }
+      .ef-lv {
+        color: #8b008b; font-weight: 700; }
+      .ef-hi {
+        color: #f0f0f0; background-color: #4078f2; }
+      .ef-c {
+        color: #84888b; }
+      .ef-cd {
+        color: #84888b; }
+      .ef-s {
+        color: #50a14f; }
+      .ef-d {
+        color: #727578; text-decoration: italic; }
+      .ef-m {
+        color: #b751b6; }
+      .ef-k {
+        color: #e45649; }
+      .ef-b {
+        color: #a626a4; }
+      .ef-f {
+        color: #a626a4; }
+      .ef-v {
+        color: #6a1868; }
+      .ef-t {
+        color: #986801; }
+      .ef-o {
+        color: #b751b6; }
+      .ef-wr {
+        color: #986801; }
+      .ef-nc {
+        color: #4078f2; font-weight: 700; }
+      .ef-pp {
+        color: #4078f2; font-weight: 700; }
+      .ef-rc {
+        color: #4078f2; font-weight: 700; }
+      .ef-rb {
+        color: #4078f2; font-weight: 700; }
+      .ef-ob {
+        background-color: #e7e7e7; }
+      .ef-obb {
+        background-color: #e7e7e7; text-decoration: italic; }
+      .ef-obe {
+        background-color: #e7e7e7; text-decoration: italic; }
+      .ef-Oa {
+        color: #e45649; font-weight: nil; font-size: 1.25em }
+      .ef-Ob {
+        color: #da8548; font-weight: 700; font-size: 1.15em }
+      .ef-Oc {
+        color: #b751b6; font-weight: 700; font-size: 1.12em }
+      .ef-Od {
+        color: #6f99f5; font-weight: 600; font-size: 1.09em }
+      .ef-Oe {
+        color: #bc5cba; font-weight: 600; font-size: 1.06em }
+      .ef-Of {
+        color: #9fbbf8; font-weight: 600; font-size: 1.03em }
+      .ef-Og {
+        color: #d292d1; font-weight: 700; }
+      .ef-Oh {
+        color: #d8e4fc; font-weight: 600; }
+      .ef-hn {
+        color: #da8548; font-weight: 700; }
+      .ef-hq {
+        color: #4078f2; }
+      .ef-hs {
+        color: #986801; }
+      .ef-rda {
+        color: #4078f2; }
+      .ef-rdb {
+        color: #a626a4; }
+      .ef-rdc {
+        color: #50a14f; }
+      .ef-rdd {
+        color: #b751b6; }
+      .ef-rde {
+        color: #4db5bd; }
+      .ef-rdf {
+        color: #4078f2; }
+      .ef-rdg {
+        color: #a626a4; }
+      .ef-rdh {
+        color: #50a14f; }
+      .ef-rdi {
+        color: #b751b6; }
+    </style>
+  </head>
+  <body>
+<pre>
+<span class="ef-cd">;;; </span><span class="ef-c">config-org-exports.el --- Generated package (no.81) from my config -*- lexical-binding: t; -*-
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;; </span><span class="ef-c">Copyright (C) 2025 TEC
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;; </span><span class="ef-c">Author: TEC &lt;https://code.tecosaur.net/tec&gt;
+</span><span class="ef-cd">;; </span><span class="ef-c">Maintainer: TEC &lt;contact@tecosaur.net&gt;
+</span><span class="ef-cd">;; </span><span class="ef-c">Created: June 14, 2025
+</span><span class="ef-cd">;; </span><span class="ef-c">Modified: June 14, 2025
+</span><span class="ef-cd">;; </span><span class="ef-c">Version: 2025.06.14
+</span><span class="ef-cd">;; </span><span class="ef-c">Homepage: https://code.tecosaur.net/tec/emacs-config
+</span><span class="ef-cd">;; </span><span class="ef-c">Package-Requires: ((emacs "29.1"))
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;; </span><span class="ef-c">This file is not part of GNU Emacs.
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;; </span><span class="ef-c">Commentary:
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;  </span><span class="ef-c">Generated package (no.81) from my config.
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;  </span><span class="ef-c">During generation, dependency on other aspects of my configuration and
+</span><span class="ef-cd">;;  </span><span class="ef-c">packages is inferred via (regexp-based) static analysis.  While this seems
+</span><span class="ef-cd">;;  </span><span class="ef-c">to do a good job, this method is imperfect.  This code likely depends on
+</span><span class="ef-cd">;;  </span><span class="ef-c">utilities provided by Doom, and if you try to run it in isolation you may
+</span><span class="ef-cd">;;  </span><span class="ef-c">discover the code makes more assumptions.
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;  </span><span class="ef-c">That said, I've found pretty good results so far.
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;; </span><span class="ef-c">Code:
+</span>
+(<span class="ef-k">require</span> '<span class="ef-o">ox</span>)
+
+(<span class="ef-k">setq</span> org-export-headline-levels 5) <span class="ef-cd">; </span><span class="ef-c">I like nesting
+</span>
+(<span class="ef-k">require</span> '<span class="ef-o">ox-extra</span>)
+(ox-extras-activate '(ignore-headlines))
+
+(<span class="ef-k">setq</span> org-export-creator-string
+      (format <span class="ef-s">"Emacs %s (Org mode %s–%s)"</span> emacs-version (org-release) (org-git-version)))
+
+(<span class="ef-k">defun</span> <span class="ef-f">org-export-filter-text-acronym</span> (text backend _info)
+  <span class="ef-d">"Wrap suspected acronyms in acronyms-specific formatting.
+Treat sequences of 2+ capital letters (optionally succeeded by \"s\") as an acronym.
+Ignore if preceeded by \";\" (for manual prevention) or \"\\\" (for LaTeX commands).
+
+TODO abstract backend implementations."</span>
+  (<span class="ef-k">let</span> ((base-backend
+         (<span class="ef-k">cond</span>
+          ((org-export-derived-backend-p backend 'latex) 'latex)
+          <span class="ef-cd">;; </span><span class="ef-c">Markdown is derived from HTML, but we don't want to format it
+</span>          ((org-export-derived-backend-p backend 'md) nil)
+          ((org-export-derived-backend-p backend 'html) 'html)))
+        (case-fold-search nil))
+    (<span class="ef-k">when</span> base-backend
+      (replace-regexp-in-string
+       <span class="ef-s">"[;\\\\]?\\b[A-Z][A-Z]+s?</span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">(?:</span><span class="ef-s">[</span><span style="color: #4078f2; font-weight: 700;">^</span><span class="ef-s">A-Za-z]</span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">|</span><span class="ef-s">\\b</span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">)</span><span class="ef-s">"</span>
+       (<span class="ef-k">lambda</span> (all-caps-str)
+         (<span class="ef-k">cond</span> ((equal (aref all-caps-str 0) ?\\) all-caps-str)                <span class="ef-cd">; </span><span class="ef-c">don't format LaTeX commands
+</span>               ((equal (aref all-caps-str 0) ?\;) (substring all-caps-str 1))  <span class="ef-cd">; </span><span class="ef-c">just remove not-acronym indicator char ";"
+</span>               (t (<span class="ef-k">let*</span> ((final-char (<span class="ef-k">if</span> (string-match-p <span class="ef-s">"[</span><span style="color: #4078f2; font-weight: 700;">^</span><span class="ef-s">A-Za-z]"</span> (substring all-caps-str -1 (length all-caps-str)))
+                                         (substring all-caps-str -1 (length all-caps-str))
+                                       nil)) <span class="ef-cd">; </span><span class="ef-c">needed to re-insert the [</span><span style="color: #4078f2; font-weight: 700;">^</span><span class="ef-c">A-Za-z] at the end
+</span>                         (trailing-s (equal (aref all-caps-str (- (length all-caps-str) (<span class="ef-k">if</span> final-char 2 1))) ?s))
+                         (acr (<span class="ef-k">if</span> final-char
+                                  (substring all-caps-str 0 (<span class="ef-k">if</span> trailing-s -2 -1))
+                                (substring all-caps-str 0 (+ (<span class="ef-k">if</span> trailing-s -1 (length all-caps-str)))))))
+                    (<span class="ef-k">pcase</span> base-backend
+                      ('latex (concat <span class="ef-s">"\\acr{"</span> (downcase acr) <span class="ef-s">"}"</span> (<span class="ef-k">when</span> trailing-s <span class="ef-s">"\\acrs{}"</span>) final-char))
+                      ('html (concat <span class="ef-s">"&lt;span class='</span><span style="color: #b751b6;">acr</span><span class="ef-s">'&gt;"</span> acr <span class="ef-s">"&lt;/span&gt;"</span> (<span class="ef-k">when</span> trailing-s <span class="ef-s">"&lt;small&gt;s&lt;/small&gt;"</span>) final-char)))))))
+       text t t))))
+
+(add-to-list 'org-export-filter-plain-text-functions
+             #'org-export-filter-text-acronym)
+
+<span class="ef-cd">;; </span><span class="ef-c">We won't use `</span><span style="color: #b751b6;">org-export-filter-headline-functions</span><span class="ef-c">' because it
+</span><span class="ef-cd">;; </span><span class="ef-c">passes (and formats) the entire section contents. That's no good.
+</span>
+(<span class="ef-k">defun</span> <span class="ef-f">org-html-format-headline-acronymised</span> (todo todo-type priority text tags info)
+  <span class="ef-d">"Like `</span><span style="color: #b751b6; text-decoration: italic;">org-html-format-headline-default-function</span><span class="ef-d">', but with acronym formatting."</span>
+  (org-html-format-headline-default-function
+   todo todo-type priority (org-export-filter-text-acronym text 'html info) tags info))
+(<span class="ef-k">setq</span> org-html-format-headline-function #'org-html-format-headline-acronymised)
+
+(<span class="ef-k">defun</span> <span class="ef-f">org-latex-format-headline-acronymised</span> (todo todo-type priority text tags info)
+  <span class="ef-d">"Like `</span><span style="color: #b751b6; text-decoration: italic;">org-latex-format-headline-default-function</span><span class="ef-d">', but with acronym formatting."</span>
+  (org-latex-format-headline-default-function
+   todo todo-type priority (org-export-filter-text-acronym text 'latex info) tags info))
+(<span class="ef-k">setq</span> org-latex-format-headline-function #'org-latex-format-headline-acronymised)
+
+(<span class="ef-k">defvar</span> <span class="ef-v">org-reference-contraction-max-words</span> 3
+  <span class="ef-d">"Maximum number of words in a reference reference."</span>)
+(<span class="ef-k">defvar</span> <span class="ef-v">org-reference-contraction-max-length</span> 35
+  <span class="ef-d">"Maximum length of resulting reference reference, including joining characters."</span>)
+(<span class="ef-k">defvar</span> <span class="ef-v">org-reference-contraction-stripped-words</span>
+  '(<span class="ef-s">"the"</span> <span class="ef-s">"on"</span> <span class="ef-s">"in"</span> <span class="ef-s">"off"</span> <span class="ef-s">"a"</span> <span class="ef-s">"for"</span> <span class="ef-s">"by"</span> <span class="ef-s">"of"</span> <span class="ef-s">"and"</span> <span class="ef-s">"is"</span> <span class="ef-s">"to"</span> <span class="ef-s">"as"</span>)
+  <span class="ef-d">"Superfluous words to be removed from a reference."</span>)
+(<span class="ef-k">defvar</span> <span class="ef-v">org-reference-contraction-joining-char</span> <span class="ef-s">"-"</span>
+  <span class="ef-d">"Character used to join words in the reference reference."</span>)
+
+(<span class="ef-k">defun</span> <span class="ef-f">org-reference-contraction-truncate-words</span> (words)
+  <span class="ef-d">"Using `</span><span style="color: #b751b6; text-decoration: italic;">org-reference-contraction-max-length</span><span class="ef-d">' as the total character '</span><span style="color: #b751b6; text-decoration: italic;">budget</span><span class="ef-d">' for the WORDS
+and truncate individual words to conform to this budget.
+
+To arrive at a budget that accounts for words undershooting their requisite average length,
+the number of characters in the budget freed by short words is distributed among the words
+exceeding the average length.  This adjusts the per-word budget to be the maximum feasable for
+this particular situation, rather than the universal maximum average.
+
+This budget-adjusted per-word maximum length is given by the mathematical expression below:
+
+max length = \\floor{ \\frac{total length - chars for seperators - \\sum_{word \\leq average length} length(word) }{num(words) &gt; average length} }"</span>
+  <span class="ef-cd">;; </span><span class="ef-c">trucate each word to a max word length determined by
+</span>  <span class="ef-cd">;;</span>
+  (<span class="ef-k">let*</span> ((total-length-budget (- org-reference-contraction-max-length  <span class="ef-cd">; </span><span class="ef-c">how many non-separator chars we can use
+</span>                                 (1- (length words))))
+         (word-length-budget (/ total-length-budget                      <span class="ef-cd">; </span><span class="ef-c">max length of each word to keep within budget
+</span>                                org-reference-contraction-max-words))
+         (num-overlong (-count (<span class="ef-k">lambda</span> (word)                            <span class="ef-cd">; </span><span class="ef-c">how many words exceed that budget
+</span>                                 (&gt; (length word) word-length-budget))
+                               words))
+         (total-short-length (-sum (mapcar (<span class="ef-k">lambda</span> (word)                <span class="ef-cd">; </span><span class="ef-c">total length of words under that budget
+</span>                                             (<span class="ef-k">if</span> (&lt;= (length word) word-length-budget)
+                                                 (length word) 0))
+                                           words)))
+         (max-length (/ (- total-length-budget total-short-length)       <span class="ef-cd">; </span><span class="ef-c">max(max-length) that we can have to fit within the budget
+</span>                        num-overlong)))
+    (mapcar (<span class="ef-k">lambda</span> (word)
+              (<span class="ef-k">if</span> (&lt;= (length word) max-length)
+                  word
+                (substring word 0 max-length)))
+            words)))
+
+(<span class="ef-k">defun</span> <span class="ef-f">org-reference-contraction</span> (reference-string)
+  <span class="ef-d">"Give a contracted form of REFERENCE-STRING that is only contains alphanumeric characters.
+Strips '</span><span style="color: #b751b6; text-decoration: italic;">joining</span><span class="ef-d">' words present in `</span><span style="color: #b751b6; text-decoration: italic;">org-reference-contraction-stripped-words</span><span class="ef-d">',
+and then limits the result to the first `</span><span style="color: #b751b6; text-decoration: italic;">org-reference-contraction-max-words</span><span class="ef-d">' words.
+If the total length is &gt; `</span><span style="color: #b751b6; text-decoration: italic;">org-reference-contraction-max-length</span><span class="ef-d">' then individual words are
+truncated to fit within the limit using `</span><span style="color: #b751b6; text-decoration: italic;">org-reference-contraction-truncate-words</span><span class="ef-d">'."</span>
+  (<span class="ef-k">let</span> ((reference-words
+         (cl-remove-if-not
+          (<span class="ef-k">lambda</span> (word)
+            (not (member word org-reference-contraction-stripped-words)))
+          (<span class="ef-k">let</span> ((str reference-string))
+            (<span class="ef-k">setq</span> str (downcase str))
+            (<span class="ef-k">setq</span> str (replace-regexp-in-string <span class="ef-s">"\\[\\[[</span><span style="color: #4078f2; font-weight: 700;">^</span><span class="ef-s">]]+\\]\\[</span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">(</span><span class="ef-s">[</span><span style="color: #4078f2; font-weight: 700;">^</span><span class="ef-s">]]+</span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">)</span><span class="ef-s">\\]\\]"</span> <span class="ef-s">"\\1"</span> str)) <span class="ef-cd">; </span><span class="ef-c">get description from org-link
+</span>            (<span class="ef-k">setq</span> str (replace-regexp-in-string <span class="ef-s">"[-/ ]+"</span> <span class="ef-s">" "</span> str)) <span class="ef-cd">; </span><span class="ef-c">replace seperator-type chars with space
+</span>            (<span class="ef-k">setq</span> str (puny-encode-string str))
+            (<span class="ef-k">setq</span> str (replace-regexp-in-string <span class="ef-s">"^xn--</span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">(</span><span class="ef-s">.*?</span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">)</span><span class="ef-s"> ?-?</span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">(</span><span class="ef-s">[a-z0-9]+</span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">)</span><span class="ef-s">$"</span> <span class="ef-s">"\\2 \\1"</span> str)) <span class="ef-cd">; </span><span class="ef-c">rearrange punycode
+</span>            (<span class="ef-k">setq</span> str (replace-regexp-in-string <span class="ef-s">"[</span><span style="color: #4078f2; font-weight: 700;">^</span><span class="ef-s">A-Za-z0-9 ]"</span> <span class="ef-s">""</span> str)) <span class="ef-cd">; </span><span class="ef-c">strip chars which need %-encoding in a uri
+</span>            (split-string str <span class="ef-s">" +"</span>)))))
+    (<span class="ef-k">when</span> (&gt; (length reference-words)
+             org-reference-contraction-max-words)
+      (<span class="ef-k">setq</span> reference-words
+            (cl-subseq reference-words 0 org-reference-contraction-max-words)))
+
+    (<span class="ef-k">when</span> (&gt; (apply #'+ (1- (length reference-words))
+                    (mapcar #'length reference-words))
+             org-reference-contraction-max-length)
+      (<span class="ef-k">setq</span> reference-words (org-reference-contraction-truncate-words reference-words)))
+
+    (string-join reference-words org-reference-contraction-joining-char)))
+
+(<span class="ef-k">define-minor-mode</span> <span class="ef-f">unpackaged/org-export-html-with-useful-ids-mode</span>
+  <span class="ef-d">"Attempt to export Org as HTML with useful link IDs.
+Instead of random IDs like \"#orga1b2c3\", use heading titles,
+made unique when necessary."</span>
+  <span class="ef-b">:global</span> t
+  (<span class="ef-k">if</span> unpackaged/org-export-html-with-useful-ids-mode
+      (advice-add #'org-export-get-reference <span class="ef-b">:override</span> #'unpackaged/org-export-get-reference)
+    (advice-remove #'org-export-get-reference #'unpackaged/org-export-get-reference)))
+(unpackaged/org-export-html-with-useful-ids-mode 1) <span class="ef-cd">; </span><span class="ef-c">ensure enabled, and advice run
+</span>
+(<span class="ef-k">defun</span> <span class="ef-f">unpackaged/org-export-get-reference</span> (datum info)
+  <span class="ef-d">"Like `</span><span style="color: #b751b6; text-decoration: italic;">org-export-get-reference</span><span class="ef-d">', except uses heading titles instead of random numbers."</span>
+  (<span class="ef-k">let</span> ((cache (plist-get info <span class="ef-b">:internal-references</span>)))
+    (<span class="ef-k">or</span> (car (rassq datum cache))
+        (<span class="ef-k">let*</span> ((crossrefs (plist-get info <span class="ef-b">:crossrefs</span>))
+               (cells (org-export-search-cells datum))
+               <span class="ef-cd">;; </span><span class="ef-c">Preserve any pre-existing association between
+</span>               <span class="ef-cd">;; </span><span class="ef-c">a search cell and a reference, i.e., when some
+</span>               <span class="ef-cd">;; </span><span class="ef-c">previously published document referenced a location
+</span>               <span class="ef-cd">;; </span><span class="ef-c">within current file (see
+</span>               <span class="ef-cd">;; </span><span class="ef-c">`</span><span style="color: #b751b6;">org-publish-resolve-external-link</span><span class="ef-c">').
+</span>               <span class="ef-cd">;;</span>
+               <span class="ef-cd">;; </span><span class="ef-c">However, there is no guarantee that search cells are
+</span>               <span class="ef-cd">;; </span><span class="ef-c">unique, e.g., there might be duplicate custom ID or
+</span>               <span class="ef-cd">;; </span><span class="ef-c">two headings with the same title in the file.
+</span>               <span class="ef-cd">;;</span>
+               <span class="ef-cd">;; </span><span class="ef-c">As a consequence, before re-using any reference to
+</span>               <span class="ef-cd">;; </span><span class="ef-c">an element or object, we check that it doesn't refer
+</span>               <span class="ef-cd">;; </span><span class="ef-c">to a previous element or object.
+</span>               (new (<span class="ef-k">or</span> (cl-some
+                         (<span class="ef-k">lambda</span> (cell)
+                           (<span class="ef-k">let</span> ((stored (cdr (assoc cell crossrefs))))
+                             (<span class="ef-k">when</span> stored
+                               (<span class="ef-k">let</span> ((old (org-export-format-reference stored)))
+                                 (<span class="ef-k">and</span> (not (assoc old cache)) stored)))))
+                         cells)
+                        (<span class="ef-k">when</span> (org-element-property <span class="ef-b">:raw-value</span> datum)
+                          <span class="ef-cd">;; </span><span class="ef-c">Heading with a title
+</span>                          (unpackaged/org-export-new-named-reference datum cache))
+                        (<span class="ef-k">when</span> (member (car datum) '(src-block table example fixed-width property-drawer))
+                          <span class="ef-cd">;; </span><span class="ef-c">Nameable elements
+</span>                          (unpackaged/org-export-new-named-reference datum cache))
+                        <span class="ef-cd">;; </span><span class="ef-c">NOTE: This probably breaks some Org Export
+</span>                        <span class="ef-cd">;; </span><span class="ef-c">feature, but if it does what I need, fine.
+</span>                        (org-export-format-reference
+                         (org-export-new-reference cache))))
+               (reference-string new))
+          <span class="ef-cd">;; </span><span class="ef-c">Cache contains both data already associated to
+</span>          <span class="ef-cd">;; </span><span class="ef-c">a reference and in-use internal references, so as to make
+</span>          <span class="ef-cd">;; </span><span class="ef-c">unique references.
+</span>          (<span class="ef-k">dolist</span> (cell cells) (<span class="ef-k">push</span> (cons cell new) cache))
+          <span class="ef-cd">;; </span><span class="ef-c">Retain a direct association between reference string and
+</span>          <span class="ef-cd">;; </span><span class="ef-c">DATUM since (1) not every object or element can be given
+</span>          <span class="ef-cd">;; </span><span class="ef-c">a search cell (2) it permits quick lookup.
+</span>          (<span class="ef-k">push</span> (cons reference-string datum) cache)
+          (plist-put info <span class="ef-b">:internal-references</span> cache)
+          reference-string))))
+
+(<span class="ef-k">defun</span> <span class="ef-f">unpackaged/org-export-new-named-reference</span> (datum cache)
+  <span class="ef-d">"Return new reference for DATUM that is unique in CACHE."</span>
+  (<span class="ef-k">cl-macrolet</span> ((inc-suffixf (place)
+                  `(<span class="ef-k">progn</span>
+                     (string-match (<span class="ef-k">rx</span> bos
+                                       (minimal-match (group (1+ anything)))
+                                       (optional <span class="ef-s">"--"</span> (group (1+ digit)))
+                                       eos)
+                                   ,place)
+                     <span class="ef-cd">;; </span><span class="ef-c">HACK: `</span><span style="color: #b751b6;">s1</span><span class="ef-c">' instead of a gensym.
+</span>                     (<span class="ef-k">let*</span> ((s1 (match-string 1 ,place))
+                            (suffix-1 (match-string 2 ,place))
+                            (suffix (<span class="ef-k">if</span> suffix-1 (string-to-number suffix-1) 0)))
+                       (<span class="ef-k">setf</span> ,place (format <span class="ef-s">"%s--%s"</span> s1 (1+ suffix)))))))
+    (<span class="ef-k">let*</span> ((headline-p (eq (car datum) 'headline))
+           (title (<span class="ef-k">if</span> headline-p
+                      (org-element-property <span class="ef-b">:raw-value</span> datum)
+                    (<span class="ef-k">or</span> (org-element-property <span class="ef-b">:name</span> datum)
+                        (concat (org-element-property <span class="ef-b">:raw-value</span>
+                                                      (org-element-property <span class="ef-b">:parent</span>
+                                                                            (org-element-property <span class="ef-b">:parent</span> datum)))))))
+           <span class="ef-cd">;; </span><span class="ef-c">get ascii-only form of title without needing percent-encoding
+</span>           (ref (concat (org-reference-contraction (substring-no-properties title))
+                        (<span class="ef-k">unless</span> (<span class="ef-k">or</span> headline-p (org-element-property <span class="ef-b">:name</span> datum))
+                          (concat <span class="ef-s">","</span>
+                                  (<span class="ef-k">pcase</span> (car datum)
+                                    ('src-block <span class="ef-s">"code"</span>)
+                                    ('example <span class="ef-s">"example"</span>)
+                                    ('fixed-width <span class="ef-s">"mono"</span>)
+                                    ('property-drawer <span class="ef-s">"properties"</span>)
+                                    (_ (symbol-name (car datum))))
+                                  <span class="ef-s">"--1"</span>))))
+           (parent (<span class="ef-k">when</span> headline-p (org-element-property <span class="ef-b">:parent</span> datum))))
+      (<span class="ef-k">while</span> (member ref (mapcar #'car cache))
+        <span class="ef-cd">;; </span><span class="ef-c">Title not unique: make it so.
+</span>        (<span class="ef-k">if</span> parent
+            <span class="ef-cd">;; </span><span class="ef-c">Append ancestor title.
+</span>            (<span class="ef-k">setf</span> title (concat (org-element-property <span class="ef-b">:raw-value</span> parent)
+                                <span class="ef-s">"--"</span> title)
+                  <span class="ef-cd">;; </span><span class="ef-c">get ascii-only form of title without needing percent-encoding
+</span>                  ref (org-reference-contraction (substring-no-properties title))
+                  parent (<span class="ef-k">when</span> headline-p (org-element-property <span class="ef-b">:parent</span> parent)))
+          <span class="ef-cd">;; </span><span class="ef-c">No more ancestors: add and increment a number.
+</span>          (inc-suffixf ref)))
+      ref)))
+
+(add-hook 'org-load-hook #'unpackaged/org-export-html-with-useful-ids-mode)
+
+(<span class="ef-k">defadvice!</span> org-export-format-reference-a (reference)
+  <span class="ef-d">"Format REFERENCE into a string.
+
+REFERENCE is a either a number or a string representing a reference,
+as returned by `</span><span style="color: #b751b6; text-decoration: italic;">org-export-new-reference</span><span class="ef-d">'."</span>
+  <span class="ef-b">:override</span> #'org-export-format-reference
+  (<span class="ef-k">if</span> (stringp reference) reference (format <span class="ef-s">"org%07x"</span> reference)))
+
+(<span class="ef-k">defun</span> <span class="ef-f">+org-export-remove-zero-width-space</span> (text _backend _info)
+  <span class="ef-d">"Remove zero width spaces from TEXT."</span>
+  (<span class="ef-k">unless</span> (org-export-derived-backend-p 'org)
+    (replace-regexp-in-string <span class="ef-s">"\u200B"</span> <span class="ef-s">""</span> text)))
+
+(add-to-list 'org-export-filter-final-output-functions #'+org-export-remove-zero-width-space t)
+
+(<span class="ef-k">defun</span> <span class="ef-f">+org-mode--fontlock-only-mode</span> ()
+  <span class="ef-d">"Just apply org-mode's font-lock once."</span>
+  (<span class="ef-k">let</span> (org-mode-hook
+        org-hide-leading-stars
+        org-hide-emphasis-markers)
+    (org-set-font-lock-defaults)
+    (font-lock-ensure))
+  (<span class="ef-k">setq-local</span> major-mode #'fundamental-mode))
+
+(<span class="ef-k">defun</span> <span class="ef-f">+org-export-babel-mask-org-config</span> (_backend)
+  <span class="ef-d">"Use `</span><span style="color: #b751b6; text-decoration: italic;">+org-mode--fontlock-only-mode</span><span class="ef-d">' instead of `</span><span style="color: #b751b6; text-decoration: italic;">org-mode</span><span class="ef-d">'."</span>
+  (<span class="ef-k">setq-local</span> org-src-lang-modes
+              (append org-src-lang-modes
+                      (list (cons <span class="ef-s">"org"</span> #'+org-mode--fontlock-only)))))
+
+(add-hook 'org-export-before-processing-hook #'+org-export-babel-mask-org-config)
+
+(<span class="ef-k">provide</span> '<span class="ef-o">config-org-exports</span>)
+<span class="ef-cd">;;; </span><span class="ef-c">config-org-exports.el ends here
+</span>
+</pre>
+  <body>
+</html>

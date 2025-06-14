@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>config-flycheck-org-lint.el.html</title>
+    <style>
+      body { background: #fafafa; color: #383a42; }
+      pre {
+        font-size: 1rem;
+        max-width: min(100rem, 100%);
+        width: max-content;
+        white-space: pre-wrap;
+        margin: auto; }
+      .ef-D {
+        color: #383a42; background-color: #fafafa; font-weight: 400; }
+      .ef-vp {
+         }
+      .ef-h {
+        color: #84888b; }
+      .ef-sc {
+        color: #50a14f; }
+      .ef-w {
+        color: #986801; }
+      .ef-e {
+        color: #e45649; }
+      .ef-l {
+        color: #4078f2; font-weight: 700; }
+      .ef-lv {
+        color: #8b008b; font-weight: 700; }
+      .ef-hi {
+        color: #f0f0f0; background-color: #4078f2; }
+      .ef-c {
+        color: #84888b; }
+      .ef-cd {
+        color: #84888b; }
+      .ef-s {
+        color: #50a14f; }
+      .ef-d {
+        color: #727578; text-decoration: italic; }
+      .ef-m {
+        color: #b751b6; }
+      .ef-k {
+        color: #e45649; }
+      .ef-b {
+        color: #a626a4; }
+      .ef-f {
+        color: #a626a4; }
+      .ef-v {
+        color: #6a1868; }
+      .ef-t {
+        color: #986801; }
+      .ef-o {
+        color: #b751b6; }
+      .ef-wr {
+        color: #986801; }
+      .ef-nc {
+        color: #4078f2; font-weight: 700; }
+      .ef-pp {
+        color: #4078f2; font-weight: 700; }
+      .ef-rc {
+        color: #4078f2; font-weight: 700; }
+      .ef-rb {
+        color: #4078f2; font-weight: 700; }
+      .ef-ob {
+        background-color: #e7e7e7; }
+      .ef-obb {
+        background-color: #e7e7e7; text-decoration: italic; }
+      .ef-obe {
+        background-color: #e7e7e7; text-decoration: italic; }
+      .ef-Oa {
+        color: #e45649; font-weight: nil; font-size: 1.25em }
+      .ef-Ob {
+        color: #da8548; font-weight: 700; font-size: 1.15em }
+      .ef-Oc {
+        color: #b751b6; font-weight: 700; font-size: 1.12em }
+      .ef-Od {
+        color: #6f99f5; font-weight: 600; font-size: 1.09em }
+      .ef-Oe {
+        color: #bc5cba; font-weight: 600; font-size: 1.06em }
+      .ef-Of {
+        color: #9fbbf8; font-weight: 600; font-size: 1.03em }
+      .ef-Og {
+        color: #d292d1; font-weight: 700; }
+      .ef-Oh {
+        color: #d8e4fc; font-weight: 600; }
+      .ef-hn {
+        color: #da8548; font-weight: 700; }
+      .ef-hq {
+        color: #4078f2; }
+      .ef-hs {
+        color: #986801; }
+      .ef-rda {
+        color: #4078f2; }
+      .ef-rdb {
+        color: #a626a4; }
+      .ef-rdc {
+        color: #50a14f; }
+      .ef-rdd {
+        color: #b751b6; }
+      .ef-rde {
+        color: #4db5bd; }
+      .ef-rdf {
+        color: #4078f2; }
+      .ef-rdg {
+        color: #a626a4; }
+      .ef-rdh {
+        color: #50a14f; }
+      .ef-rdi {
+        color: #b751b6; }
+    </style>
+  </head>
+  <body>
+<pre>
+<span class="ef-cd">;;; </span><span class="ef-c">config-flycheck-org-lint.el --- Generated package (no.79) from my config -*- lexical-binding: t; -*-
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;; </span><span class="ef-c">Copyright (C) 2025 TEC
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;; </span><span class="ef-c">Author: TEC &lt;https://code.tecosaur.net/tec&gt;
+</span><span class="ef-cd">;; </span><span class="ef-c">Maintainer: TEC &lt;contact@tecosaur.net&gt;
+</span><span class="ef-cd">;; </span><span class="ef-c">Created: June 14, 2025
+</span><span class="ef-cd">;; </span><span class="ef-c">Modified: June 14, 2025
+</span><span class="ef-cd">;; </span><span class="ef-c">Version: 2025.06.14
+</span><span class="ef-cd">;; </span><span class="ef-c">Homepage: https://code.tecosaur.net/tec/emacs-config
+</span><span class="ef-cd">;; </span><span class="ef-c">Package-Requires: ((emacs "29.1"))
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;; </span><span class="ef-c">This file is not part of GNU Emacs.
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;; </span><span class="ef-c">Commentary:
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;  </span><span class="ef-c">Generated package (no.79) from my config.
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;  </span><span class="ef-c">During generation, dependency on other aspects of my configuration and
+</span><span class="ef-cd">;;  </span><span class="ef-c">packages is inferred via (regexp-based) static analysis.  While this seems
+</span><span class="ef-cd">;;  </span><span class="ef-c">to do a good job, this method is imperfect.  This code likely depends on
+</span><span class="ef-cd">;;  </span><span class="ef-c">utilities provided by Doom, and if you try to run it in isolation you may
+</span><span class="ef-cd">;;  </span><span class="ef-c">discover the code makes more assumptions.
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;  </span><span class="ef-c">That said, I've found pretty good results so far.
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;; </span><span class="ef-c">Code:
+</span>
+(<span class="ef-k">defconst</span> <span class="ef-v">flycheck-org-lint-form</span>
+  (flycheck-prepare-emacs-lisp-form
+    (<span class="ef-k">require</span> '<span class="ef-o">org</span>)
+    (<span class="ef-k">require</span> '<span class="ef-o">org-lint</span>)
+    (<span class="ef-k">require</span> '<span class="ef-o">org-attach</span>)
+    (<span class="ef-k">let</span> ((source (car command-line-args-left))
+          (process-default-directory default-directory))
+      (<span class="ef-k">with-temp-buffer</span>
+        (insert-file-contents source 'visit)
+        (<span class="ef-k">setq</span> buffer-file-name source)
+        (<span class="ef-k">setq</span> default-directory process-default-directory)
+        (<span class="ef-k">delay-mode-hooks</span> (org-mode))
+        (<span class="ef-k">setq</span> delayed-mode-hooks nil)
+        (<span class="ef-k">dolist</span> (err (org-lint))
+          (<span class="ef-k">let</span> ((inf (cl-second err)))
+            (princ (elt inf 0))
+            (princ <span class="ef-s">": "</span>)
+            (princ (elt inf 2))
+            (terpri)))))))
+
+(<span class="ef-k">defconst</span> <span class="ef-v">flycheck-org-lint-variables</span>
+  '(org-directory
+    org-id-locations
+    org-id-locations-file
+    org-attach-id-dir
+    org-attach-use-inheritance
+    org-attach-id-to-path-function-list
+    org-link-parameters)
+  <span class="ef-d">"Variables inherited by the org-lint subprocess."</span>)
+
+(<span class="ef-k">defconst</span> <span class="ef-v">flycheck-org-lint-babel-langs</span>
+  '(C C++ D LaTeX R TeX antlr ash asm asymptote autoconf awk bash bash-ts bash2 bat beamer c c++ c++-ts c-ts c-ts-base calc cfengine2 cfengine3 change-log clojure clojurescript cmake-ts common-lisp conf conf-colon conf-desktop conf-javaprop conf-ppd conf-space conf-toml conf-unix conf-windows conf-xdefaults cperl cpp csh csharp csharp-ts css css-base css-ts dash dcl delphi desktop ditaa dns doc-view--text-view dockerfile-ts doctex dot dsssl dtksh editorconfig-conf elisp elisp-byte-code elixir-ts emacs-lisp emacs-news emacs-news-view erts es eshell f90 fish forth fortran gdb-script gnuplot gnus-article-edit gnus-score go-mod-ts go-ts groovy haskell heex-ts help-fns--edit-value html html-ts icon idl idlwave indented-text itcsh java java-ts javascript jcsh js js-base js-json js-jsx js-ts jsh json-ts julia ksh ksh88 latex ld-script less-css lilypond lisp lisp-data lisp-interaction lua lua-ts m2 m4 mail makefile makefile-automake makefile-bsdmake makefile-gmake makefile-imake makefile-makepp matlab maxima mercury message meta-common metafont metapost mh-letter mh-show mhtml mixal mksh modula-2 nroff nxml oash objc ocaml octave opascal org outline paragraph-indent-text pascal pdksh perl php-ts pike plain-TeX plain-tex plantuml plstore posh posix processing prog prolog ps python python-base python-ts rc rpm rst ruby ruby-base ruby-ts rust-ts sass scheme screen scss sed sgml sh sh-base shell shell-script sieve simula slitex sql sqlite tcl tcsh tex texinfo text todo-edit toml toml-ts tsx-ts typescript-ts typescript-ts-base vera verilog vhdl wksh wsh xml yaml-ts zone zsh)
+  <span class="ef-d">"Languages that org-babel should know of."</span>)
+
+(<span class="ef-k">defun</span> <span class="ef-f">flycheck-org-lint-variables-form</span> ()
+  (<span class="ef-k">require</span> '<span class="ef-o">org-attach</span>)  <span class="ef-cd">; </span><span class="ef-c">Needed to make variables available
+</span>  `(<span class="ef-k">progn</span>
+     ,@(seq-map (<span class="ef-k">lambda</span> (opt) `(<span class="ef-k">setq-default</span> ,opt ',(symbol-value opt)))
+                (seq-filter #'boundp flycheck-org-lint-variables))))
+
+(<span class="ef-k">defun</span> <span class="ef-f">flycheck-org-lint-babel-langs-form</span> ()
+  `(<span class="ef-k">progn</span>
+     ,@(mapcar
+        (<span class="ef-k">lambda</span> (lang)
+          `(<span class="ef-k">defun</span> ,(intern (format <span class="ef-s">"org-babel-execute:%s"</span> lang)) (_body _params)
+             <span class="ef-d">"Stub for org-lint."</span>))
+        flycheck-org-lint-babel-langs)))
+
+(eval <span class="ef-cd">; </span><span class="ef-c">To preveant eager macro expansion form loading flycheck early.
+</span> '(flycheck-define-checker org-lint
+   <span class="ef-d">"Org buffer checker using `</span><span style="color: #b751b6; text-decoration: italic;">org-lint</span><span class="ef-d">'."</span>
+   <span class="ef-b">:command</span> (<span class="ef-s">"emacs"</span> (eval flycheck-emacs-args)
+             <span class="ef-s">"--eval"</span> (eval (concat <span class="ef-s">"(add-to-list 'load-path \""</span>
+                                    (file-name-directory (locate-library <span class="ef-s">"org"</span>))
+                                    <span class="ef-s">"\")"</span>))
+             <span class="ef-s">"--eval"</span> (eval (flycheck-sexp-to-string
+                             (flycheck-org-lint-variables-form)))
+             <span class="ef-s">"--eval"</span> (eval (flycheck-sexp-to-string
+                             (flycheck-org-lint-customisations-form)))
+             <span class="ef-s">"--eval"</span> (eval (flycheck-sexp-to-string
+                             (flycheck-org-lint-babel-langs-form)))
+             <span class="ef-s">"--eval"</span> (eval flycheck-org-lint-form)
+             <span class="ef-s">"--"</span> source)
+   <span class="ef-b">:error-patterns</span>
+   ((<span class="ef-wr">error</span> line-start line <span class="ef-s">": "</span> (message) line-end))
+   <span class="ef-b">:modes</span> org-mode))
+
+(add-to-list 'flycheck-checkers 'org-lint)
+
+(<span class="ef-k">defun</span> <span class="ef-f">flycheck-org-lint-customisations-form</span> ()
+  `(<span class="ef-k">progn</span>
+     (<span class="ef-k">require</span> '<span class="ef-o">ox</span>)
+     (<span class="ef-k">cl-pushnew</span> '(<span class="ef-b">:latex-cover-page</span> nil <span class="ef-s">"coverpage"</span> nil)
+                 (org-export-backend-options (org-export-get-backend 'latex)))
+     (<span class="ef-k">cl-pushnew</span> '(<span class="ef-b">:latex-font-set</span> nil <span class="ef-s">"fontset"</span> nil)
+                 (org-export-backend-options (org-export-get-backend 'latex)))))
+
+(<span class="ef-k">provide</span> '<span class="ef-o">config-flycheck-org-lint</span>)
+<span class="ef-cd">;;; </span><span class="ef-c">config-flycheck-org-lint.el ends here
+</span>
+</pre>
+  <body>
+</html>

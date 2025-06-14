@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>config--pkg-magit.el.html</title>
+    <style>
+      body { background: #fafafa; color: #383a42; }
+      pre {
+        font-size: 1rem;
+        max-width: min(100rem, 100%);
+        width: max-content;
+        white-space: pre-wrap;
+        margin: auto; }
+      .ef-D {
+        color: #383a42; background-color: #fafafa; font-weight: 400; }
+      .ef-vp {
+         }
+      .ef-h {
+        color: #84888b; }
+      .ef-sc {
+        color: #50a14f; }
+      .ef-w {
+        color: #986801; }
+      .ef-e {
+        color: #e45649; }
+      .ef-l {
+        color: #4078f2; font-weight: 700; }
+      .ef-lv {
+        color: #8b008b; font-weight: 700; }
+      .ef-hi {
+        color: #f0f0f0; background-color: #4078f2; }
+      .ef-c {
+        color: #84888b; }
+      .ef-cd {
+        color: #84888b; }
+      .ef-s {
+        color: #50a14f; }
+      .ef-d {
+        color: #727578; text-decoration: italic; }
+      .ef-m {
+        color: #b751b6; }
+      .ef-k {
+        color: #e45649; }
+      .ef-b {
+        color: #a626a4; }
+      .ef-f {
+        color: #a626a4; }
+      .ef-v {
+        color: #6a1868; }
+      .ef-t {
+        color: #986801; }
+      .ef-o {
+        color: #b751b6; }
+      .ef-wr {
+        color: #986801; }
+      .ef-nc {
+        color: #4078f2; font-weight: 700; }
+      .ef-pp {
+        color: #4078f2; font-weight: 700; }
+      .ef-rc {
+        color: #4078f2; font-weight: 700; }
+      .ef-rb {
+        color: #4078f2; font-weight: 700; }
+      .ef-ob {
+        background-color: #e7e7e7; }
+      .ef-obb {
+        background-color: #e7e7e7; text-decoration: italic; }
+      .ef-obe {
+        background-color: #e7e7e7; text-decoration: italic; }
+      .ef-Oa {
+        color: #e45649; font-weight: nil; font-size: 1.25em }
+      .ef-Ob {
+        color: #da8548; font-weight: 700; font-size: 1.15em }
+      .ef-Oc {
+        color: #b751b6; font-weight: 700; font-size: 1.12em }
+      .ef-Od {
+        color: #6f99f5; font-weight: 600; font-size: 1.09em }
+      .ef-Oe {
+        color: #bc5cba; font-weight: 600; font-size: 1.06em }
+      .ef-Of {
+        color: #9fbbf8; font-weight: 600; font-size: 1.03em }
+      .ef-Og {
+        color: #d292d1; font-weight: 700; }
+      .ef-Oh {
+        color: #d8e4fc; font-weight: 600; }
+      .ef-hn {
+        color: #da8548; font-weight: 700; }
+      .ef-hq {
+        color: #4078f2; }
+      .ef-hs {
+        color: #986801; }
+      .ef-rda {
+        color: #4078f2; }
+      .ef-rdb {
+        color: #a626a4; }
+      .ef-rdc {
+        color: #50a14f; }
+      .ef-rdd {
+        color: #b751b6; }
+      .ef-rde {
+        color: #4db5bd; }
+      .ef-rdf {
+        color: #4078f2; }
+      .ef-rdg {
+        color: #a626a4; }
+      .ef-rdh {
+        color: #50a14f; }
+      .ef-rdi {
+        color: #b751b6; }
+    </style>
+  </head>
+  <body>
+<pre>
+<span class="ef-cd">;;; </span><span class="ef-c">config--pkg-magit.el --- Generated package (no.22) from my config -*- lexical-binding: t; -*-
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;; </span><span class="ef-c">Copyright (C) 2025 TEC
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;; </span><span class="ef-c">Author: TEC &lt;https://code.tecosaur.net/tec&gt;
+</span><span class="ef-cd">;; </span><span class="ef-c">Maintainer: TEC &lt;contact@tecosaur.net&gt;
+</span><span class="ef-cd">;; </span><span class="ef-c">Created: June 14, 2025
+</span><span class="ef-cd">;; </span><span class="ef-c">Modified: June 14, 2025
+</span><span class="ef-cd">;; </span><span class="ef-c">Version: 2025.06.14
+</span><span class="ef-cd">;; </span><span class="ef-c">Homepage: https://code.tecosaur.net/tec/emacs-config
+</span><span class="ef-cd">;; </span><span class="ef-c">Package-Requires: ((emacs "29.1"))
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;; </span><span class="ef-c">This file is not part of GNU Emacs.
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;; </span><span class="ef-c">Commentary:
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;  </span><span class="ef-c">Generated package (no.22) from my config.
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;  </span><span class="ef-c">During generation, dependency on other aspects of my configuration and
+</span><span class="ef-cd">;;  </span><span class="ef-c">packages is inferred via (regexp-based) static analysis.  While this seems
+</span><span class="ef-cd">;;  </span><span class="ef-c">to do a good job, this method is imperfect.  This code likely depends on
+</span><span class="ef-cd">;;  </span><span class="ef-c">utilities provided by Doom, and if you try to run it in isolation you may
+</span><span class="ef-cd">;;  </span><span class="ef-c">discover the code makes more assumptions.
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;  </span><span class="ef-c">That said, I've found pretty good results so far.
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;; </span><span class="ef-c">Code:
+</span>
+(<span class="ef-k">defvar</span> <span class="ef-v">+magit-project-commit-templates-alist</span> nil
+  <span class="ef-d">"Alist of toplevel dirs and template hf strings/functions."</span>)
+(<span class="ef-k">after!</span> magit
+  (<span class="ef-k">defvar</span> <span class="ef-v">+magit-default-forge-remote</span> <span class="ef-s">"git@ssh.tecosaur.net:tec/%s.git"</span>
+  <span class="ef-d">"Format string that fills out to a remote from the repo name.
+Set to nil to disable this functionality."</span>)
+(<span class="ef-k">defadvice!</span> +magit-remote-add--streamline-forge-a (args)
+  <span class="ef-d">"Prompt to setup a remote using `</span><span style="color: #b751b6; text-decoration: italic;">+magit-default-forge-remote</span><span class="ef-d">'."</span>
+  <span class="ef-b">:filter-args</span> #'magit-remote-add
+  (<span class="ef-k">interactive</span>
+   (<span class="ef-k">let</span> ((default-name
+          (subst-char-in-string
+           ?\s ?-
+           (file-name-nondirectory
+            (directory-file-name
+             (<span class="ef-k">or</span> (doom-project-root) default-directory))))))
+     (<span class="ef-k">or</span> (<span class="ef-k">and</span> +magit-default-forge-remote
+              (not (magit-list-remotes))
+              (eq (read-char-choice
+                   (format <span class="ef-s">"Setup %s remote? [y/n]: "</span>
+                           (replace-regexp-in-string
+                            <span class="ef-s">"\\`</span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">(?:</span><span class="ef-s">[</span><span style="color: #4078f2; font-weight: 700;">^</span><span class="ef-s">@]+@</span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">|</span><span class="ef-s">https://</span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">)</span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">(</span><span class="ef-s">[</span><span style="color: #4078f2; font-weight: 700;">^</span><span class="ef-s">:/]+</span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">)</span><span class="ef-s">[:/].*\\'"</span> <span class="ef-s">"\\1"</span>
+                            +magit-default-forge-remote))
+                   '(?y ?n))
+                  ?y)
+              (<span class="ef-k">let</span> ((name (read-string <span class="ef-s">"Name: "</span> default-name)))
+                (list <span class="ef-s">"origin"</span> (format +magit-default-forge-remote name)
+                      (transient-args 'magit-remote))))
+         (<span class="ef-k">let</span> ((origin (magit-get <span class="ef-s">"remote.origin.url"</span>))
+               (remote (magit-read-string-ns <span class="ef-s">"Remote name"</span>))
+               (gh-user (magit-get <span class="ef-s">"github.user"</span>)))
+           (<span class="ef-k">and</span> (equal remote gh-user)
+                (<span class="ef-k">if</span> origin
+                    (<span class="ef-k">and</span>
+                     (string-match <span class="ef-s">"\\`https://github\\.com/</span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">(</span><span class="ef-s">[</span><span style="color: #4078f2; font-weight: 700;">^</span><span class="ef-s">/]+</span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">)</span><span class="ef-s">/</span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">(</span><span class="ef-s">[</span><span style="color: #4078f2; font-weight: 700;">^</span><span class="ef-s">/]+</span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">)</span><span class="ef-s">\\.git\\'"</span>
+                                   origin)
+                     (not (string= (match-string 1 origin) gh-user)))
+                  t)
+                (<span class="ef-k">setq</span> origin
+                      (<span class="ef-k">if</span> origin
+                          (replace-regexp-in-string
+                           <span class="ef-s">"\\`https://github\\.com/"</span> <span class="ef-s">"git@github.com:"</span>
+                           origin)
+                        (format <span class="ef-s">"git@github.com:%s/%s"</span> gh-user (read-string <span class="ef-s">"GitHub repo Name: "</span> default-name)))))
+           (list remote
+                 (magit-read-url
+                  <span class="ef-s">"Remote url"</span>
+                  (<span class="ef-k">and</span> origin
+                       (string-match <span class="ef-s">"</span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">(</span><span class="ef-s">[</span><span style="color: #4078f2; font-weight: 700;">^</span><span class="ef-s">:/]+</span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">)</span><span class="ef-s">/[</span><span style="color: #4078f2; font-weight: 700;">^</span><span class="ef-s">/]+</span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">(</span><span class="ef-s">\\.git</span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">)</span><span class="ef-s">?\\'"</span> origin)
+                       (replace-match remote t t origin 1)))
+                 (transient-args 'magit-remote))))))
+  args)
+(<span class="ef-k">defun</span> <span class="ef-f">+magit-fill-in-commit-template</span> ()
+  <span class="ef-d">"Insert template from `</span><span style="color: #b751b6; text-decoration: italic;">+magit-fill-in-commit-template</span><span class="ef-d">' if applicable."</span>
+  (<span class="ef-k">when-let</span> ((template (<span class="ef-k">and</span> (<span class="ef-k">save-excursion</span> (goto-char (point-min)) (string-match-p <span class="ef-s">"\\`\\s-*$"</span> (thing-at-point 'line)))
+                            (cdr (assoc (file-name-base (directory-file-name (magit-toplevel)))
+                                        +magit-project-commit-templates-alist)))))
+    (goto-char (point-min))
+    (insert (<span class="ef-k">if</span> (stringp template) template (funcall template)))
+    (goto-char (point-min))
+    (end-of-line)))
+(add-hook 'git-commit-setup-hook #'+magit-fill-in-commit-template 90)
+(<span class="ef-k">defun</span> <span class="ef-f">+org-commit-message-template</span> ()
+  <span class="ef-d">"Create a skeleton for an Org commit message based on the staged diff."</span>
+  (<span class="ef-k">let</span> (change-data last-file file-changes temp-point)
+    (<span class="ef-k">with-temp-buffer</span>
+      (apply #'call-process magit-git-executable
+             nil t nil
+             (append
+              magit-git-global-arguments
+              (list <span class="ef-s">"diff"</span> <span class="ef-s">"--cached"</span>)))
+      (goto-char (point-min))
+      (<span class="ef-k">while</span> (re-search-forward <span class="ef-s">"^@@</span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">|</span><span class="ef-s">^\\+\\+\\+ b/"</span> nil t)
+        (<span class="ef-k">if</span> (looking-back <span class="ef-s">"^\\+\\+\\+ b/"</span> (line-beginning-position))
+            (<span class="ef-k">progn</span>
+              (<span class="ef-k">push</span> (list last-file file-changes) change-data)
+              (<span class="ef-k">setq</span> last-file (buffer-substring-no-properties (point) (line-end-position))
+                    file-changes nil))
+          (<span class="ef-k">setq</span> temp-point (line-beginning-position))
+          (re-search-forward <span class="ef-s">"^\\+</span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">|</span><span class="ef-s">^-"</span> nil t)
+          (end-of-line)
+          (<span class="ef-k">cond</span>
+           ((string-match-p <span class="ef-s">"\\.el$"</span> last-file)
+            (<span class="ef-k">when</span> (re-search-backward <span class="ef-s">"^</span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">(?:</span><span class="ef-s">[+-]? *</span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">|</span><span class="ef-s">@@[ +-\\d,]+@@ </span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">)</span><span class="ef-s">(</span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">(?:</span><span class="ef-s">cl-</span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">)</span><span class="ef-s">?</span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">(?:</span><span class="ef-s">defun</span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">|</span><span class="ef-s">defvar</span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">|</span><span class="ef-s">defmacro</span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">|</span><span class="ef-s">defcustom</span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">)</span><span class="ef-s">"</span> temp-point t)
+              (re-search-forward <span class="ef-s">"</span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">(?:</span><span class="ef-s">cl-</span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">)</span><span class="ef-s">?</span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">(?:</span><span class="ef-s">defun</span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">|</span><span class="ef-s">defvar</span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">|</span><span class="ef-s">defmacro</span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">|</span><span class="ef-s">defcustom</span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">)</span> <span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">(</span><span class="ef-s">[</span><span style="color: #4078f2; font-weight: 700;">^</span><span class="ef-s">[:space:]\n]+</span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">)</span><span class="ef-s">"</span> nil t)
+              (<span class="ef-k">push</span> (match-string 1) file-changes)))
+           ((string-match-p <span class="ef-s">"\\.org$"</span> last-file)
+            (<span class="ef-k">when</span> (re-search-backward <span class="ef-s">"^[+-]\\*+ </span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">|</span><span class="ef-s">^@@[ +-\\d,]+@@ \\*+ "</span> temp-point t)
+              (re-search-forward <span class="ef-s">"@@ \\*+ "</span> nil t)
+              (<span class="ef-k">push</span> (buffer-substring-no-properties (point) (line-end-position)) file-changes)))))))
+    (<span class="ef-k">setq</span> file-changes (delete-dups file-changes))
+    (<span class="ef-k">push</span> (list last-file file-changes) change-data)
+    (<span class="ef-k">setq</span> change-data (delete '(nil nil) change-data))
+    (concat
+     (<span class="ef-k">if</span> (= 1 (length change-data))
+         (replace-regexp-in-string <span class="ef-s">"^.*/</span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">|</span><span class="ef-s">.[a-z]+$"</span> <span class="ef-s">""</span> (caar change-data))
+       <span class="ef-s">"?"</span>)
+     <span class="ef-s">": \n\n"</span>
+     (mapconcat
+      (<span class="ef-k">lambda</span> (file-changes)
+        (<span class="ef-k">if</span> (cadr file-changes)
+            (format <span class="ef-s">"* %s (%s): "</span>
+                    (car file-changes)
+                    (mapconcat #'identity (cadr file-changes) <span class="ef-s">", "</span>))
+          (format <span class="ef-s">"* %s: "</span> (car file-changes))))
+      change-data
+      <span class="ef-s">"\n\n"</span>))))
+
+(add-to-list '+magit-project-commit-templates-alist (cons <span class="ef-s">"org"</span> #'+org-commit-message-template)))
+
+(<span class="ef-k">provide</span> '<span class="ef-o">config--pkg-magit</span>)
+<span class="ef-cd">;;; </span><span class="ef-c">config--pkg-magit.el ends here
+</span>
+</pre>
+  <body>
+</html>

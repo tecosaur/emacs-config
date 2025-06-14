@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>config-org-behaviour.el.html</title>
+    <style>
+      body { background: #fafafa; color: #383a42; }
+      pre {
+        font-size: 1rem;
+        max-width: min(100rem, 100%);
+        width: max-content;
+        white-space: pre-wrap;
+        margin: auto; }
+      .ef-D {
+        color: #383a42; background-color: #fafafa; font-weight: 400; }
+      .ef-vp {
+         }
+      .ef-h {
+        color: #84888b; }
+      .ef-sc {
+        color: #50a14f; }
+      .ef-w {
+        color: #986801; }
+      .ef-e {
+        color: #e45649; }
+      .ef-l {
+        color: #4078f2; font-weight: 700; }
+      .ef-lv {
+        color: #8b008b; font-weight: 700; }
+      .ef-hi {
+        color: #f0f0f0; background-color: #4078f2; }
+      .ef-c {
+        color: #84888b; }
+      .ef-cd {
+        color: #84888b; }
+      .ef-s {
+        color: #50a14f; }
+      .ef-d {
+        color: #727578; text-decoration: italic; }
+      .ef-m {
+        color: #b751b6; }
+      .ef-k {
+        color: #e45649; }
+      .ef-b {
+        color: #a626a4; }
+      .ef-f {
+        color: #a626a4; }
+      .ef-v {
+        color: #6a1868; }
+      .ef-t {
+        color: #986801; }
+      .ef-o {
+        color: #b751b6; }
+      .ef-wr {
+        color: #986801; }
+      .ef-nc {
+        color: #4078f2; font-weight: 700; }
+      .ef-pp {
+        color: #4078f2; font-weight: 700; }
+      .ef-rc {
+        color: #4078f2; font-weight: 700; }
+      .ef-rb {
+        color: #4078f2; font-weight: 700; }
+      .ef-ob {
+        background-color: #e7e7e7; }
+      .ef-obb {
+        background-color: #e7e7e7; text-decoration: italic; }
+      .ef-obe {
+        background-color: #e7e7e7; text-decoration: italic; }
+      .ef-Oa {
+        color: #e45649; font-weight: nil; font-size: 1.25em }
+      .ef-Ob {
+        color: #da8548; font-weight: 700; font-size: 1.15em }
+      .ef-Oc {
+        color: #b751b6; font-weight: 700; font-size: 1.12em }
+      .ef-Od {
+        color: #6f99f5; font-weight: 600; font-size: 1.09em }
+      .ef-Oe {
+        color: #bc5cba; font-weight: 600; font-size: 1.06em }
+      .ef-Of {
+        color: #9fbbf8; font-weight: 600; font-size: 1.03em }
+      .ef-Og {
+        color: #d292d1; font-weight: 700; }
+      .ef-Oh {
+        color: #d8e4fc; font-weight: 600; }
+      .ef-hn {
+        color: #da8548; font-weight: 700; }
+      .ef-hq {
+        color: #4078f2; }
+      .ef-hs {
+        color: #986801; }
+      .ef-rda {
+        color: #4078f2; }
+      .ef-rdb {
+        color: #a626a4; }
+      .ef-rdc {
+        color: #50a14f; }
+      .ef-rdd {
+        color: #b751b6; }
+      .ef-rde {
+        color: #4db5bd; }
+      .ef-rdf {
+        color: #4078f2; }
+      .ef-rdg {
+        color: #a626a4; }
+      .ef-rdh {
+        color: #50a14f; }
+      .ef-rdi {
+        color: #b751b6; }
+    </style>
+  </head>
+  <body>
+<pre>
+<span class="ef-cd">;;; </span><span class="ef-c">config-org-behaviour.el --- Generated package (no.74) from my config -*- lexical-binding: t; -*-
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;; </span><span class="ef-c">Copyright (C) 2025 TEC
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;; </span><span class="ef-c">Author: TEC &lt;https://code.tecosaur.net/tec&gt;
+</span><span class="ef-cd">;; </span><span class="ef-c">Maintainer: TEC &lt;contact@tecosaur.net&gt;
+</span><span class="ef-cd">;; </span><span class="ef-c">Created: June 14, 2025
+</span><span class="ef-cd">;; </span><span class="ef-c">Modified: June 14, 2025
+</span><span class="ef-cd">;; </span><span class="ef-c">Version: 2025.06.14
+</span><span class="ef-cd">;; </span><span class="ef-c">Homepage: https://code.tecosaur.net/tec/emacs-config
+</span><span class="ef-cd">;; </span><span class="ef-c">Package-Requires: ((emacs "29.1"))
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;; </span><span class="ef-c">This file is not part of GNU Emacs.
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;; </span><span class="ef-c">Commentary:
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;  </span><span class="ef-c">Generated package (no.74) from my config.
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;  </span><span class="ef-c">During generation, dependency on other aspects of my configuration and
+</span><span class="ef-cd">;;  </span><span class="ef-c">packages is inferred via (regexp-based) static analysis.  While this seems
+</span><span class="ef-cd">;;  </span><span class="ef-c">to do a good job, this method is imperfect.  This code likely depends on
+</span><span class="ef-cd">;;  </span><span class="ef-c">utilities provided by Doom, and if you try to run it in isolation you may
+</span><span class="ef-cd">;;  </span><span class="ef-c">discover the code makes more assumptions.
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;  </span><span class="ef-c">That said, I've found pretty good results so far.
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;; </span><span class="ef-c">Code:
+</span>
+(<span class="ef-k">require</span> '<span class="ef-o">org</span>)
+
+(<span class="ef-k">setq</span> org-directory (expand-file-name <span class="ef-s">"org"</span> (xdg-data-home)) <span class="ef-cd">; </span><span class="ef-c">Let's put files here.
+</span>      org-agenda-files (list org-directory)                  <span class="ef-cd">; </span><span class="ef-c">Seems like the obvious place.
+</span>      org-use-property-inheritance t                         <span class="ef-cd">; </span><span class="ef-c">It's convenient to have properties inherited.
+</span>      org-log-done 'time                                     <span class="ef-cd">; </span><span class="ef-c">Having the time a item is done sounds convenient.
+</span>      org-list-allow-alphabetical t                          <span class="ef-cd">; </span><span class="ef-c">Have a. A. a) A) list bullets.
+</span>      org-catch-invisible-edits 'smart                       <span class="ef-cd">; </span><span class="ef-c">Try not to accidently do weird stuff in invisible regions.
+</span>      org-export-with-sub-superscripts '{}                   <span class="ef-cd">; </span><span class="ef-c">Don't treat lone _ / ^ as sub/superscripts, require _{} / ^{}.
+</span>      org-export-allow-bind-keywords t                       <span class="ef-cd">; </span><span class="ef-c">Bind keywords can be handy
+</span>      org-image-actual-width '(0.9))                         <span class="ef-cd">; </span><span class="ef-c">Make the in-buffer display closer to the exported result..
+</span>
+(<span class="ef-k">setq</span> org-babel-default-header-args
+      '((<span class="ef-b">:session</span> . <span class="ef-s">"none"</span>)
+        (<span class="ef-b">:results</span> . <span class="ef-s">"replace"</span>)
+        (<span class="ef-b">:exports</span> . <span class="ef-s">"code"</span>)
+        (<span class="ef-b">:cache</span> . <span class="ef-s">"no"</span>)
+        (<span class="ef-b">:noweb</span> . <span class="ef-s">"no"</span>)
+        (<span class="ef-b">:hlines</span> . <span class="ef-s">"no"</span>)
+        (<span class="ef-b">:tangle</span> . <span class="ef-s">"no"</span>)
+        (<span class="ef-b">:comments</span> . <span class="ef-s">"link"</span>)))
+
+(remove-hook 'text-mode-hook #'visual-line-mode)
+(add-hook 'text-mode-hook #'auto-fill-mode)
+
+(map! <span class="ef-b">:map</span> evil-org-mode-map
+      <span class="ef-b">:after</span> evil-org
+      <span class="ef-b">:n</span> <span class="ef-s">"g &lt;up&gt;"</span> #'org-backward-heading-same-level
+      <span class="ef-b">:n</span> <span class="ef-s">"g &lt;down&gt;"</span> #'org-forward-heading-same-level
+      <span class="ef-b">:n</span> <span class="ef-s">"g &lt;left&gt;"</span> #'org-up-element
+      <span class="ef-b">:n</span> <span class="ef-s">"g &lt;right&gt;"</span> #'org-down-element)
+
+(map! <span class="ef-b">:map</span> org-mode-map
+      <span class="ef-b">:nie</span> <span class="ef-s">"M-SPC M-SPC"</span> (<span class="ef-k">cmd!</span> (insert <span class="ef-s">"\u200B"</span>)))
+
+(<span class="ef-k">setq</span> org-list-demote-modify-bullet '((<span class="ef-s">"+"</span> . <span class="ef-s">"-"</span>) (<span class="ef-s">"-"</span> . <span class="ef-s">"+"</span>) (<span class="ef-s">"*"</span> . <span class="ef-s">"+"</span>) (<span class="ef-s">"1."</span> . <span class="ef-s">"a."</span>)))
+
+(<span class="ef-k">defun</span> <span class="ef-f">+org-insert-file-link</span> ()
+  <span class="ef-d">"Insert a file link.  At the prompt, enter the filename."</span>
+  (<span class="ef-k">interactive</span>)
+  (org-insert-link nil (org-link-complete-file)))
+
+(map! <span class="ef-b">:after</span> org
+      <span class="ef-b">:map</span> org-mode-map
+      <span class="ef-b">:localleader</span>
+      <span class="ef-s">"l f"</span> #'+org-insert-file-link)
+
+(<span class="ef-k">defadvice!</span> +org-edit-latex-env-after-insert-a (<span class="ef-t">&amp;rest</span> _)
+  <span class="ef-b">:after</span> #'org-cdlatex-environment-indent
+  (org-edit-latex-environment))
+
+(<span class="ef-k">cl-defmacro</span> <span class="ef-f">lsp-org-babel-enable</span> (lang)
+  <span class="ef-d">"Support LANG in org source code block."</span>
+  (<span class="ef-k">setq</span> centaur-lsp 'lsp-mode)
+  (<span class="ef-wr">cl-check-type</span> lang string)
+  (<span class="ef-k">let*</span> ((edit-pre (intern (format <span class="ef-s">"org-babel-edit-prep:%s"</span> lang)))
+         (intern-pre (intern (format <span class="ef-s">"lsp--%s"</span> (symbol-name edit-pre)))))
+    `(<span class="ef-k">progn</span>
+       (<span class="ef-k">defun</span> ,intern-pre (info)
+         (<span class="ef-k">let</span> ((file-name (<span class="ef-k">-&gt;&gt;</span> info caddr (alist-get <span class="ef-b">:file</span>))))
+           (<span class="ef-k">unless</span> file-name
+             (<span class="ef-k">setq</span> file-name (make-temp-file <span class="ef-s">"babel-lsp-"</span>)))
+           (<span class="ef-k">setq</span> buffer-file-name file-name)
+           (lsp-deferred)))
+       (put ',intern-pre 'function-documentation
+            (format <span class="ef-s">"Enable lsp-mode in the buffer of org source block (%s)."</span>
+                    (upcase ,lang)))
+       (<span class="ef-k">if</span> (fboundp ',edit-pre)
+           (advice-add ',edit-pre <span class="ef-b">:after</span> ',intern-pre)
+         (<span class="ef-k">progn</span>
+           (<span class="ef-k">defun</span> ,edit-pre (info)
+             (,intern-pre info))
+           (put ',edit-pre 'function-documentation
+                (format <span class="ef-s">"Prepare local buffer environment for org source block (%s)."</span>
+                        (upcase ,lang))))))))
+(<span class="ef-k">defvar</span> <span class="ef-v">org-babel-lang-list</span>
+  '(<span class="ef-s">"go"</span> <span class="ef-s">"python"</span> <span class="ef-s">"ipython"</span> <span class="ef-s">"bash"</span> <span class="ef-s">"sh"</span>))
+(<span class="ef-k">dolist</span> (lang org-babel-lang-list)
+  (eval `(lsp-org-babel-enable ,lang)))
+
+(map! <span class="ef-b">:map</span> org-mode-map
+      <span class="ef-b">:localleader</span>
+      <span class="ef-b">:desc</span> <span class="ef-s">"View exported file"</span> <span class="ef-s">"v"</span> #'org-view-output-file)
+
+(<span class="ef-k">defun</span> <span class="ef-f">org-view-output-file</span> (<span class="ef-t">&amp;optional</span> org-file-path)
+  <span class="ef-d">"Visit buffer open on the first output file (if any) found, using `</span><span style="color: #b751b6; text-decoration: italic;">org-view-output-file-extensions</span><span class="ef-d">'"</span>
+  (<span class="ef-k">interactive</span>)
+  (<span class="ef-k">let*</span> ((org-file-path (<span class="ef-k">or</span> org-file-path (buffer-file-name) <span class="ef-s">""</span>))
+         (dir (file-name-directory org-file-path))
+         (basename (file-name-base org-file-path))
+         (output-file nil))
+    (<span class="ef-k">dolist</span> (ext org-view-output-file-extensions)
+      (<span class="ef-k">unless</span> output-file
+        (<span class="ef-k">when</span> (file-exists-p
+               (concat dir basename <span class="ef-s">"."</span> ext))
+          (<span class="ef-k">setq</span> output-file (concat dir basename <span class="ef-s">"."</span> ext)))))
+    (<span class="ef-k">if</span> output-file
+        (<span class="ef-k">if</span> (member (file-name-extension output-file) org-view-external-file-extensions)
+            (browse-url-xdg-open output-file)
+          (pop-to-buffer (<span class="ef-k">or</span> (find-buffer-visiting output-file)
+                             (find-file-noselect output-file))))
+      (message <span class="ef-s">"No exported file found"</span>))))
+
+(<span class="ef-k">defvar</span> <span class="ef-v">org-view-output-file-extensions</span> '(<span class="ef-s">"pdf"</span> <span class="ef-s">"md"</span> <span class="ef-s">"rst"</span> <span class="ef-s">"txt"</span> <span class="ef-s">"tex"</span> <span class="ef-s">"html"</span>)
+  <span class="ef-d">"Search for output files with these extensions, in order, viewing the first that matches"</span>)
+(<span class="ef-k">defvar</span> <span class="ef-v">org-view-external-file-extensions</span> '(<span class="ef-s">"html"</span>)
+  <span class="ef-d">"File formats that should be opened externally."</span>)
+
+(use-package! doct
+  <span class="ef-b">:commands</span> doct)
+
+(<span class="ef-k">after!</span> org-capture
+  (<span class="ef-k">defun</span> <span class="ef-f">org-capture-select-template-prettier</span> (<span class="ef-t">&amp;optional</span> keys)
+    <span class="ef-d">"Select a capture template, in a prettier way than default
+  Lisp programs can force the template by setting KEYS to a string."</span>
+    (<span class="ef-k">let</span> ((org-capture-templates
+           (<span class="ef-k">or</span> (org-contextualize-keys
+                (org-capture-upgrade-templates org-capture-templates)
+                org-capture-templates-contexts)
+               '((<span class="ef-s">"t"</span> <span class="ef-s">"Task"</span> entry (file+headline <span class="ef-s">""</span> <span class="ef-s">"Tasks"</span>)
+                  <span class="ef-s">"* TODO %?\n  %u\n  %a"</span>)))))
+      (<span class="ef-k">if</span> keys
+          (<span class="ef-k">or</span> (assoc keys org-capture-templates)
+              (<span class="ef-wr">error</span> <span class="ef-s">"No capture template referred to by \"%s\" keys"</span> keys))
+        (org-mks org-capture-templates
+                 <span class="ef-s">"Select a capture template\n━━━━━━━━━━━━━━━━━━━━━━━━━"</span>
+                 <span class="ef-s">"Template key: "</span>
+                 `((<span class="ef-s">"q"</span> ,(concat (nerd-icons-octicon <span class="ef-s">"nf-oct-stop"</span> <span class="ef-b">:face</span> 'nerd-icons-red <span class="ef-b">:v-adjust</span> 0.01) <span class="ef-s">"\tAbort"</span>)))))))
+  (advice-add 'org-capture-select-template <span class="ef-b">:override</span> #'org-capture-select-template-prettier)
+  
+  (<span class="ef-k">defun</span> <span class="ef-f">org-mks-pretty</span> (table title <span class="ef-t">&amp;optional</span> prompt specials)
+    <span class="ef-d">"Select a member of an alist with multiple keys. Prettified.
+  
+  TABLE is the alist which should contain entries where the car is a string.
+  There should be two types of entries.
+  
+  1. prefix descriptions like (\"a\" \"Description\")
+     This indicates that `</span><span style="color: #b751b6; text-decoration: italic;">a</span><span class="ef-d">' is a prefix key for multi-letter selection, and
+     that there are entries following with keys like \"ab\", \"ax\"…
+  
+  2. Select-able members must have more than two elements, with the first
+     being the string of keys that lead to selecting it, and the second a
+     short description string of the item.
+  
+  The command will then make a temporary buffer listing all entries
+  that can be selected with a single key, and all the single key
+  prefixes.  When you press the key for a single-letter entry, it is selected.
+  When you press a prefix key, the commands (and maybe further prefixes)
+  under this key will be shown and offered for selection.
+  
+  TITLE will be placed over the selection in the temporary buffer,
+  PROMPT will be used when prompting for a key.  SPECIALS is an
+  alist with (\"key\" \"description\") entries.  When one of these
+  is selected, only the bare key is returned."</span>
+    (<span class="ef-k">save-window-excursion</span>
+      (<span class="ef-k">let</span> ((inhibit-quit t)
+            (buffer (org-switch-to-buffer-other-window <span class="ef-s">"*Org Select*"</span>))
+            (prompt (<span class="ef-k">or</span> prompt <span class="ef-s">"Select: "</span>))
+            case-fold-search
+            current)
+        (<span class="ef-k">unwind-protect</span>
+            (<span class="ef-k">catch</span> '<span class="ef-o">exit</span>
+              (<span class="ef-k">while</span> t
+                (<span class="ef-k">setq-local</span> evil-normal-state-cursor (list nil))
+                (erase-buffer)
+                (insert title <span class="ef-s">"\n\n"</span>)
+                (<span class="ef-k">let</span> ((des-keys nil)
+                      (allowed-keys '(<span class="ef-s">"\C-g"</span>))
+                      (tab-alternatives '(<span class="ef-s">"\s"</span> <span class="ef-s">"\t"</span> <span class="ef-s">"\r"</span>))
+                      (cursor-type nil))
+                  <span class="ef-cd">;; </span><span class="ef-c">Populate allowed keys and descriptions keys
+</span>                  <span class="ef-cd">;; </span><span class="ef-c">available with CURRENT selector.
+</span>                  (<span class="ef-k">let</span> ((re (format <span class="ef-s">"\\`%s</span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">(</span><span class="ef-s">.</span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">)</span><span class="ef-s">\\'"</span>
+                                    (<span class="ef-k">if</span> current (regexp-quote current) <span class="ef-s">""</span>)))
+                        (prefix (<span class="ef-k">if</span> current (concat current <span class="ef-s">" "</span>) <span class="ef-s">""</span>)))
+                    (<span class="ef-k">dolist</span> (entry table)
+                      (<span class="ef-k">pcase</span> entry
+                        <span class="ef-cd">;; </span><span class="ef-c">Description.
+</span>                        (`(,(<span class="ef-k">and</span> key (pred (string-match re))) ,desc)
+                         (<span class="ef-k">let</span> ((k (match-string 1 key)))
+                           (<span class="ef-k">push</span> k des-keys)
+                           <span class="ef-cd">;; </span><span class="ef-c">Keys ending in tab, space or RET are equivalent.
+</span>                           (<span class="ef-k">if</span> (member k tab-alternatives)
+                               (<span class="ef-k">push</span> <span class="ef-s">"\t"</span> allowed-keys)
+                             (<span class="ef-k">push</span> k allowed-keys))
+                           (insert (propertize prefix 'face 'font-lock-comment-face) (propertize k 'face 'bold) (propertize <span class="ef-s">"›"</span> 'face 'font-lock-comment-face) <span class="ef-s">"  "</span> desc <span class="ef-s">"…"</span> <span class="ef-s">"\n"</span>)))
+                        <span class="ef-cd">;; </span><span class="ef-c">Usable entry.
+</span>                        (`(,(<span class="ef-k">and</span> key (pred (string-match re))) ,desc . ,_)
+                         (<span class="ef-k">let</span> ((k (match-string 1 key)))
+                           (insert (propertize prefix 'face 'font-lock-comment-face) (propertize k 'face 'bold) <span class="ef-s">"   "</span> desc <span class="ef-s">"\n"</span>)
+                           (<span class="ef-k">push</span> k allowed-keys)))
+                        (_ nil))))
+                  <span class="ef-cd">;; </span><span class="ef-c">Insert special entries, if any.
+</span>                  (<span class="ef-k">when</span> specials
+                    (insert <span class="ef-s">"─────────────────────────\n"</span>)
+                    (<span class="ef-k">pcase-dolist</span> (`(,key ,description) specials)
+                      (insert (format <span class="ef-s">"%s   %s\n"</span> (propertize key 'face '(bold nerd-icons-red)) description))
+                      (<span class="ef-k">push</span> key allowed-keys)))
+                  <span class="ef-cd">;; </span><span class="ef-c">Display UI and let user select an entry or
+</span>                  <span class="ef-cd">;; </span><span class="ef-c">a sub-level prefix.
+</span>                  (goto-char (point-min))
+                  (<span class="ef-k">unless</span> (pos-visible-in-window-p (point-max))
+                    (org-fit-window-to-buffer))
+                  (<span class="ef-k">let</span> ((pressed (org--mks-read-key allowed-keys
+                                                    prompt
+                                                    (not (pos-visible-in-window-p (1- (point-max)))))))
+                    (<span class="ef-k">setq</span> current (concat current pressed))
+                    (<span class="ef-k">cond</span>
+                     ((equal pressed <span class="ef-s">"\C-g"</span>) (<span class="ef-wr">user-error</span> <span class="ef-s">"Abort"</span>))
+                     <span class="ef-cd">;; </span><span class="ef-c">Selection is a prefix: open a new menu.
+</span>                     ((member pressed des-keys))
+                     <span class="ef-cd">;; </span><span class="ef-c">Selection matches an association: return it.
+</span>                     ((<span class="ef-k">let</span> ((entry (assoc current table)))
+                        (<span class="ef-k">and</span> entry (<span class="ef-k">throw</span> '<span class="ef-o">exit</span> entry))))
+                     <span class="ef-cd">;; </span><span class="ef-c">Selection matches a special entry: return the
+</span>                     <span class="ef-cd">;; </span><span class="ef-c">selection prefix.
+</span>                     ((assoc current specials) (<span class="ef-k">throw</span> '<span class="ef-o">exit</span> current))
+                     (t (<span class="ef-wr">error</span> <span class="ef-s">"No entry available"</span>)))))))
+          (<span class="ef-k">when</span> buffer (kill-buffer buffer))))))
+  (advice-add 'org-mks <span class="ef-b">:override</span> #'org-mks-pretty)
+
+  (<span class="ef-k">defun</span> <span class="ef-f">+doct-icon-declaration-to-icon</span> (declaration)
+    <span class="ef-d">"Convert :icon declaration to icon"</span>
+    (<span class="ef-k">let</span> ((name (<span class="ef-k">pop</span> declaration))
+          (set  (intern (concat <span class="ef-s">"nerd-icons-"</span> (plist-get declaration <span class="ef-b">:set</span>))))
+          (face (intern (concat <span class="ef-s">"nerd-icons-"</span> (plist-get declaration <span class="ef-b">:color</span>))))
+          (v-adjust (<span class="ef-k">or</span> (plist-get declaration <span class="ef-b">:v-adjust</span>) 0.01)))
+      (apply set `(,name <span class="ef-b">:face</span> ,face <span class="ef-b">:v-adjust</span> ,v-adjust))))
+
+  (<span class="ef-k">defun</span> <span class="ef-f">+doct-iconify-capture-templates</span> (groups)
+    <span class="ef-d">"Add declaration's :icon to each template group in GROUPS."</span>
+    (<span class="ef-k">let</span> ((templates (doct-flatten-lists-in groups)))
+      (<span class="ef-k">setq</span> doct-templates (mapcar (<span class="ef-k">lambda</span> (template)
+                                     (<span class="ef-k">when-let*</span> ((props (nthcdr (<span class="ef-k">if</span> (= (length template) 4) 2 5) template))
+                                                 (spec (plist-get (plist-get props <span class="ef-b">:doct</span>) <span class="ef-b">:icon</span>)))
+                                       (<span class="ef-k">setf</span> (nth 1 template) (concat (+doct-icon-declaration-to-icon spec)
+                                                                      <span class="ef-s">"\t"</span>
+                                                                      (nth 1 template))))
+                                     template)
+                                   templates))))
+
+  (<span class="ef-k">setq</span> doct-after-conversion-functions '(+doct-iconify-capture-templates))
+
+  (<span class="ef-k">defvar</span> <span class="ef-v">+org-capture-recipies</span>  <span class="ef-s">"~/Desktop/TEC/Organisation/recipies.org"</span>)
+
+  (<span class="ef-k">defun</span> <span class="ef-f">set-org-capture-templates</span> ()
+    (<span class="ef-k">setq</span> org-capture-templates
+          (doct `((<span class="ef-s">"Personal todo"</span> <span class="ef-b">:keys</span> <span class="ef-s">"t"</span>
+                   <span class="ef-b">:icon</span> (<span class="ef-s">"nf-oct-checklist"</span> <span class="ef-b">:set</span> <span class="ef-s">"octicon"</span> <span class="ef-b">:color</span> <span class="ef-s">"green"</span>)
+                   <span class="ef-b">:file</span> +org-capture-todo-file
+                   <span class="ef-b">:prepend</span> t
+                   <span class="ef-b">:headline</span> <span class="ef-s">"Inbox"</span>
+                   <span class="ef-b">:type</span> entry
+                   <span class="ef-b">:template</span> (<span class="ef-s">"* TODO %?"</span>
+                              <span class="ef-s">"%i %a"</span>))
+                  (<span class="ef-s">"Personal note"</span> <span class="ef-b">:keys</span> <span class="ef-s">"n"</span>
+                   <span class="ef-b">:icon</span> (<span class="ef-s">"nf-fa-sticky_note_o"</span> <span class="ef-b">:set</span> <span class="ef-s">"faicon"</span> <span class="ef-b">:color</span> <span class="ef-s">"green"</span>)
+                   <span class="ef-b">:file</span> +org-capture-todo-file
+                   <span class="ef-b">:prepend</span> t
+                   <span class="ef-b">:headline</span> <span class="ef-s">"Inbox"</span>
+                   <span class="ef-b">:type</span> entry
+                   <span class="ef-b">:template</span> (<span class="ef-s">"* %?"</span>
+                              <span class="ef-s">"%i %a"</span>))
+                  (<span class="ef-s">"Email"</span> <span class="ef-b">:keys</span> <span class="ef-s">"e"</span>
+                   <span class="ef-b">:icon</span> (<span class="ef-s">"nf-fa-envelope"</span> <span class="ef-b">:set</span> <span class="ef-s">"faicon"</span> <span class="ef-b">:color</span> <span class="ef-s">"blue"</span>)
+                   <span class="ef-b">:file</span> +org-capture-todo-file
+                   <span class="ef-b">:prepend</span> t
+                   <span class="ef-b">:headline</span> <span class="ef-s">"Inbox"</span>
+                   <span class="ef-b">:type</span> entry
+                   <span class="ef-b">:template</span> (<span class="ef-s">"* TODO %^{type|reply to|contact} %\\3 %? :email:"</span>
+                              <span class="ef-s">"Send an email %^{urgancy|soon|ASAP|anon|at some point|eventually} to %^{recipiant}"</span>
+                              <span class="ef-s">"about %^{topic}"</span>
+                              <span class="ef-s">"%U %i %a"</span>))
+                  (<span class="ef-s">"Interesting"</span> <span class="ef-b">:keys</span> <span class="ef-s">"i"</span>
+                   <span class="ef-b">:icon</span> (<span class="ef-s">"nf-fa-eye"</span> <span class="ef-b">:set</span> <span class="ef-s">"faicon"</span> <span class="ef-b">:color</span> <span class="ef-s">"lcyan"</span>)
+                   <span class="ef-b">:file</span> +org-capture-todo-file
+                   <span class="ef-b">:prepend</span> t
+                   <span class="ef-b">:headline</span> <span class="ef-s">"Interesting"</span>
+                   <span class="ef-b">:type</span> entry
+                   <span class="ef-b">:template</span> (<span class="ef-s">"* [ ] %{desc}%? :%{i-type}:"</span>
+                              <span class="ef-s">"%i %a"</span>)
+                   <span class="ef-b">:children</span> ((<span class="ef-s">"Webpage"</span> <span class="ef-b">:keys</span> <span class="ef-s">"w"</span>
+                               <span class="ef-b">:icon</span> (<span class="ef-s">"nf-fa-globe"</span> <span class="ef-b">:set</span> <span class="ef-s">"faicon"</span> <span class="ef-b">:color</span> <span class="ef-s">"green"</span>)
+                               <span class="ef-b">:desc</span> <span class="ef-s">"%(org-cliplink-capture) "</span>
+                               <span class="ef-b">:i-type</span> <span class="ef-s">"read:web"</span>)
+                              (<span class="ef-s">"Article"</span> <span class="ef-b">:keys</span> <span class="ef-s">"a"</span>
+                               <span class="ef-b">:icon</span> (<span class="ef-s">"nf-fa-file_text_o"</span> <span class="ef-b">:set</span> <span class="ef-s">"faicon"</span> <span class="ef-b">:color</span> <span class="ef-s">"yellow"</span>)
+                               <span class="ef-b">:desc</span> <span class="ef-s">""</span>
+                               <span class="ef-b">:i-type</span> <span class="ef-s">"read:reaserch"</span>)
+                              (<span class="ef-s">"\tRecipie"</span> <span class="ef-b">:keys</span> <span class="ef-s">"r"</span>
+                               <span class="ef-b">:icon</span> (<span class="ef-s">"nf-fa-spoon"</span> <span class="ef-b">:set</span> <span class="ef-s">"faicon"</span> <span class="ef-b">:color</span> <span class="ef-s">"dorange"</span>)
+                               <span class="ef-b">:file</span> +org-capture-recipies
+                               <span class="ef-b">:headline</span> <span class="ef-s">"Unsorted"</span>
+                               <span class="ef-b">:template</span> <span class="ef-s">"%(org-chef-get-recipe-from-url)"</span>)
+                              (<span class="ef-s">"Information"</span> <span class="ef-b">:keys</span> <span class="ef-s">"i"</span>
+                               <span class="ef-b">:icon</span> (<span class="ef-s">"nf-fa-info_circle"</span> <span class="ef-b">:set</span> <span class="ef-s">"faicon"</span> <span class="ef-b">:color</span> <span class="ef-s">"blue"</span>)
+                               <span class="ef-b">:desc</span> <span class="ef-s">""</span>
+                               <span class="ef-b">:i-type</span> <span class="ef-s">"read:info"</span>)
+                              (<span class="ef-s">"Idea"</span> <span class="ef-b">:keys</span> <span class="ef-s">"I"</span>
+                               <span class="ef-b">:icon</span> (<span class="ef-s">"nf-md-chart_bubble"</span> <span class="ef-b">:set</span> <span class="ef-s">"mdicon"</span> <span class="ef-b">:color</span> <span class="ef-s">"silver"</span>)
+                               <span class="ef-b">:desc</span> <span class="ef-s">""</span>
+                               <span class="ef-b">:i-type</span> <span class="ef-s">"idea"</span>)))
+                  (<span class="ef-s">"Tasks"</span> <span class="ef-b">:keys</span> <span class="ef-s">"k"</span>
+                   <span class="ef-b">:icon</span> (<span class="ef-s">"nf-oct-inbox"</span> <span class="ef-b">:set</span> <span class="ef-s">"octicon"</span> <span class="ef-b">:color</span> <span class="ef-s">"yellow"</span>)
+                   <span class="ef-b">:file</span> +org-capture-todo-file
+                   <span class="ef-b">:prepend</span> t
+                   <span class="ef-b">:headline</span> <span class="ef-s">"Tasks"</span>
+                   <span class="ef-b">:type</span> entry
+                   <span class="ef-b">:template</span> (<span class="ef-s">"* TODO %? %^G%{extra}"</span>
+                              <span class="ef-s">"%i %a"</span>)
+                   <span class="ef-b">:children</span> ((<span class="ef-s">"General Task"</span> <span class="ef-b">:keys</span> <span class="ef-s">"k"</span>
+                               <span class="ef-b">:icon</span> (<span class="ef-s">"nf-oct-inbox"</span> <span class="ef-b">:set</span> <span class="ef-s">"octicon"</span> <span class="ef-b">:color</span> <span class="ef-s">"yellow"</span>)
+                               <span class="ef-b">:extra</span> <span class="ef-s">""</span>)
+                              (<span class="ef-s">"Task with deadline"</span> <span class="ef-b">:keys</span> <span class="ef-s">"d"</span>
+                               <span class="ef-b">:icon</span> (<span class="ef-s">"nf-md-timer"</span> <span class="ef-b">:set</span> <span class="ef-s">"mdicon"</span> <span class="ef-b">:color</span> <span class="ef-s">"orange"</span> <span class="ef-b">:v-adjust</span> -0.1)
+                               <span class="ef-b">:extra</span> <span class="ef-s">"\nDEADLINE: %^{Deadline:}t"</span>)
+                              (<span class="ef-s">"Scheduled Task"</span> <span class="ef-b">:keys</span> <span class="ef-s">"s"</span>
+                               <span class="ef-b">:icon</span> (<span class="ef-s">"nf-oct-calendar"</span> <span class="ef-b">:set</span> <span class="ef-s">"octicon"</span> <span class="ef-b">:color</span> <span class="ef-s">"orange"</span>)
+                               <span class="ef-b">:extra</span> <span class="ef-s">"\nSCHEDULED: %^{Start time:}t"</span>)))
+                  (<span class="ef-s">"Project"</span> <span class="ef-b">:keys</span> <span class="ef-s">"p"</span>
+                   <span class="ef-b">:icon</span> (<span class="ef-s">"nf-oct-repo"</span> <span class="ef-b">:set</span> <span class="ef-s">"octicon"</span> <span class="ef-b">:color</span> <span class="ef-s">"silver"</span>)
+                   <span class="ef-b">:prepend</span> t
+                   <span class="ef-b">:type</span> entry
+                   <span class="ef-b">:headline</span> <span class="ef-s">"Inbox"</span>
+                   <span class="ef-b">:template</span> (<span class="ef-s">"* %{time-or-todo} %?"</span>
+                              <span class="ef-s">"%i"</span>
+                              <span class="ef-s">"%a"</span>)
+                   <span class="ef-b">:file</span> <span class="ef-s">""</span>
+                   <span class="ef-b">:custom</span> (<span class="ef-b">:time-or-todo</span> <span class="ef-s">""</span>)
+                   <span class="ef-b">:children</span> ((<span class="ef-s">"Project-local todo"</span> <span class="ef-b">:keys</span> <span class="ef-s">"t"</span>
+                               <span class="ef-b">:icon</span> (<span class="ef-s">"nf-oct-checklist"</span> <span class="ef-b">:set</span> <span class="ef-s">"octicon"</span> <span class="ef-b">:color</span> <span class="ef-s">"green"</span>)
+                               <span class="ef-b">:time-or-todo</span> <span class="ef-s">"TODO"</span>
+                               <span class="ef-b">:file</span> +org-capture-project-todo-file)
+                              (<span class="ef-s">"Project-local note"</span> <span class="ef-b">:keys</span> <span class="ef-s">"n"</span>
+                               <span class="ef-b">:icon</span> (<span class="ef-s">"nf-fa-sticky_note"</span> <span class="ef-b">:set</span> <span class="ef-s">"faicon"</span> <span class="ef-b">:color</span> <span class="ef-s">"yellow"</span>)
+                               <span class="ef-b">:time-or-todo</span> <span class="ef-s">"%U"</span>
+                               <span class="ef-b">:file</span> +org-capture-project-notes-file)
+                              (<span class="ef-s">"Project-local changelog"</span> <span class="ef-b">:keys</span> <span class="ef-s">"c"</span>
+                               <span class="ef-b">:icon</span> (<span class="ef-s">"nf-fa-list"</span> <span class="ef-b">:set</span> <span class="ef-s">"faicon"</span> <span class="ef-b">:color</span> <span class="ef-s">"blue"</span>)
+                               <span class="ef-b">:time-or-todo</span> <span class="ef-s">"%U"</span>
+                               <span class="ef-b">:heading</span> <span class="ef-s">"Unreleased"</span>
+                               <span class="ef-b">:file</span> +org-capture-project-changelog-file)))
+                  (<span class="ef-s">"\tCentralised project templates"</span>
+                   <span class="ef-b">:keys</span> <span class="ef-s">"o"</span>
+                   <span class="ef-b">:type</span> entry
+                   <span class="ef-b">:prepend</span> t
+                   <span class="ef-b">:template</span> (<span class="ef-s">"* %{time-or-todo} %?"</span>
+                              <span class="ef-s">"%i"</span>
+                              <span class="ef-s">"%a"</span>)
+                   <span class="ef-b">:children</span> ((<span class="ef-s">"Project todo"</span>
+                               <span class="ef-b">:keys</span> <span class="ef-s">"t"</span>
+                               <span class="ef-b">:prepend</span> nil
+                               <span class="ef-b">:time-or-todo</span> <span class="ef-s">"TODO"</span>
+                               <span class="ef-b">:heading</span> <span class="ef-s">"Tasks"</span>
+                               <span class="ef-b">:file</span> +org-capture-central-project-todo-file)
+                              (<span class="ef-s">"Project note"</span>
+                               <span class="ef-b">:keys</span> <span class="ef-s">"n"</span>
+                               <span class="ef-b">:time-or-todo</span> <span class="ef-s">"%U"</span>
+                               <span class="ef-b">:heading</span> <span class="ef-s">"Notes"</span>
+                               <span class="ef-b">:file</span> +org-capture-central-project-notes-file)
+                              (<span class="ef-s">"Project changelog"</span>
+                               <span class="ef-b">:keys</span> <span class="ef-s">"c"</span>
+                               <span class="ef-b">:time-or-todo</span> <span class="ef-s">"%U"</span>
+                               <span class="ef-b">:heading</span> <span class="ef-s">"Unreleased"</span>
+                               <span class="ef-b">:file</span> +org-capture-central-project-changelog-file)))))))
+
+  (set-org-capture-templates)
+  (<span class="ef-k">unless</span> (display-graphic-p)
+    (add-hook 'server-after-make-frame-hook
+              (<span class="ef-k">defun</span> <span class="ef-f">org-capture-reinitialise-hook</span> ()
+                (<span class="ef-k">when</span> (display-graphic-p)
+                  (set-org-capture-templates)
+                  (remove-hook 'server-after-make-frame-hook
+                               #'org-capture-reinitialise-hook))))))
+
+(<span class="ef-k">setf</span> (alist-get 'height +org-capture-frame-parameters) 15)
+<span class="ef-cd">;; </span><span class="ef-c">(alist-get 'name +org-capture-frame-parameters) "❖ Capture") ;; ATM hardcoded in other places, so changing breaks stuff
+</span>(<span class="ef-k">setq</span> +org-capture-fn
+      (<span class="ef-k">lambda</span> ()
+        (<span class="ef-k">interactive</span>)
+        (set-window-parameter nil 'mode-line-format 'none)
+        (org-capture)))
+
+(<span class="ef-k">defun</span> <span class="ef-f">unpackaged/org-element-descendant-of</span> (type element)
+  <span class="ef-d">"Return non-nil if ELEMENT is a descendant of TYPE.
+TYPE should be an element type, like `</span><span style="color: #b751b6; text-decoration: italic;">item</span><span class="ef-d">' or `</span><span style="color: #b751b6; text-decoration: italic;">paragraph</span><span class="ef-d">'.
+ELEMENT should be a list like that returned by `</span><span style="color: #b751b6; text-decoration: italic;">org-element-context</span><span class="ef-d">'."</span>
+  <span class="ef-cd">;; </span><span class="ef-c">MAYBE: Use `</span><span style="color: #b751b6;">org-element-lineage</span><span class="ef-c">'.
+</span>  (<span class="ef-k">when-let*</span> ((parent (org-element-property <span class="ef-b">:parent</span> element)))
+    (<span class="ef-k">or</span> (eq type (car parent))
+        (unpackaged/org-element-descendant-of type parent))))
+
+<span class="ef-cd">;;;</span><span class="ef-c">###</span><span style="color: #986801;">autoload</span>
+(<span class="ef-k">defun</span> <span class="ef-f">unpackaged/org-return-dwim</span> (<span class="ef-t">&amp;optional</span> default)
+  <span class="ef-d">"A helpful replacement for `</span><span style="color: #b751b6; text-decoration: italic;">org-return-indent</span><span class="ef-d">'.  With prefix, call `</span><span style="color: #b751b6; text-decoration: italic;">org-return-indent</span><span class="ef-d">'.
+
+On headings, move point to position after entry content.  In
+lists, insert a new item or end the list, with checkbox if
+appropriate.  In tables, insert a new row or end the table."</span>
+  <span class="ef-cd">;; </span><span class="ef-c">Inspired by John Kitchin: http://kitchingroup.cheme.cmu.edu/blog/2017/04/09/A-better-return-in-org-mode/
+</span>  (<span class="ef-k">interactive</span> <span class="ef-s">"P"</span>)
+  (<span class="ef-k">if</span> default
+      (org-return t)
+    (<span class="ef-k">cond</span>
+     <span class="ef-cd">;; </span><span class="ef-c">Act depending on context around point.
+</span>
+     <span class="ef-cd">;; </span><span class="ef-c">NOTE: I prefer RET to not follow links, but by uncommenting this block, links will be
+</span>     <span class="ef-cd">;; </span><span class="ef-c">followed.
+</span>
+     <span class="ef-cd">;; </span><span class="ef-c">((eq 'link (car (org-element-context)))
+</span>     <span class="ef-cd">;;  </span><span class="ef-c">;; Link: Open it.
+</span>     <span class="ef-cd">;;  </span><span class="ef-c">(org-open-at-point-global))
+</span>
+     ((org-at-heading-p)
+      <span class="ef-cd">;; </span><span class="ef-c">Heading: Move to position after entry content.
+</span>      <span class="ef-cd">;; </span><span class="ef-c">NOTE: This is probably the most interesting feature of this function.
+</span>      (<span class="ef-k">let</span> ((heading-start (org-entry-beginning-position)))
+        (goto-char (org-entry-end-position))
+        (<span class="ef-k">cond</span> ((<span class="ef-k">and</span> (org-at-heading-p)
+                    (= heading-start (org-entry-beginning-position)))
+               <span class="ef-cd">;; </span><span class="ef-c">Entry ends on its heading; add newline after
+</span>               (end-of-line)
+               (insert <span class="ef-s">"\n\n"</span>))
+              (t
+               <span class="ef-cd">;; </span><span class="ef-c">Entry ends after its heading; back up
+</span>               (forward-line -1)
+               (end-of-line)
+               (<span class="ef-k">when</span> (org-at-heading-p)
+                 <span class="ef-cd">;; </span><span class="ef-c">At the same heading
+</span>                 (forward-line)
+                 (insert <span class="ef-s">"\n"</span>)
+                 (forward-line -1))
+               (<span class="ef-k">while</span> (not (looking-back <span class="ef-s">"</span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">(?:</span><span class="ef-s">[[:blank:]]?\n</span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">)</span><span class="ef-s">\\{</span><span style="color: #6a1868;">3\\</span><span class="ef-s">}"</span> nil))
+                 (insert <span class="ef-s">"\n"</span>))
+               (forward-line -1)))))
+
+     ((org-at-item-checkbox-p)
+      <span class="ef-cd">;; </span><span class="ef-c">Checkbox: Insert new item with checkbox.
+</span>      (org-insert-todo-heading nil))
+
+     ((org-in-item-p)
+      <span class="ef-cd">;; </span><span class="ef-c">Plain list.  Yes, this gets a little complicated...
+</span>      (<span class="ef-k">let</span> ((context (org-element-context)))
+        (<span class="ef-k">if</span> (<span class="ef-k">or</span> (eq 'plain-list (car context))  <span class="ef-cd">; </span><span class="ef-c">First item in list
+</span>                (<span class="ef-k">and</span> (eq 'item (car context))
+                     (not (eq (org-element-property <span class="ef-b">:contents-begin</span> context)
+                              (org-element-property <span class="ef-b">:contents-end</span> context))))
+                (unpackaged/org-element-descendant-of 'item context))  <span class="ef-cd">; </span><span class="ef-c">Element in list item, e.g. a link
+</span>            <span class="ef-cd">;; </span><span class="ef-c">Non-empty item: Add new item.
+</span>            (org-insert-item)
+          <span class="ef-cd">;; </span><span class="ef-c">Empty item: Close the list.
+</span>          <span class="ef-cd">;; </span><span class="ef-c">TODO: Do this with org functions rather than operating on the text. Can't seem to find the right function.
+</span>          (delete-region (line-beginning-position) (line-end-position))
+          (insert <span class="ef-s">"\n"</span>))))
+
+     ((<span class="ef-k">when</span> (fboundp 'org-inlinetask-in-task-p)
+        (org-inlinetask-in-task-p))
+      <span class="ef-cd">;; </span><span class="ef-c">Inline task: Don't insert a new heading.
+</span>      (org-return t))
+
+     ((org-at-table-p)
+      (<span class="ef-k">cond</span> ((<span class="ef-k">save-excursion</span>
+               (beginning-of-line)
+               <span class="ef-cd">;; </span><span class="ef-c">See `</span><span style="color: #b751b6;">org-table-next-field</span><span class="ef-c">'.
+</span>               (<span class="ef-k">cl-loop</span> with end = (line-end-position)
+                        for cell = (org-element-table-cell-parser)
+                        always (equal (org-element-property <span class="ef-b">:contents-begin</span> cell)
+                                      (org-element-property <span class="ef-b">:contents-end</span> cell))
+                        while (re-search-forward <span class="ef-s">"|"</span> end t)))
+             <span class="ef-cd">;; </span><span class="ef-c">Empty row: end the table.
+</span>             (delete-region (line-beginning-position) (line-end-position))
+             (org-return t))
+            (t
+             <span class="ef-cd">;; </span><span class="ef-c">Non-empty row: call `</span><span style="color: #b751b6;">org-return-indent</span><span class="ef-c">'.
+</span>             (org-return t))))
+     (t
+      <span class="ef-cd">;; </span><span class="ef-c">All other cases: call `</span><span style="color: #b751b6;">org-return-indent</span><span class="ef-c">'.
+</span>      (org-return t)))))
+
+(map!
+ <span class="ef-b">:after</span> evil-org
+ <span class="ef-b">:map</span> evil-org-mode-map
+ <span class="ef-b">:i</span> [return] #'unpackaged/org-return-dwim)
+
+(<span class="ef-k">defun</span> <span class="ef-f">+yas/org-src-header-p</span> ()
+  <span class="ef-d">"Determine whether `</span><span style="color: #b751b6; text-decoration: italic;">point</span><span class="ef-d">' is within a src-block header or header-args."</span>
+  (<span class="ef-k">pcase</span> (org-element-type (org-element-context))
+    ('src-block (&lt; (point) <span class="ef-cd">; </span><span class="ef-c">before code part of the src-block
+</span>                   (<span class="ef-k">save-excursion</span> (goto-char (org-element-property <span class="ef-b">:begin</span> (org-element-context)))
+                                   (forward-line 1)
+                                   (point))))
+    ('inline-src-block (&lt; (point) <span class="ef-cd">; </span><span class="ef-c">before code part of the inline-src-block
+</span>                          (<span class="ef-k">save-excursion</span> (goto-char (org-element-property <span class="ef-b">:begin</span> (org-element-context)))
+                                          (search-forward <span class="ef-s">"]{"</span>)
+                                          (point))))
+    ('keyword (string-match-p <span class="ef-s">"^header-args"</span> (org-element-property <span class="ef-b">:value</span> (org-element-context))))))
+
+(<span class="ef-k">defun</span> <span class="ef-f">+yas/org-prompt-header-arg</span> (arg question values)
+  <span class="ef-d">"Prompt the user to set ARG header property to one of VALUES with QUESTION.
+The default value is identified and indicated. If either default is selected,
+or no selection is made: nil is returned."</span>
+  (<span class="ef-k">let*</span> ((src-block-p (not (looking-back <span class="ef-s">"^#\\+property:[ \t]+header-args:.*"</span> (line-beginning-position))))
+         (default
+           (<span class="ef-k">or</span>
+            (cdr (assoc arg
+                        (<span class="ef-k">if</span> src-block-p
+                            (nth 2 (org-babel-get-src-block-info t))
+                          (org-babel-merge-params
+                           org-babel-default-header-args
+                           (<span class="ef-k">let</span> ((lang-headers
+                                  (intern (concat <span class="ef-s">"org-babel-default-header-args:"</span>
+                                                  (+yas/org-src-lang)))))
+                             (<span class="ef-k">when</span> (boundp lang-headers) (eval lang-headers t)))))))
+            <span class="ef-s">""</span>))
+         default-value)
+    (<span class="ef-k">setq</span> values (mapcar
+                  (<span class="ef-k">lambda</span> (value)
+                    (<span class="ef-k">if</span> (string-match-p (regexp-quote value) default)
+                        (<span class="ef-k">setq</span> default-value
+                              (concat value <span class="ef-s">" "</span>
+                                      (propertize <span class="ef-s">"(default)"</span> 'face 'font-lock-doc-face)))
+                      value))
+                  values))
+    (<span class="ef-k">let</span> ((selection (consult--read values <span class="ef-b">:prompt</span> question <span class="ef-b">:default</span> default-value)))
+      (<span class="ef-k">unless</span> (<span class="ef-k">or</span> (string-match-p <span class="ef-s">"(default)$"</span> selection)
+                  (string= <span class="ef-s">""</span> selection))
+        selection))))
+
+(<span class="ef-k">defun</span> <span class="ef-f">+yas/org-src-lang</span> ()
+  <span class="ef-d">"Try to find the current language of the src/header at `</span><span style="color: #b751b6; text-decoration: italic;">point</span><span class="ef-d">'.
+Return nil otherwise."</span>
+  (<span class="ef-k">let</span> ((context (org-element-context)))
+    (<span class="ef-k">pcase</span> (org-element-type context)
+      ('src-block (org-element-property <span class="ef-b">:language</span> context))
+      ('inline-src-block (org-element-property <span class="ef-b">:language</span> context))
+      ('keyword (<span class="ef-k">when</span> (string-match <span class="ef-s">"^header-args:</span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">(</span><span class="ef-s">[</span><span style="color: #4078f2; font-weight: 700;">^</span><span class="ef-s"> ]+</span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">)</span><span class="ef-s">"</span> (org-element-property <span class="ef-b">:value</span> context))
+                  (match-string 1 (org-element-property <span class="ef-b">:value</span> context)))))))
+
+(<span class="ef-k">defun</span> <span class="ef-f">+yas/org-last-src-lang</span> ()
+  <span class="ef-d">"Return the language of the last src-block, if it exists."</span>
+  (<span class="ef-k">save-excursion</span>
+    (beginning-of-line)
+    (<span class="ef-k">when</span> (re-search-backward <span class="ef-s">"^[ \t]*#\\+begin_src"</span> nil t)
+      (org-element-property <span class="ef-b">:language</span> (org-element-context)))))
+
+(<span class="ef-k">defun</span> <span class="ef-f">+yas/org-most-common-no-property-lang</span> ()
+  <span class="ef-d">"Find the lang with the most source blocks that has no global header-args, else nil."</span>
+  (<span class="ef-k">let</span> (src-langs header-langs)
+    (<span class="ef-k">save-excursion</span>
+      (goto-char (point-min))
+      (<span class="ef-k">while</span> (re-search-forward <span class="ef-s">"^[ \t]*#\\+begin_src"</span> nil t)
+        (<span class="ef-k">push</span> (+yas/org-src-lang) src-langs))
+      (goto-char (point-min))
+      (<span class="ef-k">while</span> (re-search-forward <span class="ef-s">"^[ \t]*#\\+property: +header-args"</span> nil t)
+        (<span class="ef-k">push</span> (+yas/org-src-lang) header-langs)))
+
+    (<span class="ef-k">setq</span> src-langs
+          (mapcar #'car
+                  <span class="ef-cd">;; </span><span class="ef-c">sort alist by frequency (desc.)
+</span>                  (sort
+                   <span class="ef-cd">;; </span><span class="ef-c">generate alist with form (value . frequency)
+</span>                   (<span class="ef-k">cl-loop</span> for (n . m) in (seq-group-by #'identity src-langs)
+                            collect (cons n (length m)))
+                   (<span class="ef-k">lambda</span> (a b) (&gt; (cdr a) (cdr b))))))
+
+    (car (cl-set-difference src-langs header-langs <span class="ef-b">:test</span> #'string=))))
+
+(<span class="ef-k">defun</span> <span class="ef-f">org-syntax-convert-keyword-case-to-lower</span> ()
+  <span class="ef-d">"Convert all #+KEYWORDS to #+keywords."</span>
+  (<span class="ef-k">interactive</span>)
+  (<span class="ef-k">save-excursion</span>
+    (goto-char (point-min))
+    (<span class="ef-k">let</span> ((count 0)
+          (case-fold-search nil))
+      (<span class="ef-k">while</span> (re-search-forward <span class="ef-s">"^[ \t]*#\\+[A-Z_]+"</span> nil t)
+        (<span class="ef-k">unless</span> (string-match-p <span class="ef-s">"RESULTS"</span> (match-string 0))
+          (replace-match (downcase (match-string 0)) t)
+          (<span class="ef-k">setq</span> count (1+ count))))
+      (message <span class="ef-s">"Replaced %d occurances"</span> count))))
+
+(org-link-set-parameters <span class="ef-s">"xkcd"</span>
+                         <span class="ef-b">:image-data-fun</span> #'+org-xkcd-image-fn
+                         <span class="ef-b">:follow</span> #'+org-xkcd-open-fn
+                         <span class="ef-b">:export</span> #'+org-xkcd-export
+                         <span class="ef-b">:complete</span> #'+org-xkcd-complete)
+
+(<span class="ef-k">defun</span> <span class="ef-f">+org-xkcd-open-fn</span> (link)
+  (+org-xkcd-image-fn nil link nil))
+
+(<span class="ef-k">defun</span> <span class="ef-f">+org-xkcd-image-fn</span> (protocol link description)
+  <span class="ef-d">"Get image data for xkcd num LINK"</span>
+  (<span class="ef-k">let*</span> ((xkcd-info (+xkcd-fetch-info (string-to-number link)))
+         (img (plist-get xkcd-info <span class="ef-b">:img</span>))
+         (alt (plist-get xkcd-info <span class="ef-b">:alt</span>)))
+    (message alt)
+    (+org-image-file-data-fn protocol (xkcd-download img (string-to-number link)) description)))
+
+(<span class="ef-k">defun</span> <span class="ef-f">+org-xkcd-export</span> (num desc backend _com)
+  <span class="ef-d">"Convert xkcd to html/LaTeX form"</span>
+  (<span class="ef-k">let*</span> ((xkcd-info (+xkcd-fetch-info (string-to-number num)))
+         (img (plist-get xkcd-info <span class="ef-b">:img</span>))
+         (alt (plist-get xkcd-info <span class="ef-b">:alt</span>))
+         (title (plist-get xkcd-info <span class="ef-b">:title</span>))
+         (file (xkcd-download img (string-to-number num))))
+    (<span class="ef-k">cond</span> ((org-export-derived-backend-p backend 'html)
+           (format <span class="ef-s">"&lt;img class='</span><span style="color: #b751b6;">invertible</span><span class="ef-s">' src='</span><span style="color: #b751b6;">%s</span><span class="ef-s">' title=\"%s\" alt='</span><span style="color: #b751b6;">%s</span><span class="ef-s">'&gt;"</span> img (subst-char-in-string ?\" ?<span class="ef-wr">“</span> alt) title))
+          ((org-export-derived-backend-p backend 'latex)
+           (format <span class="ef-s">"\\begin{figure}[!htb]
+  \\centering
+  \\includegraphics[scale=0.4]{%s}%s
+\\end{figure}"</span> file (<span class="ef-k">if</span> (equal desc (format <span class="ef-s">"xkcd:%s"</span> num)) <span class="ef-s">""</span>
+                      (format <span class="ef-s">"\n  \\caption*{\\label{xkcd:%s} %s}"</span>
+                              num
+                              (<span class="ef-k">or</span> desc
+                                  (format <span class="ef-s">"\\textbf{%s} %s"</span> title alt))))))
+          (t (format <span class="ef-s">"https://xkcd.com/%s"</span> num)))))
+
+(<span class="ef-k">defun</span> <span class="ef-f">+org-xkcd-complete</span> (<span class="ef-t">&amp;optional</span> arg)
+  <span class="ef-d">"Complete xkcd using `</span><span style="color: #b751b6; text-decoration: italic;">+xkcd-stored-info</span><span class="ef-d">'"</span>
+  (format <span class="ef-s">"xkcd:%d"</span> (+xkcd-select)))
+
+(org-link-set-parameters <span class="ef-s">"yt"</span> <span class="ef-b">:export</span> #'+org-export-yt)
+(<span class="ef-k">defun</span> <span class="ef-f">+org-export-yt</span> (path desc backend _com)
+  (<span class="ef-k">cond</span> ((org-export-derived-backend-p backend 'html)
+         (format <span class="ef-s">"&lt;iframe width='</span><span style="color: #b751b6;">440</span><span class="ef-s">' \
+height='</span><span style="color: #b751b6;">335</span><span class="ef-s">' \
+src='</span><span style="color: #b751b6;">https://www.youtube.com/embed/%s</span><span class="ef-s">' \
+frameborder='</span><span style="color: #b751b6;">0</span><span class="ef-s">' \
+allowfullscreen&gt;%s&lt;/iframe&gt;"</span> path (<span class="ef-k">or</span> <span class="ef-s">""</span> desc)))
+        ((org-export-derived-backend-p backend 'latex)
+         (format <span class="ef-s">"\\href{https://youtu.be/%s}{%s}"</span> path (<span class="ef-k">or</span> desc <span class="ef-s">"youtube"</span>)))
+        (t (format <span class="ef-s">"https://youtu.be/%s"</span> path))))
+
+(<span class="ef-k">defadvice!</span> shut-up-org-problematic-hooks (orig-fn <span class="ef-t">&amp;rest</span> args)
+  <span class="ef-b">:around</span> #'org-fancy-priorities-mode
+  (<span class="ef-k">ignore-errors</span> (apply orig-fn args)))
+
+(<span class="ef-k">provide</span> '<span class="ef-o">config-org-behaviour</span>)
+<span class="ef-cd">;;; </span><span class="ef-c">config-org-behaviour.el ends here
+</span>
+</pre>
+  <body>
+</html>

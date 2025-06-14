@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>config--pkg-gptel.el.html</title>
+    <style>
+      body { background: #fafafa; color: #383a42; }
+      pre {
+        font-size: 1rem;
+        max-width: min(100rem, 100%);
+        width: max-content;
+        white-space: pre-wrap;
+        margin: auto; }
+      .ef-D {
+        color: #383a42; background-color: #fafafa; font-weight: 400; }
+      .ef-vp {
+         }
+      .ef-h {
+        color: #84888b; }
+      .ef-sc {
+        color: #50a14f; }
+      .ef-w {
+        color: #986801; }
+      .ef-e {
+        color: #e45649; }
+      .ef-l {
+        color: #4078f2; font-weight: 700; }
+      .ef-lv {
+        color: #8b008b; font-weight: 700; }
+      .ef-hi {
+        color: #f0f0f0; background-color: #4078f2; }
+      .ef-c {
+        color: #84888b; }
+      .ef-cd {
+        color: #84888b; }
+      .ef-s {
+        color: #50a14f; }
+      .ef-d {
+        color: #727578; text-decoration: italic; }
+      .ef-m {
+        color: #b751b6; }
+      .ef-k {
+        color: #e45649; }
+      .ef-b {
+        color: #a626a4; }
+      .ef-f {
+        color: #a626a4; }
+      .ef-v {
+        color: #6a1868; }
+      .ef-t {
+        color: #986801; }
+      .ef-o {
+        color: #b751b6; }
+      .ef-wr {
+        color: #986801; }
+      .ef-nc {
+        color: #4078f2; font-weight: 700; }
+      .ef-pp {
+        color: #4078f2; font-weight: 700; }
+      .ef-rc {
+        color: #4078f2; font-weight: 700; }
+      .ef-rb {
+        color: #4078f2; font-weight: 700; }
+      .ef-ob {
+        background-color: #e7e7e7; }
+      .ef-obb {
+        background-color: #e7e7e7; text-decoration: italic; }
+      .ef-obe {
+        background-color: #e7e7e7; text-decoration: italic; }
+      .ef-Oa {
+        color: #e45649; font-weight: nil; font-size: 1.25em }
+      .ef-Ob {
+        color: #da8548; font-weight: 700; font-size: 1.15em }
+      .ef-Oc {
+        color: #b751b6; font-weight: 700; font-size: 1.12em }
+      .ef-Od {
+        color: #6f99f5; font-weight: 600; font-size: 1.09em }
+      .ef-Oe {
+        color: #bc5cba; font-weight: 600; font-size: 1.06em }
+      .ef-Of {
+        color: #9fbbf8; font-weight: 600; font-size: 1.03em }
+      .ef-Og {
+        color: #d292d1; font-weight: 700; }
+      .ef-Oh {
+        color: #d8e4fc; font-weight: 600; }
+      .ef-hn {
+        color: #da8548; font-weight: 700; }
+      .ef-hq {
+        color: #4078f2; }
+      .ef-hs {
+        color: #986801; }
+      .ef-rda {
+        color: #4078f2; }
+      .ef-rdb {
+        color: #a626a4; }
+      .ef-rdc {
+        color: #50a14f; }
+      .ef-rdd {
+        color: #b751b6; }
+      .ef-rde {
+        color: #4db5bd; }
+      .ef-rdf {
+        color: #4078f2; }
+      .ef-rdg {
+        color: #a626a4; }
+      .ef-rdh {
+        color: #50a14f; }
+      .ef-rdi {
+        color: #b751b6; }
+    </style>
+  </head>
+  <body>
+<pre>
+<span class="ef-cd">;;; </span><span class="ef-c">config--pkg-gptel.el --- Generated package (no.19) from my config -*- lexical-binding: t; -*-
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;; </span><span class="ef-c">Copyright (C) 2025 TEC
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;; </span><span class="ef-c">Author: TEC &lt;https://code.tecosaur.net/tec&gt;
+</span><span class="ef-cd">;; </span><span class="ef-c">Maintainer: TEC &lt;contact@tecosaur.net&gt;
+</span><span class="ef-cd">;; </span><span class="ef-c">Created: June 14, 2025
+</span><span class="ef-cd">;; </span><span class="ef-c">Modified: June 14, 2025
+</span><span class="ef-cd">;; </span><span class="ef-c">Version: 2025.06.14
+</span><span class="ef-cd">;; </span><span class="ef-c">Homepage: https://code.tecosaur.net/tec/emacs-config
+</span><span class="ef-cd">;; </span><span class="ef-c">Package-Requires: ((emacs "29.1"))
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;; </span><span class="ef-c">This file is not part of GNU Emacs.
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;; </span><span class="ef-c">Commentary:
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;  </span><span class="ef-c">Generated package (no.19) from my config.
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;  </span><span class="ef-c">During generation, dependency on other aspects of my configuration and
+</span><span class="ef-cd">;;  </span><span class="ef-c">packages is inferred via (regexp-based) static analysis.  While this seems
+</span><span class="ef-cd">;;  </span><span class="ef-c">to do a good job, this method is imperfect.  This code likely depends on
+</span><span class="ef-cd">;;  </span><span class="ef-c">utilities provided by Doom, and if you try to run it in isolation you may
+</span><span class="ef-cd">;;  </span><span class="ef-c">discover the code makes more assumptions.
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;  </span><span class="ef-c">That said, I've found pretty good results so far.
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;  </span><span class="ef-c">Package statement:
+</span><span class="ef-cd">;;   </span><span class="ef-c">(package! gptel :pin "94bf19da93aee9a101429d7ecbfbb9c7c5b67216")
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;; </span><span class="ef-c">Code:
+</span>
+
+(use-package! gptel
+  <span class="ef-b">:commands</span> gptel gptel-menu gptel-mode gptel-send
+  <span class="ef-b">:config</span>
+  (<span class="ef-k">let</span> ((groq-backend
+         (gptel-make-openai <span class="ef-s">"Groq"</span>
+           <span class="ef-b">:host</span> <span class="ef-s">"api.groq.com"</span>
+           <span class="ef-b">:endpoint</span> <span class="ef-s">"/openai/v1/chat/completions"</span>
+           <span class="ef-b">:stream</span> t
+           <span class="ef-b">:key</span> (<span class="ef-k">lambda</span> () (<span class="ef-k">or</span> (secrets-get-secret <span class="ef-s">"Login"</span> <span class="ef-s">"groq"</span>)
+                          (secrets-get-secret <span class="ef-s">"kdewallet"</span> <span class="ef-s">"groq"</span>)))
+           <span class="ef-b">:models</span> '(<span class="ef-s">"llama3-70b-8192"</span>
+                     <span class="ef-s">"llama3-8b-8192"</span>
+                     <span class="ef-s">"llama-3.1-70b-versatile"</span>
+                     <span class="ef-s">"llama-3.1-8b-instant"</span>
+                     <span class="ef-s">"llama-3.2-1b-preview"</span>
+                     <span class="ef-s">"deepseek-r1-distill-llama-70b"</span>
+                     <span class="ef-s">"mixtral-8x7b-32768"</span>
+                     <span class="ef-s">"gemma-7b-it"</span>
+                     <span class="ef-s">"gemma2-9b-it"</span>)))
+        (openai-backend
+         (gptel-make-openai <span class="ef-s">"ChatGPT"</span>
+           <span class="ef-b">:host</span> <span class="ef-s">"api.openai.com"</span>
+           <span class="ef-b">:stream</span> t
+           <span class="ef-b">:key</span> (<span class="ef-k">lambda</span> () (<span class="ef-k">or</span> (secrets-get-secret <span class="ef-s">"Login"</span> <span class="ef-s">"openai"</span>)
+                          (secrets-get-secret <span class="ef-s">"kdewallet"</span> <span class="ef-s">"openai"</span>)))
+           <span class="ef-b">:models</span> '(<span class="ef-s">"gpt-4o"</span> <span class="ef-s">"gpt-4o-mini"</span> <span class="ef-s">"chatgpt-4o-latest"</span>
+                     <span class="ef-s">"o1"</span> <span class="ef-s">"o1-mini"</span>)))
+        (anthropic-backend
+         (gptel-make-anthropic <span class="ef-s">"Claude"</span>
+           <span class="ef-b">:stream</span> t
+           <span class="ef-b">:key</span> (<span class="ef-k">lambda</span> () (<span class="ef-k">or</span> (secrets-get-secret <span class="ef-s">"Login"</span> <span class="ef-s">"anthropic"</span>)
+                          (secrets-get-secret <span class="ef-s">"kdewallet"</span> <span class="ef-s">"anthropic"</span>)))
+           <span class="ef-b">:models</span> '(<span class="ef-s">"claude-3-5-sonnet-20240620"</span>
+                     <span class="ef-s">"claude-3-sonnet-20240229"</span>
+                     <span class="ef-s">"claude-3-haiku-20240307"</span>)))
+        (ollama-backend
+         (<span class="ef-k">let</span> (ollama-models)
+           (<span class="ef-k">when</span> (executable-find <span class="ef-s">"ollama"</span>)
+             (<span class="ef-k">with-temp-buffer</span>
+               (call-process <span class="ef-s">"ollama"</span> nil t nil <span class="ef-s">"list"</span>)
+               (goto-char (point-min))
+               (forward-line 1)
+               (<span class="ef-k">while</span> (<span class="ef-k">and</span> (not (eobp)) (looking-at <span class="ef-s">"[</span><span style="color: #4078f2; font-weight: 700;">^</span><span class="ef-s"> \t]+"</span>))
+                 (<span class="ef-k">push</span> (match-string 0) ollama-models)
+                 (forward-line 1)))
+             (gptel-make-ollama <span class="ef-s">"Ollama"</span> <span class="ef-b">:models</span> ollama-models <span class="ef-b">:stream</span> t)))))
+    (<span class="ef-k">setq-default</span> gptel-model <span class="ef-s">"llama-3.1-70b-versatile"</span>
+                  gptel-backend groq-backend))
+  (delete (assoc <span class="ef-s">"ChatGPT"</span> gptel--known-backends) gptel--known-backends)
+  (<span class="ef-k">setq</span> gptel-default-mode #'org-mode))
+
+(<span class="ef-k">provide</span> '<span class="ef-o">config--pkg-gptel</span>)
+<span class="ef-cd">;;; </span><span class="ef-c">config--pkg-gptel.el ends here
+</span>
+</pre>
+  <body>
+</html>

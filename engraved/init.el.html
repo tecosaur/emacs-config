@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>init.el.html</title>
+    <style>
+      body { background: #fafafa; color: #383a42; }
+      pre {
+        font-size: 1rem;
+        max-width: min(100rem, 100%);
+        width: max-content;
+        white-space: pre-wrap;
+        margin: auto; }
+      .ef-D {
+        color: #383a42; background-color: #fafafa; font-weight: 400; }
+      .ef-vp {
+         }
+      .ef-h {
+        color: #84888b; }
+      .ef-sc {
+        color: #50a14f; }
+      .ef-w {
+        color: #986801; }
+      .ef-e {
+        color: #e45649; }
+      .ef-l {
+        color: #4078f2; font-weight: 700; }
+      .ef-lv {
+        color: #8b008b; font-weight: 700; }
+      .ef-hi {
+        color: #f0f0f0; background-color: #4078f2; }
+      .ef-c {
+        color: #84888b; }
+      .ef-cd {
+        color: #84888b; }
+      .ef-s {
+        color: #50a14f; }
+      .ef-d {
+        color: #727578; text-decoration: italic; }
+      .ef-m {
+        color: #b751b6; }
+      .ef-k {
+        color: #e45649; }
+      .ef-b {
+        color: #a626a4; }
+      .ef-f {
+        color: #a626a4; }
+      .ef-v {
+        color: #6a1868; }
+      .ef-t {
+        color: #986801; }
+      .ef-o {
+        color: #b751b6; }
+      .ef-wr {
+        color: #986801; }
+      .ef-nc {
+        color: #4078f2; font-weight: 700; }
+      .ef-pp {
+        color: #4078f2; font-weight: 700; }
+      .ef-rc {
+        color: #4078f2; font-weight: 700; }
+      .ef-rb {
+        color: #4078f2; font-weight: 700; }
+      .ef-ob {
+        background-color: #e7e7e7; }
+      .ef-obb {
+        background-color: #e7e7e7; text-decoration: italic; }
+      .ef-obe {
+        background-color: #e7e7e7; text-decoration: italic; }
+      .ef-Oa {
+        color: #e45649; font-weight: nil; font-size: 1.25em }
+      .ef-Ob {
+        color: #da8548; font-weight: 700; font-size: 1.15em }
+      .ef-Oc {
+        color: #b751b6; font-weight: 700; font-size: 1.12em }
+      .ef-Od {
+        color: #6f99f5; font-weight: 600; font-size: 1.09em }
+      .ef-Oe {
+        color: #bc5cba; font-weight: 600; font-size: 1.06em }
+      .ef-Of {
+        color: #9fbbf8; font-weight: 600; font-size: 1.03em }
+      .ef-Og {
+        color: #d292d1; font-weight: 700; }
+      .ef-Oh {
+        color: #d8e4fc; font-weight: 600; }
+      .ef-hn {
+        color: #da8548; font-weight: 700; }
+      .ef-hq {
+        color: #4078f2; }
+      .ef-hs {
+        color: #986801; }
+      .ef-rda {
+        color: #4078f2; }
+      .ef-rdb {
+        color: #a626a4; }
+      .ef-rdc {
+        color: #50a14f; }
+      .ef-rdd {
+        color: #b751b6; }
+      .ef-rde {
+        color: #4db5bd; }
+      .ef-rdf {
+        color: #4078f2; }
+      .ef-rdg {
+        color: #a626a4; }
+      .ef-rdh {
+        color: #50a14f; }
+      .ef-rdi {
+        color: #b751b6; }
+    </style>
+  </head>
+  <body>
+<pre>
+<span class="ef-cd">;;; </span><span class="ef-c">init.el -*- lexical-binding: t; -*-
+</span>
+<span class="ef-cd">;; </span><span class="ef-c">This file controls what Doom modules are enabled and what order they load in.
+</span><span class="ef-cd">;; </span><span class="ef-c">Press '</span><span style="color: #b751b6;">K</span><span class="ef-c">' on a module to view its documentation, and '</span><span style="color: #b751b6;">gd</span><span class="ef-c">' to browse its directory.
+</span>
+(<span class="ef-k">doom!</span> <span class="ef-b">:input</span>
+       <span class="ef-cd">;;</span><span class="ef-c">bidi                       ; (tfel ot) thgir etirw uoy gnipleh
+</span>       <span class="ef-cd">;;</span><span class="ef-c">chinese
+</span>       <span class="ef-cd">;;</span><span class="ef-c">japanese
+</span>       <span class="ef-cd">;;</span><span class="ef-c">layout                     ; auie,ctsrnm is the superior home row
+</span>
+       <span class="ef-b">:completion</span>
+       <span class="ef-cd">;; </span><span class="ef-c">company                   ; the ultimate code completion backend
+</span>       (corfu +orderless +dabbrev)  <span class="ef-cd">; </span><span class="ef-c">complete with cap(f), cape and a flying feather!
+</span>       <span class="ef-cd">;;</span><span class="ef-c">helm                       ; the *other* search engine for love and life
+</span>       <span class="ef-cd">;;</span><span class="ef-c">ido                        ; the other *other* search engine...
+</span>       <span class="ef-cd">;; </span><span class="ef-c">(ivy                      ; a search engine for love and life
+</span>       <span class="ef-cd">;;  </span><span class="ef-c">+icons                   ; ... icons are nice
+</span>       <span class="ef-cd">;;  </span><span class="ef-c">+prescient)              ; ... I know what I want(ed)
+</span>       (vertico +icons)             <span class="ef-cd">; </span><span class="ef-c">the search engine of the future
+</span>
+       <span class="ef-b">:ui</span>
+       <span class="ef-cd">;;</span><span class="ef-c">deft                       ; notational velocity for Emacs
+</span>       doom                         <span class="ef-cd">; </span><span class="ef-c">what makes DOOM look the way it does
+</span>       doom-dashboard               <span class="ef-cd">; </span><span class="ef-c">a nifty splash screen for Emacs
+</span>       doom-quit                    <span class="ef-cd">; </span><span class="ef-c">DOOM quit-message prompts when you quit Emacs
+</span>       <span class="ef-cd">;; </span><span class="ef-c">(emoji +unicode)          ; 🙂
+</span>       <span class="ef-cd">;;</span><span class="ef-c">fill-column                ; a `</span><span style="color: #b751b6;">fill-column</span><span class="ef-c">' indicator
+</span>       hl-todo                      <span class="ef-cd">; </span><span class="ef-c">highlight TODO/FIXME/NOTE/DEPRECATED/HACK/REVIEW
+</span>       <span class="ef-cd">;;</span><span class="ef-c">hydra                      ; quick documentation for related commands
+</span>       <span class="ef-cd">;;</span><span class="ef-c">indent-guides              ; highlighted indent columns, notoriously slow
+</span>       (ligatures +extra)           <span class="ef-cd">; </span><span class="ef-c">ligatures and symbols to make your code pretty again
+</span>       <span class="ef-cd">;;</span><span class="ef-c">minimap                    ; show a map of the code on the side
+</span>       modeline                     <span class="ef-cd">; </span><span class="ef-c">snazzy, Atom-inspired modeline, plus API
+</span>       nav-flash                    <span class="ef-cd">; </span><span class="ef-c">blink the current line after jumping
+</span>       <span class="ef-cd">;;</span><span class="ef-c">neotree                    ; a project drawer, like NERDTree for vim
+</span>       ophints                      <span class="ef-cd">; </span><span class="ef-c">highlight the region an operation acts on
+</span>       (popup                       <span class="ef-cd">; </span><span class="ef-c">tame sudden yet inevitable temporary windows
+</span>        +all                        <span class="ef-cd">; </span><span class="ef-c">catch all popups that start with an asterix
+</span>        +defaults)                  <span class="ef-cd">; </span><span class="ef-c">default popup rules
+</span>       <span class="ef-cd">;;</span><span class="ef-c">(tabs                      ; an tab bar for Emacs
+</span>       <span class="ef-cd">;;  </span><span class="ef-c">+centaur-tabs)           ; ... with prettier tabs
+</span>       treemacs                     <span class="ef-cd">; </span><span class="ef-c">a project drawer, like neotree but cooler
+</span>       <span class="ef-cd">;;</span><span class="ef-c">unicode                    ; extended unicode support for various languages
+</span>       (vc-gutter +pretty)          <span class="ef-cd">; </span><span class="ef-c">vcs diff in the fringe
+</span>       vi-tilde-fringe              <span class="ef-cd">; </span><span class="ef-c">fringe tildes to mark beyond EOB
+</span>       (window-select +numbers)     <span class="ef-cd">; </span><span class="ef-c">visually switch windows
+</span>       workspaces                   <span class="ef-cd">; </span><span class="ef-c">tab emulation, persistence &amp; separate workspaces
+</span>       zen                          <span class="ef-cd">; </span><span class="ef-c">distraction-free coding or writing
+</span>
+       <span class="ef-b">:editor</span>
+       (evil +everywhere)           <span class="ef-cd">; </span><span class="ef-c">come to the dark side, we have cookies
+</span>       file-templates               <span class="ef-cd">; </span><span class="ef-c">auto-snippets for empty files
+</span>       fold                         <span class="ef-cd">; </span><span class="ef-c">(nigh) universal code folding
+</span>       (format)                     <span class="ef-cd">; </span><span class="ef-c">automated prettiness
+</span>       <span class="ef-cd">;;</span><span class="ef-c">god                        ; run Emacs commands without modifier keys
+</span>       <span class="ef-cd">;;</span><span class="ef-c">lispy                      ; vim for lisp, for people who don't like vim
+</span>       multiple-cursors             <span class="ef-cd">; </span><span class="ef-c">editing in many places at once
+</span>       <span class="ef-cd">;;</span><span class="ef-c">objed                      ; text object editing for the innocent
+</span>       <span class="ef-cd">;;</span><span class="ef-c">parinfer                   ; turn lisp into python, sort of
+</span>       rotate-text                  <span class="ef-cd">; </span><span class="ef-c">cycle region at point between text candidates
+</span>       snippets                     <span class="ef-cd">; </span><span class="ef-c">my elves. They type so I don't have to
+</span>       <span class="ef-cd">;;</span><span class="ef-c">word-wrap                  ; soft wrapping with language-aware indent
+</span>
+       <span class="ef-b">:emacs</span>
+       (dired +icons)               <span class="ef-cd">; </span><span class="ef-c">making dired pretty [functional]
+</span>       electric                     <span class="ef-cd">; </span><span class="ef-c">smarter, keyword-based electric-indent
+</span>       (ibuffer +icons)             <span class="ef-cd">; </span><span class="ef-c">interactive buffer management
+</span>       undo                         <span class="ef-cd">; </span><span class="ef-c">persistent, smarter undo for your inevitable mistakes
+</span>       vc                           <span class="ef-cd">; </span><span class="ef-c">version-control and Emacs, sitting in a tree
+</span>
+       <span class="ef-b">:term</span>
+       <span class="ef-cd">;;</span><span class="ef-c">eshell                     ; the elisp shell that works everywhere
+</span>       <span class="ef-cd">;;</span><span class="ef-c">shell                      ; simple shell REPL for Emacs
+</span>       <span class="ef-cd">;;</span><span class="ef-c">term                       ; basic terminal emulator for Emacs
+</span>       vterm                        <span class="ef-cd">; </span><span class="ef-c">the best terminal emulation in Emacs
+</span>
+       <span class="ef-b">:checkers</span>
+       syntax                       <span class="ef-cd">; </span><span class="ef-c">tasing you for every semicolon you forget
+</span>       <span class="ef-cd">;; </span><span class="ef-c">spell                     ; tasing you for misspelling mispelling
+</span>       grammar                      <span class="ef-cd">; </span><span class="ef-c">tasing grammar mistake every you make
+</span>
+       <span class="ef-b">:tools</span>
+       ansible                      <span class="ef-cd">; </span><span class="ef-c">a crucible for infrastructure as code
+</span>       biblio                       <span class="ef-cd">; </span><span class="ef-c">Writes a PhD for you (citation needed)
+</span>       <span class="ef-cd">;;</span><span class="ef-c">collab                     ; buffers with friends
+</span>       <span class="ef-cd">;;</span><span class="ef-c">debugger                   ; FIXME stepping through code, to help you add bugs
+</span>       <span class="ef-cd">;;</span><span class="ef-c">direnv                     ; be direct about your environment
+</span>       docker                       <span class="ef-cd">; </span><span class="ef-c">port everything to containers
+</span>       <span class="ef-cd">;;</span><span class="ef-c">editorconfig               ; let someone else argue about tabs vs spaces
+</span>       <span class="ef-cd">;;</span><span class="ef-c">ein                        ; tame Jupyter notebooks with emacs
+</span>       (eval +overlay)              <span class="ef-cd">; </span><span class="ef-c">run code, run (also, repls)
+</span>       <span class="ef-cd">;;</span><span class="ef-c">gist                       ; interacting with github gists
+</span>       (lookup                      <span class="ef-cd">; </span><span class="ef-c">helps you navigate your code and documentation
+</span>        +dictionary                 <span class="ef-cd">; </span><span class="ef-c">dictionary/thesaurus is nice
+</span>        +docsets)                   <span class="ef-cd">; </span><span class="ef-c">...or in Dash docsets locally
+</span>       lsp                          <span class="ef-cd">; </span><span class="ef-c">Language Server Protocol
+</span>       (magit                       <span class="ef-cd">; </span><span class="ef-c">a git porcelain for Emacs
+</span>        +forge)                     <span class="ef-cd">; </span><span class="ef-c">interface with git forges
+</span>       make                         <span class="ef-cd">; </span><span class="ef-c">run make tasks from Emacs
+</span>       <span class="ef-cd">;;</span><span class="ef-c">pass                       ; password manager for nerds
+</span>       pdf                          <span class="ef-cd">; </span><span class="ef-c">pdf enhancements
+</span>       <span class="ef-cd">;;</span><span class="ef-c">prodigy                    ; FIXME managing external services &amp; code builders
+</span>       <span class="ef-cd">;;</span><span class="ef-c">terraform                  ; infrastructure as code
+</span>       <span class="ef-cd">;;</span><span class="ef-c">tmux                       ; an API for interacting with tmux
+</span>       <span class="ef-cd">;;</span><span class="ef-c">tree-sitter                ; syntax and parsing, sitting in a tree...
+</span>       upload                       <span class="ef-cd">; </span><span class="ef-c">map local to remote projects via ssh/ftp
+</span>
+       <span class="ef-b">:os</span>
+       (<span class="ef-b">:if</span> (<span class="ef-k">featurep</span> <span class="ef-o">:system</span> 'macos) macos) <span class="ef-cd">; </span><span class="ef-c">improve compatibility with macOS
+</span>       tty                          <span class="ef-cd">; </span><span class="ef-c">improve the terminal Emacs experience
+</span>
+       <span class="ef-b">:lang</span>
+       <span class="ef-cd">;;</span><span class="ef-c">agda                       ; types of types of types of types...
+</span>       <span class="ef-cd">;;</span><span class="ef-c">beancount                  ; mind the GAAP
+</span>       <span class="ef-cd">;;</span><span class="ef-c">(cc +lsp)                  ; C &gt; C++ == 1
+</span>       <span class="ef-cd">;;</span><span class="ef-c">clojure                    ; java with a lisp
+</span>       <span class="ef-cd">;;</span><span class="ef-c">common-lisp                ; if you've seen one lisp, you've seen them all
+</span>       <span class="ef-cd">;;</span><span class="ef-c">coq                        ; proofs-as-programs
+</span>       <span class="ef-cd">;;</span><span class="ef-c">crystal                    ; ruby at the speed of c
+</span>       <span class="ef-cd">;;</span><span class="ef-c">csharp                     ; unity, .NET, and mono shenanigans
+</span>       data                         <span class="ef-cd">; </span><span class="ef-c">config/data formats
+</span>       <span class="ef-cd">;;</span><span class="ef-c">(dart +flutter)            ; paint ui and not much else
+</span>       <span class="ef-cd">;;</span><span class="ef-c">dhall                      ; JSON with FP sprinkles
+</span>       <span class="ef-cd">;;</span><span class="ef-c">elixir                     ; erlang done right
+</span>       <span class="ef-cd">;;</span><span class="ef-c">elm                        ; care for a cup of TEA?
+</span>       emacs-lisp                   <span class="ef-cd">; </span><span class="ef-c">drown in parentheses
+</span>       <span class="ef-cd">;;</span><span class="ef-c">erlang                     ; an elegant language for a more civilized age
+</span>       ess                          <span class="ef-cd">; </span><span class="ef-c">emacs speaks statistics
+</span>       <span class="ef-cd">;;</span><span class="ef-c">faust                      ; dsp, but you get to keep your soul
+</span>       <span class="ef-cd">;;</span><span class="ef-c">fsharp                     ; ML stands for Microsoft's Language
+</span>       <span class="ef-cd">;;</span><span class="ef-c">fstar                      ; (dependent) types and (monadic) effects and Z3
+</span>       <span class="ef-cd">;;</span><span class="ef-c">gdscript                   ; the language you waited for
+</span>       <span class="ef-cd">;;</span><span class="ef-c">(graphql +lsp)             ; Give queries a REST
+</span>       (go +lsp)                    <span class="ef-cd">; </span><span class="ef-c">the hipster dialect
+</span>       <span class="ef-cd">;;</span><span class="ef-c">(haskell +lsp)             ; a language that's lazier than I am
+</span>       <span class="ef-cd">;;</span><span class="ef-c">hy                         ; readability of scheme w/ speed of python
+</span>       <span class="ef-cd">;;</span><span class="ef-c">idris                      ;
+</span>       json                         <span class="ef-cd">; </span><span class="ef-c">At least it ain't XML
+</span>       <span class="ef-cd">;;</span><span class="ef-c">(java +lsp)                ; the poster child for carpal tunnel syndrome
+</span>       (javascript +lsp)            <span class="ef-cd">; </span><span class="ef-c">all(hope(abandon(ye(who(enter(here))))))
+</span>       (julia +lsp)                 <span class="ef-cd">; </span><span class="ef-c">Python, R, and MATLAB in a blender
+</span>       <span class="ef-cd">;;</span><span class="ef-c">kotlin                     ; a better, slicker Java(Script)
+</span>       (latex                       <span class="ef-cd">; </span><span class="ef-c">writing papers in Emacs has never been so fun
+</span>        +latexmk                    <span class="ef-cd">; </span><span class="ef-c">what else would you use?
+</span>        +cdlatex                    <span class="ef-cd">; </span><span class="ef-c">quick maths symbols
+</span>        +fold)                      <span class="ef-cd">; </span><span class="ef-c">fold the clutter away nicities
+</span>       <span class="ef-cd">;;</span><span class="ef-c">lean                       ; proof that mathematicians need help
+</span>       <span class="ef-cd">;;</span><span class="ef-c">factor                     ; for when scripts are stacked against you
+</span>       <span class="ef-cd">;;</span><span class="ef-c">ledger                     ; an accounting system in Emacs
+</span>       lua                          <span class="ef-cd">; </span><span class="ef-c">one-based indices? one-based indices
+</span>       markdown                     <span class="ef-cd">; </span><span class="ef-c">writing docs for people to ignore
+</span>       <span class="ef-cd">;;</span><span class="ef-c">nim                        ; python + lisp at the speed of c
+</span>       nix                          <span class="ef-cd">; </span><span class="ef-c">I hereby declare "nix geht mehr!"
+</span>       <span class="ef-cd">;;</span><span class="ef-c">ocaml                      ; an objective camel
+</span>       (org                         <span class="ef-cd">; </span><span class="ef-c">organize your plain life in plain text
+</span>        +dragndrop                  <span class="ef-cd">; </span><span class="ef-c">drag &amp; drop files/images into org buffers
+</span>        <span class="ef-cd">;;</span><span class="ef-c">+hugo                     ; use Emacs for hugo blogging
+</span>        +noter                      <span class="ef-cd">; </span><span class="ef-c">enhanced PDF notetaking
+</span>        +jupyter                    <span class="ef-cd">; </span><span class="ef-c">ipython/jupyter support for babel
+</span>        +pandoc                     <span class="ef-cd">; </span><span class="ef-c">export-with-pandoc support
+</span>        +gnuplot                    <span class="ef-cd">; </span><span class="ef-c">who doesn't like pretty pictures
+</span>        <span class="ef-cd">;;</span><span class="ef-c">+pomodoro                 ; be fruitful with the tomato technique
+</span>        +present                    <span class="ef-cd">; </span><span class="ef-c">using org-mode for presentations
+</span>        +roam2)                     <span class="ef-cd">; </span><span class="ef-c">wander around notes
+</span>       <span class="ef-cd">;;</span><span class="ef-c">php                        ; perl's insecure younger brother
+</span>       <span class="ef-cd">;;</span><span class="ef-c">plantuml                   ; diagrams for confusing people more
+</span>       <span class="ef-cd">;;</span><span class="ef-c">purescript                 ; javascript, but functional
+</span>       (python +lsp +pyright)       <span class="ef-cd">; </span><span class="ef-c">beautiful is better than ugly
+</span>       <span class="ef-cd">;;</span><span class="ef-c">qt                         ; the '</span><span style="color: #b751b6;">cutest</span><span class="ef-c">' gui framework ever
+</span>       <span class="ef-cd">;;</span><span class="ef-c">racket                     ; a DSL for DSLs
+</span>       <span class="ef-cd">;;</span><span class="ef-c">raku                       ; the artist formerly known as perl6
+</span>       <span class="ef-cd">;;</span><span class="ef-c">rest                       ; Emacs as a REST client
+</span>       <span class="ef-cd">;;</span><span class="ef-c">rst                        ; ReST in peace
+</span>       <span class="ef-cd">;;</span><span class="ef-c">(ruby +rails)              ; 1.step {|i| p "Ruby is #{i.even? ? '</span><span style="color: #b751b6;">love</span><span class="ef-c">' : '</span><span style="color: #b751b6;">life</span><span class="ef-c">'}"}
+</span>       (rust +lsp)                  <span class="ef-cd">; </span><span class="ef-c">Fe2O3.unwrap().unwrap().unwrap().unwrap()
+</span>       <span class="ef-cd">;;</span><span class="ef-c">scala                      ; java, but good
+</span>       scheme                       <span class="ef-cd">; </span><span class="ef-c">a fully conniving family of lisps
+</span>       sh                           <span class="ef-cd">; </span><span class="ef-c">she sells {ba,z,fi}sh shells on the C xor
+</span>       <span class="ef-cd">;;</span><span class="ef-c">sml                        ; no, the /other/ ML
+</span>       <span class="ef-cd">;;</span><span class="ef-c">solidity                   ; do you need a blockchain? No.
+</span>       <span class="ef-cd">;;</span><span class="ef-c">swift                      ; who asked for emoji variables?
+</span>       <span class="ef-cd">;;</span><span class="ef-c">terra                      ; Earth and Moon in alignment for performance.
+</span>       web                          <span class="ef-cd">; </span><span class="ef-c">the tubes
+</span>       yaml                         <span class="ef-cd">; </span><span class="ef-c">JSON, but readable
+</span>       zig                          <span class="ef-cd">; </span><span class="ef-c">C, but simpler
+</span>
+       <span class="ef-b">:email</span>
+       (<span class="ef-b">:if</span> (executable-find <span class="ef-s">"mu"</span>) (mu4e +org))
+       <span class="ef-cd">;;</span><span class="ef-c">notmuch
+</span>       <span class="ef-cd">;;</span><span class="ef-c">(wanderlust +gmail)
+</span>
+       <span class="ef-b">:app</span>
+       <span class="ef-cd">;;</span><span class="ef-c">calendar                   ; A dated approach to timetabling
+</span>       <span class="ef-cd">;;</span><span class="ef-c">emms                       ; Multimedia in Emacs is music to my ears
+</span>       everywhere                   <span class="ef-cd">; </span><span class="ef-c">*leave* Emacs!? You must be joking.
+</span>       irc                          <span class="ef-cd">; </span><span class="ef-c">how neckbeards socialize
+</span>       (rss +org)                   <span class="ef-cd">; </span><span class="ef-c">emacs as an RSS reader
+</span>       <span class="ef-cd">;;</span><span class="ef-c">twitter                    ; twitter client https://twitter.com/vnought
+</span>
+       <span class="ef-b">:config</span>
+       literate
+       (default +bindings +smartparens)
+       )
+
+</pre>
+  <body>
+</html>

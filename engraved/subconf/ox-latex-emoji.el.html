@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>ox-latex-emoji.el.html</title>
+    <style>
+      body { background: #fafafa; color: #383a42; }
+      pre {
+        font-size: 1rem;
+        max-width: min(100rem, 100%);
+        width: max-content;
+        white-space: pre-wrap;
+        margin: auto; }
+      .ef-D {
+        color: #383a42; background-color: #fafafa; font-weight: 400; }
+      .ef-vp {
+         }
+      .ef-h {
+        color: #84888b; }
+      .ef-sc {
+        color: #50a14f; }
+      .ef-w {
+        color: #986801; }
+      .ef-e {
+        color: #e45649; }
+      .ef-l {
+        color: #4078f2; font-weight: 700; }
+      .ef-lv {
+        color: #8b008b; font-weight: 700; }
+      .ef-hi {
+        color: #f0f0f0; background-color: #4078f2; }
+      .ef-c {
+        color: #84888b; }
+      .ef-cd {
+        color: #84888b; }
+      .ef-s {
+        color: #50a14f; }
+      .ef-d {
+        color: #727578; text-decoration: italic; }
+      .ef-m {
+        color: #b751b6; }
+      .ef-k {
+        color: #e45649; }
+      .ef-b {
+        color: #a626a4; }
+      .ef-f {
+        color: #a626a4; }
+      .ef-v {
+        color: #6a1868; }
+      .ef-t {
+        color: #986801; }
+      .ef-o {
+        color: #b751b6; }
+      .ef-wr {
+        color: #986801; }
+      .ef-nc {
+        color: #4078f2; font-weight: 700; }
+      .ef-pp {
+        color: #4078f2; font-weight: 700; }
+      .ef-rc {
+        color: #4078f2; font-weight: 700; }
+      .ef-rb {
+        color: #4078f2; font-weight: 700; }
+      .ef-ob {
+        background-color: #e7e7e7; }
+      .ef-obb {
+        background-color: #e7e7e7; text-decoration: italic; }
+      .ef-obe {
+        background-color: #e7e7e7; text-decoration: italic; }
+      .ef-Oa {
+        color: #e45649; font-weight: nil; font-size: 1.25em }
+      .ef-Ob {
+        color: #da8548; font-weight: 700; font-size: 1.15em }
+      .ef-Oc {
+        color: #b751b6; font-weight: 700; font-size: 1.12em }
+      .ef-Od {
+        color: #6f99f5; font-weight: 600; font-size: 1.09em }
+      .ef-Oe {
+        color: #bc5cba; font-weight: 600; font-size: 1.06em }
+      .ef-Of {
+        color: #9fbbf8; font-weight: 600; font-size: 1.03em }
+      .ef-Og {
+        color: #d292d1; font-weight: 700; }
+      .ef-Oh {
+        color: #d8e4fc; font-weight: 600; }
+      .ef-hn {
+        color: #da8548; font-weight: 700; }
+      .ef-hq {
+        color: #4078f2; }
+      .ef-hs {
+        color: #986801; }
+      .ef-rda {
+        color: #4078f2; }
+      .ef-rdb {
+        color: #a626a4; }
+      .ef-rdc {
+        color: #50a14f; }
+      .ef-rdd {
+        color: #b751b6; }
+      .ef-rde {
+        color: #4db5bd; }
+      .ef-rdf {
+        color: #4078f2; }
+      .ef-rdg {
+        color: #a626a4; }
+      .ef-rdh {
+        color: #50a14f; }
+      .ef-rdi {
+        color: #b751b6; }
+    </style>
+  </head>
+  <body>
+<pre>
+<span class="ef-cd">;;; </span><span class="ef-c">ox-latex-emoji.el --- Generated package (no.84) from my config -*- lexical-binding: t; -*-
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;; </span><span class="ef-c">Copyright (C) 2025 TEC
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;; </span><span class="ef-c">Author: TEC &lt;https://code.tecosaur.net/tec&gt;
+</span><span class="ef-cd">;; </span><span class="ef-c">Maintainer: TEC &lt;contact@tecosaur.net&gt;
+</span><span class="ef-cd">;; </span><span class="ef-c">Created: June 14, 2025
+</span><span class="ef-cd">;; </span><span class="ef-c">Modified: June 14, 2025
+</span><span class="ef-cd">;; </span><span class="ef-c">Version: 2025.06.14
+</span><span class="ef-cd">;; </span><span class="ef-c">Homepage: https://code.tecosaur.net/tec/emacs-config
+</span><span class="ef-cd">;; </span><span class="ef-c">Package-Requires: ((emacs "29.1"))
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;; </span><span class="ef-c">This file is not part of GNU Emacs.
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;; </span><span class="ef-c">Commentary:
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;  </span><span class="ef-c">Generated package (no.84) from my config.
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;  </span><span class="ef-c">During generation, dependency on other aspects of my configuration and
+</span><span class="ef-cd">;;  </span><span class="ef-c">packages is inferred via (regexp-based) static analysis.  While this seems
+</span><span class="ef-cd">;;  </span><span class="ef-c">to do a good job, this method is imperfect.  This code likely depends on
+</span><span class="ef-cd">;;  </span><span class="ef-c">utilities provided by Doom, and if you try to run it in isolation you may
+</span><span class="ef-cd">;;  </span><span class="ef-c">discover the code makes more assumptions.
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;  </span><span class="ef-c">That said, I've found pretty good results so far.
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;; </span><span class="ef-c">Code:
+</span>
+(<span class="ef-k">require</span> '<span class="ef-o">ox-latex</span>)
+
+(<span class="ef-k">defvar</span> <span class="ef-v">org-latex-emoji--rx</span>
+  (<span class="ef-k">let</span> (emojis)
+    (map-char-table
+     (<span class="ef-k">lambda</span> (char set)
+       (<span class="ef-k">when</span> (eq set 'emoji)
+         (<span class="ef-k">push</span> (copy-tree char) emojis)))
+     char-script-table)
+    (rx-to-string `(any ,@emojis)))
+  <span class="ef-d">"A regexp to find all emoji-script characters."</span>)
+
+(<span class="ef-k">defconst</span> <span class="ef-v">org-latex-emoji-base-dir</span>
+  (expand-file-name <span class="ef-s">"emojis/"</span> doom-cache-dir)
+  <span class="ef-d">"Directory where emojis should be saved and look for."</span>)
+
+(<span class="ef-k">defvar</span> <span class="ef-v">org-latex-emoji-sets</span>
+  '((<span class="ef-s">"twemoji"</span> <span class="ef-b">:url</span> <span class="ef-s">"https://github.com/jdecked/twemoji/archive/refs/tags/v15.1.0.zip"</span>
+     <span class="ef-b">:folder</span> <span class="ef-s">"twemoji-15.1.0/assets/svg"</span> <span class="ef-b">:height</span> <span class="ef-s">"1.8ex"</span> <span class="ef-b">:offset</span> <span class="ef-s">"-0.3ex"</span>)
+    (<span class="ef-s">"twemoji-bw"</span> <span class="ef-b">:url</span> <span class="ef-s">"https://github.com/youdly/twemoji-color-font/archive/refs/heads/v11-release.zip"</span>
+     <span class="ef-b">:folder</span> <span class="ef-s">"twemoji-color-font-11-release/assets/builds/svg-bw"</span> <span class="ef-b">:height</span> <span class="ef-s">"1.8ex"</span> <span class="ef-b">:offset</span> <span class="ef-s">"-0.3ex"</span>)
+    (<span class="ef-s">"openmoji"</span> <span class="ef-b">:url</span> <span class="ef-s">"https://github.com/hfg-gmuend/openmoji/releases/latest/download/openmoji-svg-color.zip"</span>
+     <span class="ef-b">:height</span> <span class="ef-s">"2.2ex"</span> <span class="ef-b">:offset</span> <span class="ef-s">"-0.45ex"</span>)
+    (<span class="ef-s">"openmoji-bw"</span> <span class="ef-b">:url</span> <span class="ef-s">"https://github.com/hfg-gmuend/openmoji/releases/latest/download/openmoji-svg-black.zip"</span>
+     <span class="ef-b">:height</span> <span class="ef-s">"2.2ex"</span> <span class="ef-b">:offset</span> <span class="ef-s">"-0.45ex"</span>)
+    (<span class="ef-s">"emojione"</span> <span class="ef-b">:url</span> <span class="ef-s">"https://github.com/joypixels/emojione/archive/refs/tags/v2.2.7.zip"</span>
+     <span class="ef-b">:folder</span> <span class="ef-s">"emojione-2.2.7/assets/svg"</span>) <span class="ef-cd">; </span><span class="ef-c">Warning, poor coverage
+</span>    (<span class="ef-s">"noto"</span> <span class="ef-b">:url</span> <span class="ef-s">"https://github.com/googlefonts/noto-emoji/archive/refs/tags/v2.038.zip"</span>
+     <span class="ef-b">:folder</span> <span class="ef-s">"noto-emoji-2.038/svg"</span> <span class="ef-b">:file-regexp</span> <span class="ef-s">"^emoji_u</span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">(</span><span class="ef-s">[0-9a-f_]+</span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">)</span><span class="ef-s">"</span>
+     <span class="ef-b">:height</span> <span class="ef-s">"2.0ex"</span> <span class="ef-b">:offset</span> <span class="ef-s">"-0.3ex"</span>))
+  <span class="ef-d">"An alist of plistst of emoji sets.
+Specified with the minimal form:
+  (\"SET-NAME\" :url \"URL\")
+The following optional parameters are supported:
+  :folder (defaults to \"\")
+  The folder within the archive where the emojis exist.
+  :file-regexp (defaults to nil)
+  Pattern with the emoji code point as the first capture group.
+  :height (defaults to \"1.8ex\")
+  Height of the emojis to be used.
+  :offset (defaults to \"-0.3ex\")
+  Baseline offset of the emojis."</span>)
+
+(<span class="ef-k">defconst</span> <span class="ef-v">org-latex-emoji-keyword</span>
+  <span class="ef-s">"LATEX_EMOJI_SET"</span>
+  <span class="ef-d">"Keyword used to set the emoji set from `</span><span style="color: #b751b6; text-decoration: italic;">org-latex-emoji-sets</span><span class="ef-d">'."</span>)
+
+(<span class="ef-k">defvar</span> <span class="ef-v">org-latex-emoji-preamble</span> <span class="ef-s">"\\usepackage{accsupp}
+% The transparent package is also needed, but will be loaded later.
+\\newsavebox\\emojibox
+
+\\NewDocumentCommand\\DeclareEmoji{m m}{% UTF-8 codepoint, UTF-16 codepoint
+  \\DeclareUnicodeCharacter{#1}{%
+    \\sbox\\emojibox{\\raisebox{OFFSET}{%
+        \\includegraphics[height=HEIGHT]{EMOJI-FOLDER/#1}}}%
+    \\usebox\\emojibox
+    \\llap{%
+      \\resizebox{\\wd\\emojibox}{\\height}{%
+        \\BeginAccSupp{method=hex,unicode,ActualText=#2}%
+        \\texttransparent{0}{X}%
+        \\EndAccSupp{}}}}}"</span>
+  <span class="ef-d">"LaTeX preamble snippet that will allow for emojis to be declared.
+Contains the string \"EMOJI-FOLDER\" which should be replaced with
+the path to the emoji folder."</span>)
+
+(<span class="ef-k">defun</span> <span class="ef-f">org-latex-emoji-utf16</span> (char)
+  <span class="ef-d">"Return the pair of UTF-16 surrogates that represent CHAR."</span>
+  (list
+   (+ #xD7C0 (ash char -10))
+   (+ #xDC00 (logand char #x03FF))))
+
+(<span class="ef-k">defun</span> <span class="ef-f">org-latex-emoji-declaration</span> (char)
+  <span class="ef-d">"Construct the LaTeX command declaring CHAR as an emoji."</span>
+  (format <span class="ef-s">"\\DeclareEmoji{%X}{%s} %% %s"</span>
+          char
+          (<span class="ef-k">if</span> (&lt; char #xFFFF)
+              (format <span class="ef-s">"%X"</span> char)
+            (apply #'format <span class="ef-s">"%X%X"</span> (org-latex-emoji-utf16 char)))
+          (capitalize (get-char-code-property char 'name))))
+
+(<span class="ef-k">defun</span> <span class="ef-f">org-latex-emoji-fill-preamble</span> (emoji-folder <span class="ef-t">&amp;optional</span> height offset svg-p)
+  <span class="ef-d">"Fill in `</span><span style="color: #b751b6; text-decoration: italic;">org-latex-emoji-preamble</span><span class="ef-d">' with EMOJI-FOLDER, HEIGHT, and OFFSET.
+If SVG-P is set \"includegraphics\" will be replaced with \"includesvg\"."</span>
+  (<span class="ef-k">let*</span> (case-fold-search
+         (filled-preamble
+          (replace-regexp-in-string
+           <span class="ef-s">"HEIGHT"</span>
+           (<span class="ef-k">or</span> height <span class="ef-s">"1.8ex"</span>)
+           (replace-regexp-in-string
+            <span class="ef-s">"OFFSET"</span>
+            (<span class="ef-k">or</span> offset <span class="ef-s">"-0.3ex"</span>)
+            (replace-regexp-in-string
+             <span class="ef-s">"EMOJI-FOLDER"</span>
+             (directory-file-name
+              (<span class="ef-k">if</span> (getenv <span class="ef-s">"HOME"</span>)
+                  (replace-regexp-in-string
+                   (regexp-quote (getenv <span class="ef-s">"HOME"</span>))
+                   <span class="ef-s">"\\string~"</span>
+                   emoji-folder t t)
+                emoji-folder))
+             org-latex-emoji-preamble t t)
+            t t)
+           t t)))
+    (<span class="ef-k">if</span> svg-p
+        (replace-regexp-in-string
+         <span class="ef-s">"includegraphics"</span> <span class="ef-s">"includesvg"</span>
+         filled-preamble t t)
+      filled-preamble)))
+
+(<span class="ef-k">defun</span> <span class="ef-f">org-latex-emoji-setup</span> (<span class="ef-t">&amp;optional</span> info)
+  <span class="ef-d">"Construct a preamble snippet to set up emojis based on INFO."</span>
+  (<span class="ef-k">let*</span> ((emoji-set
+          (<span class="ef-k">or</span> (org-element-map
+                  (plist-get info <span class="ef-b">:parse-tree</span>)
+                  'keyword
+                (<span class="ef-k">lambda</span> (keyword)
+                  (<span class="ef-k">and</span> (string= (org-element-property <span class="ef-b">:key</span> keyword)
+                                org-latex-emoji-keyword)
+                       (org-element-property <span class="ef-b">:value</span> keyword)))
+                info t)
+              (caar org-latex-emoji-sets)))
+         (emoji-spec (cdr (assoc emoji-set org-latex-emoji-sets)))
+         (emoji-folder
+          (expand-file-name emoji-set org-latex-emoji-base-dir))
+         (emoji-svg-only
+          (<span class="ef-k">and</span> (file-exists-p emoji-folder)
+               (not (cl-some
+                     (<span class="ef-k">lambda</span> (path)
+                       (not (string= (file-name-extension path) <span class="ef-s">"svg"</span>)))
+                     (directory-files emoji-folder nil <span class="ef-s">"\\....$"</span>))))))
+    (<span class="ef-k">cond</span>
+     ((not emoji-spec)
+      (<span class="ef-wr">error</span> <span class="ef-s">"Emoji set `</span><span style="color: #b751b6;">%s</span><span class="ef-s">' is unknown. Try one of: %s"</span> emoji-set
+             (string-join (mapcar #'car org-latex-emoji-sets) <span class="ef-s">", "</span>)))
+     ((not (file-exists-p emoji-folder))
+      (<span class="ef-k">if</span> (<span class="ef-k">and</span> (not noninteractive)
+               (yes-or-no-p (format <span class="ef-s">"Emoji set `</span><span style="color: #b751b6;">%s</span><span class="ef-s">' is not installed, would you like to install it?"</span> emoji-set)))
+          (org-latex-emoji-install
+           emoji-set
+           (<span class="ef-k">or</span> (executable-find <span class="ef-s">"cairosvg"</span>) (executable-find <span class="ef-s">"inkscape"</span>)))
+        (<span class="ef-wr">error</span> <span class="ef-s">"Emoji set `</span><span style="color: #b751b6;">%s</span><span class="ef-s">' is not installed"</span> emoji-set))))
+    (org-latex-emoji-fill-preamble
+     emoji-folder (plist-get emoji-spec <span class="ef-b">:height</span>)
+     (plist-get emoji-spec <span class="ef-b">:offset</span>) emoji-svg-only)))
+
+(org-export-update-features 'latex
+  (emoji-setup <span class="ef-cd">; </span><span class="ef-c">The precompilable bit
+</span>   <span class="ef-b">:condition</span> (<span class="ef-k">save-excursion</span>
+                (goto-char (point-min))
+                (re-search-forward org-latex-emoji--rx nil t))
+   <span class="ef-b">:requires</span> (image pkg-transparent)
+   <span class="ef-b">:snippet</span> org-latex-emoji-setup
+   <span class="ef-b">:order</span> 3)
+  (pkg-transparent <span class="ef-cd">; </span><span class="ef-c">Part of emoji setup, but non-precompilable.
+</span>   <span class="ef-b">:snippet</span> <span class="ef-s">"\\usepackage{transparent}"</span>
+   <span class="ef-b">:order</span> 84)
+  (emoji-declarations
+   <span class="ef-b">:condition</span> t
+   <span class="ef-b">:when</span> emoji-setup
+   <span class="ef-b">:snippet</span>
+   (mapconcat
+    #'org-latex-emoji-declaration
+    (<span class="ef-k">let</span> (unicode-cars)
+      (<span class="ef-k">save-excursion</span>
+        (goto-char (point-min))
+        (<span class="ef-k">while</span> (re-search-forward org-latex-emoji--rx nil t)
+          (<span class="ef-k">push</span> (aref (match-string 0) 0) unicode-cars)))
+      (cl-delete-duplicates unicode-cars))
+    <span class="ef-s">"\n"</span>)
+   <span class="ef-b">:order</span> 85))
+
+(org-export-update-features 'latex
+  (emoji-lualatex-hack
+   <span class="ef-b">:condition</span> t
+   <span class="ef-b">:when</span> (emoji julia-code) <span class="ef-cd">; </span><span class="ef-c">LuaLaTeX is used with julia-code.
+</span>   <span class="ef-b">:snippet</span>
+   <span class="ef-s">"\\usepackage{newunicodechar}
+\\newcommand{\\DeclareUnicodeCharacter}[2]{%
+    \\begingroup\\lccode`|=\\string\"#1\\relax
+    \\lowercase{\\endgroup\\newunicodechar{|}}{#2}}"</span>
+   <span class="ef-b">:before</span> emoji))
+
+(<span class="ef-k">defun</span> <span class="ef-f">org-latex-emoji-install</span> (set <span class="ef-t">&amp;optional</span> convert)
+  <span class="ef-d">"Dowload, convert, and install emojis for use with LaTeX."</span>
+  (<span class="ef-k">interactive</span>
+   (list (completing-read <span class="ef-s">"Emoji set to install: "</span>
+                          (mapcar
+                           (<span class="ef-k">lambda</span> (set-spec)
+                             (<span class="ef-k">if</span> (file-exists-p (expand-file-name (car set-spec) org-latex-emoji-base-dir))
+                                 (propertize (car set-spec) 'face 'font-lock-doc-face)
+                               (car set-spec)))
+                           org-latex-emoji-sets)
+                          nil t)
+         (<span class="ef-k">if</span> (<span class="ef-k">or</span> (executable-find <span class="ef-s">"cairosvg"</span>) (executable-find <span class="ef-s">"inkscape"</span>))
+             (yes-or-no-p <span class="ef-s">"Would you like to create .pdf forms of the Emojis (strongly recommended)?"</span>)
+           (message <span class="ef-s">"Install `</span><span style="color: #b751b6;">cairosvg</span><span class="ef-s">' (recommended) or `</span><span style="color: #b751b6;">inkscape</span><span class="ef-s">' to convert to PDF forms"</span>)
+           nil)))
+  (<span class="ef-k">let</span> ((emoji-folder (expand-file-name set org-latex-emoji-base-dir)))
+    (<span class="ef-k">when</span> (<span class="ef-k">or</span> (not (file-exists-p emoji-folder))
+              (<span class="ef-k">and</span> (not noninteractive)
+                   (yes-or-no-p <span class="ef-s">"Emoji folder already present, would you like to re-download?"</span>)
+                   (<span class="ef-k">progn</span> (delete-directory emoji-folder t) t)))
+      (<span class="ef-k">let*</span> ((spec (cdr (assoc set org-latex-emoji-sets)))
+             (dir (org-latex-emoji-install--download set (plist-get spec <span class="ef-b">:url</span>)))
+             (svg-dir (expand-file-name (<span class="ef-k">or</span> (plist-get spec <span class="ef-b">:folder</span>) <span class="ef-s">""</span>) dir)))
+        (org-latex-emoji-install--install
+         set svg-dir (plist-get spec <span class="ef-b">:file-regexp</span>))))
+    (<span class="ef-k">when</span> convert
+      (org-latex-emoji-install--convert (file-name-as-directory emoji-folder))))
+  (message <span class="ef-s">"Emojis set `</span><span style="color: #b751b6;">%s</span><span class="ef-s">' installed."</span> set))
+
+(<span class="ef-k">defun</span> <span class="ef-f">org-latex-emoji-install--download</span> (name url)
+  <span class="ef-d">"Download the emoji archive URL for the set NAME."</span>
+  (<span class="ef-k">let*</span> ((dest-folder (make-temp-file (format <span class="ef-s">"%s-"</span> name) t)))
+    (message <span class="ef-s">"Downloading %s..."</span> name)
+    (<span class="ef-k">let</span> ((default-directory dest-folder))
+      (call-process <span class="ef-s">"curl"</span> nil nil nil <span class="ef-s">"-sL"</span> url <span class="ef-s">"--output"</span> <span class="ef-s">"emojis.zip"</span>)
+      (message <span class="ef-s">"Unzipping"</span>)
+      (call-process <span class="ef-s">"unzip"</span> nil nil nil <span class="ef-s">"emojis.zip"</span>)
+      dest-folder)))
+
+(<span class="ef-k">defun</span> <span class="ef-f">org-latex-emoji-install--install</span> (name dir <span class="ef-t">&amp;optional</span> filename-regexp)
+  <span class="ef-d">"Install the emoji files in DIR to the NAME set folder.
+If a FILENAME-REGEXP, only files matching this regexp will be moved,
+and they will be renamed to the first capture group of the regexp."</span>
+  (message <span class="ef-s">"Installing %s emojis into emoji directory"</span> name)
+  (<span class="ef-k">let</span> ((images (append (directory-files dir t <span class="ef-s">".*.svg"</span>)
+                        (directory-files dir t <span class="ef-s">".*.pdf"</span>)))
+        (emoji-dir (file-name-as-directory
+                    (expand-file-name name org-latex-emoji-base-dir))))
+    (<span class="ef-k">unless</span> (file-exists-p emoji-dir)
+      (make-directory emoji-dir t))
+    (mapc
+     (<span class="ef-k">lambda</span> (image)
+       (<span class="ef-k">if</span> filename-regexp
+           (<span class="ef-k">when</span> (string-match filename-regexp (file-name-nondirectory image))
+             (rename-file image
+                          (expand-file-name
+                           (file-name-with-extension
+                            (upcase (match-string 1 (file-name-nondirectory image)))
+                            (file-name-extension image))
+                           emoji-dir)
+                          t))
+         (rename-file image
+                      (expand-file-name
+                       (file-name-with-extension
+                        (upcase (file-name-nondirectory image))
+                        (file-name-extension image))
+                       emoji-dir)
+                      t)))
+     images)
+    (message <span class="ef-s">"%d emojis installed"</span> (length images))))
+
+(<span class="ef-k">defun</span> <span class="ef-f">org-latex-emoji-install--convert</span> (dir)
+  <span class="ef-d">"Convert all .svg files in DIR to .pdf forms.
+Uses cairosvg if possible, falling back to inkscape."</span>
+  (<span class="ef-k">let</span> ((default-directory dir))
+    (<span class="ef-k">if</span> (executable-find <span class="ef-s">"cairosvg"</span>) <span class="ef-cd">; </span><span class="ef-c">cairo's PDFs are ~10% smaller
+</span>        (<span class="ef-k">let*</span> ((images (directory-files dir nil <span class="ef-s">".*.svg"</span>))
+               (num-images (length images))
+               (index 0)
+               (max-threads (1- (string-to-number (shell-command-to-string <span class="ef-s">"nproc"</span>))))
+               (threads 0))
+          (<span class="ef-k">while</span> (&lt; index num-images)
+            (<span class="ef-k">setf</span> threads (1+ threads))
+            (<span class="ef-k">let</span> (message-log-max)
+              (message <span class="ef-s">"Converting emoji %d/%d (%s)"</span> (1+ index) num-images (nth index images)))
+            (make-process <span class="ef-b">:name</span> <span class="ef-s">"cairosvg"</span>
+                          <span class="ef-b">:command</span> (list <span class="ef-s">"cairosvg"</span> (nth index images) <span class="ef-s">"-o"</span> (concat (file-name-sans-extension (nth index images)) <span class="ef-s">".pdf"</span>))
+                          <span class="ef-b">:sentinel</span> (<span class="ef-k">lambda</span> (proc msg)
+                                      (<span class="ef-k">when</span> (memq (process-status proc) '(exit signal))
+                                        (<span class="ef-k">setf</span> threads (1- threads)))))
+            (<span class="ef-k">setq</span> index (1+ index))
+            (<span class="ef-k">while</span> (&gt; threads max-threads)
+              (sleep-for 0.01)))
+          (<span class="ef-k">while</span> (&gt; threads 0)
+            (sleep-for 0.01)))
+      (message <span class="ef-s">"Cairosvg not found. Proceeding with inkscape as a fallback."</span>)
+      (shell-command <span class="ef-s">"inkscape --batch-process --export-type='</span><span style="color: #b751b6;">pdf</span><span class="ef-s">' *.svg"</span>))
+    (message <span class="ef-s">"Finished conversion!"</span>)))
+
+(<span class="ef-k">provide</span> '<span class="ef-o">ox-latex-emoji</span>)
+<span class="ef-cd">;;; </span><span class="ef-c">ox-latex-emoji.el ends here
+</span>
+</pre>
+  <body>
+</html>

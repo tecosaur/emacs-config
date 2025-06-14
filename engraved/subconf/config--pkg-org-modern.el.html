@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>config--pkg-org-modern.el.html</title>
+    <style>
+      body { background: #fafafa; color: #383a42; }
+      pre {
+        font-size: 1rem;
+        max-width: min(100rem, 100%);
+        width: max-content;
+        white-space: pre-wrap;
+        margin: auto; }
+      .ef-D {
+        color: #383a42; background-color: #fafafa; font-weight: 400; }
+      .ef-vp {
+         }
+      .ef-h {
+        color: #84888b; }
+      .ef-sc {
+        color: #50a14f; }
+      .ef-w {
+        color: #986801; }
+      .ef-e {
+        color: #e45649; }
+      .ef-l {
+        color: #4078f2; font-weight: 700; }
+      .ef-lv {
+        color: #8b008b; font-weight: 700; }
+      .ef-hi {
+        color: #f0f0f0; background-color: #4078f2; }
+      .ef-c {
+        color: #84888b; }
+      .ef-cd {
+        color: #84888b; }
+      .ef-s {
+        color: #50a14f; }
+      .ef-d {
+        color: #727578; text-decoration: italic; }
+      .ef-m {
+        color: #b751b6; }
+      .ef-k {
+        color: #e45649; }
+      .ef-b {
+        color: #a626a4; }
+      .ef-f {
+        color: #a626a4; }
+      .ef-v {
+        color: #6a1868; }
+      .ef-t {
+        color: #986801; }
+      .ef-o {
+        color: #b751b6; }
+      .ef-wr {
+        color: #986801; }
+      .ef-nc {
+        color: #4078f2; font-weight: 700; }
+      .ef-pp {
+        color: #4078f2; font-weight: 700; }
+      .ef-rc {
+        color: #4078f2; font-weight: 700; }
+      .ef-rb {
+        color: #4078f2; font-weight: 700; }
+      .ef-ob {
+        background-color: #e7e7e7; }
+      .ef-obb {
+        background-color: #e7e7e7; text-decoration: italic; }
+      .ef-obe {
+        background-color: #e7e7e7; text-decoration: italic; }
+      .ef-Oa {
+        color: #e45649; font-weight: nil; font-size: 1.25em }
+      .ef-Ob {
+        color: #da8548; font-weight: 700; font-size: 1.15em }
+      .ef-Oc {
+        color: #b751b6; font-weight: 700; font-size: 1.12em }
+      .ef-Od {
+        color: #6f99f5; font-weight: 600; font-size: 1.09em }
+      .ef-Oe {
+        color: #bc5cba; font-weight: 600; font-size: 1.06em }
+      .ef-Of {
+        color: #9fbbf8; font-weight: 600; font-size: 1.03em }
+      .ef-Og {
+        color: #d292d1; font-weight: 700; }
+      .ef-Oh {
+        color: #d8e4fc; font-weight: 600; }
+      .ef-hn {
+        color: #da8548; font-weight: 700; }
+      .ef-hq {
+        color: #4078f2; }
+      .ef-hs {
+        color: #986801; }
+      .ef-rda {
+        color: #4078f2; }
+      .ef-rdb {
+        color: #a626a4; }
+      .ef-rdc {
+        color: #50a14f; }
+      .ef-rdd {
+        color: #b751b6; }
+      .ef-rde {
+        color: #4db5bd; }
+      .ef-rdf {
+        color: #4078f2; }
+      .ef-rdg {
+        color: #a626a4; }
+      .ef-rdh {
+        color: #50a14f; }
+      .ef-rdi {
+        color: #b751b6; }
+    </style>
+  </head>
+  <body>
+<pre>
+<span class="ef-cd">;;; </span><span class="ef-c">config--pkg-org-modern.el --- Generated package (no.62) from my config -*- lexical-binding: t; -*-
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;; </span><span class="ef-c">Copyright (C) 2025 TEC
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;; </span><span class="ef-c">Author: TEC &lt;https://code.tecosaur.net/tec&gt;
+</span><span class="ef-cd">;; </span><span class="ef-c">Maintainer: TEC &lt;contact@tecosaur.net&gt;
+</span><span class="ef-cd">;; </span><span class="ef-c">Created: June 14, 2025
+</span><span class="ef-cd">;; </span><span class="ef-c">Modified: June 14, 2025
+</span><span class="ef-cd">;; </span><span class="ef-c">Version: 2025.06.14
+</span><span class="ef-cd">;; </span><span class="ef-c">Homepage: https://code.tecosaur.net/tec/emacs-config
+</span><span class="ef-cd">;; </span><span class="ef-c">Package-Requires: ((emacs "29.1"))
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;; </span><span class="ef-c">This file is not part of GNU Emacs.
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;; </span><span class="ef-c">Commentary:
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;  </span><span class="ef-c">Generated package (no.62) from my config.
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;  </span><span class="ef-c">During generation, dependency on other aspects of my configuration and
+</span><span class="ef-cd">;;  </span><span class="ef-c">packages is inferred via (regexp-based) static analysis.  While this seems
+</span><span class="ef-cd">;;  </span><span class="ef-c">to do a good job, this method is imperfect.  This code likely depends on
+</span><span class="ef-cd">;;  </span><span class="ef-c">utilities provided by Doom, and if you try to run it in isolation you may
+</span><span class="ef-cd">;;  </span><span class="ef-c">discover the code makes more assumptions.
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;  </span><span class="ef-c">That said, I've found pretty good results so far.
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;  </span><span class="ef-c">Package statement:
+</span><span class="ef-cd">;;   </span><span class="ef-c">(package! org-modern :pin "a58534475b4312b0920aa9d3824272470c8e3500")
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;; </span><span class="ef-c">Code:
+</span>
+
+(use-package! org-modern
+  <span class="ef-b">:hook</span> (org-mode . org-modern-mode)
+  <span class="ef-b">:config</span>
+  (<span class="ef-k">setq</span> org-modern-star '(<span class="ef-s">"◉"</span> <span class="ef-s">"○"</span> <span class="ef-s">"✸"</span> <span class="ef-s">"✿"</span> <span class="ef-s">"✤"</span> <span class="ef-s">"✜"</span> <span class="ef-s">"◆"</span> <span class="ef-s">"▶"</span>)
+        org-modern-table-vertical 1
+        org-modern-table-horizontal 0.2
+        org-modern-list '((43 . <span class="ef-s">"➤"</span>)
+                          (45 . <span class="ef-s">"–"</span>)
+                          (42 . <span class="ef-s">"•"</span>))
+        org-modern-todo-faces
+        '((<span class="ef-s">"TODO"</span> <span class="ef-b">:inverse-video</span> t <span class="ef-b">:inherit</span> org-todo)
+          (<span class="ef-s">"PROJ"</span> <span class="ef-b">:inverse-video</span> t <span class="ef-b">:inherit</span> +org-todo-project)
+          (<span class="ef-s">"STRT"</span> <span class="ef-b">:inverse-video</span> t <span class="ef-b">:inherit</span> +org-todo-active)
+          (<span class="ef-s">"[-]"</span>  <span class="ef-b">:inverse-video</span> t <span class="ef-b">:inherit</span> +org-todo-active)
+          (<span class="ef-s">"HOLD"</span> <span class="ef-b">:inverse-video</span> t <span class="ef-b">:inherit</span> +org-todo-onhold)
+          (<span class="ef-s">"WAIT"</span> <span class="ef-b">:inverse-video</span> t <span class="ef-b">:inherit</span> +org-todo-onhold)
+          (<span class="ef-s">"[?]"</span>  <span class="ef-b">:inverse-video</span> t <span class="ef-b">:inherit</span> +org-todo-onhold)
+          (<span class="ef-s">"KILL"</span> <span class="ef-b">:inverse-video</span> t <span class="ef-b">:inherit</span> +org-todo-cancel)
+          (<span class="ef-s">"NO"</span>   <span class="ef-b">:inverse-video</span> t <span class="ef-b">:inherit</span> +org-todo-cancel))
+        org-modern-footnote
+        (cons nil (cadr org-script-display))
+        org-modern-block-fringe nil
+        org-modern-block-name
+        '((t . t)
+          (<span class="ef-s">"src"</span> <span class="ef-s">"»"</span> <span class="ef-s">"«"</span>)
+          (<span class="ef-s">"example"</span> <span class="ef-s">"»–"</span> <span class="ef-s">"–«"</span>)
+          (<span class="ef-s">"quote"</span> <span class="ef-s">"❝"</span> <span class="ef-s">"❞"</span>)
+          (<span class="ef-s">"export"</span> <span class="ef-s">"⏩"</span> <span class="ef-s">"⏪"</span>))
+        org-modern-progress nil
+        org-modern-priority nil
+        org-modern-horizontal-rule (make-string 36 ?─)
+        org-modern-keyword
+        '((t . t)
+          (<span class="ef-s">"title"</span> . <span class="ef-s">"𝙏"</span>)
+          (<span class="ef-s">"subtitle"</span> . <span class="ef-s">"𝙩"</span>)
+          (<span class="ef-s">"author"</span> . <span class="ef-s">"𝘼"</span>)
+          (<span class="ef-s">"email"</span> . <span class="ef-s">""</span>)
+          (<span class="ef-s">"date"</span> . <span class="ef-s">"𝘿"</span>)
+          (<span class="ef-s">"property"</span> . <span class="ef-s">"󰠳"</span>)
+          (<span class="ef-s">"options"</span> . #(<span class="ef-s">"󰘵"</span> 0 1 (display (height 0.75))))
+          (<span class="ef-s">"startup"</span> . <span class="ef-s">"⏻"</span>)
+          (<span class="ef-s">"macro"</span> . <span class="ef-s">"𝓜"</span>)
+          (<span class="ef-s">"bind"</span> . <span class="ef-s">"󰌷"</span>)
+          (<span class="ef-s">"bibliography"</span> . <span class="ef-s">""</span>)
+          (<span class="ef-s">"print_bibliography"</span> . <span class="ef-s">"󰌱"</span>)
+          (<span class="ef-s">"cite_export"</span> . <span class="ef-s">"⮭"</span>)
+          (<span class="ef-s">"print_glossary"</span> . <span class="ef-s">"󰌱ᴬᶻ"</span>)
+          (<span class="ef-s">"glossary_sources"</span> . <span class="ef-s">"󰒻"</span>)
+          (<span class="ef-s">"include"</span> . <span class="ef-s">"⇤"</span>)
+          (<span class="ef-s">"setupfile"</span> . <span class="ef-s">"⇚"</span>)
+          (<span class="ef-s">"html_head"</span> . <span class="ef-s">"🅷"</span>)
+          (<span class="ef-s">"html"</span> . <span class="ef-s">"🅗"</span>)
+          (<span class="ef-s">"latex_class"</span> . <span class="ef-s">"🄻"</span>)
+          (<span class="ef-s">"latex_class_options"</span> . <span class="ef-s">"🄻󰒓"</span>)
+          (<span class="ef-s">"latex_header"</span> . <span class="ef-s">"🅻"</span>)
+          (<span class="ef-s">"latex_header_extra"</span> . <span class="ef-s">"🅻⁺"</span>)
+          (<span class="ef-s">"latex"</span> . <span class="ef-s">"🅛"</span>)
+          (<span class="ef-s">"beamer_theme"</span> . <span class="ef-s">"🄱"</span>)
+          (<span class="ef-s">"beamer_color_theme"</span> . <span class="ef-s">"🄱󰏘"</span>)
+          (<span class="ef-s">"beamer_font_theme"</span> . <span class="ef-s">"🄱𝐀"</span>)
+          (<span class="ef-s">"beamer_header"</span> . <span class="ef-s">"🅱"</span>)
+          (<span class="ef-s">"beamer"</span> . <span class="ef-s">"🅑"</span>)
+          (<span class="ef-s">"attr_latex"</span> . <span class="ef-s">"🄛"</span>)
+          (<span class="ef-s">"attr_html"</span> . <span class="ef-s">"🄗"</span>)
+          (<span class="ef-s">"attr_org"</span> . <span class="ef-s">"⒪"</span>)
+          (<span class="ef-s">"call"</span> . <span class="ef-s">"󰜎"</span>)
+          (<span class="ef-s">"name"</span> . <span class="ef-s">"⁍"</span>)
+          (<span class="ef-s">"header"</span> . <span class="ef-s">"›"</span>)
+          (<span class="ef-s">"caption"</span> . <span class="ef-s">"☰"</span>)
+          (<span class="ef-s">"results"</span> . <span class="ef-s">"🠶"</span>)))
+  (custom-set-faces! '(org-modern-statistics <span class="ef-b">:inherit</span> org-checkbox-statistics-todo)))
+
+(<span class="ef-k">after!</span> spell-fu
+  (<span class="ef-k">cl-pushnew</span> 'org-modern-tag (alist-get 'org-mode +spell-excluded-faces-alist)))
+
+(<span class="ef-k">provide</span> '<span class="ef-o">config--pkg-org-modern</span>)
+<span class="ef-cd">;;; </span><span class="ef-c">config--pkg-org-modern.el ends here
+</span>
+</pre>
+  <body>
+</html>

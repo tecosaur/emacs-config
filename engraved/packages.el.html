@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>packages.el.html</title>
+    <style>
+      body { background: #fafafa; color: #383a42; }
+      pre {
+        font-size: 1rem;
+        max-width: min(100rem, 100%);
+        width: max-content;
+        white-space: pre-wrap;
+        margin: auto; }
+      .ef-D {
+        color: #383a42; background-color: #fafafa; font-weight: 400; }
+      .ef-vp {
+         }
+      .ef-h {
+        color: #84888b; }
+      .ef-sc {
+        color: #50a14f; }
+      .ef-w {
+        color: #986801; }
+      .ef-e {
+        color: #e45649; }
+      .ef-l {
+        color: #4078f2; font-weight: 700; }
+      .ef-lv {
+        color: #8b008b; font-weight: 700; }
+      .ef-hi {
+        color: #f0f0f0; background-color: #4078f2; }
+      .ef-c {
+        color: #84888b; }
+      .ef-cd {
+        color: #84888b; }
+      .ef-s {
+        color: #50a14f; }
+      .ef-d {
+        color: #727578; text-decoration: italic; }
+      .ef-m {
+        color: #b751b6; }
+      .ef-k {
+        color: #e45649; }
+      .ef-b {
+        color: #a626a4; }
+      .ef-f {
+        color: #a626a4; }
+      .ef-v {
+        color: #6a1868; }
+      .ef-t {
+        color: #986801; }
+      .ef-o {
+        color: #b751b6; }
+      .ef-wr {
+        color: #986801; }
+      .ef-nc {
+        color: #4078f2; font-weight: 700; }
+      .ef-pp {
+        color: #4078f2; font-weight: 700; }
+      .ef-rc {
+        color: #4078f2; font-weight: 700; }
+      .ef-rb {
+        color: #4078f2; font-weight: 700; }
+      .ef-ob {
+        background-color: #e7e7e7; }
+      .ef-obb {
+        background-color: #e7e7e7; text-decoration: italic; }
+      .ef-obe {
+        background-color: #e7e7e7; text-decoration: italic; }
+      .ef-Oa {
+        color: #e45649; font-weight: nil; font-size: 1.25em }
+      .ef-Ob {
+        color: #da8548; font-weight: 700; font-size: 1.15em }
+      .ef-Oc {
+        color: #b751b6; font-weight: 700; font-size: 1.12em }
+      .ef-Od {
+        color: #6f99f5; font-weight: 600; font-size: 1.09em }
+      .ef-Oe {
+        color: #bc5cba; font-weight: 600; font-size: 1.06em }
+      .ef-Of {
+        color: #9fbbf8; font-weight: 600; font-size: 1.03em }
+      .ef-Og {
+        color: #d292d1; font-weight: 700; }
+      .ef-Oh {
+        color: #d8e4fc; font-weight: 600; }
+      .ef-hn {
+        color: #da8548; font-weight: 700; }
+      .ef-hq {
+        color: #4078f2; }
+      .ef-hs {
+        color: #986801; }
+      .ef-rda {
+        color: #4078f2; }
+      .ef-rdb {
+        color: #a626a4; }
+      .ef-rdc {
+        color: #50a14f; }
+      .ef-rdd {
+        color: #b751b6; }
+      .ef-rde {
+        color: #4db5bd; }
+      .ef-rdf {
+        color: #4078f2; }
+      .ef-rdg {
+        color: #a626a4; }
+      .ef-rdh {
+        color: #50a14f; }
+      .ef-rdi {
+        color: #b751b6; }
+    </style>
+  </head>
+  <body>
+<pre>
+<span class="ef-cd">;; </span><span class="ef-c">-*- no-byte-compile: t; -*-
+</span>
+(<span class="ef-k">package!</span> rotate <span class="ef-b">:pin</span> <span class="ef-s">"4e9ac3ff800880bd9b705794ef0f7c99d72900a6"</span>)
+
+(<span class="ef-k">package!</span> emacs-everywhere <span class="ef-b">:recipe</span> (<span class="ef-b">:local-repo</span> <span class="ef-s">"lisp/emacs-everywhere"</span>))
+(<span class="ef-k">unpin!</span> emacs-everywhere)
+
+(<span class="ef-k">package!</span> vlf <span class="ef-b">:recipe</span> (<span class="ef-b">:host</span> github <span class="ef-b">:repo</span> <span class="ef-s">"emacs-straight/vlf"</span> <span class="ef-b">:files</span> (<span class="ef-s">"*.el"</span>))
+  <span class="ef-b">:pin</span> <span class="ef-s">"d500f39672b35bf8551fdfafa892c551626c8d54"</span>)
+
+(<span class="ef-k">package!</span> evil-escape <span class="ef-b">:disable</span> t)
+
+(<span class="ef-k">package!</span> gptel <span class="ef-b">:pin</span> <span class="ef-s">"94bf19da93aee9a101429d7ecbfbb9c7c5b67216"</span>)
+
+(<span class="ef-k">package!</span> headlice <span class="ef-b">:recipe</span> (<span class="ef-b">:local-repo</span> <span class="ef-s">"lisp/headlice"</span>
+                            <span class="ef-b">:files</span> (<span class="ef-b">:defaults</span> <span class="ef-s">"licenses"</span> <span class="ef-s">"headers"</span>)))
+
+<span class="ef-cd">;; </span><span class="ef-c">(package! magit-delta :recipe (:host github :repo "dandavison/magit-delta") :pin "5fc7dbddcfacfe46d3fd876172ad02a9ab6ac616")
+</span>
+(<span class="ef-k">package!</span> mpris <span class="ef-b">:recipe</span> (<span class="ef-b">:local-repo</span> <span class="ef-s">"lisp/mpris"</span>))
+
+(<span class="ef-k">package!</span> jinx)
+
+(<span class="ef-k">package!</span> autocorrect <span class="ef-b">:recipe</span> (<span class="ef-b">:local-repo</span> <span class="ef-s">"lisp/autocorrect"</span>))
+
+(<span class="ef-k">package!</span> aas <span class="ef-b">:recipe</span> (<span class="ef-b">:host</span> github <span class="ef-b">:repo</span> <span class="ef-s">"ymarco/auto-activating-snippets"</span>)
+  <span class="ef-b">:pin</span> <span class="ef-s">"ddc2b7a58a2234477006af348b30e970f73bc2c1"</span>)
+
+(<span class="ef-k">package!</span> screenshot <span class="ef-b">:recipe</span> (<span class="ef-b">:local-repo</span> <span class="ef-s">"lisp/screenshot"</span>))
+
+(<span class="ef-k">package!</span> etrace <span class="ef-b">:recipe</span> (<span class="ef-b">:host</span> github <span class="ef-b">:repo</span> <span class="ef-s">"aspiers/etrace"</span>)
+  <span class="ef-b">:pin</span> <span class="ef-s">"2291ccf2f2ccc80a6aac4664e8ede736ceb672b7"</span>)
+
+(<span class="ef-k">package!</span> string-inflection <span class="ef-b">:pin</span> <span class="ef-s">"617df25e91351feffe6aff4d9e4724733449d608"</span>)
+
+(<span class="ef-k">package!</span> info-colors <span class="ef-b">:pin</span> <span class="ef-s">"2e237c301ba62f0e0286a27c1abe48c4c8441143"</span>)
+
+(<span class="ef-k">package!</span> modus-themes <span class="ef-b">:pin</span> <span class="ef-s">"f3cd4d6983566dab0ef3bcddf812cfd565d00d08"</span> <span class="ef-b">:pin</span> <span class="ef-s">"3576d14f06f245c3111496bfb035bb0926f48089"</span>)
+
+(<span class="ef-k">package!</span> spacemacs-theme <span class="ef-b">:pin</span> <span class="ef-s">"a7c5dccb4a037ba1f090015fc8ffb9566c64e369"</span>)
+
+(<span class="ef-k">package!</span> theme-magic <span class="ef-b">:pin</span> <span class="ef-s">"844c4311bd26ebafd4b6a1d72ddcc65d87f074e3"</span>)
+
+(<span class="ef-k">package!</span> simple-comment-markup <span class="ef-b">:recipe</span> (<span class="ef-b">:local-repo</span> <span class="ef-s">"lisp/simple-comment-markup"</span>))
+
+(<span class="ef-k">package!</span> doom-modeline-media-player
+  <span class="ef-b">:recipe</span> (<span class="ef-b">:local-repo</span> <span class="ef-s">"lisp/doom-modeline-media-player"</span>))
+
+(<span class="ef-k">package!</span> keycast <span class="ef-b">:pin</span> <span class="ef-s">"53514c3dc3dfb7d4c3a65898b0b3edb69b6536c2"</span>)
+
+(<span class="ef-k">package!</span> gif-screencast <span class="ef-b">:pin</span> <span class="ef-s">"6798656d3d3107d16e30cc26bc3928b00e50c1ca"</span>)
+
+(<span class="ef-k">package!</span> page-break-lines <span class="ef-b">:recipe</span> (<span class="ef-b">:host</span> github <span class="ef-b">:repo</span> <span class="ef-s">"purcell/page-break-lines"</span>)
+  <span class="ef-b">:pin</span> <span class="ef-s">"982571749c8fe2b5e2997dd043003a1b9fe87b38"</span>)
+
+(<span class="ef-k">package!</span> xkcd <span class="ef-b">:pin</span> <span class="ef-s">"80011da2e7def8f65233d4e0d790ca60d287081d"</span>)
+
+(<span class="ef-k">package!</span> selectric-mode <span class="ef-b">:pin</span> <span class="ef-s">"1840de71f7414b7cd6ce425747c8e26a413233aa"</span>)
+
+(<span class="ef-k">package!</span> wttrin <span class="ef-b">:recipe</span> (<span class="ef-b">:local-repo</span> <span class="ef-s">"lisp/wttrin"</span>))
+
+(<span class="ef-k">package!</span> spray <span class="ef-b">:pin</span> <span class="ef-s">"74d9dcfa2e8b38f96a43de9ab0eb13364300cb46"</span>
+  <span class="ef-b">:recipe</span> (<span class="ef-b">:host</span> github <span class="ef-b">:repo</span> <span class="ef-s">"emacsmirror/spray"</span>)) <span class="ef-cd">; </span><span class="ef-c">sr.ht can be flaky
+</span>
+(<span class="ef-k">package!</span> elcord <span class="ef-b">:pin</span> <span class="ef-s">"deeb22f84378b382f09e78f1718bc4c39a3582b8"</span>)
+
+(<span class="ef-k">package!</span> systemd <span class="ef-b">:pin</span> <span class="ef-s">"8742607120fbc440821acbc351fda1e8e68a8806"</span>)
+
+(<span class="ef-k">package!</span> calibredb <span class="ef-b">:pin</span> <span class="ef-s">"7d33947462c77f9e87e8078fa7b7b398feeef0f7"</span>)
+
+(<span class="ef-k">package!</span> nov <span class="ef-b">:pin</span> <span class="ef-s">"b37d9380752e541db3f4b947c219ca54d50ca273"</span>)
+
+(<span class="ef-k">package!</span> calctex <span class="ef-b">:recipe</span> (<span class="ef-b">:host</span> github <span class="ef-b">:repo</span> <span class="ef-s">"johnbcoughlin/calctex"</span>
+                           <span class="ef-b">:files</span> (<span class="ef-s">"*.el"</span> <span class="ef-s">"calctex/*.el"</span> <span class="ef-s">"calctex-contrib/*.el"</span> <span class="ef-s">"org-calctex/*.el"</span> <span class="ef-s">"vendor"</span>))
+  <span class="ef-b">:pin</span> <span class="ef-s">"67a2e76847a9ea9eff1f8e4eb37607f84b380ebb"</span>)
+
+(<span class="ef-k">package!</span> org <span class="ef-b">:recipe</span>
+  (<span class="ef-b">:host</span> nil <span class="ef-b">:repo</span> <span class="ef-s">"https://code.tecosaur.net/mirrors/org-mode.git"</span>
+         <span class="ef-b">:remote</span> <span class="ef-s">"mirror"</span> <span class="ef-b">:fork</span>
+         (<span class="ef-b">:host</span> nil <span class="ef-b">:repo</span> <span class="ef-s">"https://code.tecosaur.net/tec/org-mode.git"</span>
+                <span class="ef-b">:branch</span> <span class="ef-s">"dev"</span> <span class="ef-b">:remote</span> <span class="ef-s">"tecosaur"</span>)
+         <span class="ef-b">:files</span> (<span class="ef-b">:defaults</span> <span class="ef-s">"etc"</span>) <span class="ef-b">:build</span> t <span class="ef-b">:pre-build</span>
+         (<span class="ef-k">with-temp-file</span> <span class="ef-s">"lisp/org-version.el"</span>
+           (<span class="ef-k">require</span> '<span class="ef-o">lisp-mnt</span>)
+           (<span class="ef-k">let</span>
+               ((version
+                 (<span class="ef-k">with-temp-buffer</span>
+                   (insert-file-contents <span class="ef-s">"lisp/org.el"</span>)
+                   (lm-header <span class="ef-s">"version"</span>)))
+                (git-version
+                 (string-trim
+                  (<span class="ef-k">with-temp-buffer</span>
+                    (call-process <span class="ef-s">"git"</span> nil t nil <span class="ef-s">"rev-parse"</span>
+                                  <span class="ef-s">"--short"</span> <span class="ef-s">"HEAD"</span>)
+                    (buffer-string)))))
+             (insert
+              (format
+               <span class="ef-s">"(defun org-release () \"The release version of Org.\" %S)\n"</span>
+               version)
+              (format
+               <span class="ef-s">"(defun org-git-version () \"The truncate git commit hash of Org mode.\" %S)\n"</span>
+               git-version)
+              <span class="ef-s">"(provide 'org-version)\n"</span>))))
+  <span class="ef-b">:pin</span> nil)
+
+(<span class="ef-k">unpin!</span> org) <span class="ef-cd">; </span><span class="ef-c">there be bugs
+</span>(<span class="ef-k">package!</span> org-contrib
+  <span class="ef-cd">;; </span><span class="ef-c">The `</span><span style="color: #b751b6;">sr.ht</span><span class="ef-c">' repo has been a bit flaky as of late.
+</span>  <span class="ef-b">:recipe</span> (<span class="ef-b">:host</span> github <span class="ef-b">:repo</span> <span class="ef-s">"emacsmirror/org-contrib"</span>
+           <span class="ef-b">:files</span> (<span class="ef-s">"lisp/*.el"</span>))
+  <span class="ef-b">:pin</span> <span class="ef-s">"8d14a600a2069ffc494edfc9a12b8e5fc8840bf1"</span>)
+
+(<span class="ef-k">package!</span> org-modern <span class="ef-b">:pin</span> <span class="ef-s">"a58534475b4312b0920aa9d3824272470c8e3500"</span>)
+
+(<span class="ef-k">package!</span> org-appear <span class="ef-b">:recipe</span> (<span class="ef-b">:host</span> github <span class="ef-b">:repo</span> <span class="ef-s">"awth13/org-appear"</span>)
+  <span class="ef-b">:pin</span> <span class="ef-s">"32ee50f8fdfa449bbc235617549c1bccb503cb09"</span>)
+
+(<span class="ef-k">package!</span> org-ol-tree <span class="ef-b">:recipe</span> (<span class="ef-b">:host</span> github <span class="ef-b">:repo</span> <span class="ef-s">"Townk/org-ol-tree"</span>)
+  <span class="ef-b">:pin</span> <span class="ef-s">"207c748aa5fea8626be619e8c55bdb1c16118c25"</span>)
+
+(<span class="ef-k">package!</span> ob-julia <span class="ef-b">:recipe</span> (<span class="ef-b">:local-repo</span> <span class="ef-s">"lisp/ob-julia"</span> <span class="ef-b">:files</span> (<span class="ef-s">"*.el"</span> <span class="ef-s">"julia"</span>)))
+
+(<span class="ef-k">package!</span> ob-http <span class="ef-b">:pin</span> <span class="ef-s">"b1428ea2a63bcb510e7382a1bf5fe82b19c104a7"</span>)
+
+(<span class="ef-k">package!</span> ox-rss <span class="ef-b">:pin</span> <span class="ef-s">"d2964eca3614f84db85b498d065862a1e341868d"</span>)
+
+(<span class="ef-k">package!</span> org-transclusion <span class="ef-b">:recipe</span> (<span class="ef-b">:host</span> github <span class="ef-b">:repo</span> <span class="ef-s">"nobiot/org-transclusion"</span>)
+  <span class="ef-b">:pin</span> <span class="ef-s">"e9728b0b14b5c2e5d3b68af98f772ed99e136b48"</span>)
+
+(<span class="ef-k">package!</span> org-graph-view <span class="ef-b">:recipe</span> (<span class="ef-b">:host</span> github <span class="ef-b">:repo</span> <span class="ef-s">"alphapapa/org-graph-view"</span>)
+  <span class="ef-b">:pin</span> <span class="ef-s">"172157aee1131ea59f0bd724a10abfdbccbd860e"</span>)
+
+(<span class="ef-k">package!</span> org-chef <span class="ef-b">:pin</span> <span class="ef-s">"1710b54441ed744dcdfb125d08fb88cfaf452f10"</span>)
+
+(<span class="ef-k">package!</span> org-pandoc-import <span class="ef-b">:recipe</span>
+  (<span class="ef-b">:local-repo</span> <span class="ef-s">"lisp/org-pandoc-import"</span> <span class="ef-b">:files</span> (<span class="ef-s">"*.el"</span> <span class="ef-s">"filters"</span> <span class="ef-s">"preprocessors"</span>)))
+
+(<span class="ef-k">package!</span> org-glossary <span class="ef-b">:recipe</span> (<span class="ef-b">:local-repo</span> <span class="ef-s">"lisp/org-glossary"</span>))
+
+(<span class="ef-k">package!</span> orgdiff <span class="ef-b">:recipe</span> (<span class="ef-b">:local-repo</span> <span class="ef-s">"lisp/orgdiff"</span>))
+
+(<span class="ef-k">package!</span> org-music <span class="ef-b">:recipe</span> (<span class="ef-b">:local-repo</span> <span class="ef-s">"lisp/org-music"</span>))
+
+(<span class="ef-k">package!</span> org-cite-csl-activate <span class="ef-b">:recipe</span> (<span class="ef-b">:host</span> github <span class="ef-b">:repo</span> <span class="ef-s">"andras-simonyi/org-cite-csl-activate"</span>) <span class="ef-b">:pin</span> <span class="ef-s">"ccadbdcdfd1b4cb0cea132324cc1912e0f1900b6"</span>)
+
+(<span class="ef-k">package!</span> org-super-agenda <span class="ef-b">:pin</span> <span class="ef-s">"fb20ad9c8a9705aa05d40751682beae2d094e0fe"</span>)
+
+(<span class="ef-k">package!</span> doct
+  <span class="ef-b">:recipe</span> (<span class="ef-b">:host</span> github <span class="ef-b">:repo</span> <span class="ef-s">"progfolio/doct"</span>)
+  <span class="ef-b">:pin</span> <span class="ef-s">"5cab660dab653ad88c07b0493360252f6ed1d898"</span>)
+
+(<span class="ef-k">package!</span> org-roam <span class="ef-b">:disable</span> t)
+
+(<span class="ef-k">package!</span> org-roam-ui <span class="ef-b">:recipe</span> (<span class="ef-b">:host</span> github <span class="ef-b">:repo</span> <span class="ef-s">"org-roam/org-roam-ui"</span> <span class="ef-b">:files</span> (<span class="ef-s">"*.el"</span> <span class="ef-s">"out"</span>)) <span class="ef-b">:pin</span> <span class="ef-s">"5ac74960231db0bf7783c2ba7a19a60f582e91ab"</span>)
+(<span class="ef-k">package!</span> websocket <span class="ef-b">:pin</span> <span class="ef-s">"40c208eaab99999d7c1e4bea883648da24c03be3"</span>) <span class="ef-cd">; </span><span class="ef-c">dependency of `</span><span style="color: #b751b6;">org-roam-ui</span><span class="ef-c">'
+</span>
+<span class="ef-cd">;; </span><span class="ef-c">(package! org-pretty-tags :pin "5c7521651b35ae9a7d3add4a66ae8cc176ae1c76")
+</span>
+(<span class="ef-k">package!</span> engrave-faces <span class="ef-b">:recipe</span> (<span class="ef-b">:local-repo</span> <span class="ef-s">"lisp/engrave-faces"</span>))
+
+(<span class="ef-k">package!</span> ox-chameleon <span class="ef-b">:recipe</span> (<span class="ef-b">:local-repo</span> <span class="ef-s">"lisp/ox-chameleon"</span>))
+
+(<span class="ef-k">package!</span> ox-gfm <span class="ef-b">:pin</span> <span class="ef-s">"4f774f13d34b3db9ea4ddb0b1edc070b1526ccbb"</span>)
+
+(<span class="ef-k">package!</span> laas <span class="ef-b">:recipe</span> (<span class="ef-b">:local-repo</span> <span class="ef-s">"lisp/LaTeX-auto-activating-snippets"</span>))
+
+(<span class="ef-k">package!</span> conf-data-toml <span class="ef-b">:recipe</span> (<span class="ef-b">:local-repo</span> <span class="ef-s">"lisp/conf-data-toml"</span>))
+
+(<span class="ef-k">package!</span> graphviz-dot-mode <span class="ef-b">:pin</span> <span class="ef-s">"8ff793b13707cb511875f56e167ff7f980a31136"</span>)
+
+(<span class="ef-k">package!</span> beancount <span class="ef-b">:recipe</span> (<span class="ef-b">:host</span> github <span class="ef-b">:repo</span> <span class="ef-s">"beancount/beancount-mode"</span>)
+  <span class="ef-b">:pin</span> <span class="ef-s">"ddd4b8725703cf17a665b56cc26a3f9f95642424"</span>)
+
+</pre>
+  <body>
+</html>

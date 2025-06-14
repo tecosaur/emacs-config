@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>config-confpkg-timings.el.html</title>
+    <style>
+      body { background: #fafafa; color: #383a42; }
+      pre {
+        font-size: 1rem;
+        max-width: min(100rem, 100%);
+        width: max-content;
+        white-space: pre-wrap;
+        margin: auto; }
+      .ef-D {
+        color: #383a42; background-color: #fafafa; font-weight: 400; }
+      .ef-vp {
+         }
+      .ef-h {
+        color: #84888b; }
+      .ef-sc {
+        color: #50a14f; }
+      .ef-w {
+        color: #986801; }
+      .ef-e {
+        color: #e45649; }
+      .ef-l {
+        color: #4078f2; font-weight: 700; }
+      .ef-lv {
+        color: #8b008b; font-weight: 700; }
+      .ef-hi {
+        color: #f0f0f0; background-color: #4078f2; }
+      .ef-c {
+        color: #84888b; }
+      .ef-cd {
+        color: #84888b; }
+      .ef-s {
+        color: #50a14f; }
+      .ef-d {
+        color: #727578; text-decoration: italic; }
+      .ef-m {
+        color: #b751b6; }
+      .ef-k {
+        color: #e45649; }
+      .ef-b {
+        color: #a626a4; }
+      .ef-f {
+        color: #a626a4; }
+      .ef-v {
+        color: #6a1868; }
+      .ef-t {
+        color: #986801; }
+      .ef-o {
+        color: #b751b6; }
+      .ef-wr {
+        color: #986801; }
+      .ef-nc {
+        color: #4078f2; font-weight: 700; }
+      .ef-pp {
+        color: #4078f2; font-weight: 700; }
+      .ef-rc {
+        color: #4078f2; font-weight: 700; }
+      .ef-rb {
+        color: #4078f2; font-weight: 700; }
+      .ef-ob {
+        background-color: #e7e7e7; }
+      .ef-obb {
+        background-color: #e7e7e7; text-decoration: italic; }
+      .ef-obe {
+        background-color: #e7e7e7; text-decoration: italic; }
+      .ef-Oa {
+        color: #e45649; font-weight: nil; font-size: 1.25em }
+      .ef-Ob {
+        color: #da8548; font-weight: 700; font-size: 1.15em }
+      .ef-Oc {
+        color: #b751b6; font-weight: 700; font-size: 1.12em }
+      .ef-Od {
+        color: #6f99f5; font-weight: 600; font-size: 1.09em }
+      .ef-Oe {
+        color: #bc5cba; font-weight: 600; font-size: 1.06em }
+      .ef-Of {
+        color: #9fbbf8; font-weight: 600; font-size: 1.03em }
+      .ef-Og {
+        color: #d292d1; font-weight: 700; }
+      .ef-Oh {
+        color: #d8e4fc; font-weight: 600; }
+      .ef-hn {
+        color: #da8548; font-weight: 700; }
+      .ef-hq {
+        color: #4078f2; }
+      .ef-hs {
+        color: #986801; }
+      .ef-rda {
+        color: #4078f2; }
+      .ef-rdb {
+        color: #a626a4; }
+      .ef-rdc {
+        color: #50a14f; }
+      .ef-rdd {
+        color: #b751b6; }
+      .ef-rde {
+        color: #4db5bd; }
+      .ef-rdf {
+        color: #4078f2; }
+      .ef-rdg {
+        color: #a626a4; }
+      .ef-rdh {
+        color: #50a14f; }
+      .ef-rdi {
+        color: #b751b6; }
+    </style>
+  </head>
+  <body>
+<pre>
+<span class="ef-cd">;;; </span><span class="ef-c">config-confpkg-timings.el --- Generated package (no.1) from my config -*- lexical-binding: t; -*-
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;; </span><span class="ef-c">Copyright (C) 2025 TEC
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;; </span><span class="ef-c">Author: TEC &lt;https://code.tecosaur.net/tec&gt;
+</span><span class="ef-cd">;; </span><span class="ef-c">Maintainer: TEC &lt;contact@tecosaur.net&gt;
+</span><span class="ef-cd">;; </span><span class="ef-c">Created: June 14, 2025
+</span><span class="ef-cd">;; </span><span class="ef-c">Modified: June 14, 2025
+</span><span class="ef-cd">;; </span><span class="ef-c">Version: 2025.06.14
+</span><span class="ef-cd">;; </span><span class="ef-c">Homepage: https://code.tecosaur.net/tec/emacs-config
+</span><span class="ef-cd">;; </span><span class="ef-c">Package-Requires: ((emacs "29.1"))
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;; </span><span class="ef-c">This file is not part of GNU Emacs.
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;; </span><span class="ef-c">Commentary:
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;  </span><span class="ef-c">Generated package (no.1) from my config.
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;  </span><span class="ef-c">During generation, dependency on other aspects of my configuration and
+</span><span class="ef-cd">;;  </span><span class="ef-c">packages is inferred via (regexp-based) static analysis.  While this seems
+</span><span class="ef-cd">;;  </span><span class="ef-c">to do a good job, this method is imperfect.  This code likely depends on
+</span><span class="ef-cd">;;  </span><span class="ef-c">utilities provided by Doom, and if you try to run it in isolation you may
+</span><span class="ef-cd">;;  </span><span class="ef-c">discover the code makes more assumptions.
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;  </span><span class="ef-c">That said, I've found pretty good results so far.
+</span><span class="ef-cd">;;</span>
+<span class="ef-cd">;;; </span><span class="ef-c">Code:
+</span>
+(<span class="ef-k">defvar</span> <span class="ef-v">confpkg-load-time-tree</span> (list (list 'root)))
+(<span class="ef-k">defvar</span> <span class="ef-v">confpkg-record-branch</span> (list 'root))
+(<span class="ef-k">defvar</span> <span class="ef-v">confpkg-record-num</span> 0)
+
+(<span class="ef-k">defun</span> <span class="ef-f">confpkg-create-record</span> (name elapsed <span class="ef-t">&amp;optional</span> parent enclosing)
+  (<span class="ef-k">let</span> ((parent (assoc (<span class="ef-k">or</span> parent (car confpkg-record-branch))
+                       confpkg-load-time-tree))
+        (record (cons name (list (list 'self
+                                       <span class="ef-b">:name</span> (format <span class="ef-s">"%s"</span> name)
+                                       <span class="ef-b">:num</span> (<span class="ef-k">cl-incf</span> confpkg-record-num)
+                                       <span class="ef-b">:elapsed</span> elapsed
+                                       <span class="ef-b">:enclosing</span> enclosing)))))
+    (<span class="ef-k">push</span> record confpkg-load-time-tree)
+    (<span class="ef-k">push</span> record (cdr parent))
+    record))
+
+(<span class="ef-k">defun</span> <span class="ef-f">confpkg-start-record</span> (name <span class="ef-t">&amp;optional</span> parent)
+  (<span class="ef-k">let</span> ((record (confpkg-create-record name 0.0e+NaN parent t)))
+    (plist-put (cdadr record) <span class="ef-b">:start</span> (float-time))
+    (<span class="ef-k">push</span> name confpkg-record-branch)
+    record))
+
+(<span class="ef-k">defun</span> <span class="ef-f">confpkg-finish-record</span> (name)
+  (<span class="ef-k">let</span> ((self-record (cdar (last (cdr (assoc name confpkg-load-time-tree))))))
+    (plist-put self-record <span class="ef-b">:elapsed</span>
+               (- (float-time) (plist-get self-record <span class="ef-b">:start</span>) 0.0))
+    (<span class="ef-k">unless</span> (equal (car confpkg-record-branch) name)
+      (message <span class="ef-s">"Warning: Confpkg timing record expected to finish %S, instead found %S. %S"</span>
+               name (car confpkg-record-branch) confpkg-record-branch))
+    (<span class="ef-k">setq</span> confpkg-record-branch (cdr confpkg-record-branch))))
+
+(<span class="ef-k">defmacro</span> <span class="ef-f">confpkg-with-record</span> (name <span class="ef-t">&amp;rest</span> body)
+  <span class="ef-d">"Create a time record around BODY.
+The record must have a NAME."</span>
+  (<span class="ef-k">declare</span> (indent 1))
+  (<span class="ef-k">let</span> ((name-val (make-symbol <span class="ef-s">"name-val"</span>))
+        (record-spec (make-symbol <span class="ef-s">"record-spec"</span>)))
+    `(<span class="ef-k">let*</span> ((,name-val ,name)
+            (,record-spec (<span class="ef-k">if</span> (consp ,name-val) ,name-val (list ,name-val))))
+       (apply #'confpkg-start-record ,record-spec)
+       (<span class="ef-k">unwind-protect</span>
+           (<span class="ef-k">progn</span> ,@body)
+         (confpkg-finish-record (car ,record-spec))))))
+
+(<span class="ef-k">defadvice!</span> +require--log-timing-a (orig-fn feature <span class="ef-t">&amp;optional</span> filename noerror)
+  <span class="ef-b">:around</span> #'require
+  (<span class="ef-k">if</span> (<span class="ef-k">or</span> (<span class="ef-k">featurep</span> <span class="ef-o">feature</span>)
+          (eq feature 'cus-start) <span class="ef-cd">; </span><span class="ef-c">HACK Why!?!
+</span>          (assoc (format <span class="ef-s">"require: %s"</span> feature) confpkg-load-time-tree))
+      (funcall orig-fn feature filename noerror)
+    (confpkg-with-record (list (format <span class="ef-s">"require: %s"</span> feature)
+                               (<span class="ef-k">and</span> (eq (car confpkg-record-branch) 'root)
+                                    'requires))
+      (funcall orig-fn feature filename noerror))))
+
+(<span class="ef-k">defun</span> <span class="ef-f">confpkg-timings-report</span> (<span class="ef-t">&amp;optional</span> sort-p node)
+  <span class="ef-d">"Display a report on load-time information.
+Supply SORT-P (or the universal argument) to sort the results.
+NODE defaults to the root node."</span>
+  (<span class="ef-k">interactive</span>
+   (list (<span class="ef-k">and</span> current-prefix-arg t)))
+  (<span class="ef-k">let</span> ((buf (get-buffer-create <span class="ef-s">"*Confpkg Load Time Report*"</span>))
+        (depth 0)
+        num-pad name-pad max-time max-total-time max-depth)
+    (<span class="ef-k">cl-labels</span>
+        ((sort-records-by-time
+          (record)
+          (<span class="ef-k">let</span> ((self (assoc 'self record)))
+            (append (list self)
+                    (sort (nreverse (remove self (cdr record)))
+                          (<span class="ef-k">lambda</span> (a b)
+                            (&gt; (<span class="ef-k">or</span> (plist-get (alist-get 'self a) <span class="ef-b">:total</span>) 0.0)
+                               (<span class="ef-k">or</span> (plist-get (alist-get 'self b) <span class="ef-b">:total</span>) 0.0)))))))
+         (print-record
+          (record)
+          (<span class="ef-k">cond</span>
+           ((eq (car record) 'self)
+            (insert
+             (propertize
+              (string-pad (number-to-string (plist-get (cdr record) <span class="ef-b">:num</span>)) num-pad)
+              'face 'font-lock-keyword-face)
+             <span class="ef-s">" "</span>
+             (propertize
+              (apply #'concat
+                     (make-list (1- depth) <span class="ef-s">"• "</span>))
+              'face 'font-lock-comment-face)
+             (string-pad (format <span class="ef-s">"%s"</span> (plist-get (cdr record) <span class="ef-b">:name</span>)) name-pad)
+             (make-string (* (- max-depth depth) 2) ?\s)
+             (propertize
+              (format <span class="ef-s">"%.4fs"</span> (plist-get (cdr record) <span class="ef-b">:elapsed</span>))
+              'face
+              (list <span class="ef-b">:foreground</span>
+                    (doom-blend 'orange 'green
+                                (/ (plist-get (cdr record) <span class="ef-b">:elapsed</span>) max-time))))
+             (<span class="ef-k">if</span> (= (plist-get (cdr record) <span class="ef-b">:elapsed</span>)
+                    (plist-get (cdr record) <span class="ef-b">:total</span>))
+                 <span class="ef-s">""</span>
+               (concat <span class="ef-s">"   (Σ="</span>
+                       (propertize
+                        (format <span class="ef-s">"%.3fs"</span> (plist-get (cdr record) <span class="ef-b">:total</span>))
+                        'face
+                        (list <span class="ef-b">:foreground</span>
+                              (doom-blend 'orange 'green
+                                          (/ (plist-get (cdr record) <span class="ef-b">:total</span>) max-total-time))))
+                       <span class="ef-s">")"</span>))
+             <span class="ef-s">"\n"</span>))
+           (t
+            (<span class="ef-k">cl-incf</span> depth)
+            (mapc
+             #'print-record
+             (<span class="ef-k">if</span> sort-p
+                 (sort-records-by-time record)
+               (reverse (cdr record))))
+            (<span class="ef-k">cl-decf</span> depth))))
+         (flatten-records
+          (records)
+          (<span class="ef-k">if</span> (eq (car records) 'self)
+              (list records)
+            (mapcan
+             #'flatten-records
+             (reverse (cdr records)))))
+         (tree-depth
+          (records <span class="ef-t">&amp;optional</span> depth)
+          (<span class="ef-k">if</span> (eq (car records) 'self)
+              (<span class="ef-k">or</span> depth 0)
+            (1+ (cl-reduce #'max (cdr records) <span class="ef-b">:key</span> #'tree-depth))))
+         (mapreduceprop
+          (list map reduce prop)
+          (cl-reduce
+           reduce list
+           <span class="ef-b">:key</span>
+           (<span class="ef-k">lambda</span> (p) (funcall map (plist-get (cdr p) prop)))))
+         (elaborate-timings
+          (record)
+          (<span class="ef-k">if</span> (eq (car record) 'self)
+              (plist-get (cdr record) <span class="ef-b">:elapsed</span>)
+            (<span class="ef-k">let</span> ((total (cl-reduce #'+ (cdr record)
+                                    <span class="ef-b">:key</span> #'elaborate-timings))
+                  (self (cdr (assoc 'self record))))
+              (<span class="ef-k">if</span> (plist-get self <span class="ef-b">:enclosing</span>)
+                  (<span class="ef-k">prog1</span>
+                      (plist-get self <span class="ef-b">:elapsed</span>)
+                    (plist-put self <span class="ef-b">:total</span> (plist-get self <span class="ef-b">:elapsed</span>))
+                    (plist-put self <span class="ef-b">:elapsed</span>
+                               (- (* 2 (plist-get self <span class="ef-b">:elapsed</span>)) total)))
+                (plist-put self <span class="ef-b">:total</span> total)
+                total))))
+         (elaborated-timings
+          (record)
+          (<span class="ef-k">let</span> ((record (copy-tree record)))
+            (elaborate-timings record)
+            record)))
+      (<span class="ef-k">let*</span> ((tree
+              (elaborated-timings
+               (append '(root)
+                       (copy-tree
+                        (alist-get (<span class="ef-k">or</span> node 'root)
+                                   confpkg-load-time-tree
+                                   nil nil #'equal))
+                       '((self <span class="ef-b">:num</span> 0 <span class="ef-b">:elapsed</span> 0)))))
+             (flat-records
+              (cl-remove-if
+               (<span class="ef-k">lambda</span> (rec) (= (plist-get (cdr rec) <span class="ef-b">:num</span>) 0))
+               (flatten-records tree))))
+        (<span class="ef-k">setq</span> max-time (mapreduceprop flat-records #'identity #'max <span class="ef-b">:elapsed</span>)
+              max-total-time (mapreduceprop flat-records #'identity #'max <span class="ef-b">:total</span>)
+              name-pad (mapreduceprop flat-records #'length #'max <span class="ef-b">:name</span>)
+              num-pad (mapreduceprop flat-records
+                                     (<span class="ef-k">lambda</span> (n) (length (number-to-string n)))
+                                     #'max <span class="ef-b">:num</span>)
+              max-depth (tree-depth tree))
+        (<span class="ef-k">with-current-buffer</span> buf
+          (erase-buffer)
+          (<span class="ef-k">setq-local</span> outline-regexp <span class="ef-s">"[0-9]+ *</span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">(?:</span><span class="ef-s">• </span><span style="color: #4078f2; font-weight: 700;">\\</span><span style="color: #4078f2; font-weight: 700;">)</span><span class="ef-s">*"</span>)
+          (outline-minor-mode 1)
+          (use-local-map (make-sparse-keymap))
+          (local-set-key <span class="ef-s">"TAB"</span> #'outline-toggle-children)
+          (local-set-key <span class="ef-s">"\t"</span> #'outline-toggle-children)
+          (local-set-key (kbd <span class="ef-s">"&lt;backtab&gt;"</span>) #'outline-show-subtree)
+          (local-set-key (kbd <span class="ef-s">"C-&lt;iso-lefttab&gt;"</span>)
+                         (eval `(<span class="ef-k">cmd!</span> (<span class="ef-k">if</span> current-prefix-arg
+                                          (outline-show-all)
+                                        (outline-hide-sublevels (+ ,num-pad 2))))))
+          (insert
+           (propertize
+            (concat (string-pad <span class="ef-s">"#"</span> num-pad) <span class="ef-s">" "</span>
+                    (string-pad <span class="ef-s">"Confpkg"</span>
+                                (+ name-pad (* 2 max-depth) -3))
+                    (format <span class="ef-s">" Load Time (Σ=%.3fs)\n"</span>
+                            (plist-get (cdr (assoc 'self tree)) <span class="ef-b">:total</span>)))
+            'face '(<span class="ef-b">:inherit</span> (tab-bar-tab bold) <span class="ef-b">:extend</span> t <span class="ef-b">:underline</span> t)))
+          (<span class="ef-k">dolist</span> (record (<span class="ef-k">if</span> sort-p
+                              (sort-records-by-time tree)
+                            (reverse (cdr tree))))
+            (<span class="ef-k">unless</span> (eq (car record) 'self)
+              (print-record record)))
+          (set-buffer-modified-p nil)
+          (goto-char (point-min)))
+        (pop-to-buffer buf)))))
+
+(<span class="ef-k">provide</span> '<span class="ef-o">config-confpkg-timings</span>)
+<span class="ef-cd">;;; </span><span class="ef-c">config-confpkg-timings.el ends here
+</span>
+</pre>
+  <body>
+</html>
