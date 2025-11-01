@@ -36,7 +36,6 @@
             org-link-parameters))
 
 ;; For some faces
-(require 'highlight-numbers)
 (require 'highlight-quoted)
 (require 'rainbow-delimiters)
 

@@ -10,7 +10,6 @@
 
 (message "[34] Engraving files")
 
-(require 'highlight-numbers)
 (require 'highlight-quoted)
 (require 'rainbow-delimiters)
 (require 'engrave-faces-html)

@@ -2330,10 +2330,7 @@ FUNC shall be a function taking one argument."
   ;; Some extra highlighting (needs parent-mode)
   (require 'rainbow-delimiters)
   (require 'highlight-quoted)
-  (require 'highlight-numbers)
-  (setq emacs-lisp-mode-hook '(rainbow-delimiters-mode
-                               highlight-quoted-mode
-                               highlight-numbers-mode))
+  (setq emacs-lisp-mode-hook '(rainbow-delimiters-mode highlight-quoted-mode))
   ;; Pretty print
   (defun pp-sexp (sexp)
     (with-temp-buffer
@@ -2399,7 +2396,6 @@ htmlize package doesn't.
   (print! "Htmlizing %s" file)
 
   (doom-initialize)
-  (require 'highlight-numbers)
   (require 'highlight-quoted)
   (require 'rainbow-delimiters)
   (require 'engrave-faces-html)
@@ -10844,20 +10840,6 @@ and a button to copy the content of the block.
 (advice-add 'org-html-example-block   :around #'org-html-block-collapsable)
 (advice-add 'org-html-fixed-width     :around #'org-html-block-collapsable)
 (advice-add 'org-html-property-drawer :around #'org-html-block-collapsable)
-#+end_src
-
-**** Include extra font-locking in htmlize
-
-Org uses [[https://github.com/hniksic/emacs-htmlize][htmlize.el]] to export buffers with syntax highlighting.
-
-The works fantastically, for the most part. Minor modes that provide
-font-locking are /not/ loaded, and so do not impact the result.
-
-By enabling these modes in ~htmlize-before-hook~ we can correct this behaviour.
-
-#+begin_src emacs-lisp
-(autoload #'highlight-numbers--turn-on "highlight-numbers")
-(add-hook 'htmlize-before-hook #'highlight-numbers--turn-on)
 #+end_src
 
 **** Handle table overflow

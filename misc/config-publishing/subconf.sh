@@ -14,7 +14,6 @@
 
 ;;; Engraving
 
-(require 'highlight-numbers)
 (require 'highlight-quoted)
 (require 'rainbow-delimiters)
 (require 'engrave-faces-html)

@@ -20,7 +20,6 @@
 (require 'config-ox-html)
 
 ;; For some faces
-(require 'highlight-numbers)
 (require 'highlight-quoted)
 (require 'rainbow-delimiters)
 
