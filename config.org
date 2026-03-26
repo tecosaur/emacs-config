@@ -12929,7 +12929,15 @@ Uses cairosvg if possible, falling back to inkscape."
         (let* ((images (directory-files dir nil ".*.svg"))
                (num-images (length images))
                (index 0)
-               (max-threads (1- (string-to-number (shell-command-to-string "nproc"))))
+               (max-threads
+                (with-temp-buffer
+                  (pcase system-type
+                    ('darwin
+                     (call-process "sysctl" nil t nil "-n" "hw.ncpu"))
+                    ((or 'gnu 'gnu/linux)
+                     (call-process "nproc" nil t nil))
+                    (_ (insert "1")))
+                  (max 1 (1- (string-to-number (buffer-string))))))
                (threads 0))
           (while (< index num-images)
             (setf threads (1+ threads))
