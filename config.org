@@ -2161,7 +2161,7 @@ to follow it. Thanks to the continued expansion of the =xdg-desktop-portal=
 protocols, we can read this from D-Bus on most systems. We can even watch for
 changes to boot.
 
-#+name: auto-theme
+#+name: auto-theme-xdg
 #+begin_src emacs-lisp :noweb-ref none
 (require 'dbus)
 
@@ -2205,18 +2205,53 @@ changes to boot.
    #'+doom-theme--dbus-update))
 #+end_src
 
-It only makes sense to do this on Linux systems where =dbus= can be loaded, so we
-can check this at config generation time and pick whether it should be used.
+On MacOS we can also check the system theme, and there is a convenient
+pre-existing =ns-system-*= variable and hook.
+
+#+name: auto-theme-darwin
+#+begin_src emacs-lisp :noweb-ref none
+(defun +doom-theme--from-system (system-theme)
+  "Pick a doom theme based on the SYSTEM-THEME symbol."
+  (pcase system-theme
+    ('dark doom-theme-dark)
+    ('light doom-theme-light)
+    (_ doom-theme-dark)))
+
+(defun +doom-theme--ns-update (new-theme)
+  "Handle a signal for system theme changes."
+  (when (memq new-theme '(light dark))
+    (let* ((theme (+doom-theme--from-system new-theme))
+           (alt-value (if (eq new-theme 'light) 'dark 'light))
+           (alt-theme (+doom-theme--from-system alt-value)))
+      (when (memq alt-theme custom-enabled-themes)
+        (mapc #'disable-theme custom-enabled-themes)
+        (load-theme theme t)))))
+
+(when (and (display-graphic-p (selected-frame))
+           (not (getenv "DOOM_THEME")))
+  (add-hook 'ns-system-appearance-change-functions #'+doom-theme--ns-update)
+  (setq doom-theme (+doom-theme--from-system ns-system-appearance)))
+#+end_src
+
+We can now pick which flavour of adaptive theming we want at config generation
+time.
 
 #+name: conditional-auto-theme
 #+begin_src emacs-lisp :noweb-ref none :noweb yes :noweb-prefix no
-(if (and (memq system-type '(gnu gnu/linux gnu/kfreebsd))
-         (require 'dbus nil t))
-    (mapconcat
-     #'pp-to-string
-     '(<<auto-theme>>)
-     "\n")
-  "")
+(cond
+ ((and (memq system-type '(gnu gnu/linux gnu/kfreebsd))
+       (require 'dbus nil t))
+  (mapconcat
+   #'pp-to-string
+   '(<<auto-theme-xdg>>)
+   "\n"))
+ ((and (eq system-type 'darwin)
+       (boundp 'ns-system-appearance))
+  (mapconcat
+   #'pp-to-string
+   '(<<auto-theme-darwin>>)
+   "\n"))
+ (t ""))
 #+end_src
 
 There we go.
