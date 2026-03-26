@@ -16,6 +16,7 @@
 #+options: coverpage:yes
 #+startup: fold
 
+#+accent_color: #7f5ab6
 #+latex_class: book
 #+latex_header_extra: \usepackage[autooneside=false,automark,headsepline]{scrlayer-scrpage}
 #+latex_header_extra: \clearpairofpagestyles \renewcommand*{\chaptermarkformat}{} \renewcommand*{\sectionmarkformat}{}
@@ -8183,6 +8184,7 @@ and Minad's lovely =org-modern= goes a long way in this regard.
           ("setupfile" . "⇚")
           ("html_head" . "🅷")
           ("html" . "🅗")
+          ("accent_color" . "")
           ("latex_class" . "🄻")
           ("latex_class_options" . "🄻󰒓")
           ("latex_header" . "🅻")
@@ -9673,6 +9675,8 @@ much.
      (cl-pushnew '(:latex-cover-page nil "coverpage" nil)
                  (org-export-backend-options (org-export-get-backend 'latex)))
      (cl-pushnew '(:latex-font-set nil "fontset" nil)
+                 (org-export-backend-options (org-export-get-backend 'latex)))
+     (cl-pushnew '(:latex-accent-colour "ACCENT_COLOR" nil nil)
                  (org-export-backend-options (org-export-get-backend 'latex)))))
 #+end_src
 
@@ -11306,18 +11310,127 @@ commands below are defined.
              '+org-export-latex-fancy-item-checkboxes)
 #+end_src
 
+**** An accent colour
+
+It's nice for documents to look a bit different from each other at a glance, and
+one nice way to accomplish this is with accent colours. By using a good colour
+space supported by =color.el=, we can bound the chroma and lightness, allowing
+sampling of pleasant pastel-y shades. This can then be used to offer a few
+shades of an accent colour, spicing up title pages and other suitable elements.
+
+By default the accent hue is derived from the document title, giving each
+document a consistent but distinct look. This can be controlled with
+=#+accent_color: VALUE= where =VALUE= is one of:
++ =t= / =yes= :: use the default title-derived colour (the default)
++ =nil= / =no= :: produce grey (achromatic) shades
++ 0--360 :: use that as the hue angle directly (in degrees)
++ a colour name :: extract the hue from that colour
++ a hex colour :: extract the hue from that colour
+
+This is registered as a dedicated keyword rather than an =#+options= toggle,
+since the value space is richer than a simple boolean and this may be extended to
+other export backends in the future.
+
+#+begin_src emacs-lisp
+(defvar org-latex-accent-colour t
+  "Default accent colour behaviour for LaTeX export.
+When t, derive the hue from the document title.
+When nil, use grey (achromatic) shades.
+When a string, interpret as a hue (\"0\"--\"360\"), colour name, or hex colour.")
+
+(eval '(cl-pushnew '(:latex-accent-colour "ACCENT_COLOR" nil org-latex-accent-colour)
+                   (org-export-backend-options (org-export-get-backend 'latex))))
+#+end_src
+
+The core shade generation works in OKLab space, taking a hue angle (in radians)
+and a chroma factor (0.0 to 1.0) that scales the saturation.
+
+#+begin_src emacs-lisp
+(defun org-latex-accent-pastel-shades (hue chroma-factor lightnesses)
+  "Generate a set of perceptually uniform pastel hex colours.
+HUE is an angle in radians, CHROMA-FACTOR (0.0--1.0) scales the
+saturation, and LIGHTNESSES is a list of OKLab L values."
+  (mapcar
+   (lambda (l)
+     (let* ((chroma (* (- 1.02 l) l (+ 0.35 (* 0.45 chroma-factor))))
+            (a (* chroma (cos hue)))
+            (b (* chroma (sin hue)))
+            (rgb (mapcar #'color-clamp (color-oklab-to-srgb l a b))))
+       (substring (apply #'color-rgb-to-hex (append rgb (list 2))) 1)))
+   lightnesses))
+#+end_src
+
+Now we can parse the keyword value into a hue and chroma factor. The
+title-derived case hashes the title to pseudo-randomly select both, preserving
+the original behaviour. For a user-specified colour, the hue is extracted via
+OKLab and the chroma factor is derived from the colour's actual chroma --- this
+ensures the generated shades never exceed the saturation of the provided colour.
+
+#+begin_src emacs-lisp
+(defun org-latex-accent--parse (value info)
+  "Parse accent colour VALUE into a (HUE . CHROMA-FACTOR) cons cell.
+HUE is in radians, CHROMA-FACTOR is 0.0--1.0. INFO is the export
+plist, used to access the document title for the default case.
+VALUE may be t/nil (from the defvar default), or a string from the keyword."
+  (pcase value
+    ((or 'nil "no" "nil")
+     (cons 0.0 (/ -0.35 0.45)))
+    ((or 't "yes" "t" "")
+     (let* ((title (org-html-plain-text
+                    (org-element-interpret-data (plist-get info :title)) info))
+            (hash (string-to-number (substring (sha1 (downcase title)) 0 12) 16)))
+       (cons (* 2 float-pi (/ (+ (mod hash 320) 10) 360.0))
+             (/ (mod hash 100) 100.0))))
+    ((and (pred stringp)
+          (guard (string-match-p "\\`[0-9]+\\(?:\\.[0-9]*\\)?\\'" value)))
+     (cons (* 2 float-pi (/ (string-to-number value) 360.0)) 1.0))
+    ((pred stringp)
+     (if-let ((rgb (color-name-to-rgb value)))
+         (let* ((lab (apply #'color-srgb-to-oklab rgb))
+                (l (car lab))
+                (chroma (sqrt (+ (* (cadr lab) (cadr lab))
+                                 (* (caddr lab) (caddr lab)))))
+                ;; Invert: chroma = (1.02 - l) * l * (0.35 + 0.45 * factor)
+                (l-scale (* (- 1.02 l) l))
+                (factor (if (> l-scale 1e-6)
+                            (min 1.0 (max 0.0 (/ (- (/ chroma l-scale) 0.35) 0.45)))
+                          0.0)))
+           (cons (atan (caddr lab) (cadr lab)) factor))
+       (user-error "Unrecognised accent colour: %s" value)))
+    (_ (user-error "Invalid accent colour value: %S" value))))
+#+end_src
+
+Finally, we tie everything together. The option is read from =info=, parsed into
+a hue and chroma factor, and the five accent shades are generated.
+
+#+begin_src emacs-lisp
+(defun org-latex-accent-colours (info)
+  "Generate LaTeX colour definitions for the document accent colour.
+Looks at INFO to find the accent option and document title."
+  (let* ((accent-value (plist-get info :latex-accent-colour))
+         (hue-chroma (org-latex-accent--parse accent-value info))
+         (lightnesses '(0.25 0.5 0.7 0.96 0.97))
+         (shades (org-latex-accent-pastel-shades
+                  (car hue-chroma) (cdr hue-chroma) lightnesses))
+         (no-accent-p (member accent-value '(nil "no" "nil"))))
+    (apply #'format "\
+\\providecolor{accentdark}{HTML}{%s}
+\\providecolor{accent}{HTML}{%s}
+\\providecolor{accentlight}{HTML}{%s}
+\\providecolor{accentpale}{HTML}{%s}
+\\providecolor{accentfaint}{HTML}{%s}\n\n"
+           (if no-accent-p
+               (append '("000000" "000000" "000000") (cdddr shades))
+             shades))))
+
+(org-export-update-features 'latex
+  (accent-colour :snippet org-latex-accent-colours))
+#+end_src
+
 **** Class templates
 
 I really like the KOMA bundle. It provides a set of mechanisms to tweak document
 styling which is both easy to use, and quite comprehensive.
-For example, I rather like section numbers in the margin, which can be
-accomplished with
-#+name: latex-hanging-secnum
-#+begin_src LaTeX
-\renewcommand\sectionformat{\llap{\thesection\autodot\enskip}}
-\renewcommand\subsectionformat{\llap{\thesubsection\autodot\enskip}}
-\renewcommand\subsubsectionformat{\llap{\thesubsubsection\autodot\enskip}}
-#+end_src
 
 It can also be nice to have big =\chapter=​s.
 #+name: latex-big-chapter
@@ -11345,17 +11458,15 @@ Now let's just sprinkle some KOMA all over the Org LaTeX classes.
                              ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
          (book-sections (append '(("\\chapter{%s}" . "\\chapter*{%s}"))
                                 article-sections))
-         (hanging-secnum-preamble <<grab("latex-hanging-secnum")>>)
          (big-chap-preamble <<grab("latex-big-chapter")>>))
     (setcdr (assoc "article" org-latex-classes)
-            `(,(concat "\\documentclass{scrartcl}" hanging-secnum-preamble)
+            `("\\documentclass{scrartcl}"
               ,@article-sections))
     (add-to-list 'org-latex-classes
-                 `("report" ,(concat "\\documentclass{scrartcl}" hanging-secnum-preamble)
+                 `("report" "\\documentclass{scrartcl}"
                    ,@article-sections))
     (add-to-list 'org-latex-classes
-                 `("book" ,(concat "\\documentclass[twoside=false]{scrbook}"
-                                   big-chap-preamble hanging-secnum-preamble)
+                 `("book" ,(concat "\\documentclass[twoside=false]{scrbook}" big-chap-preamble)
                    ,@book-sections))
     (add-to-list 'org-latex-classes
                  `("blank" "[NO-DEFAULT-PACKAGES]\n[NO-PACKAGES]\n[EXTRA]"
@@ -11372,7 +11483,6 @@ Now let's just sprinkle some KOMA all over the Org LaTeX classes.
       <<grab("latex-fancy-hyperref")>>
       org-latex-reference-command "\\cref{%s}")
 #+end_src
-
 
 The =hyperref= setup needs to be handled separately however.
 #+name: latex-fancy-hyperref
@@ -11414,6 +11524,20 @@ provides these features.
 ***** Conditional Content
 
 Let's consider content we want in particular situations.
+
+When using the KOMA class, it's nice to have left-hanging sections with a dash
+of colour, with a little colour in the TOC too.
+
+#+name: org-latex-koma-sections-preamble
+#+begin_src LaTeX
+\renewcommand\sectionformat{\llap{\color{accentlight}\thesection\autodot\enskip}}
+\renewcommand\subsectionformat{\llap{\color{accentlight}\thesubsection\autodot\enskip}}
+\renewcommand\subsubsectionformat{\llap{\color{accentlight}\thesubsubsection\autodot\enskip}}
+\addtokomafont{sectionentry}{\color{accent}}
+\addtokomafont{title}{\color{accentdark}}
+\addtokomafont{author}{\color{accentdark}}
+\addtokomafont{date}{\color{accent}}
+#+end_src
 
 Captions could do with a bit of tweaking such that
 + You can easily have multiple captions
@@ -11531,6 +11655,10 @@ access.
 (defvar org-latex-embed-files-preamble
   <<grab("org-latex-embed-files-preamble")>>
   "Preamble that embeds files within the pdf.")
+
+(defvar org-latex-koma-sections-preamble
+  <<grab("org-latex-koma-sections-preamble")>>
+  "Section customization for KOMA-Script classes.")
 
 (defvar org-latex-caption-preamble
   <<grab("org-latex-caption-preamble")>>
@@ -11825,17 +11953,15 @@ introduce an =:order= keyword. Using this I'll arrange snippets as follows.
    :requires .fancy-box
    :snippet "\\defsimplebox{error}{c01c28}{Important}"
    :after .fancy-box)
-  (hanging-section-numbers
+  (koma-sections
    :condition
    (let ((latex-class
           (assoc (plist-get info :latex-class) (plist-get info :latex-classes))))
      (and (cadr latex-class)
           (string-match-p "\\`\\\\documentclass\\(?:\\[.*\\]\\)?{scr" (cadr latex-class))
           (not (string-match-p "[[,]twocolumn[],]" (or (plist-get info :latex-class-options) "")))))
-   :snippet
-   "\\renewcommand\\sectionformat{\\llap{\\thesection\\autodot\\enskip}}
-\\renewcommand\\subsectionformat{\\llap{\\thesubsection\\autodot\\enskip}}
-\\renewcommand\\subsubsectionformat{\\llap{\\thesubsubsection\\autodot\\enskip}}")
+   :requires accent-colour
+   :snippet org-latex-koma-sections-preamble)
   (toc-hidelinks
    :condition
    (or (plist-get info :with-toc)
@@ -12323,55 +12449,121 @@ some nice decorations for the background.
 I'll start off by setting up the required additions to the preamble.
 This will accomplish the following:
 + Load the required packages
++ Add a nice way of formatting a =YYYY-MM-DD= date
 + Redefine =\maketitle=
-+ Draw an Org icon with Tikz to use in the cover page (it's a little easter egg)
++ Draw an simplified version of my tree avatar, with [[https://xyz2tex.github.io/svg2tikz/][=svg2tikz=]]
 + Start a new page after the table of contents by redefining =\tableofcontents=
 
 #+name: latex-cover-page
-#+begin_src LaTeX
+#+begin_src LaTeX :noweb no-export
 \usepackage{tikz}
 \usetikzlibrary{shapes.geometric}
 \usetikzlibrary{calc}
 
-\newsavebox\orgicon
-\begin{lrbox}{\orgicon}
-  \begin{tikzpicture}[y=0.80pt, x=0.80pt, inner sep=0pt, outer sep=0pt]
-    \path[fill=black!6] (16.15,24.00) .. controls (15.58,24.00) and (13.99,20.69) .. (12.77,18.06)arc(215.55:180.20:2.19) .. controls (12.33,19.91) and (11.27,19.09) .. (11.43,18.05) .. controls (11.36,18.09) and (10.17,17.83) .. (10.17,17.82) .. controls (9.94,18.75) and (9.37,19.44) .. (9.02,18.39) .. controls (8.32,16.72) and (8.14,15.40) .. (9.13,13.80) .. controls (8.22,9.74) and (2.18,7.75) .. (2.81,4.47) .. controls (2.99,4.47) and (4.45,0.99) .. (9.15,2.41) .. controls (14.71,3.99) and (17.77,0.30) .. (18.13,0.04) .. controls (18.65,-0.49) and (16.78,4.61) .. (12.83,6.90) .. controls (10.49,8.18) and (11.96,10.38) .. (12.12,11.15) .. controls (12.12,11.15) and (14.00,9.84) .. (15.36,11.85) .. controls (16.58,11.53) and (17.40,12.07) .. (18.46,11.69) .. controls (19.10,11.41) and (21.79,11.58) .. (20.79,13.08) .. controls (20.79,13.08) and (21.71,13.90) .. (21.80,13.99) .. controls (21.97,14.75) and (21.59,14.91) .. (21.47,15.12) .. controls (21.44,15.60) and (21.04,15.79) .. (20.55,15.44) .. controls (19.45,15.64) and (18.36,15.55) .. (17.83,15.59) .. controls (16.65,15.76) and (15.67,16.38) .. (15.67,16.38) .. controls (15.40,17.19) and (14.82,17.01) .. (14.09,17.32) .. controls (14.70,18.69) and (14.76,19.32) .. (15.50,21.32) .. controls (15.76,22.37) and (16.54,24.00) .. (16.15,24.00) -- cycle(7.83,16.74) .. controls (6.83,15.71) and (5.72,15.70) .. (4.05,15.42) .. controls (2.75,15.19) and (0.39,12.97) .. (0.02,10.68) .. controls (-0.02,10.07) and (-0.06,8.50) .. (0.45,7.18) .. controls (0.94,6.05) and (1.27,5.45) .. (2.29,4.85) .. controls (1.41,8.02) and (7.59,10.18) .. (8.55,13.80) -- (8.55,13.80) .. controls (7.73,15.00) and (7.80,15.64) .. (7.83,16.74) -- cycle;
+\newsavebox\covericon
+\begin{lrbox}{\covericon}
+  \begin{tikzpicture}[y=1.40pt, x=1.40pt, inner sep=0pt, outer sep=0pt]
+    \path[fill=accentpale] (9.2, 17.5).. controls (9.0, 17.5) and (8.7, 17.5) ..  (8.5, 17.5).. controls (5.3, 17.2) and
+    (5.4, 16.2) .. (3.6, 15.6).. controls (1.6, 15.3) and (1.6, 12.1) .. (3.1, 12.7).. controls (3.6, 12.7) and
+    (4.2, 12.9) .. (4.9, 13.1).. controls (6.0, 12.5) and (6.7, 11.8) .. (7.2, 11.1)..  controls (7.0, 11.2) and
+    (6.6, 11.5) .. (4.7, 11.8).. controls (4.0, 12.0) and (2.9, 12.1) .. (2.0, 12.0).. controls (0.4, 11.4) and
+    (3.8, 10.5) .. (2.2, 10.0).. controls (0.7, 9.9) and (-0.1, 7.5) .. (1.7, 8.3).. controls (2.4, 8.7) and
+    (3.7, 9.0) .. (4.5, 9.0).. controls (4.9, 8.8) and (5.3, 8.5) .. (5.7, 8.3).. controls (4.9, 8.2) and
+    (3.9, 8.1) .. (3.2, 8.2).. controls (2.5, 7.3) and (0.4, 6.4) .. (0.7, 5.3).. controls (1.7, 4.6) and
+    (2.3, 6.4) .. (3.2, 6.4).. controls (4.4, 5.8) and (6.4, 6.3) .. (7.1, 6.8).. controls (7.7, 6.5) and
+    (7.8, 5.8) .. (8.2, 5.3)arc(4.0:4.2:203.7 and -203.7).. controls (7.8, 4.7) and
+    (7.1, 4.7) .. (6.6, 4.6).. controls (6.9, 4.7) and (7.3, 4.7) .. (7.4, 5.0).. controls (7.4, 5.5) and
+    (3.9, 6.0) .. (2.2, 4.6).. controls (1.9, 3.6) and (3.7, 4.5) .. (4.4, 4.2).. controls (3.7, 3.3) and
+    (3.4, 2.9) .. (5.1, 3.1).. controls (6.5, 3.3) and (7.0, 3.4) .. (6.0, 4.2) -- (6.0, 4.2).. controls (6.7, 4.2) and
+    (7.4, 4.6) .. (8.1, 4.0).. controls (8.0, 3.3) and (8.0, 2.7) ..  (7.9, 2.1).. controls (5.0, 2.3) and
+    (4.1, 0.7) .. (7.5, 0.7).. controls (13.2, 0.5) and (12.4, 2.0) .. (10.0, 1.9).. controls (9.8, 2.0) and
+    (9.6, 2.0) ..  (9.4, 2.0).. controls (9.3, 2.5) and (9.5, 3.2) .. (9.6, 3.4).. controls (10.1, 3.7) and
+    (10.5, 3.8) .. (10.8, 3.7).. controls (10.7, 3.5) and (10.7, 3.3) ..  (11.1, 2.9).. controls (12.2, 2.1) and
+    (13.1, 2.9) .. (15.1, 1.9).. controls (16.3, 1.5) and (18.8, 3.1) .. (16.0, 4.0).. controls (15.2, 4.3) and
+    (17.8, 6.6) .. (15.7, 6.6) -- (14.1, 6.6).. controls (13.3, 6.6) and (11.2, 6.9) ..  (12.2, 6.0).. controls (11.0, 6.5) and
+    (11.0, 4.7) .. (9.8, 4.3).. controls (10.1, 5.6) and (10.6, 7.0) .. (11.5, 7.9).. controls (11.9, 7.8) and
+    (12.2, 7.9) .. (12.0, 7.4).. controls (11.0, 6.3) and (14.1, 6.9) .. (14.7, 7.8)..  controls (17.1, 7.7) and
+    (17.1, 9.0) .. (14.6, 9.1).. controls (13.2, 9.2) and (12.1, 9.4) .. (10.4, 9.0).. controls (9.5, 8.7) and
+    (10.3, 8.4) .. (11.1, 8.2).. controls (10.1, 7.2) and (10.0, 5.4) .. (9.2, 4.5).. controls (9.2, 5.2) and
+    (9.1, 5.9) .. (9.1, 6.7).. controls (9.5, 8.0) and (10.0, 9.1) .. (10.8, 9.8).. controls (12.0, 9.8) and
+    (13.1, 9.7) .. (14.1, 9.6).. controls (16.0, 9.3) and (15.6, 11.4) .. (14.6, 12.4).. controls (13.2, 13.2) and
+    (11.0, 13.3) .. (9.6, 12.9).. controls (9.5, 12.5) and (9.3, 11.8) .. (9.0, 11.5).. controls (8.9, 11.8) and
+    (8.9, 12.1) .. (8.9, 12.4).. controls (8.9, 12.9) and (9.3, 13.5) .. (9.5, 13.9)arc(282.6:290.3:1.8 and -1.8).. controls (11.0, 13.1) and
+    (13.0, 12.8) .. (14.1, 13.5).. controls (15.4, 14.6) and (12.8, 14.7) .. (12.1, 14.9).. controls (12.4, 16.6) and
+    (10.7, 17.5) .. (9.2, 17.5)(8.8, 14.0)..  controls (8.8, 13.6) and (8.7, 13.2) .. (8.7, 12.7).. controls (8.4, 13.1) and
+    (8.0, 13.2) .. (7.9, 13.9).. controls (8.2, 13.9) and (8.5, 14.0) .. (8.8, 14.0)(6.7, 13.6).. controls (7.6, 12.9) and
+    (8.3, 12.2) .. (8.5, 11.2) -- (8.5, 11.1).. controls (8.2, 11.0) and (7.9, 10.9) .. (7.7, 10.8).. controls (7.1, 11.7) and
+    (6.1, 12.5) .. (6.0, 13.4).. controls (6.2, 13.5) and (6.5, 13.5) ..  (6.7, 13.6)(5.6, 11.3) -- (6.4, 11.1).. controls (6.6, 11.1) and
+    (6.9, 10.9) ..  (7.0, 10.8).. controls (6.7, 10.8) and (6.3, 10.8) .. (6.0, 11.0).. controls (5.9, 11.1) and
+    (5.7, 11.2) .. (5.6, 11.3)(10.2, 9.8).. controls (9.7, 9.2) and (9.3, 8.5) .. (9.1, 7.7)arc(177.9:178.2:378.8 and -378.8).. controls (9.4, 9.8) and
+    (9.8, 9.8) .. (10.2, 9.8)(8.4, 9.7).. controls (8.4, 9.3) and (8.4, 9.0) ..  (8.4, 8.6) -- (8.1, 9.7).. controls (8.2, 9.7) and
+    (8.3, 9.7) .. (8.4, 9.7)(7.6, 9.6).. controls (7.8, 8.9) and (8.1, 8.4) .. (8.2, 7.7).. controls (8.2, 7.1) and
+    (8.3, 6.7) .. (8.2, 6.2).. controls (8.1, 6.6) and (7.9, 6.9) .. (7.5, 7.2).. controls (7.8, 7.5) and
+    (8.1, 8.0) .. (7.9, 8.2).. controls (7.3, 8.3) and (6.7, 8.3) .. (6.2, 8.3).. controls (5.5, 8.6) and
+    (5.2, 8.8) .. (5.0, 9.1).. controls (5.4, 9.1) and (5.6, 9.1) .. (5.9, 9.2)(12.6, 5.0).. controls (13.1, 4.5) and
+    (11.8, 4.4) .. (11.3, 4.0).. controls (10.9, 4.1) and (10.5, 4.2) .. (10.1, 4.1).. controls (11.2, 4.7) and (11.3, 6.2) .. (12.2, 5.6);
   \end{tikzpicture}
 \end{lrbox}
 
 \makeatletter
+\ExplSyntaxOn
+
+\cs_new:Npn \cover_date_format:nnn #1#2#3 {%
+  \LARGE #1 \\ \large
+  \str_case:nnF {#2}
+    {{01}{Jan} {02}{Feb} {03}{Mar} {04}{Apr} {05}{May} {06}{Jun}
+     {07}{Jul} {08}{Aug} {09}{Sep} {10}{Oct} {11}{Nov} {12}{Dec}}
+    {#2}~\int_eval:n {#3}
+}
+
+\cs_new:Npn \cover_print_date:n #1
+  {\exp_args:Ne \cover_print_date_aux:n {#1}}
+
+\cs_new:Npn \cover_print_date_aux:n #1 {%
+  \bool_if:nTF
+    {\int_compare_p:n {\str_count:n {#1} = 10} &&
+     \str_if_eq_p:ee {\str_item:nn {#1} {5}} {-} &&
+     \str_if_eq_p:ee {\str_item:nn {#1} {8}} {-}}
+    {\exp_args:Nee \cover_date_format:nnn
+        {\str_range:nnn {#1} {1} {4}}
+        {\str_range:nnn {#1} {6} {7}}
+        {\str_range:nnn {#1} {9} {10}}}
+    {#1}
+}
+
+\NewDocumentCommand\coverprintdate{m}{\cover_print_date:n {#1}}
+
+\ExplSyntaxOff
+
 \g@addto@macro\tableofcontents{\clearpage}
 \renewcommand\maketitle{
   \thispagestyle{empty}
   \hyphenpenalty=10000 % hyphens look bad in titles
   \renewcommand{\baselinestretch}{1.1}
   \NewCommandCopy{\oldtoday}{\today}
-  \renewcommand{\today}{\LARGE\number\year\\\large%
-    \ifcase \month \or Jan\or Feb\or Mar\or Apr\or May \or Jun\or Jul\or Aug\or Sep\or Oct\or Nov\or Dec\fi
-    ~\number\day}
+  \renewcommand{\today}{\number\year-\two@digits{\month}-\two@digits{\day}}
   \begin{tikzpicture}[remember picture,overlay]
     %% Background Polygons %%
     \foreach \i in {2.5,...,22} % bottom left
-    {\node[rounded corners,black!3.5,draw,regular polygon,regular polygon sides=6, minimum size=\i cm,ultra thick] at ($(current page.west)+(2.5,-4.2)$) {} ;}
+    {\node[rounded corners,accentfaint!70,draw,regular polygon,regular polygon sides=6, minimum size=\i cm,ultra thick] at ($(current page.west)+(2.5,-4.2)$) {} ;}
     \foreach \i in {0.5,...,22} % top left
-    {\node[rounded corners,black!5,draw,regular polygon,regular polygon sides=6, minimum size=\i cm,ultra thick] at ($(current page.north west)+(2.5,2)$) {} ;}
-    \node[rounded corners,fill=black!4,regular polygon,regular polygon sides=6, minimum size=5.5 cm,ultra thick] at ($(current page.north west)+(2.5,2)$) {};
+    {\node[rounded corners,accentfaint,draw,regular polygon,regular polygon sides=6, minimum size=\i cm,ultra thick] at ($(current page.north west)+(2.5,2)$) {} ;}
+    \node[rounded corners,fill=accentfaint!80,regular polygon,regular polygon sides=6, minimum size=5.5 cm,ultra thick] at ($(current page.north west)+(2.5,2)$) {};
     \foreach \i in {0.5,...,24} % top right
-    {\node[rounded corners,black!2,draw,regular polygon,regular polygon sides=6, minimum size=\i cm,ultra thick] at ($(current page.north east)+(0,-8.5)$) {} ;}
-    \node[fill=black!3,rounded corners,regular polygon,regular polygon sides=6, minimum size=2.5 cm,ultra thick] at ($(current page.north east)+(0,-8.5)$) {};
+    {\node[rounded corners,accentfaint!40,draw,regular polygon,regular polygon sides=6, minimum size=\i cm,ultra thick] at ($(current page.north east)+(0,-8.5)$) {} ;}
+    \node[fill=accentfaint!60,rounded corners,regular polygon,regular polygon sides=6, minimum size=2.5 cm,ultra thick] at ($(current page.north east)+(0,-8.5)$) {};
     \foreach \i in {21,...,3} % bottom right
-    {\node[black!3,rounded corners,draw,regular polygon,regular polygon sides=6, minimum size=\i cm,ultra thick] at ($(current page.south east)+(-1.5,0.75)$) {} ;}
-    \node[fill=black!3,rounded corners,regular polygon,regular polygon sides=6, minimum size=2 cm,ultra thick] at ($(current page.south east)+(-1.5,0.75)$) {};
-    \node[align=center, scale=1.4] at ($(current page.south east)+(-1.5,0.75)$) {\usebox\orgicon};
+    {\node[accentfaint!60,rounded corners,draw,regular polygon,regular polygon sides=6, minimum size=\i cm,ultra thick] at ($(current page.south east)+(-1.5,0.75)$) {} ;}
+    \node[fill=accentfaint!60,rounded corners,regular polygon,regular polygon sides=6, minimum size=2 cm,ultra thick] at ($(current page.south east)+(-1.5,0.75)$) {};
+    \node[align=center, scale=1.4] at ($(current page.south east)+(-1.5,0.75)$) {\usebox\covericon};
     %% Text %%
-    \node[left, align=right, black, text width=0.8\paperwidth, minimum height=3cm, rounded corners,font=\Huge\bfseries] at ($(current page.north east)+(-2,-8.5)$)
+    \node[left, align=right, text=accentdark, text width=0.8\paperwidth, minimum height=3cm, rounded corners,font=\Huge\bfseries] at ($(current page.north east)+(-2,-8.5)$)
     {\@title};
-    \node[left, align=right, black, text width=0.8\paperwidth, minimum height=2cm, rounded corners, font=\Large] at ($(current page.north east)+(-2,-11.8)$)
+    \node[left, align=right, text=accentdark, text width=0.8\paperwidth, minimum height=2cm, rounded corners, font=\Large] at ($(current page.north east)+(-2,-11.8)$)
     {\scshape \@author};
     \renewcommand{\baselinestretch}{0.75}
-    \node[align=center,rounded corners,fill=black!3,text=black,regular polygon,regular polygon sides=6, minimum size=2.5 cm,inner sep=0, font=\Large\bfseries ] at ($(current page.west)+(2.5,-4.2)$)
-    {\@date};
+    \node[align=center,rounded corners,fill=accentfaint,text=accent,regular polygon,regular polygon sides=6, minimum size=2.5 cm,inner sep=0, font=\Large\bfseries ] at ($(current page.west)+(2.5,-4.2)$)
+    {\coverprintdate{\@date}};
   \end{tikzpicture}
   \let\today\oldtoday
   \clearpage}
@@ -12406,16 +12598,17 @@ This condition is applied when cover page option is set to auto.")
 
 (defun org-latex-cover-page-p ()
   "Whether a cover page should be used when exporting this Org file."
-  (pcase (or (car
-              (delq nil
-                    (mapcar
-                     (lambda (opt-line)
-                       (plist-get (org-export--parse-option-keyword opt-line 'latex) :latex-cover-page))
-                     (cdar (org-collect-keywords '("OPTIONS"))))))
-             org-latex-cover-page)
-    ((or 't 'yes) t)
-    ('auto (when (> (count-words (point-min) (point-max)) org-latex-cover-page-wordcount-threshold) t))
-    (_ nil)))
+  (let ((latex-backend (org-export-get-backend 'latex)))
+    (pcase (or (car
+                (delq nil
+                      (mapcar
+                       (lambda (opt-line)
+                         (plist-get (org-export--parse-option-keyword opt-line latex-backend) :latex-cover-page))
+                       (cdar (org-collect-keywords '("OPTIONS"))))))
+               org-latex-cover-page)
+      ((or 't 'yes) t)
+      ('auto (when (> (count-words (point-min) (point-max)) org-latex-cover-page-wordcount-threshold) t))
+      (_ nil))))
 
 (defadvice! org-latex-set-coverpage-subtitle-format-a (contents info)
   "Set the subtitle format when a cover page is being used."
@@ -12426,6 +12619,7 @@ This condition is applied when cover page option is set to auto.")
 (org-export-update-features 'latex
   (cover-page
    :condition (org-latex-cover-page-p)
+   :requires accent-colour
    :snippet org-latex-cover-page-maketitle
    :order 9))
 #+end_src
