@@ -70,21 +70,10 @@
 
 (defun initialise (&optional mode)
   (advice-add 'theme-magic-from-emacs :override #'ignore)
-  (advice-add 'format-all-buffer :override #'ignore)
 
-  (pcase mode
-    ('full
-     (load "~/.config/emacs/early-init.el")
-     (require 'doom-start))
-    ('light
-     (setq gc-cons-threshold 16777216
-           gcmh-high-cons-threshold 16777216)
-     (load "~/.config/emacs/lisp/doom.el")
-     (require 'doom-cli)
-     (doom-require 'doom-lib 'print)
-     (doom-require 'doom-lib 'files)
-     (doom-require 'doom-lib 'packages)
-     (doom-require 'doom-lib 'debug)))
+  (load "~/.config/emacs/early-init.el")
+  (when (eq mode 'full)
+    (doom-startup))
 
   (doom-modules-initialize)
   (doom-initialize-packages)
@@ -104,9 +93,6 @@
   (defalias 'y-or-n-p #'ignore)
 
   (advice-add 'ask-user-about-supersession-threat :override #'ignore)
-
-  (setq debug-on-error t
-        doom-debug-p t)
 
   (setq emojify-download-emojis-p nil)
   (unless (boundp 'image-types) ; why on earth is this needed?
