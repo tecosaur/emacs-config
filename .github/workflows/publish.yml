@@ -57,7 +57,7 @@ jobs:
 
       - name: Install Doom
         if: github.event_name != 'schedule' || steps.doomcache.outputs.cache-hit != 'true'
-        run: runner '~/.config/emacs/bin/doom install --no-env --no-fonts'
+        run: runner '~/.config/emacs/bin/doom install --no-env'
 
       - name: Run Doom sync
         if: github.event_name != 'schedule' || steps.doomcache.outputs.cache-hit != 'true'
