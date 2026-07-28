@@ -5203,6 +5203,26 @@ than Objective-C. As such, it'll be switching the icon associated with =.m=.
             (cdr matlab-icon))))
 #+end_src
 
+*** Rainbow delimiters
+
+#+call: confpkg("!Pkg Rainbow Delimiters")
+
+Some people like them, others don't. Personally, I'm a fan.
+
+#+begin_src emacs-lisp :tangle packages.el
+(package! rainbow-delimiters)
+#+end_src
+
+We'll just cap the depth a bit, and add it as a hook to the modes I appreciate
+it in.
+
+#+begin_src emacs-lisp
+(use-package! rainbow-delimiters
+  :hook (prog-mode . rainbow-delimiters-mode)
+  :config
+  (setq rainbow-delimiters-max-face-count 4))
+#+end_src
+
 *** Prettier page breaks
 
 #+call: confpkg("!Pkg page break lines")
