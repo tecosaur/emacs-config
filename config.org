@@ -3513,7 +3513,7 @@ anything to be run.
   (message ";; setup.sh did not exist during tangle. Tangle again.")
   (pp-to-string
    `(unless noninteractive
-      (add-hook! 'doom-init-ui-hook #'+literate-tangle-async-h))))
+      (add-hook! 'doom-init-ui-hook #'+literate-tangle--async))))
 #+end_src
 
 #+begin_src emacs-lisp :noweb no-export
@@ -4858,7 +4858,7 @@ in ~:init~, and the segment function itself is autoloaded.
   :defer t
   :init
   (after! doom-modeline
-    (add-to-list 'doom-modeline-fn-alist
+    (add-to-list 'doom-modeline--fn-alist
                  (cons 'media-player #'doom-modeline-segment--media-player)))
   :config
   (defun +single-fullscreen-window-p ()
