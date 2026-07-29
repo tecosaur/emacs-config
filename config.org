@@ -11438,7 +11438,7 @@ Looks at INFO to find the accent option and document title."
              shades))))
 
 (org-export-update-features 'latex
-  (accent-colour :snippet org-latex-accent-colours))
+  (accent-colour :snippet org-latex-accent-colours :order -1))
 #+end_src
 
 **** Class templates
@@ -11547,10 +11547,15 @@ of colour, with a little colour in the TOC too.
 \renewcommand\sectionformat{\llap{\color{accentlight}\thesection\autodot\enskip}}
 \renewcommand\subsectionformat{\llap{\color{accentlight}\thesubsection\autodot\enskip}}
 \renewcommand\subsubsectionformat{\llap{\color{accentlight}\thesubsubsection\autodot\enskip}}
-\addtokomafont{sectionentry}{\color{accent}}
+\makeatletter
+\@ifundefined{scr@fnt@sectionentry}{}{\addtokomafont{sectionentry}{\color{accent}}}
+\@ifundefined{scr@fnt@chapterentry}{}{\addtokomafont{chapterentry}{\color{accent}}}
+\makeatother
 \addtokomafont{title}{\color{accentdark}}
 \addtokomafont{author}{\color{accentdark}}
 \addtokomafont{date}{\color{accent}}
+\addtokomafont{disposition}{\color{accentdark}}
+\addtokomafont{pagenumber}{\color{accent}}
 #+end_src
 
 Captions could do with a bit of tweaking such that
@@ -12531,17 +12536,19 @@ This will accomplish the following:
 }
 
 \cs_new:Npn \cover_print_date:n #1
-  {\exp_args:Ne \cover_print_date_aux:n {#1}}
+  {\tl_if_blank:nTF {#1} {} {\cover_print_date_aux:n {#1}}}
 
+\str_new:N \l_cover_date_str
 \cs_new:Npn \cover_print_date_aux:n #1 {%
+  \str_set:Nn \l_cover_date_str {#1}
   \bool_if:nTF
-    {\int_compare_p:n {\str_count:n {#1} = 10} &&
-     \str_if_eq_p:ee {\str_item:nn {#1} {5}} {-} &&
-     \str_if_eq_p:ee {\str_item:nn {#1} {8}} {-}}
+    {\int_compare_p:n {\str_count:N \l_cover_date_str = 10} &&
+     \str_if_eq_p:ee {\str_item:Nn \l_cover_date_str {5}} {-} &&
+     \str_if_eq_p:ee {\str_item:Nn \l_cover_date_str {8}} {-}}
     {\exp_args:Nee \cover_date_format:nnn
-        {\str_range:nnn {#1} {1} {4}}
-        {\str_range:nnn {#1} {6} {7}}
-        {\str_range:nnn {#1} {9} {10}}}
+        {\str_range:Nnn \l_cover_date_str {1} {4}}
+        {\str_range:Nnn \l_cover_date_str {6} {7}}
+        {\str_range:Nnn \l_cover_date_str {9} {10}}}
     {#1}
 }
 
