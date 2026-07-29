@@ -13978,7 +13978,7 @@ Then let's bind the content to a function, and define some nice helpers.
 Let's enhance ~TeX-fold-math~ a bit
 #+begin_src emacs-lisp
 (after! latex
-  (setcar (assoc "⋆" LaTeX-fold-math-spec-list) "★")) ;; make \star bigger
+  (setcar (car (rassoc '(("star")) LaTeX-fold-math-spec-list)) "★")) ;; make \star bigger
 
 (setq TeX-fold-math-spec-list
       `(;; missing/better symbols
