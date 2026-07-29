@@ -1696,7 +1696,7 @@ I reckon enabling half the modules Doom provides should do it.
 #+begin_src emacs-lisp
 ;;deft                       ; notational velocity for Emacs
 doom                         ; what makes DOOM look the way it does
-doom-dashboard               ; a nifty splash screen for Emacs
+dashboard                    ; a nifty splash screen for Emacs
 doom-quit                    ; DOOM quit-message prompts when you quit Emacs
 ;; (emoji +unicode)          ; 🙂
 ;;fill-column                ; a `fill-column' indicator
@@ -2756,7 +2756,7 @@ the ability to change image too).
 Each plist should have the following properties:
 - :height, the height of the image
 - :min-height, the minimum `frame-height' for image
-- :padding, a `+doom-dashboard-banner-padding' (top . bottom) padding
+- :padding, a `+dashboard-banner-padding' (top . bottom) padding
   specification to apply
 Optionally, each plist may set the following two properties:
 - :template, a non-default template file
@@ -2927,10 +2927,10 @@ in hooks that call functions with arguments."
                 (fancy-splash-filename (car custom-enabled-themes)
                                        fancy-splash-image-template
                                        (plist-get appropriate-size :height)))
-            +doom-dashboard-banner-padding (plist-get appropriate-size :padding)
+            +dashboard-banner-padding (plist-get appropriate-size :padding)
             fancy-splash--last-size appropriate-size
             fancy-splash--last-theme (car custom-enabled-themes))
-      (+doom-dashboard-reload))))
+      (+dashboard-reload))))
 #+end_src
 
 **** ASCII banner
@@ -2940,28 +2940,20 @@ of the graphical one. I'd also like to use something simple for this.
 
 #+begin_src emacs-lisp
 (defun doom-dashboard-draw-ascii-emacs-banner-fn ()
-  (let* ((banner
-          '(",---.,-.-.,---.,---.,---."
-            "|---'| | |,---||    `---."
-            "`---'` ' '`---^`---'`---'"))
-         (longest-line (apply #'max (mapcar #'length banner))))
-    (put-text-property
-     (point)
-     (dolist (line banner (point))
-       (insert (+doom-dashboard--center
-                +doom-dashboard--width
-                (concat
-                 line (make-string (max 0 (- longest-line (length line)))
-                                   32)))
-               "\n"))
-     'face 'doom-dashboard-banner)))
+  (propertize
+   (string-join
+    '(",---.,-.-.,---.,---.,---."
+      "|---'| | |,---||    `---."
+      "`---'` ' '`---^`---'`---'")
+    "\n")
+   'face 'doom-dashboard-banner))
 #+end_src
 
 Now we just need this as Doom's ASCII banner function.
 
 #+begin_src emacs-lisp
 (unless (display-graphic-p) ; for some reason this messes up the graphical splash screen atm
-  (setq +doom-dashboard-ascii-banner-fn #'doom-dashboard-draw-ascii-emacs-banner-fn))
+  (setq +dashboard-ascii-banner-fn #'doom-dashboard-draw-ascii-emacs-banner-fn))
 #+end_src
 
 **** Splash phrases
@@ -3038,13 +3030,13 @@ pick a particular one, so some functions for that would be nice.
   (setq splash-phrase-set
         (nth (random (1- (length splash-phrase-sources)))
              (cl-set-difference (mapcar #'car splash-phrase-sources) (list splash-phrase-set))))
-  (+doom-dashboard-reload t))
+  (+dashboard-reload t))
 
 (defun splash-phrase-select-set ()
   "Select a specific splash phrase set."
   (interactive)
   (setq splash-phrase-set (completing-read "Phrase set: " (mapcar #'car splash-phrase-sources)))
-  (+doom-dashboard-reload t))
+  (+dashboard-reload t))
 #+end_src
 
 If we're going to be selecting phrases from a large list of lines, it could be
@@ -3086,38 +3078,29 @@ lines, re-centre them, and add some whitespace. While we're at it, we may as
 well make it that you can click on the phrase to replace it with new one.
 
 #+begin_src emacs-lisp
-(defun splash-phrase-dashboard-formatted ()
-  "Get a splash phrase, flow it over multiple lines as needed, and fontify it."
-  (mapconcat
-   (lambda (line)
-     (+doom-dashboard--center
-      +doom-dashboard--width
-      (with-temp-buffer
-        (insert-text-button
-         line
-         'action
-         (lambda (_) (+doom-dashboard-reload t))
-         'face 'doom-dashboard-menu-title
-         'mouse-face 'doom-dashboard-menu-title
-         'help-echo "Random phrase"
-         'follow-link t)
-        (buffer-string))))
-   (split-string
-    (with-temp-buffer
-      (insert (splash-phrase))
-      (setq fill-column (min 70 (/ (* 2 (window-width)) 3)))
-      (fill-region (point-min) (point-max))
-      (buffer-string))
-    "\n")
-   "\n"))
-#+end_src
-
-Almost there now, this just needs some centreing and newlines.
-
-#+begin_src emacs-lisp
 (defun splash-phrase-dashboard-insert ()
-  "Insert the splash phrase surrounded by newlines."
-  (insert "\n" (splash-phrase-dashboard-formatted) "\n"))
+  "Insert a splash phrase, flowed over multiple centred lines."
+  (insert "\n")
+  (dolist
+      (line
+       (split-string
+        (with-temp-buffer
+          (insert (splash-phrase))
+          (setq fill-column (min 70 (/ (* 2 (window-width)) 3)))
+          (fill-region (point-min) (point-max))
+          (buffer-string))
+        "\n"))
+    (+dashboard-insert
+     (with-temp-buffer
+       (insert-text-button
+        line
+        'action (lambda (_) (+dashboard-reload t))
+        'face '+dashboard-menu-title
+        'mouse-face '+dashboard-menu-title
+        'help-echo (format "Random %s phrase" splash-phrase-set)
+        'follow-link t)
+       (buffer-string))))
+  (insert "\n"))
 #+end_src
 
 **** Quick actions
@@ -3127,9 +3110,9 @@ As the dashboard is it's own major mode, there is no need to suffer the tyranny
 of unnecessary keystrokes --- we can simply bind common actions to a single key!
 
 #+begin_src emacs-lisp
-(defun +doom-dashboard-setup-modified-keymap ()
-  (setq +doom-dashboard-mode-map (make-sparse-keymap))
-  (map! :map +doom-dashboard-mode-map
+(defun +dashboard-setup-modified-keymap ()
+  (setq +dashboard-mode-map (make-sparse-keymap))
+  (map! :map +dashboard-mode-map
         :desc "Find file" :ng "f" #'find-file
         :desc "Recent files" :ng "r" #'consult-recent-file
         :desc "Config dir" :ng "C" #'doom/open-private-config
@@ -3143,11 +3126,11 @@ of unnecessary keystrokes --- we can simply bind common actions to a single key!
         :desc "Previous buffer" :ng "p" #'previous-buffer
         :desc "Set theme" :ng "t" #'consult-theme
         :desc "Quit" :ng "Q" #'save-buffers-kill-terminal
-        :desc "Show keybindings" :ng "h" (cmd! (which-key-show-keymap '+doom-dashboard-mode-map))))
+        :desc "Show keybindings" :ng "h" (cmd! (which-key-show-keymap '+dashboard-mode-map))))
 
-(add-transient-hook! #'+doom-dashboard-mode (+doom-dashboard-setup-modified-keymap))
-(add-transient-hook! #'+doom-dashboard-mode :append (+doom-dashboard-setup-modified-keymap))
-(add-hook! 'doom-init-ui-hook :append (+doom-dashboard-setup-modified-keymap))
+(add-transient-hook! #'+dashboard-mode (+dashboard-setup-modified-keymap))
+(add-transient-hook! #'+dashboard-mode :append (+dashboard-setup-modified-keymap))
+(add-hook! 'doom-init-ui-hook :append (+dashboard-setup-modified-keymap))
 #+end_src
 
 Unfortunately the show keybindings help doesn't currently work as intended, but
@@ -3155,7 +3138,7 @@ this is still quite nice overall.
 
 Now that the dashboard is so convenient, I'll want to make it easier to get to.
 #+begin_src emacs-lisp
-(map! :leader :desc "Dashboard" "d" #'+doom-dashboard/open)
+(map! :leader :desc "Dashboard" "d" #'+dashboard/open)
 #+end_src
 
 **** Putting it all together
@@ -3165,16 +3148,14 @@ together the desired dashboard from scratch, we just need to re-create the
 benchmark information by itself.
 
 #+begin_src emacs-lisp
-(defun +doom-dashboard-benchmark-line ()
-  "Insert the load time line."
+(defun +dashboard-benchmark-line ()
+  "Insert the load-time line."
   (when doom-init-time
-    (insert
-     "\n\n"
+    (insert "\n\n")
+    (+dashboard-insert
      (propertize
-      (+doom-dashboard--center
-       +doom-dashboard--width
-       (doom-display-benchmark-h 'return))
-      'face 'doom-dashboard-loaded))))
+      (doom-display-benchmark-h 'return)
+      'face '+dashboard-loaded))))
 #+end_src
 
 With ~doom-display-benchmark-h~ displayed here, I don't see the need for it to be
@@ -3184,7 +3165,7 @@ shown in the minibuffer as well.
 (remove-hook 'doom-after-init-hook #'doom-display-benchmark-h)
 #+end_src
 
-Now we can create the desired dashboard by setting ~+doom-dashboard-functions~ to
+Now we can create the desired dashboard by setting ~+dashboard-functions~ to
 just have:
 + The "widget banner" (splash image)
 + The benchmark line
@@ -3194,9 +3175,9 @@ This gets rid of two segments I'm not particularly interested in seeing
 + The footer (github link)
 
 #+begin_src emacs-lisp
-(setq +doom-dashboard-functions
-      (list #'doom-dashboard-widget-banner
-            #'+doom-dashboard-benchmark-line
+(setq +dashboard-functions
+      (list #'+dashboard-widget-banner
+            #'+dashboard-benchmark-line
             #'splash-phrase-dashboard-insert))
 #+end_src
 
@@ -3204,35 +3185,42 @@ At this point there are just a few minor tweaks I'd still like to make to the
 dashboard.
 
 #+begin_src emacs-lisp
-(defun +doom-dashboard-tweak (&optional _)
-  (with-current-buffer (get-buffer +doom-dashboard-name)
+(defun +dashboard-tweak (&optional _)
+  (with-current-buffer (get-buffer +dashboard-name)
     (setq-local line-spacing 0.2
                 mode-line-format nil
                 mode-name ""
-                evil-normal-state-cursor (list nil))))
+                evil-normal-state-cursor (list nil))
+    (when (fboundp 'hl-line-mode)
+      (hl-line-mode -1))
+    ;; (unless (memq 'doom-modeline-time (mapcar #'car face-remapping-alist))
+    ;;   (face-remap-add-relative
+    ;;    'doom-modeline-time
+    ;;    '(mode-line-emphasis bold)))
+    ))
 #+end_src
 
 Now we can just add this as a mode hook.
 
 #+begin_src emacs-lisp
-(add-hook '+doom-dashboard-mode-hook #'+doom-dashboard-tweak)
+(add-hook '+dashboard-mode-hook #'+dashboard-tweak)
 #+end_src
 
 Unfortunately, the initialisation of =doom-modeline= interferes with the set
 ~mode-line-format~ value. To get around this, we can re-apply
-~+doom-dashboard-tweak~ as a slightly late init hook, after =doom-modeline= has been
+~+dashboard-tweak~ as a slightly late init hook, after =doom-modeline= has been
 loaded.
 
 #+begin_src emacs-lisp
-(add-hook 'doom-after-init-hook #'+doom-dashboard-tweak 1)
+(add-hook 'doom-after-init-hook #'+dashboard-tweak 1)
 #+end_src
 
 Lastly, with the buffer name being shown in the frame title thanks to some [[Window title][other
 configuration]], we might as well display something a bit prettier than =*doom*=.
 
 #+begin_src emacs-lisp
-(setq +doom-dashboard-name "► Doom"
-      doom-fallback-buffer-name +doom-dashboard-name)
+(setq +dashboard-name "► Doom"
+      doom-fallback-buffer-name +dashboard-name)
 #+end_src
 
 The end result is a minimal but rather nice splash screen.
@@ -3390,7 +3378,7 @@ I prefer the dashboard, so let's ensure that's always switched to in new frames.
   (add-hook 'emacs-startup-hook #'greedily-do-daemon-setup)
   (add-hook! 'server-after-make-frame-hook
     (unless (string-match-p "\\*draft\\|\\*stdin\\|emacs-everywhere" (buffer-name))
-      (switch-to-buffer +doom-dashboard-name))))
+      (switch-to-buffer +dashboard-name))))
 #+end_src
 
 *** Emacs client wrapper
