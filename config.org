@@ -5700,11 +5700,6 @@ The return value is a string."
         (setq xkcd-alt alt)
         (message "%s" title))))
 
-  (defconst +xkcd-db--sqlite-available-p
-    (with-demoted-errors "+org-xkcd initialization: %S"
-      (emacsql-sqlite-ensure-binary)
-      t))
-
   (defvar +xkcd-db--connection (make-hash-table :test #'equal)
     "Database connection to +org-xkcd database.")
 
@@ -5745,8 +5740,7 @@ Performs a database upgrade when required."
       (let* ((db-file (+xkcd-db--get))
              (init-db (not (file-exists-p db-file))))
         (make-directory (file-name-directory db-file) t)
-        (let ((conn (emacsql-sqlite db-file)))
-          (set-process-query-on-exit-flag (emacsql-process conn) nil)
+        (let ((conn (emacsql-sqlite-open db-file)))
           (puthash (file-truename xkcd-cache-dir)
                    conn
                    +xkcd-db--connection)
