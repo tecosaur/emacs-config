@@ -1324,6 +1324,243 @@ There we go, that should do the trick, so long as we call the =bootstrap= block 
 the start of the tangle process. This is done by calling =bootstrap= within the
 [[Preparation][confpkg preparation]] stage.
 
+*** Dependency map
+
+We can use the information collected in the execution of confpkg to create a
+dependency map.
+
+#+name: confpkg-create-depmap
+#+begin_src emacs-lisp
+(defun confpkg-create-depmap ()
+  (let* ((doom-init ; ((:category modules...)...)
+          (with-temp-buffer
+            (insert-file-contents "init.el")
+            (cl-remove-if-not
+             #'cdr
+             (cdr (nreverse
+                   (mapcar
+                    #'nreverse
+                    (cdr (cl-reduce
+                          (lambda (result new)
+                            (cond
+                             ((keywordp new)
+                              (push (list new) result))
+                             ((consp new)
+                              (push (if (keywordp (car new))
+                                        (if (consp (caddr new))
+                                            (caaddr new)
+                                          (caddr new))
+                                      (car new))
+                                    (car result)))
+                             ((symbolp new)
+                              (push new (car result))))
+                            result)
+                          (cdr (read (buffer-string)))
+                          :initial-value (list nil)))))))))
+         (doom-module-trees ; ("/path/to/modules"...), highest priority first
+          (or (bound-and-true-p doom-module-load-path)
+              (error "Cannot locate Doom's module trees: `doom-module-load-path' is unset")))
+         (doom-module-packages-file ; :category, module -> "/path/to/packages.el"
+          (lambda (category module)
+            (cl-some
+             (lambda (tree)
+               (let ((path (format "%s/%s/%s/packages.el"
+                                   tree
+                                   (substring (symbol-name category) 1)
+                                   module)))
+                 (and (file-exists-p path) path)))
+             doom-module-trees)))
+         (doom-module-packages ; ((:category (module "pkgs"...)...)...)
+          (mapcar
+           (lambda (category)
+             (cons category
+                   (cl-remove-if
+                    #'null
+                    (mapcar
+                     (lambda (module)
+                       (let ((module-packages-path
+                              (funcall doom-module-packages-file category module)))
+                         (and module-packages-path
+                              (cons module
+                                    (with-temp-buffer
+                                      (insert-file-contents module-packages-path)
+                                      (goto-char (point-min))
+                                      (let (pkgs)
+                                        (while (re-search-forward
+                                                "^[[:space:]]*(package![[:space:]\n]+\\([^[:space:]]+\\)\\b"
+                                                nil t)
+                                          (push (match-string 1) pkgs))
+                                        pkgs))))))
+                     (alist-get category doom-init)))))
+           (mapcar #'car doom-init)))
+         (doom-package-modules ; (("pkg" . (category . module))...)
+          (let (pkg-cat-mod)
+            (mapc
+             (lambda (category)
+               (mapc
+                (lambda (module)
+                  (mapc
+                   (lambda (pkg)
+                     (push (cons pkg (cons (car category) (car module)))
+                           pkg-cat-mod))
+                   (cdr module)))
+                (cdr category)))
+             doom-module-packages)
+            pkg-cat-mod))
+         (doom-all-packages ; ("pkgs"...)
+          (apply #'append
+                 (mapcar #'cdr
+                         (apply #'append
+                                (mapcar #'cdr
+                                        doom-module-packages)))))
+         (doom-all-packages-rx ; "\\_<\\(pkg1|pkg2...\\)\\_>"
+          (regexp-opt doom-all-packages 'symbols))
+         (confpkg-used-doom-pkgs ; (("config-pkg" "pkgs"...)...)
+          (cl-remove-if-not
+           #'cdr
+           (mapcar
+            (lambda (confpkg)
+              (let ((pkgs-used) case-fold-search)
+                (with-temp-buffer
+                  (insert-file-contents (plist-get confpkg :file))
+                  (goto-char (point-min))
+                  (while (re-search-forward doom-all-packages-rx nil t)
+                    (push (match-string 0) pkgs-used)))
+                (cons
+                 (plist-get confpkg :package)
+                 (cl-delete-duplicates pkgs-used :test #'equal))))
+            confpkg--list)))
+         (doom-configured-packages ; (("pkg" . (category . module))...)
+          (mapcar
+           (lambda (pkg)
+             (assoc pkg doom-package-modules))
+           (cl-delete-duplicates
+            (apply #'append
+                   (mapcar #'cdr confpkg-used-doom-pkgs))
+            :test #'equal)))
+         (dot-common-preamble
+          "digraph {
+  graph [bgcolor=\"transparent\"]
+  overlap=\"prism\"
+  node [shape=\"underline\", penwidth=\"2\", style=\"rounded,filled\", fillcolor=\"#efefef\", color=\"#c9c9c9\", fontcolor=\"#000000\", fontsize=\"18pt\", fontname=\"Alegreya Sans\"]
+  edge [color=\"#aaaaaa\", penwidth=\"1.2\"]\n")
+         )
+    (with-temp-file "subconf/doom-modules.dot"
+      (insert dot-common-preamble
+              "\
+  overlap_scaling=-40
+  // Doom
+  \"Doom\" [color=\"#a991f1\", shape=\"circle\", penwidth=\"8\", fontsize=\"52pt\", fontstyle=\"bold\"]
+  node [color=\"#813d9c\"]\n")
+      (dolist (category doom-init)
+        (insert (format "  %1$S [fontsize=\"36pt\"]\n  %1$S -> \"Doom\"\n"
+                        (symbol-name (car category))))
+        (dolist (module (cdr category))
+          (insert (format "  %1$S [label=%2$S]\n  %1$S -> %3$S\n"
+                          (format "%s %s" (car category) module)
+                          (symbol-name module)
+                          (symbol-name (car category))))))
+      (insert "// Packages
+  node [fillcolor=\"#e69055\", penwidth=0, shape=\"circle\", fixedsize=true, width=0.1]\n")
+      (let (drawn-pkgs (n 0) node)
+        (dolist (category doom-module-packages)
+          (dolist (module (cdr category))
+            (dolist (pkg (cdr module))
+              (setq node
+                    (if (member pkg drawn-pkgs)
+                        (format "%s-%d" pkg (cl-incf n))
+                      (push pkg drawn-pkgs)
+                      pkg))
+              (insert (format "  %S [label=\"\"]\n  %S -> \"%s %s\"\n"
+                              node node (car category) (car module)))))))
+      (insert "}"))
+
+    (with-temp-file "subconf/map.dot"
+      (insert
+       dot-common-preamble
+       "overlap_scaling=-12
+  // Config
+  \"Config\" [color=\"#51afef\", shape=\"circle\", penwidth=\"5\", fontsize=\"26pt\"]
+  // Subconf entries
+  node [color=\"#4db5bd\"]\n"
+       (mapconcat
+        (lambda (confpkg)
+          (format "  %1$S [label=%S]\n  %1$S -> \"Config\""
+                  (plist-get confpkg :package)
+                  (replace-regexp-in-string
+                   "\\`!Pkg " "⚙️ " (plist-get confpkg :name))))
+        confpkg--list
+        "\n")
+       "\n  // Packages
+  node [color=\"#e69055\"]\n"
+       (mapconcat
+        (lambda (pkg)
+          (format "  %S [label=\"📦 %s\"]" pkg pkg))
+        (cl-delete-duplicates
+         (apply #'append
+                (mapcar
+                 (lambda (confpkg)
+                   (plist-get confpkg :package-statements))
+                 confpkg--list))
+         :test #'equal)
+        "\n")
+       "\n // Edges
+  edge [color=\"#999999\", penwidth=\"1.5\"]\n")
+      (dolist (confpkg confpkg--list)
+        (dolist (req (plist-get confpkg :requires))
+          (insert
+           (format "  %S -> %S\n"
+                   (if (symbolp req)
+                       (symbol-name req)
+                     req)
+                   (plist-get confpkg :package))))
+        (dolist (pkg (cl-delete-duplicates
+                      (plist-get confpkg :package-statements)
+                      :test #'equal))
+          (insert
+           (format "  %S -> %S\n"
+                   pkg
+                   (plist-get confpkg :package)))))
+      ;; Doom dependencies
+      (insert "  // Doom
+  \"Doom\" [color=\"#a991f1\", shape=\"circle\", penwidth=\"5\", fontsize=\"26pt\"]
+  node [color=\"#813d9c\"]
+  edge [color=\"#cccccc\"]\n")
+      (dolist (category doom-init)
+        (insert (format "  %1$S [fontsize=\"20pt\"]\n  %1$S -> \"Doom\"\n"
+                        (symbol-name (car category))))
+        (dolist (module (cdr category))
+          (insert (format "  %1$S [label=%2$S]\n  %1$S -> %3$S\n"
+                          (format "%s %s" (car category) module)
+                          (symbol-name module)
+                          (symbol-name (car category))))))
+      (insert "  // Doom module packages
+  node [color=\"#e69055\"]
+  edge [color=\"#888888\"]\n")
+      (dolist (doom-pkg doom-configured-packages)
+        (insert (format "  %1$S [label=\"📦 %1$s\"]\n  %1$S -> \"%2$s %3$s\"\n"
+                        (car doom-pkg)
+                        (cadr doom-pkg)
+                        (cddr doom-pkg))))
+      (insert "  // Configuration of Doom-module-installed packages\n")
+      (dolist (conf-pkgs confpkg-used-doom-pkgs)
+        (dolist (pkg (cdr conf-pkgs))
+          (insert (format "  %S -> %S\n"
+                          pkg (car conf-pkgs)))))
+      (insert "\n}"))))
+#+end_src
+
+To actually apply this, we can run this after ~confpkg-tangle-finalise~ with
+advice.
+
+#+name: schedule-confpkg-create-depmap
+#+begin_src emacs-lisp
+(advice-add 'confpkg-tangle-finalise :after #'confpkg-create-depmap)
+#+end_src
+
+#+call: confpkg-create-depmap()
+#+call: schedule-confpkg-create-depmap()
+
 ** Personal Information
 
 #+call: confpkg()

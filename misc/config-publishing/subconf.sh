@@ -8,9 +8,19 @@
 
 ;;; Actually do the exporting now
 
+(message "[34] Rendering dependency maps")
+
+(let ((neato (or (executable-find "neato")
+                 (error "Cannot render dependency maps: neato (graphviz) not found"))))
+  (dolist (graph '("map" "doom-modules"))
+    (let ((dot (expand-file-name (format "subconf/%s.dot" graph) config-root))
+          (svg (expand-file-name (format "subconf/%s.svg" graph) config-root)))
+      (unless (= 0 (call-process neato nil nil nil "-Tsvg" dot "-o" svg))
+        (error "Failed to render %s" svg)))))
+
 (message "[34] Publishing raw subconf files")
 
-(publish "subconf/*.el")
+(publish "subconf/*.el" "subconf/*.dot" "subconf/*.svg")
 
 ;;; Engraving
 
