@@ -12,6 +12,7 @@
          (expand-file-name "config.org" config-root))
 
 (require 'vc) ; need this for modification-time macro
+(require 'puny) ; Used for reference contraction, but not autoloaded in batch.
 (require 'org)
 (require 'org-persist)
 (remove-hook 'kill-emacs-hook #'org-persist-gc)

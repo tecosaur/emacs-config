@@ -24,7 +24,9 @@
         (message "[0;32] Starting %s%s" file
                  (apm-space-fill-line (+ 9 (length file)))))
       (set proc-name
-           (start-process (file-name-base file) nil
+           (start-process (file-name-base file)
+                          (generate-new-buffer
+                           (format " *apm-%s*" (file-name-base file)))
                           (if (file-exists-p file)
                               (expand-file-name file)
                             file)))
@@ -35,6 +37,36 @@
                             :then (if (listp then) then (list then))))
       (push proc-info apm-dependent-processes)
       (apm-watch-process proc-info))))
+
+(defun apm-failure-report (name proc)
+  "Return a diagnostic report for failed stage NAME, or nil if nothing was captured.
+Combines the stage's log file (`message' output only) with PROC's buffer, which
+is where a dying --script prints its backtrace."
+  (let* ((log-file (expand-file-name (format "%s-log.txt" name) script-root))
+         (logged (and (file-exists-p log-file)
+                      (with-temp-buffer
+                        (insert-file-contents-literally log-file)
+                        (string-trim (buffer-string)))))
+         (output (and (buffer-live-p (process-buffer proc))
+                      (with-current-buffer (process-buffer proc)
+                        (string-trim (buffer-string)))))
+         ;; The log is a prefix of stdout whenever both were captured; showing
+         ;; only the longer avoids printing every stage twice.
+         (report (if (and logged output (string-prefix-p logged output))
+                     output
+                   (string-join (delq nil (list logged output)) "\n"))))
+    (and (not (string-empty-p (or report ""))) report)))
+
+(defun apm-report-failure (name proc)
+  "Print why stage NAME failed, tailing its captured output."
+  (message "[31] %s process failed (exit %s)%s"
+           name (process-exit-status proc)
+           (apm-space-fill-line (+ 26 (length name))))
+  (let ((report (apm-failure-report name proc)))
+    (if (not report)
+        (message "\033[0;31m      (no output captured from %s)\033[0m" name)
+      (dolist (line (last (split-string report "\n") 40))
+        (message "\033[0;31m      %s\033[0m" line)))))
 
 (defun apm-watch-process (proc-info)
   (let ((file (plist-get proc-info :file)))
@@ -61,19 +93,8 @@
                                     '(:announce t))))
                           ',(list (plist-get proc-info :then)))))
             ;; non-zero exit code
-            (message (format "[31] %s process failed!%s"
-                             ,(file-name-base (eval file))
-                             (apm-space-fill-line ,(+ 16 (length (file-name-base file))))))
-            (message "\033[0;31m      %s\033[0m"
-                     'unmodified
-                     (with-temp-buffer
-                       (let ((log-file ,(expand-file-name (format "%s-log.txt" (file-name-base file))
-                                                          (file-name-directory load-file-name))))
-                         (when (file-exists-p log-file)
-                           (insert-file-contents-literally log-file)))
-                       (buffer-substring-no-properties (point-min) (point-max))))
-            (message "[1;31] Config publishing aborted%s" (apm-space-fill-line 23))
-            (kill-emacs 1)))))))
+            (apm-report-failure ,(file-name-base file) process)
+            (setq exit-code 1)))))))
 
 (defun apm-space-fill-line (base-length)
   "Return whitespace such that the line will be filled to overwrite the status line."
@@ -125,12 +146,9 @@
             (signal-process proc 'SIGUSR2)
             (sleep-for 0.2)
             (delete-process proc)
-            (message "\n\033[0;31m      %s\033[0m"
-                     'unmodified
-                     (with-temp-buffer
-                       (insert-file-contents-literally (expand-file-name (format "%s-log.txt" (file-name-base (plist-get dep :file)))
-                                                                         (file-name-directory load-file-name)))
-                       (buffer-substring-no-properties (point-min) (point-max)))))))
+            (let ((report (apm-failure-report (plist-get dep :name) proc)))
+              (dolist (line (last (split-string (or report "(no output captured)") "\n") 40))
+                (message "\033[0;31m      %s\033[0m" line))))))
       (setq apm-all-proc-finished t)
       (setq exit-code 1))
     (unless apm-all-proc-finished

@@ -32,7 +32,7 @@
     (append-to-file str nil log-file)))
 
 (when log-messages
-  (advice-add 'send-string-to-terminal :after #'logged-message))
+  (advice-add 'send-string-to-terminal :after #'logged-string))
 
 (defvar message-colour t)
 
@@ -68,6 +68,25 @@
 
 ;;; Initialisation
 
+(defun reclaim-message ()
+  "Undo `doom-cli-initialize''s override of `message', which empties the logs.
+`standard-output' is deliberately left alone: Org prints parse trees through
+it, which unbounded `print-level' would turn into gigabytes of noise."
+  (advice-mapc (lambda (fn _props)
+                 (unless (eq fn #'timed-coloured-message)
+                   (advice-remove 'message fn)))
+               'message))
+
+(defun cache-module-flags ()
+  "Populate the module flag plists that `modulep!' consults.
+Doom caches these under `static-unless noninteractive', so every `modulep!'
+returns nil under `--script', silently skipping module init files."
+  (dolist (group (seq-group-by #'car (doom-module-list)))
+    (setplist (car group)
+              (cl-loop for (category . module) in (cdr group)
+                       nconc (list module (doom-module->context
+                                           (cons category module)))))))
+
 (defun initialise (&optional mode)
   (advice-add 'theme-magic-from-emacs :override #'ignore)
 
@@ -87,7 +106,8 @@
 
   (when (eq mode 'full)
     (require 'flycheck) ; To avoid issues that crop up with org-flycheck.
-    (defmacro flycheck-prepare-emacs-lisp-form (&rest _)))
+    (defmacro flycheck-prepare-emacs-lisp-form (&rest _))
+    (require 'evil-collection nil t)) ; Not autoloaded, but used at load time.
 
   (setq doom-cli-log-error-file log-file)
   (write-region "" nil log-file nil :silent)

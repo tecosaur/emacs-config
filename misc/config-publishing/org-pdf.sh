@@ -12,6 +12,7 @@
          (expand-file-name "config.org" config-root))
 
 (require 'vc) ; need this for modification-time macro
+(require 'puny) ; Used by ox-latex for URLs, but not autoloaded in batch.
 (require 'org)
 (require 'org-persist)
 (remove-hook 'kill-emacs-hook #'org-persist-gc)
@@ -64,9 +65,9 @@
     (condition-case err
         (org-latex-export-to-pdf)
       (error
-       (with-current-buffer "*Org PDF LaTeX Output*"
+       (when-let ((buf (get-buffer "*Org PDF LaTeX Output*")))
          (message "LaTeX Output:\n==================\n%s\n==================\n"
-                  (buffer-string)))
+                  (with-current-buffer buf (buffer-string))))
        (signal (car err) (cdr err))))))
 
 (publish "config.pdf")
