@@ -1,4 +1,4 @@
-FROM ubuntu:24.10
+FROM ubuntu:25.10
 MAINTAINER TEC <tec@tecosaur.com>
 
 ENV LANG=C.UTF-8
@@ -40,13 +40,10 @@ RUN echo "\033[1;34mTeX install.\033[0m" &&\
   find /usr/share/doc -type f -name "*.tex" -delete
 
 RUN echo "\033[1;34mInstalling Emacs 30.\033[0m" &&\
-  apt-get install -y apt-utils software-properties-common &&\
-  add-apt-repository -y ppa:ubuntuhandbook1/emacs &&\
-  apt-get update &&\
   apt-get install -y emacs emacs-common
 
 RUN echo "\033[1;34mInstalling utilities.\033[0m" &&\
-  apt-get install -y sudo git gcc sqlite3 wget unzip ncurses-term ripgrep xclip curl cairosvg
+  apt-get install -y sudo git gcc sqlite3 wget unzip ncurses-term ripgrep xclip curl cairosvg graphviz
 
 RUN echo "\033[1;36mRemoving extranious files.\033[0m" &&\
   apt-get clean -y &&\
