@@ -1949,6 +1949,10 @@ ophints                      ; highlight the region an operation acts on
 (popup                       ; tame sudden yet inevitable temporary windows
  +all                        ; catch all popups that start with an asterix
  +defaults)                  ; default popup rules
+(:if (and (require 'battery) ; check if a mobile/laptop using the battery as a proxy
+          battery-status-function
+          (not (equal (alist-get ?L (funcall battery-status-function)) "N/A")))
+    smooth-scroll)           ; So smooth you won't believe it's not butter
 ;;(tabs                      ; an tab bar for Emacs
 ;;  +centaur-tabs)           ; ... with prettier tabs
 treemacs                     ; a project drawer, like neotree but cooler
