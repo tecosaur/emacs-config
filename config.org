@@ -2238,7 +2238,7 @@ We can now pick which flavour of adaptive theming we want at config generation
 time.
 
 #+name: conditional-auto-theme
-#+begin_src emacs-lisp :noweb-ref none :noweb yes :noweb-prefix no
+#+begin_src emacs-lisp :noweb-ref none :noweb no-export :noweb-prefix no
 (cond
  ((and (memq system-type '(gnu gnu/linux gnu/kfreebsd))
        (require 'dbus nil t))
@@ -2261,15 +2261,6 @@ There we go.
 <<conditional-auto-theme()>>
 #+end_src
 
-***** Skipping the default Emacs themes
-
-Now, with the nice selection doom provides there's no reason for me to want the
-defaults.
-
-#+begin_src emacs-lisp
-(delq! t custom-theme-load-path)
-#+end_src
-
 ***** Terminal theme matching
 
 While the theme environment variable is nice for flexibility, when starting
@@ -2278,7 +2269,7 @@ automatically. However, we can check if we're in a terminal and pick a default
 theme colour accordingly.
 
 #+begin_src emacs-lisp
-(declare-function 'xterm-query "xterm")
+(declare-function 'xterm--query "term/xterm")
 
 (defvar term-background-rgb nil
   "A RGB triple corresponding to the current terminal background, if known.")
@@ -2302,30 +2293,42 @@ theme colour accordingly.
   (let (term-shade)
     (when (and (not (display-graphic-p (selected-frame)))
                (not (getenv "DOOM_THEME"))
-               (require 'xterm nil t))
+               (require 'term/xterm nil t))
       (message "Querying terminal background color")
       (xterm--query "\e]11;?\e\\" '(("\e]11;" . +interpret-term-bg)))
       (when term-background-rgb
         (setq term-shade (if (< (apply #'+ term-background-rgb) (* 0.6 3 65535))
                              'dark 'light))
         (pcase term-shade
-          ('dark (setq doom-theme 'doom-vibrant))
-          ('light (setq doom-theme 'doom-tomorrow-day)))))
-    (doom-init-theme-h)))
+          ('dark (setq doom-theme doom-theme-dark))
+          ('light (setq doom-theme doom-theme-light)))))
+    (doom-init-theme-h)
+    (when term-shade
+      (set-face-background (if (featurep 'solaire-mode) 'solaire-default-face 'default)
+                           "unspecified-bg" (selected-frame)))))
 #+end_src
 
 ***** Avoiding race conditions
 
-Lastly, I had some issues with theme race conditions, which seem to be resolved
-by moving =doom-init-theme-h= around. Henrik attempted to help with this in May
-2021 but we didn't manage to pin down the issue. It may be worth periodically
-checking back and seeing if this is still needed. We might as well inject
-~+doom-init-theme-termaware~ while we're at it.
+I experienced some frustrating issues with theme race conditions, which seem to
+be resolved by moving =doom-init-theme-h= around. Henrik attempted to help with
+this in May 2021 but we didn't manage to pin down the issue. It may be worth
+periodically checking back and seeing if this is still needed. We might as well
+inject ~+doom-init-theme-termaware~ while we're at it.
 
 #+begin_src emacs-lisp
 (remove-hook 'window-setup-hook #'doom-init-theme-h)
 (remove-hook 'after-init-hook   #'doom-init-theme-h)
 (add-hook    'after-init-hook   #'+doom-init-theme-termaware 'append)
+#+end_src
+
+***** Skipping the default Emacs themes
+
+Lastly, with the nice selection doom provides there's no reason for me to want
+the defaults.
+
+#+begin_src emacs-lisp
+(delq! t custom-theme-load-path)
 #+end_src
 
 **** Line numbers
