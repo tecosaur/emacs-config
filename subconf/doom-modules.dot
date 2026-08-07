@@ -1,0 +1,794 @@
+digraph {
+  graph [bgcolor="transparent"]
+  overlap="prism"
+  node [shape="underline", penwidth="2", style="rounded,filled", fillcolor="#efefef", color="#c9c9c9", fontcolor="#000000", fontsize="18pt", fontname="Alegreya Sans"]
+  edge [color="#aaaaaa", penwidth="1.2"]
+  overlap_scaling=-40
+  // Doom
+  "Doom" [color="#a991f1", shape="circle", penwidth="8", fontsize="52pt", fontstyle="bold"]
+  node [color="#813d9c"]
+  ":completion" [fontsize="36pt"]
+  ":completion" -> "Doom"
+  ":completion corfu" [label="corfu"]
+  ":completion corfu" -> ":completion"
+  ":completion vertico" [label="vertico"]
+  ":completion vertico" -> ":completion"
+  ":ui" [fontsize="36pt"]
+  ":ui" -> "Doom"
+  ":ui doom" [label="doom"]
+  ":ui doom" -> ":ui"
+  ":ui dashboard" [label="dashboard"]
+  ":ui dashboard" -> ":ui"
+  ":ui doom-quit" [label="doom-quit"]
+  ":ui doom-quit" -> ":ui"
+  ":ui hl-todo" [label="hl-todo"]
+  ":ui hl-todo" -> ":ui"
+  ":ui ligatures" [label="ligatures"]
+  ":ui ligatures" -> ":ui"
+  ":ui modeline" [label="modeline"]
+  ":ui modeline" -> ":ui"
+  ":ui nav-flash" [label="nav-flash"]
+  ":ui nav-flash" -> ":ui"
+  ":ui ophints" [label="ophints"]
+  ":ui ophints" -> ":ui"
+  ":ui popup" [label="popup"]
+  ":ui popup" -> ":ui"
+  ":ui smooth-scroll" [label="smooth-scroll"]
+  ":ui smooth-scroll" -> ":ui"
+  ":ui treemacs" [label="treemacs"]
+  ":ui treemacs" -> ":ui"
+  ":ui vc-gutter" [label="vc-gutter"]
+  ":ui vc-gutter" -> ":ui"
+  ":ui vi-tilde-fringe" [label="vi-tilde-fringe"]
+  ":ui vi-tilde-fringe" -> ":ui"
+  ":ui window-select" [label="window-select"]
+  ":ui window-select" -> ":ui"
+  ":ui workspaces" [label="workspaces"]
+  ":ui workspaces" -> ":ui"
+  ":ui zen" [label="zen"]
+  ":ui zen" -> ":ui"
+  ":editor" [fontsize="36pt"]
+  ":editor" -> "Doom"
+  ":editor evil" [label="evil"]
+  ":editor evil" -> ":editor"
+  ":editor file-templates" [label="file-templates"]
+  ":editor file-templates" -> ":editor"
+  ":editor fold" [label="fold"]
+  ":editor fold" -> ":editor"
+  ":editor format" [label="format"]
+  ":editor format" -> ":editor"
+  ":editor multiple-cursors" [label="multiple-cursors"]
+  ":editor multiple-cursors" -> ":editor"
+  ":editor rotate-text" [label="rotate-text"]
+  ":editor rotate-text" -> ":editor"
+  ":editor snippets" [label="snippets"]
+  ":editor snippets" -> ":editor"
+  ":emacs" [fontsize="36pt"]
+  ":emacs" -> "Doom"
+  ":emacs dired" [label="dired"]
+  ":emacs dired" -> ":emacs"
+  ":emacs electric" [label="electric"]
+  ":emacs electric" -> ":emacs"
+  ":emacs ibuffer" [label="ibuffer"]
+  ":emacs ibuffer" -> ":emacs"
+  ":emacs undo" [label="undo"]
+  ":emacs undo" -> ":emacs"
+  ":emacs vc" [label="vc"]
+  ":emacs vc" -> ":emacs"
+  ":term" [fontsize="36pt"]
+  ":term" -> "Doom"
+  ":term vterm" [label="vterm"]
+  ":term vterm" -> ":term"
+  ":checkers" [fontsize="36pt"]
+  ":checkers" -> "Doom"
+  ":checkers syntax" [label="syntax"]
+  ":checkers syntax" -> ":checkers"
+  ":checkers grammar" [label="grammar"]
+  ":checkers grammar" -> ":checkers"
+  ":tools" [fontsize="36pt"]
+  ":tools" -> "Doom"
+  ":tools ansible" [label="ansible"]
+  ":tools ansible" -> ":tools"
+  ":tools biblio" [label="biblio"]
+  ":tools biblio" -> ":tools"
+  ":tools docker" [label="docker"]
+  ":tools docker" -> ":tools"
+  ":tools eval" [label="eval"]
+  ":tools eval" -> ":tools"
+  ":tools lookup" [label="lookup"]
+  ":tools lookup" -> ":tools"
+  ":tools lsp" [label="lsp"]
+  ":tools lsp" -> ":tools"
+  ":tools magit" [label="magit"]
+  ":tools magit" -> ":tools"
+  ":tools make" [label="make"]
+  ":tools make" -> ":tools"
+  ":tools pdf" [label="pdf"]
+  ":tools pdf" -> ":tools"
+  ":tools upload" [label="upload"]
+  ":tools upload" -> ":tools"
+  ":os" [fontsize="36pt"]
+  ":os" -> "Doom"
+  ":os macos" [label="macos"]
+  ":os macos" -> ":os"
+  ":os tty" [label="tty"]
+  ":os tty" -> ":os"
+  ":lang" [fontsize="36pt"]
+  ":lang" -> "Doom"
+  ":lang data" [label="data"]
+  ":lang data" -> ":lang"
+  ":lang emacs-lisp" [label="emacs-lisp"]
+  ":lang emacs-lisp" -> ":lang"
+  ":lang ess" [label="ess"]
+  ":lang ess" -> ":lang"
+  ":lang go" [label="go"]
+  ":lang go" -> ":lang"
+  ":lang json" [label="json"]
+  ":lang json" -> ":lang"
+  ":lang javascript" [label="javascript"]
+  ":lang javascript" -> ":lang"
+  ":lang julia" [label="julia"]
+  ":lang julia" -> ":lang"
+  ":lang latex" [label="latex"]
+  ":lang latex" -> ":lang"
+  ":lang lua" [label="lua"]
+  ":lang lua" -> ":lang"
+  ":lang markdown" [label="markdown"]
+  ":lang markdown" -> ":lang"
+  ":lang nix" [label="nix"]
+  ":lang nix" -> ":lang"
+  ":lang org" [label="org"]
+  ":lang org" -> ":lang"
+  ":lang python" [label="python"]
+  ":lang python" -> ":lang"
+  ":lang rust" [label="rust"]
+  ":lang rust" -> ":lang"
+  ":lang scheme" [label="scheme"]
+  ":lang scheme" -> ":lang"
+  ":lang sh" [label="sh"]
+  ":lang sh" -> ":lang"
+  ":lang web" [label="web"]
+  ":lang web" -> ":lang"
+  ":lang yaml" [label="yaml"]
+  ":lang yaml" -> ":lang"
+  ":lang zig" [label="zig"]
+  ":lang zig" -> ":lang"
+  ":email" [fontsize="36pt"]
+  ":email" -> "Doom"
+  ":email mu4e" [label="mu4e"]
+  ":email mu4e" -> ":email"
+  ":app" [fontsize="36pt"]
+  ":app" -> "Doom"
+  ":app everywhere" [label="everywhere"]
+  ":app everywhere" -> ":app"
+  ":app irc" [label="irc"]
+  ":app irc" -> ":app"
+  ":app rss" [label="rss"]
+  ":app rss" -> ":app"
+// Packages
+  node [fillcolor="#e69055", penwidth=0, shape="circle", fixedsize=true, width=0.1]
+  "yasnippet-capf" [label=""]
+  "yasnippet-capf" -> ":completion corfu"
+  "corfu-terminal" [label=""]
+  "corfu-terminal" -> ":completion corfu"
+  "orderless" [label=""]
+  "orderless" -> ":completion corfu"
+  "nerd-icons-corfu" [label=""]
+  "nerd-icons-corfu" -> ":completion corfu"
+  "cape" [label=""]
+  "cape" -> ":completion corfu"
+  "corfu" [label=""]
+  "corfu" -> ":completion corfu"
+  "consult-yasnippet" [label=""]
+  "consult-yasnippet" -> ":completion vertico"
+  "vertico-posframe" [label=""]
+  "vertico-posframe" -> ":completion vertico"
+  "nerd-icons-completion" [label=""]
+  "nerd-icons-completion" -> ":completion vertico"
+  "wgrep" [label=""]
+  "wgrep" -> ":completion vertico"
+  "marginalia" [label=""]
+  "marginalia" -> ":completion vertico"
+  "embark-consult" [label=""]
+  "embark-consult" -> ":completion vertico"
+  "embark" [label=""]
+  "embark" -> ":completion vertico"
+  "consult-flycheck" [label=""]
+  "consult-flycheck" -> ":completion vertico"
+  "consult-dir" [label=""]
+  "consult-dir" -> ":completion vertico"
+  "consult" [label=""]
+  "consult" -> ":completion vertico"
+  "orderless-1" [label=""]
+  "orderless-1" -> ":completion vertico"
+  "vertico" [label=""]
+  "vertico" -> ":completion vertico"
+  "solaire-mode" [label=""]
+  "solaire-mode" -> ":ui doom"
+  "doom-themes" [label=""]
+  "doom-themes" -> ":ui doom"
+  "hl-todo" [label=""]
+  "hl-todo" -> ":ui hl-todo"
+  "ligature" [label=""]
+  "ligature" -> ":ui ligatures"
+  "evil-anzu" [label=""]
+  "evil-anzu" -> ":ui modeline"
+  "anzu" [label=""]
+  "anzu" -> ":ui modeline"
+  "doom-modeline" [label=""]
+  "doom-modeline" -> ":ui modeline"
+  "nav-flash" [label=""]
+  "nav-flash" -> ":ui nav-flash"
+  "goggles" [label=""]
+  "goggles" -> ":ui ophints"
+  "evil-goggles" [label=""]
+  "evil-goggles" -> ":ui ophints"
+  "good-scroll" [label=""]
+  "good-scroll" -> ":ui smooth-scroll"
+  "ultra-scroll" [label=""]
+  "ultra-scroll" -> ":ui smooth-scroll"
+  "lsp-treemacs" [label=""]
+  "lsp-treemacs" -> ":ui treemacs"
+  "treemacs-persp" [label=""]
+  "treemacs-persp" -> ":ui treemacs"
+  "treemacs-magit" [label=""]
+  "treemacs-magit" -> ":ui treemacs"
+  "treemacs-projectile" [label=""]
+  "treemacs-projectile" -> ":ui treemacs"
+  "treemacs-evil" [label=""]
+  "treemacs-evil" -> ":ui treemacs"
+  "treemacs-nerd-icons" [label=""]
+  "treemacs-nerd-icons" -> ":ui treemacs"
+  "treemacs" [label=""]
+  "treemacs" -> ":ui treemacs"
+  "diff-hl" [label=""]
+  "diff-hl" -> ":ui vc-gutter"
+  "vi-tilde-fringe" [label=""]
+  "vi-tilde-fringe" -> ":ui vi-tilde-fringe"
+  "winum" [label=""]
+  "winum" -> ":ui window-select"
+  "ace-window" [label=""]
+  "ace-window" -> ":ui window-select"
+  "switch-window" [label=""]
+  "switch-window" -> ":ui window-select"
+  "persp-mode" [label=""]
+  "persp-mode" -> ":ui workspaces"
+  "lsp-focus" [label=""]
+  "lsp-focus" -> ":ui zen"
+  "focus" [label=""]
+  "focus" -> ":ui zen"
+  "mixed-pitch" [label=""]
+  "mixed-pitch" -> ":ui zen"
+  "writeroom-mode" [label=""]
+  "writeroom-mode" -> ":ui zen"
+  "evil-collection" [label=""]
+  "evil-collection" -> ":editor evil"
+  "neotree" [label=""]
+  "neotree" -> ":editor evil"
+  "evil-quick-diff" [label=""]
+  "evil-quick-diff" -> ":editor evil"
+  "exato" [label=""]
+  "exato" -> ":editor evil"
+  "evil-visualstar" [label=""]
+  "evil-visualstar" -> ":editor evil"
+  "evil-traces" [label=""]
+  "evil-traces" -> ":editor evil"
+  "evil-textobj-anyblock" [label=""]
+  "evil-textobj-anyblock" -> ":editor evil"
+  "evil-surround" [label=""]
+  "evil-surround" -> ":editor evil"
+  "evil-snipe" [label=""]
+  "evil-snipe" -> ":editor evil"
+  "evil-numbers" [label=""]
+  "evil-numbers" -> ":editor evil"
+  "evil-nerd-commenter" [label=""]
+  "evil-nerd-commenter" -> ":editor evil"
+  "evil-lion" [label=""]
+  "evil-lion" -> ":editor evil"
+  "evil-indent-plus" [label=""]
+  "evil-indent-plus" -> ":editor evil"
+  "evil-exchange" [label=""]
+  "evil-exchange" -> ":editor evil"
+  "evil-escape" [label=""]
+  "evil-escape" -> ":editor evil"
+  "evil-embrace" [label=""]
+  "evil-embrace" -> ":editor evil"
+  "evil-easymotion" [label=""]
+  "evil-easymotion" -> ":editor evil"
+  "evil-args" [label=""]
+  "evil-args" -> ":editor evil"
+  "evil" [label=""]
+  "evil" -> ":editor evil"
+  "yasnippet" [label=""]
+  "yasnippet" -> ":editor file-templates"
+  "treesit-fold" [label=""]
+  "treesit-fold" -> ":editor fold"
+  "evil-vimish-fold" [label=""]
+  "evil-vimish-fold" -> ":editor fold"
+  "vimish-fold" [label=""]
+  "vimish-fold" -> ":editor fold"
+  "hideshow" [label=""]
+  "hideshow" -> ":editor fold"
+  "apheleia" [label=""]
+  "apheleia" -> ":editor format"
+  "evil-mc" [label=""]
+  "evil-mc" -> ":editor multiple-cursors"
+  "evil-multiedit" [label=""]
+  "evil-multiedit" -> ":editor multiple-cursors"
+  "rotate-text" [label=""]
+  "rotate-text" -> ":editor rotate-text"
+  "doom-snippets" [label=""]
+  "doom-snippets" -> ":editor snippets"
+  "auto-yasnippet" [label=""]
+  "auto-yasnippet" -> ":editor snippets"
+  "yasnippet-2" [label=""]
+  "yasnippet-2" -> ":editor snippets"
+  "diredfl" [label=""]
+  "diredfl" -> ":emacs dired"
+  "dirvish" [label=""]
+  "dirvish" -> ":emacs dired"
+  "ibuffer-vc" [label=""]
+  "ibuffer-vc" -> ":emacs ibuffer"
+  "ibuffer-projectile" [label=""]
+  "ibuffer-projectile" -> ":emacs ibuffer"
+  "vundo" [label=""]
+  "vundo" -> ":emacs undo"
+  "undo-fu-session" [label=""]
+  "undo-fu-session" -> ":emacs undo"
+  "undo-fu" [label=""]
+  "undo-fu" -> ":emacs undo"
+  "undo-tree" [label=""]
+  "undo-tree" -> ":emacs undo"
+  "git-modes" [label=""]
+  "git-modes" -> ":emacs vc"
+  "git-timemachine" [label=""]
+  "git-timemachine" -> ":emacs vc"
+  "git-link" [label=""]
+  "git-link" -> ":emacs vc"
+  "smerge-mode" [label=""]
+  "smerge-mode" -> ":emacs vc"
+  "vc-annotate" [label=""]
+  "vc-annotate" -> ":emacs vc"
+  "vc" [label=""]
+  "vc" -> ":emacs vc"
+  "vterm" [label=""]
+  "vterm" -> ":term vterm"
+  "flymake-popon" [label=""]
+  "flymake-popon" -> ":checkers syntax"
+  "flymake" [label=""]
+  "flymake" -> ":checkers syntax"
+  "flycheck-posframe" [label=""]
+  "flycheck-posframe" -> ":checkers syntax"
+  "flycheck-popup-tip" [label=""]
+  "flycheck-popup-tip" -> ":checkers syntax"
+  "flycheck" [label=""]
+  "flycheck" -> ":checkers syntax"
+  "writegood-mode" [label=""]
+  "writegood-mode" -> ":checkers grammar"
+  "langtool" [label=""]
+  "langtool" -> ":checkers grammar"
+  "company-ansible" [label=""]
+  "company-ansible" -> ":tools ansible"
+  "yaml-mode" [label=""]
+  "yaml-mode" -> ":tools ansible"
+  "jinja2-mode" [label=""]
+  "jinja2-mode" -> ":tools ansible"
+  "ansible-doc" [label=""]
+  "ansible-doc" -> ":tools ansible"
+  "ansible" [label=""]
+  "ansible" -> ":tools ansible"
+  "citeproc" [label=""]
+  "citeproc" -> ":tools biblio"
+  "parsebib" [label=""]
+  "parsebib" -> ":tools biblio"
+  "citar-org-roam" [label=""]
+  "citar-org-roam" -> ":tools biblio"
+  "citar-embark" [label=""]
+  "citar-embark" -> ":tools biblio"
+  "citar" [label=""]
+  "citar" -> ":tools biblio"
+  "helm-bibtex" [label=""]
+  "helm-bibtex" -> ":tools biblio"
+  "bibtex-completion" [label=""]
+  "bibtex-completion" -> ":tools biblio"
+  "ivy-bibtex" [label=""]
+  "ivy-bibtex" -> ":tools biblio"
+  "bibtex-completion-3" [label=""]
+  "bibtex-completion-3" -> ":tools biblio"
+  "dockerfile-mode" [label=""]
+  "dockerfile-mode" -> ":tools docker"
+  "docker" [label=""]
+  "docker" -> ":tools docker"
+  "eros" [label=""]
+  "eros" -> ":tools eval"
+  "quickrun" [label=""]
+  "quickrun" -> ":tools eval"
+  "synosaurus" [label=""]
+  "synosaurus" -> ":tools lookup"
+  "wordnut" [label=""]
+  "wordnut" -> ":tools lookup"
+  "powerthesaurus" [label=""]
+  "powerthesaurus" -> ":tools lookup"
+  "define-word" [label=""]
+  "define-word" -> ":tools lookup"
+  "osx-dictionary" [label=""]
+  "osx-dictionary" -> ":tools lookup"
+  "counsel-dash" [label=""]
+  "counsel-dash" -> ":tools lookup"
+  "helm-dash" [label=""]
+  "helm-dash" -> ":tools lookup"
+  "consult-dash" [label=""]
+  "consult-dash" -> ":tools lookup"
+  "dash-docs" [label=""]
+  "dash-docs" -> ":tools lookup"
+  "request" [label=""]
+  "request" -> ":tools lookup"
+  "helm-xref" [label=""]
+  "helm-xref" -> ":tools lookup"
+  "ivy-xref" [label=""]
+  "ivy-xref" -> ":tools lookup"
+  "dumb-jump" [label=""]
+  "dumb-jump" -> ":tools lookup"
+  "helm" [label=""]
+  "helm" -> ":tools lookup"
+  "consult-lsp" [label=""]
+  "consult-lsp" -> ":tools lsp"
+  "helm-lsp" [label=""]
+  "helm-lsp" -> ":tools lsp"
+  "lsp-ivy" [label=""]
+  "lsp-ivy" -> ":tools lsp"
+  "lsp-ui" [label=""]
+  "lsp-ui" -> ":tools lsp"
+  "lsp-mode" [label=""]
+  "lsp-mode" -> ":tools lsp"
+  "eglot-booster" [label=""]
+  "eglot-booster" -> ":tools lsp"
+  "flycheck-eglot" [label=""]
+  "flycheck-eglot" -> ":tools lsp"
+  "consult-eglot" [label=""]
+  "consult-eglot" -> ":tools lsp"
+  "jsonrpc" [label=""]
+  "jsonrpc" -> ":tools lsp"
+  "eglot" [label=""]
+  "eglot" -> ":tools lsp"
+  "orgit-forge" [label=""]
+  "orgit-forge" -> ":tools magit"
+  "orgit" [label=""]
+  "orgit" -> ":tools magit"
+  "code-review" [label=""]
+  "code-review" -> ":tools magit"
+  "ghub" [label=""]
+  "ghub" -> ":tools magit"
+  "forge" [label=""]
+  "forge" -> ":tools magit"
+  "closql" [label=""]
+  "closql" -> ":tools magit"
+  "magit" [label=""]
+  "magit" -> ":tools magit"
+  "cond-let" [label=""]
+  "cond-let" -> ":tools magit"
+  "transient" [label=""]
+  "transient" -> ":tools magit"
+  "makefile-executor" [label=""]
+  "makefile-executor" -> ":tools make"
+  "org-pdftools" [label=""]
+  "org-pdftools" -> ":tools pdf"
+  "saveplace-pdf-view" [label=""]
+  "saveplace-pdf-view" -> ":tools pdf"
+  "pdf-tools" [label=""]
+  "pdf-tools" -> ":tools pdf"
+  "ssh-deploy" [label=""]
+  "ssh-deploy" -> ":tools upload"
+  "ns-auto-titlebar" [label=""]
+  "ns-auto-titlebar" -> ":os macos"
+  "kkp" [label=""]
+  "kkp" -> ":os tty"
+  "evil-terminal-cursor-changer" [label=""]
+  "evil-terminal-cursor-changer" -> ":os tty"
+  "xclip" [label=""]
+  "xclip" -> ":os tty"
+  "clipetty" [label=""]
+  "clipetty" -> ":os tty"
+  "csv-mode" [label=""]
+  "csv-mode" -> ":lang data"
+  "buttercup" [label=""]
+  "buttercup" -> ":lang emacs-lisp"
+  "package-lint-flymake" [label=""]
+  "package-lint-flymake" -> ":lang emacs-lisp"
+  "flycheck-package" [label=""]
+  "flycheck-package" -> ":lang emacs-lisp"
+  "let-completion" [label=""]
+  "let-completion" -> ":lang emacs-lisp"
+  "elisp-demos" [label=""]
+  "elisp-demos" -> ":lang emacs-lisp"
+  "elisp-def" [label=""]
+  "elisp-def" -> ":lang emacs-lisp"
+  "overseer" [label=""]
+  "overseer" -> ":lang emacs-lisp"
+  "macrostep" [label=""]
+  "macrostep" -> ":lang emacs-lisp"
+  "helpful" [label=""]
+  "helpful" -> ":lang emacs-lisp"
+  "highlight-quoted" [label=""]
+  "highlight-quoted" -> ":lang emacs-lisp"
+  "elisp-mode" [label=""]
+  "elisp-mode" -> ":lang emacs-lisp"
+  "flycheck-stan" [label=""]
+  "flycheck-stan" -> ":lang ess"
+  "company-stan" [label=""]
+  "company-stan" -> ":lang ess"
+  "eldoc-stan" [label=""]
+  "eldoc-stan" -> ":lang ess"
+  "stan-mode" [label=""]
+  "stan-mode" -> ":lang ess"
+  "polymode" [label=""]
+  "polymode" -> ":lang ess"
+  "quarto-mode" [label=""]
+  "quarto-mode" -> ":lang ess"
+  "poly-R" [label=""]
+  "poly-R" -> ":lang ess"
+  "ess-view-data" [label=""]
+  "ess-view-data" -> ":lang ess"
+  "ess" [label=""]
+  "ess" -> ":lang ess"
+  "flycheck-golangci-lint" [label=""]
+  "flycheck-golangci-lint" -> ":lang go"
+  "go-gen-test" [label=""]
+  "go-gen-test" -> ":lang go"
+  "go-tag" [label=""]
+  "go-tag" -> ":lang go"
+  "gorepl-mode" [label=""]
+  "gorepl-mode" -> ":lang go"
+  "go-mode" [label=""]
+  "go-mode" -> ":lang go"
+  "counsel-jq" [label=""]
+  "counsel-jq" -> ":lang json"
+  "json-snatcher" [label=""]
+  "json-snatcher" -> ":lang json"
+  "json-mode" [label=""]
+  "json-mode" -> ":lang json"
+  "nodejs-repl" [label=""]
+  "nodejs-repl" -> ":lang javascript"
+  "typescript-mode" [label=""]
+  "typescript-mode" -> ":lang javascript"
+  "julia-snail" [label=""]
+  "julia-snail" -> ":lang julia"
+  "lsp-julia" [label=""]
+  "lsp-julia" -> ":lang julia"
+  "eglot-jl" [label=""]
+  "eglot-jl" -> ":lang julia"
+  "julia-ts-mode" [label=""]
+  "julia-ts-mode" -> ":lang julia"
+  "julia-repl" [label=""]
+  "julia-repl" -> ":lang julia"
+  "julia-mode" [label=""]
+  "julia-mode" -> ":lang julia"
+  "company-math" [label=""]
+  "company-math" -> ":lang latex"
+  "company-reftex" [label=""]
+  "company-reftex" -> ":lang latex"
+  "company-auctex" [label=""]
+  "company-auctex" -> ":lang latex"
+  "cdlatex" [label=""]
+  "cdlatex" -> ":lang latex"
+  "evil-tex" [label=""]
+  "evil-tex" -> ":lang latex"
+  "auctex-cont-latexmk" [label=""]
+  "auctex-cont-latexmk" -> ":lang latex"
+  "adaptive-wrap" [label=""]
+  "adaptive-wrap" -> ":lang latex"
+  "auctex" [label=""]
+  "auctex" -> ":lang latex"
+  "company-lua" [label=""]
+  "company-lua" -> ":lang lua"
+  "fennel-mode" [label=""]
+  "fennel-mode" -> ":lang lua"
+  "flycheck-moonscript" [label=""]
+  "flycheck-moonscript" -> ":lang lua"
+  "moonscript" [label=""]
+  "moonscript" -> ":lang lua"
+  "lua-mode" [label=""]
+  "lua-mode" -> ":lang lua"
+  "evil-markdown" [label=""]
+  "evil-markdown" -> ":lang markdown"
+  "grip-mode" [label=""]
+  "grip-mode" -> ":lang markdown"
+  "markdown-ts-mode" [label=""]
+  "markdown-ts-mode" -> ":lang markdown"
+  "edit-indirect" [label=""]
+  "edit-indirect" -> ":lang markdown"
+  "markdown-toc" [label=""]
+  "markdown-toc" -> ":lang markdown"
+  "markdown-mode" [label=""]
+  "markdown-mode" -> ":lang markdown"
+  "helm-nixos-options" [label=""]
+  "helm-nixos-options" -> ":lang nix"
+  "company-nixos-options" [label=""]
+  "company-nixos-options" -> ":lang nix"
+  "nix-ts-mode" [label=""]
+  "nix-ts-mode" -> ":lang nix"
+  "nixos-options" [label=""]
+  "nixos-options" -> ":lang nix"
+  "nix-update" [label=""]
+  "nix-update" -> ":lang nix"
+  "nix-mode" [label=""]
+  "nix-mode" -> ":lang nix"
+  "ox-rst" [label=""]
+  "ox-rst" -> ":lang org"
+  "ox-pandoc" [label=""]
+  "ox-pandoc" -> ":lang org"
+  "ob-ammonite" [label=""]
+  "ob-ammonite" -> ":lang org"
+  "ob-restclient" [label=""]
+  "ob-restclient" -> ":lang org"
+  "ob-racket" [label=""]
+  "ob-racket" -> ":lang org"
+  "ob-php" [label=""]
+  "ob-php" -> ":lang org"
+  "ob-nim" [label=""]
+  "ob-nim" -> ":lang org"
+  "ob-hy" [label=""]
+  "ob-hy" -> ":lang org"
+  "ob-graphql" [label=""]
+  "ob-graphql" -> ":lang org"
+  "ob-go" [label=""]
+  "ob-go" -> ":lang org"
+  "ob-fsharp" [label=""]
+  "ob-fsharp" -> ":lang org"
+  "ob-elixir" [label=""]
+  "ob-elixir" -> ":lang org"
+  "ob-crystal" [label=""]
+  "ob-crystal" -> ":lang org"
+  "ob-async" [label=""]
+  "ob-async" -> ":lang org"
+  "org-roam" [label=""]
+  "org-roam" -> ":lang org"
+  "revealjs" [label=""]
+  "revealjs" -> ":lang org"
+  "org-re-reveal" [label=""]
+  "org-re-reveal" -> ":lang org"
+  "org-tree-slide" [label=""]
+  "org-tree-slide" -> ":lang org"
+  "centered-window" [label=""]
+  "centered-window" -> ":lang org"
+  "org-appear" [label=""]
+  "org-appear" -> ":lang org"
+  "org-modern" [label=""]
+  "org-modern" -> ":lang org"
+  "org-noter" [label=""]
+  "org-noter" -> ":lang org"
+  "org-journal" [label=""]
+  "org-journal" -> ":lang org"
+  "jupyter" [label=""]
+  "jupyter" -> ":lang org"
+  "gnuplot-mode" [label=""]
+  "gnuplot-mode" -> ":lang org"
+  "gnuplot" [label=""]
+  "gnuplot" -> ":lang org"
+  "org-download" [label=""]
+  "org-download" -> ":lang org"
+  "evil-org" [label=""]
+  "evil-org" -> ":lang org"
+  "org-mac-link" [label=""]
+  "org-mac-link" -> ":lang org"
+  "org-cliplink" [label=""]
+  "org-cliplink" -> ":lang org"
+  "toc-org" [label=""]
+  "toc-org" -> ":lang org"
+  "ox-clip" [label=""]
+  "ox-clip" -> ":lang org"
+  "htmlize" [label=""]
+  "htmlize" -> ":lang org"
+  "avy" [label=""]
+  "avy" -> ":lang org"
+  "org-contrib" [label=""]
+  "org-contrib" -> ":lang org"
+  "org" [label=""]
+  "org" -> ":lang org"
+  "python-pytest" [label=""]
+  "python-pytest" -> ":lang python"
+  "nose" [label=""]
+  "nose" -> ":lang python"
+  "poetry" [label=""]
+  "poetry" -> ":lang python"
+  "conda" [label=""]
+  "conda" -> ":lang python"
+  "uv-mode" [label=""]
+  "uv-mode" -> ":lang python"
+  "pyenv-mode" [label=""]
+  "pyenv-mode" -> ":lang python"
+  "pyvenv" [label=""]
+  "pyvenv" -> ":lang python"
+  "pipenv" [label=""]
+  "pipenv" -> ":lang python"
+  "lsp-pyright" [label=""]
+  "lsp-pyright" -> ":lang python"
+  "flycheck-cython" [label=""]
+  "flycheck-cython" -> ":lang python"
+  "cython-mode" [label=""]
+  "cython-mode" -> ":lang python"
+  "pip-requirements" [label=""]
+  "pip-requirements" -> ":lang python"
+  "rustic" [label=""]
+  "rustic" -> ":lang rust"
+  "rust-mode" [label=""]
+  "rust-mode" -> ":lang rust"
+  "geiser-racket" [label=""]
+  "geiser-racket" -> ":lang scheme"
+  "geiser-mit" [label=""]
+  "geiser-mit" -> ":lang scheme"
+  "geiser-kawa" [label=""]
+  "geiser-kawa" -> ":lang scheme"
+  "flycheck-guile" [label=""]
+  "flycheck-guile" -> ":lang scheme"
+  "geiser-guile" [label=""]
+  "geiser-guile" -> ":lang scheme"
+  "geiser-gauche" [label=""]
+  "geiser-gauche" -> ":lang scheme"
+  "geiser-gambit" [label=""]
+  "geiser-gambit" -> ":lang scheme"
+  "geiser-chicken" [label=""]
+  "geiser-chicken" -> ":lang scheme"
+  "geiser-chibi" [label=""]
+  "geiser-chibi" -> ":lang scheme"
+  "geiser-chez" [label=""]
+  "geiser-chez" -> ":lang scheme"
+  "macrostep-geiser" [label=""]
+  "macrostep-geiser" -> ":lang scheme"
+  "powershell" [label=""]
+  "powershell" -> ":lang sh"
+  "fish-mode" [label=""]
+  "fish-mode" -> ":lang sh"
+  "bash-completion" [label=""]
+  "bash-completion" -> ":lang sh"
+  "company-shell" [label=""]
+  "company-shell" -> ":lang sh"
+  "helm-css-scss" [label=""]
+  "helm-css-scss" -> ":lang web"
+  "counsel-css" [label=""]
+  "counsel-css" -> ":lang web"
+  "rainbow-mode" [label=""]
+  "rainbow-mode" -> ":lang web"
+  "sws-mode" [label=""]
+  "sws-mode" -> ":lang web"
+  "stylus-mode" [label=""]
+  "stylus-mode" -> ":lang web"
+  "sass-mode" [label=""]
+  "sass-mode" -> ":lang web"
+  "less-css-mode" [label=""]
+  "less-css-mode" -> ":lang web"
+  "css-mode" [label=""]
+  "css-mode" -> ":lang web"
+  "company-web" [label=""]
+  "company-web" -> ":lang web"
+  "slim-mode" [label=""]
+  "slim-mode" -> ":lang web"
+  "pug-mode" [label=""]
+  "pug-mode" -> ":lang web"
+  "haml-mode" [label=""]
+  "haml-mode" -> ":lang web"
+  "emmet-mode" [label=""]
+  "emmet-mode" -> ":lang web"
+  "yaml-mode-4" [label=""]
+  "yaml-mode-4" -> ":lang yaml"
+  "zig-ts-mode" [label=""]
+  "zig-ts-mode" -> ":lang zig"
+  "zig-mode" [label=""]
+  "zig-mode" -> ":lang zig"
+  "org-msg" [label=""]
+  "org-msg" -> ":email mu4e"
+  "mu4e-compat" [label=""]
+  "mu4e-compat" -> ":email mu4e"
+  "emacs-everywhere" [label=""]
+  "emacs-everywhere" -> ":app everywhere"
+  "circe-notifications" [label=""]
+  "circe-notifications" -> ":app irc"
+  "circe" [label=""]
+  "circe" -> ":app irc"
+  "elfeed-tube" [label=""]
+  "elfeed-tube" -> ":app rss"
+  "elfeed-org" [label=""]
+  "elfeed-org" -> ":app rss"
+  "elfeed" [label=""]
+  "elfeed" -> ":app rss"
+}
