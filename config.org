@@ -3942,7 +3942,7 @@ Doom module.
 (use-package! emacs-everywhere
   :if (daemonp)
   :config
-  (require 'spell-fu)
+  (require 'jinx)
   (setq emacs-everywhere-major-mode-function #'org-mode
         emacs-everywhere-frame-name-format "Edit ∷ %s — %s")
   (defadvice! emacs-everywhere-raise-frame ()
@@ -8460,14 +8460,6 @@ and Minad's lovely =org-modern= goes a long way in this regard.
           ("caption" . "☰")
           ("results" . "🠶")))
   (custom-set-faces! '(org-modern-statistics :inherit org-checkbox-statistics-todo)))
-#+end_src
-
-Since =org-modern='s tag face supplants Org's tag face, we need to adjust the
-spell-check face ignore list
-
-#+begin_src emacs-lisp
-(after! spell-fu
-  (cl-pushnew 'org-modern-tag (alist-get 'org-mode +spell-excluded-faces-alist)))
 #+end_src
 
 ***** Emphasis markers
@@ -14518,8 +14510,7 @@ I've integrated this into a little package, =pdftotext.el=.
 (package! pdftotext :recipe (:local-repo "lisp/pdftotext"))
 #+end_src
 
-The output can be slightly nicer without spelling errors, and with prettier page
-feeds (=^L= by default).
+The output can be slightly nicer with prettier page feeds (=^L= by default).
 
 This is very nice, now we just need to associate it with =.pdf= files, and make
 sure =pdf-tools= doesn't take priority.
@@ -14535,7 +14526,6 @@ Lastly, whenever Emacs is non-graphical (i.e. a TUI), we want to use this by def
   :config
   (unless (display-graphic-p) (after! pdf-tools (pdftotext-install)))
   ;; For prettyness
-  (add-hook 'pdftotext-mode-hook #'spell-fu-mode-disable)
   (add-hook 'pdftotext-mode-hook (lambda () (page-break-lines-mode 1)))
   ;; I have no idea why this is needed
   (map! :map pdftotext-mode-map
