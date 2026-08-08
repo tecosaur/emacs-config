@@ -5377,12 +5377,22 @@ shadow)=, but I don't like that.
       ;; 1 - log(3 + 1/(days + 1)) % grey
       (propertize (marginalia--time time) 'face (list :foreground color))))
 
+  (defconst +marginalia-file-size-pivot-bytes (* 10 1024 1024)
+    "File size coloured orange, between the green and red extremes.")
+
+  (defconst +marginalia-file-size-red-bytes (* 1024 1024 1024)
+    "File size at which the size colour saturates to red.")
+
   (defun +marginalia-file-size-colorful (size)
-    (let* ((size-index (/ (log (+ 1 size)) 7.0))
-           (color (if (< size-index 10000000) ; 10m
-                      (doom-blend 'orange 'green size-index)
-                    (doom-blend 'red 'orange (- size-index 1)))))
-      (propertize (file-size-human-readable size) 'face (list :foreground color)))))
+    (let* ((orange (log +marginalia-file-size-pivot-bytes))
+           (color (if (< size +marginalia-file-size-pivot-bytes)
+                      (doom-blend 'orange 'green (/ (log (+ 1 size)) orange))
+                    (doom-blend 'red 'orange
+                                (min 1.0 (/ (- (log size) orange)
+                                            (- (log +marginalia-file-size-red-bytes)
+                                               orange)))))))
+      (propertize (file-size-human-readable size)
+                  'face (list :foreground color)))))
 #+end_src
 
 *** Centaur Tabs
