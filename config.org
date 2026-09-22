@@ -1617,13 +1617,24 @@ When using a device with a battery, it would be nice to display battery
  in =battery.el=, it seems like the ~?L~ key is consistently =N/A= when there is no
  battery, so we'll test on that.
 
+Since Emacs 31, the UPower backend can update the mode line on power events
+instead of polling, and native compilation can be held off while on battery
+power. Both are worth having whenever a battery is present.
+
 #+name: battery-status-setup
 #+begin_src emacs-lisp :noweb-ref none
 (require 'battery)
 (if (and battery-status-function
          (not (equal (alist-get ?L (funcall battery-status-function))
                      "N/A")))
-    (prin1-to-string `(display-battery-mode 1))
+    (mapconcat
+     #'prin1-to-string
+     (delq nil
+           (list '(display-battery-mode 1)
+                 (when (eq battery-status-function #'battery-upower)
+                   '(setq battery-update-interval nil))
+                 '(setq native-comp-async-on-battery-power nil)))
+     "\n")
   "")
 #+end_src
 
@@ -1680,14 +1691,15 @@ Then, we'll pull up a buffer prompt.
 #+end_src
 
 Window rotation is nice, and can be found under =SPC w r= and =SPC w R=.
-/Layout/ rotation is also nice though. Let's stash this under =SPC w SPC=, inspired
-by Tmux's use of =C-b SPC= to rotate windows.
+/Layout/ rotation is also nice though, and as of Emacs 31 it's built in via
+~window-layout-rotate-clockwise~ and friends. Let's stash this under =SPC w SPC=,
+inspired by Tmux's use of =C-b SPC= to rotate windows.
 
 We could also do with adding the missing arrow-key variants of the window
 navigation/swapping commands.
 #+begin_src emacs-lisp
 (map! :map evil-window-map
-      "SPC" #'rotate-layout
+      "SPC" #'window-layout-rotate-clockwise
       ;; Navigation
       "<left>"     #'evil-window-left
       "<down>"     #'evil-window-down
@@ -3523,7 +3535,7 @@ I'd like to have just the buffer name, then if applicable the project folder
               (subst-char-in-string ?_ ?\s buffer-file-name))
            "%b"))
         (:eval
-         (when-let ((project-name (and (featurep 'projectile) (projectile-project-name))))
+         (when-let* ((project-name (and (featurep 'projectile) (projectile-project-name))))
            (unless (string= "-" project-name)
              (format (if (buffer-modified-p)  " ◉ %s" "  ●  %s") project-name))))))
 #+end_src
@@ -3546,7 +3558,7 @@ Wants=gpg-agent.service
 [Service]
 Type=forking
 ExecStart=zsh -c 'emacs --daemon && emacsclient -c --eval "(delete-frame)"'
-ExecStop=/usr/bin/emacsclient --no-wait --eval "(progn (setq kill-emacs-hook nil) (kill emacs))"
+ExecStop=/usr/bin/emacsclient --no-wait --eval "(progn (setq kill-emacs-hook nil) (kill-emacs))"
 Environment=COLORTERM=truecolor
 Restart=on-failure
 
@@ -3739,7 +3751,7 @@ anything to be run.
       (pp-to-string
        `(unless noninteractive
           (defun +config-run-setup ()
-            (when-let ((setup-file (expand-file-name "setup.sh" doom-user-dir))
+            (when-let* ((setup-file (expand-file-name "setup.sh" doom-user-dir))
                        ((file-exists-p setup-file))
                        (setup-content (string-trim (with-temp-buffer (insert-file-contents setup-file) (buffer-string))
                                                    "#!/usr/bin/env bash"))
@@ -3777,7 +3789,7 @@ string. Note that this does not currently expand nested noweb references.
 ;; NAME is the name of the source block to grab.
 ;; PRE is a string to prepend to the content of the block.
 ;; POST is a string to append to the content of the block.
-(if-let ((block-pos (org-babel-find-named-block name))
+(if-let* ((block-pos (org-babel-find-named-block name))
          (block (org-element-at-point block-pos)))
     (format "%S" (concat pre (string-trim (org-element-property :value block)) post))
   ;; look for :noweb-ref matches
@@ -3912,15 +3924,6 @@ Now let's just have this included when an ErgoDox is found via =dmesg=.
 
 #+begin_src emacs-lisp :noweb no-export
 <<avy-detect-colemak()>>
-#+end_src
-
-*** Rotate (window management)
-
-The =rotate= package just adds the ability to rotate window layouts, but that
-sounds nice to me.
-
-#+begin_src emacs-lisp :tangle packages.el
-(package! rotate :pin "4e9ac3ff800880bd9b705794ef0f7c99d72900a6")
 #+end_src
 
 *** Emacs Everywhere
@@ -4388,7 +4391,7 @@ One little thing I want to add is some per-project commit message templates.
 #+begin_src emacs-lisp
 (defun +magit-fill-in-commit-template ()
   "Insert template from `+magit-fill-in-commit-template' if applicable."
-  (when-let ((template (and (save-excursion (goto-char (point-min)) (string-match-p "\\`\\s-*$" (thing-at-point 'line)))
+  (when-let* ((template (and (save-excursion (goto-char (point-min)) (string-match-p "\\`\\s-*$" (thing-at-point 'line)))
                             (cdr (assoc (file-name-base (directory-file-name (magit-toplevel)))
                                         +magit-project-commit-templates-alist)))))
     (goto-char (point-min))
@@ -5356,9 +5359,9 @@ shadow)=, but I don't like that.
   (defadvice! +marginalia--anotate-local-file-colorful (cand)
     "Just a more colourful version of `marginalia--anotate-local-file'."
     :override #'marginalia--annotate-local-file
-    (when-let (attrs (file-attributes (substitute-in-file-name
-                                       (marginalia--full-candidate cand))
-                                      'integer))
+    (when-let* ((attrs (file-attributes (substitute-in-file-name
+                                        (marginalia--full-candidate cand))
+                                       'integer)))
       (marginalia--fields
        ((marginalia--file-owner attrs)
         :width 12 :face 'marginalia-file-owner)
@@ -5440,7 +5443,7 @@ than Objective-C. As such, it'll be switching the icon associated with =.m=.
 
 #+begin_src emacs-lisp
 (after! nerd-icons
-  (when-let ((matlab-icon (assoc "matlab" nerd-icons-extension-icon-alist)))
+  (when-let* ((matlab-icon (assoc "matlab" nerd-icons-extension-icon-alist)))
     (setcdr (assoc "m" nerd-icons-extension-icon-alist)
             (cdr matlab-icon))))
 #+end_src
@@ -5998,7 +6001,7 @@ SQL can be either the emacsql vector representation, or a string."
       (apply #'emacsql (+xkcd-db) sql args)))
 
   (defun +xkcd-db-read (num)
-    (when-let ((res
+    (when-let* ((res
                 (car (+xkcd-db-query [:select * :from xkcds
                                       :where (= num $s1)]
                                      num
@@ -7632,7 +7635,7 @@ We also want to define ~mu4e-compose-from-mailto~.
          (subject (or (cadr (assoc "subject" mailto)) ""))
          (body (cadr (assoc "body" mailto)))
          (headers (-filter (lambda (spec) (not (-contains-p '("to" "subject" "body") (car spec)))) mailto)))
-    (when-let ((mu4e-main (get-buffer mu4e-main-buffer-name)))
+    (when-let* ((mu4e-main (get-buffer mu4e-main-buffer-name)))
       (switch-to-buffer mu4e-main))
     (mu4e~compose-mail to subject headers)
     (when body
@@ -7809,7 +7812,7 @@ Now we just need a function which will add such a header to a buffer
 (defun +mu4e-insert-woof-header ()
   "Insert an X-Woof header into the current message."
   (interactive)
-  (when-let ((header (+mu4e-get-woof-header)))
+  (when-let* ((header (+mu4e-get-woof-header)))
     (save-excursion
       (goto-char (point-min))
       (search-forward "--text follows this line--")
@@ -8533,7 +8536,7 @@ recognising the pgtk window system]].
   :config
   (setq org-babel-julia-command-arguments
         `("--sysimage"
-          ,(when-let ((img "~/.local/lib/julia.so")
+          ,(when-let* ((img "~/.local/lib/julia.so")
                       (exists? (file-exists-p img)))
              (expand-file-name img))
           "--threads"
@@ -10954,7 +10957,7 @@ Lastly, let's pile on some metadata. This gives my pages nice embeds.
             (format-time-string
              "%FT%T%z"
              (or
-              (when-let ((date-str (cadar (org-collect-keywords '("DATE")))))
+              (when-let* ((date-str (cadar (org-collect-keywords '("DATE")))))
                 (unless (string= date-str (format-time-string "%F"))
                   (ignore-errors (encode-time (org-parse-time-string date-str)))))
               (if buffer-file-name
@@ -11633,7 +11636,7 @@ VALUE may be t/nil (from the defvar default), or a string from the keyword."
           (guard (string-match-p "\\`[0-9]+\\(?:\\.[0-9]*\\)?\\'" value)))
      (cons (* 2 float-pi (/ (string-to-number value) 360.0)) 1.0))
     ((pred stringp)
-     (if-let ((rgb (color-name-to-rgb value)))
+     (if-let* ((rgb (color-name-to-rgb value)))
          (let* ((lab (apply #'color-srgb-to-oklab rgb))
                 (l (car lab))
                 (chroma (sqrt (+ (* (cadr lab) (cadr lab))
@@ -11948,7 +11951,7 @@ can embed whatever we want.
        (lambda (src)
          (when (and (not (org-in-commented-heading-p nil src))
                     (not (org-in-archived-heading-p nil src)))
-           (when-let ((lang (org-element-property :language src))
+           (when-let* ((lang (org-element-property :language src))
                       (params
                        (apply
                         #'org-babel-merge-params
@@ -13703,7 +13706,7 @@ export to a PDF.
                         package))
                     packages)))
 
-(if-let (((executable-find "kpsewhich"))
+(if-let* (((executable-find "kpsewhich"))
          (missing-pkgs (check-for-latex-packages org-required-latex-packages)))
     (concat
      (pp-to-string `(setq org-required-latex-packages ',org-required-latex-packages))
@@ -13719,7 +13722,7 @@ export to a PDF.
       '(defun +org-warn-about-missing-latex-packages (&rest _)
          (message "Checking for missing LaTeX packages...")
          (sleep-for 0.4)
-         (if-let (missing-pkgs (check-for-latex-packages org-required-latex-packages))
+         (if-let* ((missing-pkgs (check-for-latex-packages org-required-latex-packages)))
              (message "%s You are missing the following LaTeX packages: %s."
                       (propertize "Warning!" 'face '(bold warning))
                       (mapconcat (lambda (pkg) (propertize pkg 'face 'font-lock-variable-name-face))
@@ -14466,6 +14469,16 @@ With Emacs 29.4
 (when (and (= emacs-major-version 29) (= emacs-minor-version 4))
   (after! auctex ; See <https://github.com/minad/vertico/discussions/475>
     (fmakunbound 'ConTeXt-mode)))
+#+end_src
+
+** Emacs Lisp
+
+Emacs 31 introduced semantic highlighting for Emacs Lisp, which uses code
+analysis to fontify local variables, functions, and macros more accurately than
+the regexp-based rules alone. It's opt-in, so let's opt in.
+
+#+begin_src emacs-lisp
+(setq elisp-fontify-semantically t)
 #+end_src
 
 ** Python
