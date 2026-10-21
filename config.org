@@ -2415,9 +2415,23 @@ to follow it. Thanks to the continued expansion of the =xdg-desktop-portal=
 protocols, we can read this from D-Bus on most systems. We can even watch for
 changes to boot.
 
+Loading =dbus.el= takes ~60ms though, so we read the initial value with
+=busctl= and only load it to watch for changes once Emacs is idle.
+
 #+name: auto-theme-xdg
 #+begin_src emacs-lisp :noweb-ref none
-(require 'dbus)
+(defun +doom-theme--read-system ()
+  "Return the xdg-desktop-portal color-scheme number, or nil if unavailable."
+  (with-temp-buffer
+    (and (executable-find "busctl")
+         (eq 0 (call-process
+                "busctl" nil t nil "--user" "--timeout=1" "call"
+                "org.freedesktop.portal.Desktop" "/org/freedesktop/portal/desktop"
+                "org.freedesktop.portal.Settings" "Read"
+                "ss" "org.freedesktop.appearance" "color-scheme"))
+         (progn (goto-char (point-min))
+                (re-search-forward "u \\([0-9]+\\)" nil t))
+         (string-to-number (match-string 1)))))
 
 (defun +doom-theme--from-system (system-theme)
   "Pick a doom theme based on the SYSTEM-THEME number."
@@ -2441,22 +2455,18 @@ changes to boot.
 
 (when (and (display-graphic-p (selected-frame))
            (not (getenv "DOOM_THEME")))
-  (let ((system-theme
-         (caar
-          (ignore-errors
-            (dbus-call-method
-             :session
-             "org.freedesktop.portal.Desktop" "/org/freedesktop/portal/desktop"
-             "org.freedesktop.portal.Settings" "Read"
-             "org.freedesktop.appearance" "color-scheme")))))
-    (setq doom-theme (+doom-theme--from-system system-theme)))
-  (dbus-register-signal
-   :session
-   "org.freedesktop.portal.Desktop"
-   "/org/freedesktop/portal/desktop"
-   "org.freedesktop.portal.Settings"
-   "SettingChanged"
-   #'+doom-theme--dbus-update))
+  (setq doom-theme (+doom-theme--from-system (+doom-theme--read-system)))
+  (run-with-idle-timer
+   1 nil
+   (lambda ()
+     (require 'dbus)
+     (dbus-register-signal
+      :session
+      "org.freedesktop.portal.Desktop"
+      "/org/freedesktop/portal/desktop"
+      "org.freedesktop.portal.Settings"
+      "SettingChanged"
+      #'+doom-theme--dbus-update))))
 #+end_src
 
 On MacOS we can also check the system theme, and there is a convenient
@@ -4899,10 +4909,11 @@ From the =:core packages= module.
 #+end_quote
 
 #+begin_src emacs-lisp
-(sp-local-pair
- '(org-mode)
- "<<" ">>"
- :actions '(insert))
+(after! smartparens
+  (sp-local-pair
+   '(org-mode)
+   "<<" ">>"
+   :actions '(insert)))
 #+end_src
 
 ** Visuals
@@ -14532,12 +14543,13 @@ Lastly, whenever Emacs is non-graphical (i.e. a TUI), we want to use this by def
 
 #+begin_src emacs-lisp
 (use-package! pdftotext
+  :defer t
   :init
   (unless (display-graphic-p)
     (add-to-list 'auto-mode-alist '("\\.[pP][dD][fF]\\'" . pdftotext-mode))
-    (add-to-list 'magic-mode-alist '("%PDF" . pdftotext-mode)))
+    (add-to-list 'magic-mode-alist '("%PDF" . pdftotext-mode))
+    (after! pdf-tools (pdftotext-install)))
   :config
-  (unless (display-graphic-p) (after! pdf-tools (pdftotext-install)))
   ;; For prettyness
   (add-hook 'pdftotext-mode-hook (lambda () (page-break-lines-mode 1)))
   ;; I have no idea why this is needed
