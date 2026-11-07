@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Doom Emacs Configuration: Files</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="theme-color" content="#77aa99" />
+<style>
+body { background: #fafafa; color: #383a42; margin: 0; padding: 1em; }
+body > div { max-width: 60rem; margin: auto; }
+p, li { font-size: 1.1em }
+code { font-size: 1.2em; }
+a { color: #4078f2; }
+a:visited { color: #b751b6; }
+#map { overflow: hidden; height: 80vh; resize: vertical; border: 1px solid #d0d0d0; border-radius: 0.3em; cursor: grab; touch-action: none; }
+#map img { width: 100%; display: block; transform-origin: 0 0; user-select: none; -webkit-user-drag: none; }
+@media (prefers-color-scheme: dark) {
+  body { background: #21242b; color: #bbc2cf; }
+  a { color: #51afef; }
+  a:visited { color: #c678dd; }
+  #map { border-color: #3f444a; }
+  img { filter: invert(1) hue-rotate(180deg); }
+}
+</style>
+</head>
+<body>
+<div>
+
+<h1>Doom Emacs Configuration &mdash; Files</h1>
+
+<p><a href="engraved/config.org.html"><code>config.org</code></a> (<a href="config.html">html</a>, <a href="config.pdf">pdf</a>)</p>
+
+<p>Upon <a href="https://en.wikipedia.org/wiki/Literate_programming">tangling</a> this file,
+every other file listed here is generated.</p>
+
+<p>Doom cares about three in particular:</p>
+<ul>
+  <li><a href="engraved/init.el.html"><code>init.el</code></a></li>
+  <li><a href="engraved/packages.el.html"><code>packages.el</code></a></li>
+  <li><a href="engraved/config.el.html"><code>config.el</code></a></li>
+</ul>
+
+<h2>Generated sub-configuration</h2>
+
+<p>The sub-configuration is a collection of generated fragments of configuration sourced from <code>config.org</code>.
+See <a href="config.html#rudimentary-configuration-confpkg">the section on it</a> for more information.</p>
+
+<p>Many of these can be thought of as stand-alone packages, with their own
+dependencies, some of which interact with Doom modules.</p>
+
+<div id="map"><img src="subconf/map.svg" alt="Dependency map of the sub-configuration" /></div>
+<p><small>Scroll to zoom, drag to pan.</small></p>
+
+
+<h3>Package configurations (59)</h3>
+
+<ul>
+  <li>AAS (<a href="engraved/subconf/config--pkg-aas.el.html">pretty</a>, <a href="subconf/config--pkg-aas.el">raw</a>)
+  <li>avy (<a href="engraved/subconf/config--pkg-avy.el.html">pretty</a>, <a href="subconf/config--pkg-avy.el">raw</a>)
+  <li>Beancount (<a href="engraved/subconf/config--pkg-beancount.el.html">pretty</a>, <a href="subconf/config--pkg-beancount.el">raw</a>)
+  <li>Centaur Tabs (<a href="engraved/subconf/config--pkg-centaur-tabs.el.html">pretty</a>, <a href="subconf/config--pkg-centaur-tabs.el">raw</a>)
+  <li>Consult (<a href="engraved/subconf/config--pkg-consult.el.html">pretty</a>, <a href="subconf/config--pkg-consult.el">raw</a>)
+  <li>Corfu (<a href="engraved/subconf/config--pkg-corfu.el.html">pretty</a>, <a href="subconf/config--pkg-corfu.el">raw</a>)
+  <li>Doom modeline (<a href="engraved/subconf/config--pkg-doom-modeline.el.html">pretty</a>, <a href="subconf/config--pkg-doom-modeline.el">raw</a>)
+  <li>Elcord (<a href="engraved/subconf/config--pkg-elcord.el.html">pretty</a>, <a href="subconf/config--pkg-elcord.el">raw</a>)
+  <li>emacs-everywhere (<a href="engraved/subconf/config--pkg-emacs-everywhere.el.html">pretty</a>, <a href="subconf/config--pkg-emacs-everywhere.el">raw</a>)
+  <li>Eros (<a href="engraved/subconf/config--pkg-eros.el.html">pretty</a>, <a href="subconf/config--pkg-eros.el">raw</a>)
+  <li>etrace (<a href="engraved/subconf/config--pkg-etrace.el.html">pretty</a>, <a href="subconf/config--pkg-etrace.el">raw</a>)
+  <li>evil (<a href="engraved/subconf/config--pkg-evil.el.html">pretty</a>, <a href="subconf/config--pkg-evil.el">raw</a>)
+  <li>gptel (<a href="engraved/subconf/config--pkg-gptel.el.html">pretty</a>, <a href="subconf/config--pkg-gptel.el">raw</a>)
+  <li>graphviz-dot-mode (<a href="engraved/subconf/config--pkg-graphviz-dot-mode.el.html">pretty</a>, <a href="subconf/config--pkg-graphviz-dot-mode.el">raw</a>)
+  <li>Headlice (<a href="engraved/subconf/config--pkg-headlice.el.html">pretty</a>, <a href="subconf/config--pkg-headlice.el">raw</a>)
+  <li>Info colors (<a href="engraved/subconf/config--pkg-info-colors.el.html">pretty</a>, <a href="subconf/config--pkg-info-colors.el">raw</a>)
+  <li>Keycast (<a href="engraved/subconf/config--pkg-keycast.el.html">pretty</a>, <a href="subconf/config--pkg-keycast.el">raw</a>)
+  <li>LAAS (<a href="engraved/subconf/config--pkg-laas.el.html">pretty</a>, <a href="subconf/config--pkg-laas.el">raw</a>)
+  <li>Magit (<a href="engraved/subconf/config--pkg-magit.el.html">pretty</a>, <a href="subconf/config--pkg-magit.el">raw</a>)
+  <li>Marginalia (<a href="engraved/subconf/config--pkg-marginalia.el.html">pretty</a>, <a href="subconf/config--pkg-marginalia.el">raw</a>)
+  <li>mixed pitch (<a href="engraved/subconf/config--pkg-mixed-pitch.el.html">pretty</a>, <a href="subconf/config--pkg-mixed-pitch.el">raw</a>)
+  <li>Nerd Icons (<a href="engraved/subconf/config--pkg-nerd-icons.el.html">pretty</a>, <a href="subconf/config--pkg-nerd-icons.el">raw</a>)
+  <li>ob-http (<a href="engraved/subconf/config--pkg-ob-http.el.html">pretty</a>, <a href="subconf/config--pkg-ob-http.el">raw</a>)
+  <li>ob-julia (<a href="engraved/subconf/config--pkg-ob-julia.el.html">pretty</a>, <a href="subconf/config--pkg-ob-julia.el">raw</a>)
+  <li>org-appear (<a href="engraved/subconf/config--pkg-org-appear.el.html">pretty</a>, <a href="subconf/config--pkg-org-appear.el">raw</a>)
+  <li>org-chef (<a href="engraved/subconf/config--pkg-org-chef.el.html">pretty</a>, <a href="subconf/config--pkg-org-chef.el">raw</a>)
+  <li>org-glossary (<a href="engraved/subconf/config--pkg-org-glossary.el.html">pretty</a>, <a href="subconf/config--pkg-org-glossary.el">raw</a>)
+  <li>org-graph-view (<a href="engraved/subconf/config--pkg-org-graph-view.el.html">pretty</a>, <a href="subconf/config--pkg-org-graph-view.el">raw</a>)
+  <li>org-modern (<a href="engraved/subconf/config--pkg-org-modern.el.html">pretty</a>, <a href="subconf/config--pkg-org-modern.el">raw</a>)
+  <li>org-music (<a href="engraved/subconf/config--pkg-org-music.el.html">pretty</a>, <a href="subconf/config--pkg-org-music.el">raw</a>)
+  <li>org-ol-tree (<a href="engraved/subconf/config--pkg-org-ol-tree.el.html">pretty</a>, <a href="subconf/config--pkg-org-ol-tree.el">raw</a>)
+  <li>org-pandoc-import (<a href="engraved/subconf/config--pkg-org-pandoc-import.el.html">pretty</a>, <a href="subconf/config--pkg-org-pandoc-import.el">raw</a>)
+  <li>org-re-reveal (<a href="engraved/subconf/config--pkg-org-re-reveal.el.html">pretty</a>, <a href="subconf/config--pkg-org-re-reveal.el">raw</a>)
+  <li>org-roam-ui (<a href="engraved/subconf/config--pkg-org-roam-ui.el.html">pretty</a>, <a href="subconf/config--pkg-org-roam-ui.el">raw</a>)
+  <li>org-roam (<a href="engraved/subconf/config--pkg-org-roam.el.html">pretty</a>, <a href="subconf/config--pkg-org-roam.el">raw</a>)
+  <li>Org Super Agenda (<a href="engraved/subconf/config--pkg-org-super-agenda.el.html">pretty</a>, <a href="subconf/config--pkg-org-super-agenda.el">raw</a>)
+  <li>org-transclusion (<a href="engraved/subconf/config--pkg-org-transclusion.el.html">pretty</a>, <a href="subconf/config--pkg-org-transclusion.el">raw</a>)
+  <li>orgdiff (<a href="engraved/subconf/config--pkg-orgdiff.el.html">pretty</a>, <a href="subconf/config--pkg-orgdiff.el">raw</a>)
+  <li>ox-chameleon (<a href="engraved/subconf/config--pkg-ox-chameleon.el.html">pretty</a>, <a href="subconf/config--pkg-ox-chameleon.el">raw</a>)
+  <li>ox-gfm (<a href="engraved/subconf/config--pkg-ox-gfm.el.html">pretty</a>, <a href="subconf/config--pkg-ox-gfm.el">raw</a>)
+  <li>page break lines (<a href="engraved/subconf/config--pkg-page-break-lines.el.html">pretty</a>, <a href="subconf/config--pkg-page-break-lines.el">raw</a>)
+  <li>Projectile (<a href="engraved/subconf/config--pkg-projectile.el.html">pretty</a>, <a href="subconf/config--pkg-projectile.el">raw</a>)
+  <li>Rainbow Delimiters (<a href="engraved/subconf/config--pkg-rainbow-delimiters.el.html">pretty</a>, <a href="subconf/config--pkg-rainbow-delimiters.el">raw</a>)
+  <li>Screencast (<a href="engraved/subconf/config--pkg-screencast.el.html">pretty</a>, <a href="subconf/config--pkg-screencast.el">raw</a>)
+  <li>Screenshot (<a href="engraved/subconf/config--pkg-screenshot.el.html">pretty</a>, <a href="subconf/config--pkg-screenshot.el">raw</a>)
+  <li>Selectric (<a href="engraved/subconf/config--pkg-selectric.el.html">pretty</a>, <a href="subconf/config--pkg-selectric.el">raw</a>)
+  <li>simple-comment-markup (<a href="engraved/subconf/config--pkg-simple-comment-markup.el.html">pretty</a>, <a href="subconf/config--pkg-simple-comment-markup.el">raw</a>)
+  <li>SmartParens (<a href="engraved/subconf/config--pkg-smartparens.el.html">pretty</a>, <a href="subconf/config--pkg-smartparens.el">raw</a>)
+  <li>Smerge (<a href="engraved/subconf/config--pkg-smerge.el.html">pretty</a>, <a href="subconf/config--pkg-smerge.el">raw</a>)
+  <li>Spray (<a href="engraved/subconf/config--pkg-spray.el.html">pretty</a>, <a href="subconf/config--pkg-spray.el">raw</a>)
+  <li>String Inflection (<a href="engraved/subconf/config--pkg-string-inflection.el.html">pretty</a>, <a href="subconf/config--pkg-string-inflection.el">raw</a>)
+  <li>Systemd (<a href="engraved/subconf/config--pkg-systemd.el.html">pretty</a>, <a href="subconf/config--pkg-systemd.el">raw</a>)
+  <li>Theme magic (<a href="engraved/subconf/config--pkg-theme-magic.el.html">pretty</a>, <a href="subconf/config--pkg-theme-magic.el">raw</a>)
+  <li>treemacs (<a href="engraved/subconf/config--pkg-treemacs.el.html">pretty</a>, <a href="subconf/config--pkg-treemacs.el">raw</a>)
+  <li>visual-fill-column (<a href="engraved/subconf/config--pkg-visual-fill-column.el.html">pretty</a>, <a href="subconf/config--pkg-visual-fill-column.el">raw</a>)
+  <li>VLF (<a href="engraved/subconf/config--pkg-vlf.el.html">pretty</a>, <a href="subconf/config--pkg-vlf.el">raw</a>)
+  <li>which-key (<a href="engraved/subconf/config--pkg-which-key.el.html">pretty</a>, <a href="subconf/config--pkg-which-key.el">raw</a>)
+  <li>Wttrin (<a href="engraved/subconf/config--pkg-wttrin.el.html">pretty</a>, <a href="subconf/config--pkg-wttrin.el">raw</a>)
+  <li>YASnippet (<a href="engraved/subconf/config--pkg-yasnippet.el.html">pretty</a>, <a href="subconf/config--pkg-yasnippet.el">raw</a>)
+</ul>
+<h3>Other sub-configuration (43)</h3>
+
+<ul>
+  <li>Abbrev (<a href="engraved/subconf/config-abbrev.el.html">pretty</a>, <a href="subconf/config-abbrev.el">raw</a>)
+  <li>Autocorrect (<a href="engraved/subconf/config-autocorrect.el.html">pretty</a>, <a href="subconf/config-autocorrect.el">raw</a>)
+  <li>Better defaults (<a href="engraved/subconf/config-better-defaults.el.html">pretty</a>, <a href="subconf/config-better-defaults.el">raw</a>)
+  <li>Better jumper mouse (<a href="engraved/subconf/config-better-jumper-mouse.el.html">pretty</a>, <a href="subconf/config-better-jumper-mouse.el">raw</a>)
+  <li>Calculator (<a href="engraved/subconf/config-calculator.el.html">pretty</a>, <a href="subconf/config-calculator.el">raw</a>)
+  <li>conf-data-toml (<a href="engraved/subconf/config-conf-data-toml.el.html">pretty</a>, <a href="subconf/config-conf-data-toml.el">raw</a>)
+  <li>Confpkg timings (<a href="engraved/subconf/config-confpkg-timings.el.html">pretty</a>, <a href="subconf/config-confpkg-timings.el">raw</a>)
+  <li>Dashboard (<a href="engraved/subconf/config-dashboard.el.html">pretty</a>, <a href="subconf/config-dashboard.el">raw</a>)
+  <li>Doom (<a href="engraved/subconf/config-doom.el.html">pretty</a>, <a href="subconf/config-doom.el">raw</a>)
+  <li>Ebooks (<a href="engraved/subconf/config-ebooks.el.html">pretty</a>, <a href="subconf/config-ebooks.el">raw</a>)
+  <li>Emacs daemon setup (<a href="engraved/subconf/config-emacs-daemon-setup.el.html">pretty</a>, <a href="subconf/config-emacs-daemon-setup.el">raw</a>)
+  <li>File Templates (<a href="engraved/subconf/config-file-templates.el.html">pretty</a>, <a href="subconf/config-file-templates.el">raw</a>)
+  <li>Flycheck org-lint (<a href="engraved/subconf/config-flycheck-org-lint.el.html">pretty</a>, <a href="subconf/config-flycheck-org-lint.el">raw</a>)
+  <li>Frame title (<a href="engraved/subconf/config-frame-title.el.html">pretty</a>, <a href="subconf/config-frame-title.el">raw</a>)
+  <li>gimp-palette (<a href="engraved/subconf/config-gimp-palette.el.html">pretty</a>, <a href="subconf/config-gimp-palette.el">raw</a>)
+  <li>Jinx (<a href="engraved/subconf/config-jinx.el.html">pretty</a>, <a href="subconf/config-jinx.el">raw</a>)
+  <li>Julia (<a href="engraved/subconf/config-julia.el.html">pretty</a>, <a href="subconf/config-julia.el">raw</a>)
+  <li>LaTeX (<a href="engraved/subconf/config-latex.el.html">pretty</a>, <a href="subconf/config-latex.el">raw</a>)
+  <li>Mail (<a href="engraved/subconf/config-mail.el.html">pretty</a>, <a href="subconf/config-mail.el">raw</a>)
+  <li>Markdown (<a href="engraved/subconf/config-markdown.el.html">pretty</a>, <a href="subconf/config-markdown.el">raw</a>)
+  <li>Newsfeed (<a href="engraved/subconf/config-newsfeed.el.html">pretty</a>, <a href="subconf/config-newsfeed.el">raw</a>)
+  <li>Org Babel (<a href="engraved/subconf/config-org-babel.el.html">pretty</a>, <a href="subconf/config-org-babel.el">raw</a>)
+  <li>Org Behaviour (<a href="engraved/subconf/config-org-behaviour.el.html">pretty</a>, <a href="subconf/config-org-behaviour.el">raw</a>)
+  <li>Org Citation (<a href="engraved/subconf/config-org-citation.el.html">pretty</a>, <a href="subconf/config-org-citation.el">raw</a>)
+  <li>Org ESS (<a href="engraved/subconf/config-org-ess.el.html">pretty</a>, <a href="subconf/config-org-ess.el">raw</a>)
+  <li>Org exports (<a href="engraved/subconf/config-org-exports.el.html">pretty</a>, <a href="subconf/config-org-exports.el">raw</a>)
+  <li>Org Visuals (<a href="engraved/subconf/config-org-visuals.el.html">pretty</a>, <a href="subconf/config-org-visuals.el">raw</a>)
+  <li>ox-ascii (<a href="engraved/subconf/config-ox-ascii.el.html">pretty</a>, <a href="subconf/config-ox-ascii.el">raw</a>)
+  <li>ox-beamer (<a href="engraved/subconf/config-ox-beamer.el.html">pretty</a>, <a href="subconf/config-ox-beamer.el">raw</a>)
+  <li>ox-html (<a href="engraved/subconf/config-ox-html.el.html">pretty</a>, <a href="subconf/config-ox-html.el">raw</a>)
+  <li>ox-latex (<a href="engraved/subconf/config-ox-latex.el.html">pretty</a>, <a href="subconf/config-ox-latex.el">raw</a>)
+  <li>ox-md (<a href="engraved/subconf/config-ox-md.el.html">pretty</a>, <a href="subconf/config-ox-md.el">raw</a>)
+  <li>Personal Information (<a href="engraved/subconf/config-personal-information.el.html">pretty</a>, <a href="subconf/config-personal-information.el">raw</a>)
+  <li>Plaintext (<a href="engraved/subconf/config-plaintext.el.html">pretty</a>, <a href="subconf/config-plaintext.el">raw</a>)
+  <li>R lang (<a href="engraved/subconf/config-r-lang.el.html">pretty</a>, <a href="subconf/config-r-lang.el">raw</a>)
+  <li>Setup script prompt (<a href="engraved/subconf/config-setup-script-prompt.el.html">pretty</a>, <a href="subconf/config-setup-script-prompt.el">raw</a>)
+  <li>TRAMP (<a href="engraved/subconf/config-tramp.el.html">pretty</a>, <a href="subconf/config-tramp.el">raw</a>)
+  <li>Variable pitch serif font (<a href="engraved/subconf/config-variable-pitch-serif-font.el.html">pretty</a>, <a href="subconf/config-variable-pitch-serif-font.el">raw</a>)
+  <li>Writeroom (<a href="engraved/subconf/config-writeroom.el.html">pretty</a>, <a href="subconf/config-writeroom.el">raw</a>)
+  <li>XKCD (<a href="engraved/subconf/config-xkcd.el.html">pretty</a>, <a href="subconf/config-xkcd.el">raw</a>)
+  <li>fancy-splash (<a href="engraved/subconf/fancy-splash.el.html">pretty</a>, <a href="subconf/fancy-splash.el">raw</a>)
+  <li>ox-latex-emoji (<a href="engraved/subconf/ox-latex-emoji.el.html">pretty</a>, <a href="subconf/ox-latex-emoji.el">raw</a>)
+  <li>splash-phrases (<a href="engraved/subconf/splash-phrases.el.html">pretty</a>, <a href="subconf/splash-phrases.el">raw</a>)
+</ul>
+</div>
+<script>
+(() => {
+  const box = document.getElementById("map"), img = box.firstElementChild;
+  let scale = 1, x = 0, y = 0;
+  const draw = () =>
+    img.style.transform = `translate(${x}px, ${y}px) scale(${scale})`;
+  const centre = () => {
+    scale = 1;
+    x = 0;
+    y = (box.clientHeight - img.clientHeight) / 2;
+    draw();
+  };
+  const zoom = (factor, atX, atY) => {
+    const previous = scale;
+    scale = Math.min(12, Math.max(0.5, scale * factor));
+    x = atX - (atX - x) * scale / previous;
+    y = atY - (atY - y) * scale / previous;
+    draw();
+  };
+  const local = event => {
+    const rect = box.getBoundingClientRect();
+    return [event.clientX - rect.left, event.clientY - rect.top];
+  };
+  if (img.complete) centre(); else img.addEventListener("load", centre);
+  new ResizeObserver(centre).observe(box);
+  box.addEventListener("wheel", event => {
+    event.preventDefault();
+    zoom(Math.exp(-event.deltaY / 400), ...local(event));
+  }, {passive: false});
+  const pointers = new Map();
+  let gesture = null;
+  const touchpoint = () => {
+    const points = [...pointers.values()];
+    const mean = axis => points.reduce((sum, p) => sum + p[axis], 0) / points.length;
+    return {x: mean("x"), y: mean("y"),
+            spread: points.length < 2 ? 0
+              : Math.hypot(points[0].x - points[1].x, points[0].y - points[1].y)};
+  };
+  box.addEventListener("pointerdown", event => {
+    event.preventDefault();
+    pointers.set(event.pointerId, {x: event.clientX, y: event.clientY});
+    box.setPointerCapture(event.pointerId);
+    box.style.cursor = "grabbing";
+    gesture = touchpoint();
+  });
+  box.addEventListener("pointermove", event => {
+    if (!pointers.has(event.pointerId)) return;
+    pointers.set(event.pointerId, {x: event.clientX, y: event.clientY});
+    const now = touchpoint();
+    const rect = box.getBoundingClientRect();
+    if (gesture.spread && now.spread)
+      zoom(now.spread / gesture.spread,
+           gesture.x - rect.left, gesture.y - rect.top);
+    x += now.x - gesture.x;
+    y += now.y - gesture.y;
+    draw();
+    gesture = now;
+  });
+  for (const done of ["pointerup", "pointercancel"])
+    box.addEventListener(done, event => {
+      pointers.delete(event.pointerId);
+      gesture = pointers.size ? touchpoint() : null;
+      if (!gesture) box.style.cursor = "";
+    });
+})();
+</script>
+</body>
+</html>
