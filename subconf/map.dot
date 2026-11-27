@@ -1,0 +1,633 @@
+digraph {
+  graph [bgcolor="transparent"]
+  overlap="prism"
+  node [shape="underline", penwidth="2", style="rounded,filled", fillcolor="#efefef", color="#c9c9c9", fontcolor="#000000", fontsize="18pt", fontname="Alegreya Sans"]
+  edge [color="#aaaaaa", penwidth="1.2"]
+overlap_scaling=-12
+  // Config
+  "Config" [color="#51afef", shape="circle", penwidth="5", fontsize="26pt"]
+  // Subconf entries
+  node [color="#4db5bd"]
+  "config-gimp-palette" [label="gimp-palette"]
+  "config-gimp-palette" -> "Config"
+  "config--pkg-beancount" [label="⚙️ Beancount"]
+  "config--pkg-beancount" -> "Config"
+  "config-markdown" [label="Markdown"]
+  "config-markdown" -> "Config"
+  "config--pkg-graphviz-dot-mode" [label="⚙️ graphviz-dot-mode"]
+  "config--pkg-graphviz-dot-mode" -> "Config"
+  "config-conf-data-toml" [label="conf-data-toml"]
+  "config-conf-data-toml" -> "Config"
+  "config-julia" [label="Julia"]
+  "config-julia" -> "Config"
+  "config-r-lang" [label="R lang"]
+  "config-r-lang" -> "Config"
+  "config--pkg-laas" [label="⚙️ LAAS"]
+  "config--pkg-laas" -> "Config"
+  "config-latex" [label="LaTeX"]
+  "config-latex" -> "Config"
+  "config-org-ess" [label="Org ESS"]
+  "config-org-ess" -> "Config"
+  "config-org-babel" [label="Org Babel"]
+  "config-org-babel" -> "Config"
+  "config--pkg-ox-gfm" [label="⚙️ ox-gfm"]
+  "config--pkg-ox-gfm" -> "Config"
+  "config-ox-md" [label="ox-md"]
+  "config-ox-md" -> "Config"
+  "config-ox-ascii" [label="ox-ascii"]
+  "config-ox-ascii" -> "Config"
+  "config--pkg-org-re-reveal" [label="⚙️ org-re-reveal"]
+  "config--pkg-org-re-reveal" -> "Config"
+  "config-ox-beamer" [label="ox-beamer"]
+  "config-ox-beamer" -> "Config"
+  "config--pkg-ox-chameleon" [label="⚙️ ox-chameleon"]
+  "config--pkg-ox-chameleon" -> "Config"
+  "ox-latex-emoji" [label="ox-latex-emoji"]
+  "ox-latex-emoji" -> "Config"
+  "config-ox-latex" [label="ox-latex"]
+  "config-ox-latex" -> "Config"
+  "config-ox-html" [label="ox-html"]
+  "config-ox-html" -> "Config"
+  "config-org-exports" [label="Org exports"]
+  "config-org-exports" -> "Config"
+  "config-org-visuals" [label="Org Visuals"]
+  "config-org-visuals" -> "Config"
+  "config-flycheck-org-lint" [label="Flycheck org-lint"]
+  "config-flycheck-org-lint" -> "Config"
+  "config--pkg-org-roam-ui" [label="⚙️ org-roam-ui"]
+  "config--pkg-org-roam-ui" -> "Config"
+  "config--pkg-org-roam" [label="⚙️ org-roam"]
+  "config--pkg-org-roam" -> "Config"
+  "config--pkg-org-super-agenda" [label="⚙️ Org Super Agenda"]
+  "config--pkg-org-super-agenda" -> "Config"
+  "config-org-citation" [label="Org Citation"]
+  "config-org-citation" -> "Config"
+  "config-org-behaviour" [label="Org Behaviour"]
+  "config-org-behaviour" -> "Config"
+  "config--pkg-org-music" [label="⚙️ org-music"]
+  "config--pkg-org-music" -> "Config"
+  "config--pkg-orgdiff" [label="⚙️ orgdiff"]
+  "config--pkg-orgdiff" -> "Config"
+  "config--pkg-org-glossary" [label="⚙️ org-glossary"]
+  "config--pkg-org-glossary" -> "Config"
+  "config--pkg-org-pandoc-import" [label="⚙️ org-pandoc-import"]
+  "config--pkg-org-pandoc-import" -> "Config"
+  "config--pkg-org-chef" [label="⚙️ org-chef"]
+  "config--pkg-org-chef" -> "Config"
+  "config--pkg-org-graph-view" [label="⚙️ org-graph-view"]
+  "config--pkg-org-graph-view" -> "Config"
+  "config--pkg-org-transclusion" [label="⚙️ org-transclusion"]
+  "config--pkg-org-transclusion" -> "Config"
+  "config--pkg-ob-http" [label="⚙️ ob-http"]
+  "config--pkg-ob-http" -> "Config"
+  "config--pkg-ob-julia" [label="⚙️ ob-julia"]
+  "config--pkg-ob-julia" -> "Config"
+  "config--pkg-org-ol-tree" [label="⚙️ org-ol-tree"]
+  "config--pkg-org-ol-tree" -> "Config"
+  "config--pkg-org-appear" [label="⚙️ org-appear"]
+  "config--pkg-org-appear" -> "Config"
+  "config--pkg-org-modern" [label="⚙️ org-modern"]
+  "config--pkg-org-modern" -> "Config"
+  "config-plaintext" [label="Plaintext"]
+  "config-plaintext" -> "Config"
+  "config-file-templates" [label="File Templates"]
+  "config-file-templates" -> "Config"
+  "config-mail" [label="Mail"]
+  "config-mail" -> "Config"
+  "config-newsfeed" [label="Newsfeed"]
+  "config-newsfeed" -> "Config"
+  "config-calculator" [label="Calculator"]
+  "config-calculator" -> "Config"
+  "config-ebooks" [label="Ebooks"]
+  "config-ebooks" -> "Config"
+  "config--pkg-systemd" [label="⚙️ Systemd"]
+  "config--pkg-systemd" -> "Config"
+  "config--pkg-elcord" [label="⚙️ Elcord"]
+  "config--pkg-elcord" -> "Config"
+  "config--pkg-spray" [label="⚙️ Spray"]
+  "config--pkg-spray" -> "Config"
+  "config--pkg-wttrin" [label="⚙️ Wttrin"]
+  "config--pkg-wttrin" -> "Config"
+  "config--pkg-selectric" [label="⚙️ Selectric"]
+  "config--pkg-selectric" -> "Config"
+  "config-xkcd" [label="XKCD"]
+  "config-xkcd" -> "Config"
+  "config--pkg-visual-fill-column" [label="⚙️ visual-fill-column"]
+  "config--pkg-visual-fill-column" -> "Config"
+  "config--pkg-treemacs" [label="⚙️ treemacs"]
+  "config--pkg-treemacs" -> "Config"
+  "config-writeroom" [label="Writeroom"]
+  "config-writeroom" -> "Config"
+  "config--pkg-page-break-lines" [label="⚙️ page break lines"]
+  "config--pkg-page-break-lines" -> "Config"
+  "config--pkg-rainbow-delimiters" [label="⚙️ Rainbow Delimiters"]
+  "config--pkg-rainbow-delimiters" -> "Config"
+  "config--pkg-nerd-icons" [label="⚙️ Nerd Icons"]
+  "config--pkg-nerd-icons" -> "Config"
+  "config--pkg-centaur-tabs" [label="⚙️ Centaur Tabs"]
+  "config--pkg-centaur-tabs" -> "Config"
+  "config--pkg-marginalia" [label="⚙️ Marginalia"]
+  "config--pkg-marginalia" -> "Config"
+  "config-variable-pitch-serif-font" [label="Variable pitch serif font"]
+  "config-variable-pitch-serif-font" -> "Config"
+  "config--pkg-mixed-pitch" [label="⚙️ mixed pitch"]
+  "config--pkg-mixed-pitch" -> "Config"
+  "config--pkg-screencast" [label="⚙️ Screencast"]
+  "config--pkg-screencast" -> "Config"
+  "config--pkg-keycast" [label="⚙️ Keycast"]
+  "config--pkg-keycast" -> "Config"
+  "config--pkg-doom-modeline" [label="⚙️ Doom modeline"]
+  "config--pkg-doom-modeline" -> "Config"
+  "config--pkg-simple-comment-markup" [label="⚙️ simple-comment-markup"]
+  "config--pkg-simple-comment-markup" -> "Config"
+  "config--pkg-theme-magic" [label="⚙️ Theme magic"]
+  "config--pkg-theme-magic" -> "Config"
+  "config--pkg-info-colors" [label="⚙️ Info colors"]
+  "config--pkg-info-colors" -> "Config"
+  "config--pkg-smartparens" [label="⚙️ SmartParens"]
+  "config--pkg-smartparens" -> "Config"
+  "config--pkg-string-inflection" [label="⚙️ String Inflection"]
+  "config--pkg-string-inflection" -> "Config"
+  "config--pkg-yasnippet" [label="⚙️ YASnippet"]
+  "config--pkg-yasnippet" -> "Config"
+  "config--pkg-etrace" [label="⚙️ etrace"]
+  "config--pkg-etrace" -> "Config"
+  "config--pkg-screenshot" [label="⚙️ Screenshot"]
+  "config--pkg-screenshot" -> "Config"
+  "config--pkg-aas" [label="⚙️ AAS"]
+  "config--pkg-aas" -> "Config"
+  "config-tramp" [label="TRAMP"]
+  "config-tramp" -> "Config"
+  "config-autocorrect" [label="Autocorrect"]
+  "config-autocorrect" -> "Config"
+  "config-jinx" [label="Jinx"]
+  "config-jinx" -> "Config"
+  "config--pkg-projectile" [label="⚙️ Projectile"]
+  "config--pkg-projectile" -> "Config"
+  "config--pkg-corfu" [label="⚙️ Corfu"]
+  "config--pkg-corfu" -> "Config"
+  "config--pkg-smerge" [label="⚙️ Smerge"]
+  "config--pkg-smerge" -> "Config"
+  "config--pkg-magit" [label="⚙️ Magit"]
+  "config--pkg-magit" -> "Config"
+  "config--pkg-consult" [label="⚙️ Consult"]
+  "config--pkg-consult" -> "Config"
+  "config--pkg-headlice" [label="⚙️ Headlice"]
+  "config--pkg-headlice" -> "Config"
+  "config--pkg-gptel" [label="⚙️ gptel"]
+  "config--pkg-gptel" -> "Config"
+  "config--pkg-evil" [label="⚙️ evil"]
+  "config--pkg-evil" -> "Config"
+  "config--pkg-eros" [label="⚙️ Eros"]
+  "config--pkg-eros" -> "Config"
+  "config--pkg-vlf" [label="⚙️ VLF"]
+  "config--pkg-vlf" -> "Config"
+  "config-abbrev" [label="Abbrev"]
+  "config-abbrev" -> "Config"
+  "config--pkg-which-key" [label="⚙️ which-key"]
+  "config--pkg-which-key" -> "Config"
+  "config--pkg-emacs-everywhere" [label="⚙️ emacs-everywhere"]
+  "config--pkg-emacs-everywhere" -> "Config"
+  "config--pkg-avy" [label="⚙️ avy"]
+  "config--pkg-avy" -> "Config"
+  "config-setup-script-prompt" [label="Setup script prompt"]
+  "config-setup-script-prompt" -> "Config"
+  "config-emacs-daemon-setup" [label="Emacs daemon setup"]
+  "config-emacs-daemon-setup" -> "Config"
+  "config-frame-title" [label="Frame title"]
+  "config-frame-title" -> "Config"
+  "config-better-jumper-mouse" [label="Better jumper mouse"]
+  "config-better-jumper-mouse" -> "Config"
+  "splash-phrases" [label="splash-phrases"]
+  "splash-phrases" -> "Config"
+  "fancy-splash" [label="fancy-splash"]
+  "fancy-splash" -> "Config"
+  "config-dashboard" [label="Dashboard"]
+  "config-dashboard" -> "Config"
+  "config-doom" [label="Doom"]
+  "config-doom" -> "Config"
+  "config-better-defaults" [label="Better defaults"]
+  "config-better-defaults" -> "Config"
+  "config-personal-information" [label="Personal Information"]
+  "config-personal-information" -> "Config"
+  "config-confpkg-timings" [label="Confpkg timings"]
+  "config-confpkg-timings" -> "Config"
+  // Packages
+  node [color="#e69055"]
+  "beancount" [label="📦 beancount"]
+  "graphviz-dot-mode" [label="📦 graphviz-dot-mode"]
+  "conf-data-toml" [label="📦 conf-data-toml"]
+  "laas" [label="📦 laas"]
+  "ox-chameleon" [label="📦 ox-chameleon"]
+  "org-super-agenda" [label="📦 org-super-agenda"]
+  "org-cite-csl-activate" [label="📦 org-cite-csl-activate"]
+  "org-music" [label="📦 org-music"]
+  "orgdiff" [label="📦 orgdiff"]
+  "org-glossary" [label="📦 org-glossary"]
+  "org-pandoc-import" [label="📦 org-pandoc-import"]
+  "org-chef" [label="📦 org-chef"]
+  "org-graph-view" [label="📦 org-graph-view"]
+  "org-transclusion" [label="📦 org-transclusion"]
+  "ob-http" [label="📦 ob-http"]
+  "ob-julia" [label="📦 ob-julia"]
+  "org-ol-tree" [label="📦 org-ol-tree"]
+  "org-appear" [label="📦 org-appear"]
+  "org-modern" [label="📦 org-modern"]
+  "calctex" [label="📦 calctex"]
+  "calibredb" [label="📦 calibredb"]
+  "nov" [label="📦 nov"]
+  "systemd" [label="📦 systemd"]
+  "elcord" [label="📦 elcord"]
+  "spray" [label="📦 spray"]
+  "wttrin" [label="📦 wttrin"]
+  "selectric-mode" [label="📦 selectric-mode"]
+  "xkcd" [label="📦 xkcd"]
+  "page-break-lines" [label="📦 page-break-lines"]
+  "rainbow-delimiters" [label="📦 rainbow-delimiters"]
+  "gif-screencast" [label="📦 gif-screencast"]
+  "keycast" [label="📦 keycast"]
+  "simple-comment-markup" [label="📦 simple-comment-markup"]
+  "theme-magic" [label="📦 theme-magic"]
+  "info-colors" [label="📦 info-colors"]
+  "string-inflection" [label="📦 string-inflection"]
+  "etrace" [label="📦 etrace"]
+  "screenshot" [label="📦 screenshot"]
+  "aas" [label="📦 aas"]
+  "autocorrect" [label="📦 autocorrect"]
+  "headlice" [label="📦 headlice"]
+  "gptel" [label="📦 gptel"]
+  "vlf" [label="📦 vlf"]
+  "emacs-everywhere" [label="📦 emacs-everywhere"]
+ // Edges
+  edge [color="#999999", penwidth="1.5"]
+  "beancount" -> "config--pkg-beancount"
+  "graphviz-dot-mode" -> "config--pkg-graphviz-dot-mode"
+  "conf-data-toml" -> "config-conf-data-toml"
+  "julia-mode" -> "config-julia"
+  "laas" -> "config--pkg-laas"
+  "ox-md" -> "config-ox-md"
+  "ox-ascii" -> "config-ox-ascii"
+  "org-re-reveal" -> "config--pkg-org-re-reveal"
+  "ox-beamer" -> "config-ox-beamer"
+  "ox-chameleon" -> "config--pkg-ox-chameleon"
+  "ox-latex" -> "ox-latex-emoji"
+  "ox-latex" -> "config-ox-latex"
+  "ox-latex-emoji" -> "config-ox-latex"
+  "ox-html" -> "config-ox-html"
+  "config-org-exports" -> "config-ox-html"
+  "ox" -> "config-org-exports"
+  "org" -> "config-org-visuals"
+  "org-roam" -> "config--pkg-org-roam"
+  "org-super-agenda" -> "config--pkg-org-super-agenda"
+  "org-cite-csl-activate" -> "config-org-citation"
+  "org" -> "config-org-behaviour"
+  "org-music" -> "config--pkg-org-music"
+  "orgdiff" -> "config--pkg-orgdiff"
+  "org-glossary" -> "config--pkg-org-glossary"
+  "org-pandoc-import" -> "config--pkg-org-pandoc-import"
+  "org-chef" -> "config--pkg-org-chef"
+  "org-graph-view" -> "config--pkg-org-graph-view"
+  "org-transclusion" -> "config--pkg-org-transclusion"
+  "ob-http" -> "config--pkg-ob-http"
+  "ob-julia" -> "config--pkg-ob-julia"
+  "org-ol-tree" -> "config--pkg-org-ol-tree"
+  "org-appear" -> "config--pkg-org-appear"
+  "org-modern" -> "config--pkg-org-modern"
+  "mu4e" -> "config-mail"
+  "calctex" -> "config-calculator"
+  "calibredb" -> "config-ebooks"
+  "nov" -> "config-ebooks"
+  "systemd" -> "config--pkg-systemd"
+  "elcord" -> "config--pkg-elcord"
+  "spray" -> "config--pkg-spray"
+  "wttrin" -> "config--pkg-wttrin"
+  "selectric-mode" -> "config--pkg-selectric"
+  "xkcd" -> "config-xkcd"
+  "visual-fill-column" -> "config--pkg-visual-fill-column"
+  "config--pkg-mixed-pitch" -> "config-writeroom"
+  "page-break-lines" -> "config--pkg-page-break-lines"
+  "rainbow-delimiters" -> "config--pkg-rainbow-delimiters"
+  "config-variable-pitch-serif-font" -> "config--pkg-mixed-pitch"
+  "gif-screencast" -> "config--pkg-screencast"
+  "keycast" -> "config--pkg-keycast"
+  "doom-modeline" -> "config--pkg-doom-modeline"
+  "simple-comment-markup" -> "config--pkg-simple-comment-markup"
+  "theme-magic" -> "config--pkg-theme-magic"
+  "info-colors" -> "config--pkg-info-colors"
+  "string-inflection" -> "config--pkg-string-inflection"
+  "etrace" -> "config--pkg-etrace"
+  "screenshot" -> "config--pkg-screenshot"
+  "aas" -> "config--pkg-aas"
+  "autocorrect" -> "config-autocorrect"
+  "corfu" -> "config--pkg-corfu"
+  "headlice" -> "config--pkg-headlice"
+  "gptel" -> "config--pkg-gptel"
+  "vlf" -> "config--pkg-vlf"
+  "emacs-everywhere" -> "config--pkg-emacs-everywhere"
+  "fancy-splash" -> "config-dashboard"
+  "splash-phrases" -> "config-dashboard"
+  // Doom
+  "Doom" [color="#a991f1", shape="circle", penwidth="5", fontsize="26pt"]
+  node [color="#813d9c"]
+  edge [color="#cccccc"]
+  ":completion" [fontsize="20pt"]
+  ":completion" -> "Doom"
+  ":completion corfu" [label="corfu"]
+  ":completion corfu" -> ":completion"
+  ":completion vertico" [label="vertico"]
+  ":completion vertico" -> ":completion"
+  ":ui" [fontsize="20pt"]
+  ":ui" -> "Doom"
+  ":ui doom" [label="doom"]
+  ":ui doom" -> ":ui"
+  ":ui dashboard" [label="dashboard"]
+  ":ui dashboard" -> ":ui"
+  ":ui doom-quit" [label="doom-quit"]
+  ":ui doom-quit" -> ":ui"
+  ":ui hl-todo" [label="hl-todo"]
+  ":ui hl-todo" -> ":ui"
+  ":ui ligatures" [label="ligatures"]
+  ":ui ligatures" -> ":ui"
+  ":ui modeline" [label="modeline"]
+  ":ui modeline" -> ":ui"
+  ":ui nav-flash" [label="nav-flash"]
+  ":ui nav-flash" -> ":ui"
+  ":ui ophints" [label="ophints"]
+  ":ui ophints" -> ":ui"
+  ":ui popup" [label="popup"]
+  ":ui popup" -> ":ui"
+  ":ui smooth-scroll" [label="smooth-scroll"]
+  ":ui smooth-scroll" -> ":ui"
+  ":ui treemacs" [label="treemacs"]
+  ":ui treemacs" -> ":ui"
+  ":ui vc-gutter" [label="vc-gutter"]
+  ":ui vc-gutter" -> ":ui"
+  ":ui vi-tilde-fringe" [label="vi-tilde-fringe"]
+  ":ui vi-tilde-fringe" -> ":ui"
+  ":ui window-select" [label="window-select"]
+  ":ui window-select" -> ":ui"
+  ":ui workspaces" [label="workspaces"]
+  ":ui workspaces" -> ":ui"
+  ":ui zen" [label="zen"]
+  ":ui zen" -> ":ui"
+  ":editor" [fontsize="20pt"]
+  ":editor" -> "Doom"
+  ":editor evil" [label="evil"]
+  ":editor evil" -> ":editor"
+  ":editor file-templates" [label="file-templates"]
+  ":editor file-templates" -> ":editor"
+  ":editor fold" [label="fold"]
+  ":editor fold" -> ":editor"
+  ":editor format" [label="format"]
+  ":editor format" -> ":editor"
+  ":editor multiple-cursors" [label="multiple-cursors"]
+  ":editor multiple-cursors" -> ":editor"
+  ":editor rotate-text" [label="rotate-text"]
+  ":editor rotate-text" -> ":editor"
+  ":editor snippets" [label="snippets"]
+  ":editor snippets" -> ":editor"
+  ":emacs" [fontsize="20pt"]
+  ":emacs" -> "Doom"
+  ":emacs dired" [label="dired"]
+  ":emacs dired" -> ":emacs"
+  ":emacs electric" [label="electric"]
+  ":emacs electric" -> ":emacs"
+  ":emacs ibuffer" [label="ibuffer"]
+  ":emacs ibuffer" -> ":emacs"
+  ":emacs undo" [label="undo"]
+  ":emacs undo" -> ":emacs"
+  ":emacs vc" [label="vc"]
+  ":emacs vc" -> ":emacs"
+  ":term" [fontsize="20pt"]
+  ":term" -> "Doom"
+  ":term vterm" [label="vterm"]
+  ":term vterm" -> ":term"
+  ":checkers" [fontsize="20pt"]
+  ":checkers" -> "Doom"
+  ":checkers syntax" [label="syntax"]
+  ":checkers syntax" -> ":checkers"
+  ":checkers grammar" [label="grammar"]
+  ":checkers grammar" -> ":checkers"
+  ":tools" [fontsize="20pt"]
+  ":tools" -> "Doom"
+  ":tools ansible" [label="ansible"]
+  ":tools ansible" -> ":tools"
+  ":tools biblio" [label="biblio"]
+  ":tools biblio" -> ":tools"
+  ":tools docker" [label="docker"]
+  ":tools docker" -> ":tools"
+  ":tools eval" [label="eval"]
+  ":tools eval" -> ":tools"
+  ":tools lookup" [label="lookup"]
+  ":tools lookup" -> ":tools"
+  ":tools lsp" [label="lsp"]
+  ":tools lsp" -> ":tools"
+  ":tools magit" [label="magit"]
+  ":tools magit" -> ":tools"
+  ":tools make" [label="make"]
+  ":tools make" -> ":tools"
+  ":tools pdf" [label="pdf"]
+  ":tools pdf" -> ":tools"
+  ":tools upload" [label="upload"]
+  ":tools upload" -> ":tools"
+  ":os" [fontsize="20pt"]
+  ":os" -> "Doom"
+  ":os macos" [label="macos"]
+  ":os macos" -> ":os"
+  ":os tty" [label="tty"]
+  ":os tty" -> ":os"
+  ":lang" [fontsize="20pt"]
+  ":lang" -> "Doom"
+  ":lang data" [label="data"]
+  ":lang data" -> ":lang"
+  ":lang emacs-lisp" [label="emacs-lisp"]
+  ":lang emacs-lisp" -> ":lang"
+  ":lang ess" [label="ess"]
+  ":lang ess" -> ":lang"
+  ":lang go" [label="go"]
+  ":lang go" -> ":lang"
+  ":lang json" [label="json"]
+  ":lang json" -> ":lang"
+  ":lang javascript" [label="javascript"]
+  ":lang javascript" -> ":lang"
+  ":lang julia" [label="julia"]
+  ":lang julia" -> ":lang"
+  ":lang latex" [label="latex"]
+  ":lang latex" -> ":lang"
+  ":lang lua" [label="lua"]
+  ":lang lua" -> ":lang"
+  ":lang markdown" [label="markdown"]
+  ":lang markdown" -> ":lang"
+  ":lang nix" [label="nix"]
+  ":lang nix" -> ":lang"
+  ":lang org" [label="org"]
+  ":lang org" -> ":lang"
+  ":lang python" [label="python"]
+  ":lang python" -> ":lang"
+  ":lang rust" [label="rust"]
+  ":lang rust" -> ":lang"
+  ":lang scheme" [label="scheme"]
+  ":lang scheme" -> ":lang"
+  ":lang sh" [label="sh"]
+  ":lang sh" -> ":lang"
+  ":lang web" [label="web"]
+  ":lang web" -> ":lang"
+  ":lang yaml" [label="yaml"]
+  ":lang yaml" -> ":lang"
+  ":lang zig" [label="zig"]
+  ":lang zig" -> ":lang"
+  ":email" [fontsize="20pt"]
+  ":email" -> "Doom"
+  ":email mu4e" [label="mu4e"]
+  ":email mu4e" -> ":email"
+  ":app" [fontsize="20pt"]
+  ":app" -> "Doom"
+  ":app everywhere" [label="everywhere"]
+  ":app everywhere" -> ":app"
+  ":app irc" [label="irc"]
+  ":app irc" -> ":app"
+  ":app rss" [label="rss"]
+  ":app rss" -> ":app"
+  // Doom module packages
+  node [color="#e69055"]
+  edge [color="#888888"]
+  "julia-mode" [label="📦 julia-mode"]
+  "julia-mode" -> ":lang julia"
+  "auctex" [label="📦 auctex"]
+  "auctex" -> ":lang latex"
+  "cdlatex" [label="📦 cdlatex"]
+  "cdlatex" -> ":lang latex"
+  "pdf-tools" [label="📦 pdf-tools"]
+  "pdf-tools" -> ":tools pdf"
+  "ob-async" [label="📦 ob-async"]
+  "ob-async" -> ":lang org"
+  "org-re-reveal" [label="📦 org-re-reveal"]
+  "org-re-reveal" -> ":lang org"
+  "flycheck" [label="📦 flycheck"]
+  "flycheck" -> ":checkers syntax"
+  "gnuplot" [label="📦 gnuplot"]
+  "gnuplot" -> ":lang org"
+  "org-roam" [label="📦 org-roam"]
+  "org-roam" -> ":lang org"
+  "citar" [label="📦 citar"]
+  "citar" -> ":tools biblio"
+  "helpful" [label="📦 helpful"]
+  "helpful" -> ":lang emacs-lisp"
+  "lsp-mode" [label="📦 lsp-mode"]
+  "lsp-mode" -> ":tools lsp"
+  "evil-org" [label="📦 evil-org"]
+  "evil-org" -> ":lang org"
+  "org-appear" [label="📦 org-appear"]
+  "org-appear" -> ":lang org"
+  "org-msg" [label="📦 org-msg"]
+  "org-msg" -> ":email mu4e"
+  "request" [label="📦 request"]
+  "request" -> ":tools lookup"
+  "elfeed-org" [label="📦 elfeed-org"]
+  "elfeed-org" -> ":app rss"
+  "evil-snipe" [label="📦 evil-snipe"]
+  "evil-snipe" -> ":editor evil"
+  "treemacs" [label="📦 treemacs"]
+  "treemacs" -> ":ui treemacs"
+  "org-modern" [label="📦 org-modern"]
+  "org-modern" -> ":lang org"
+  "writeroom-mode" [label="📦 writeroom-mode"]
+  "writeroom-mode" -> ":ui zen"
+  "marginalia" [label="📦 marginalia"]
+  "marginalia" -> ":completion vertico"
+  "mixed-pitch" [label="📦 mixed-pitch"]
+  "mixed-pitch" -> ":ui zen"
+  "markdown-mode" [label="📦 markdown-mode"]
+  "markdown-mode" -> ":lang markdown"
+  "doom-modeline" [label="📦 doom-modeline"]
+  "doom-modeline" -> ":ui modeline"
+  "corfu" [label="📦 corfu"]
+  "corfu" -> ":completion corfu"
+  "transient" [label="📦 transient"]
+  "transient" -> ":tools magit"
+  "smerge-mode" [label="📦 smerge-mode"]
+  "smerge-mode" -> ":emacs vc"
+  "magit" [label="📦 magit"]
+  "magit" -> ":tools magit"
+  "consult" [label="📦 consult"]
+  "consult" -> ":completion vertico"
+  "evil" [label="📦 evil"]
+  "evil" -> ":editor evil"
+  "emacs-everywhere" [label="📦 emacs-everywhere"]
+  "emacs-everywhere" -> ":app everywhere"
+  "elfeed" [label="📦 elfeed"]
+  "elfeed" -> ":app rss"
+  "rainbow-mode" [label="📦 rainbow-mode"]
+  "rainbow-mode" -> ":lang web"
+  "solaire-mode" [label="📦 solaire-mode"]
+  "solaire-mode" -> ":ui doom"
+  "org" [label="📦 org"]
+  "org" -> ":lang org"
+  // Configuration of Doom-module-installed packages
+  "rainbow-mode" -> "config-gimp-palette"
+  "markdown-mode" -> "config-markdown"
+  "org" -> "config--pkg-graphviz-dot-mode"
+  "julia-mode" -> "config-julia"
+  "auctex" -> "config-latex"
+  "cdlatex" -> "config-latex"
+  "pdf-tools" -> "config-latex"
+  "org" -> "config-org-ess"
+  "ob-async" -> "config-org-babel"
+  "org-re-reveal" -> "config--pkg-org-re-reveal"
+  "org" -> "config-ox-latex"
+  "gnuplot" -> "config-ox-html"
+  "org" -> "config-ox-html"
+  "org" -> "config-org-exports"
+  "org" -> "config-org-visuals"
+  "flycheck" -> "config-flycheck-org-lint"
+  "gnuplot" -> "config-flycheck-org-lint"
+  "org" -> "config-flycheck-org-lint"
+  "org-roam" -> "config--pkg-org-roam-ui"
+  "org-roam" -> "config--pkg-org-roam"
+  "org" -> "config-org-citation"
+  "citar" -> "config-org-citation"
+  "helpful" -> "config-org-behaviour"
+  "lsp-mode" -> "config-org-behaviour"
+  "evil-org" -> "config-org-behaviour"
+  "org" -> "config-org-behaviour"
+  "org" -> "config--pkg-org-music"
+  "org" -> "config--pkg-org-pandoc-import"
+  "org" -> "config--pkg-org-transclusion"
+  "org" -> "config--pkg-org-ol-tree"
+  "org-appear" -> "config--pkg-org-appear"
+  "org-modern" -> "config--pkg-org-modern"
+  "org" -> "config-mail"
+  "org-msg" -> "config-mail"
+  "request" -> "config-mail"
+  "elfeed-org" -> "config-newsfeed"
+  "elfeed" -> "config-newsfeed"
+  "evil-snipe" -> "config-newsfeed"
+  "org" -> "config-calculator"
+  "doom-modeline" -> "config-ebooks"
+  "evil-snipe" -> "config-xkcd"
+  "treemacs" -> "config--pkg-treemacs"
+  "org-modern" -> "config-writeroom"
+  "writeroom-mode" -> "config-writeroom"
+  "marginalia" -> "config--pkg-marginalia"
+  "mixed-pitch" -> "config--pkg-mixed-pitch"
+  "markdown-mode" -> "config--pkg-mixed-pitch"
+  "doom-modeline" -> "config--pkg-doom-modeline"
+  "org" -> "config--pkg-simple-comment-markup"
+  "evil" -> "config--pkg-string-inflection"
+  "corfu" -> "config--pkg-corfu"
+  "transient" -> "config--pkg-smerge"
+  "smerge-mode" -> "config--pkg-smerge"
+  "org" -> "config--pkg-magit"
+  "magit" -> "config--pkg-magit"
+  "consult" -> "config--pkg-consult"
+  "evil" -> "config--pkg-evil"
+  "evil" -> "config--pkg-which-key"
+  "emacs-everywhere" -> "config--pkg-emacs-everywhere"
+  "elfeed" -> "config-emacs-daemon-setup"
+  "org" -> "config-emacs-daemon-setup"
+  "rainbow-mode" -> "fancy-splash"
+  "org" -> "config-dashboard"
+  "solaire-mode" -> "config-doom"
+  "org" -> "config-doom"
+
+}
